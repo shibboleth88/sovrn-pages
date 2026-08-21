@@ -13,9 +13,9 @@ const R=[["Article","The Concept of Reflection","https://www.sovrn.art/curated/r
 ["Series","AI Portraits Series","https://www.vanarman.com/aiportraits"],
 ["Sets","Emergence to Reflection triptychs & quadtychs","https://www.vanarman.com/sets"]];
 const D=[["GIFs","Shareable GIFs of your Reflection","https://www.paint.bot/layers"]];
-const C=[["Linz","Francisco Carolinum, permanent collection","https://www.sovrn.art/museums/fransisco-carolinum"],
-["Manhattan","Museum of Art and Light, permanent collection","https://artlightmuseum.org/"],
-["Digital","Museum of Crypto Art, permanent collection","https://www.sovrn.art/museums/moca"]];
+const C=[["","Francisco Carolinum, permanent collection","https://www.sovrn.art/museums/fransisco-carolinum"],
+["","Museum of Art and Light, permanent collection","https://artlightmuseum.org/"],
+["","Museum of Crypto Art, permanent collection","https://www.sovrn.art/museums/moca"]];
 const E=[["Artist site","vanarman.com","https://www.vanarman.com/","@pva_pfp.jpg"],
 ["Raster","Artist profile","https://www.raster.art/artist/pindar-van-arman","raster.jpg"],
 ["X","@vanarman","https://x.com/vanarman","twitter.jpg"],
@@ -26,7 +26,7 @@ src=t=>t==119?Q+"reflection_119_layers_smooth%20for%20site.svg":B+"reflection_"+
 ext=u=>u.includes("sovrn.art")?"":' target=_blank';
 $("hero").src=src(W[0][0]);
 $("g").innerHTML=W.map(w=>'<figure><img src="'+src(w[0])+'" alt="'+e(w[1]||"Reflection #"+w[0])+'" loading="lazy"><figcaption>'+(w[1]?e(w[1])+' <i>#'+w[0]+'</i>':'#'+w[0])+'</figcaption></figure>').join("");
-const row=x=>'<li><a href="'+x[2]+'"'+ext(x[2])+'><span class="k">'+e(x[0])+'</span>'+(x[3]?'<img class="ic" src="'+encodeURI((x[3][0]=="@"?Q+x[3].slice(1):I+x[3]))+'" alt="">':'')+e(x[1])+'</a></li>';
+const row=x=>'<li><a href="'+x[2]+'"'+ext(x[2])+'>'+(x[0]?'<span class="k">'+e(x[0])+'</span>':'')+(x[3]?'<img class="ic" src="'+encodeURI((x[3][0]=="@"?Q+x[3].slice(1):I+x[3]))+'" alt="">':'')+e(x[1])+'</a></li>';
 $("ls").innerHTML=[["Learn more",R,""],["Download",D,""],["Collections",C,""],["Artist info",E,'<figure class="fig port"><img id="f3" data-s="reflection_violet.jpg" alt="Pindar Van Arman in the studio" loading="lazy"><figcaption>Pindar Van Arman in the studio</figcaption></figure>']].map((x,i)=>'<section class="split"><h2 id="s'+i+'">'+x[0]+'</h2><div>'+x[2]+'<ul class="ln">'+x[1].map(row).join("")+'</ul></div></section>').join("");
 ["f1","f2","f3"].forEach(i=>{const n=$(i);n.src=Q+n.dataset.s;});
 const mb=$("mb"),mn=$("mn");
