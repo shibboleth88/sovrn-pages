@@ -115,7 +115,7 @@ dd{margin:0;word-break:break-all}
 </div>
 
 <div class="sec">
-<h2>Objects</h2>
+<h2>Testimonials</h2>
 <div class="works" id="works"></div>
 </div>
 
@@ -126,7 +126,7 @@ dd{margin:0;word-break:break-all}
 </div>
 
 <div class="sec">
-<h2>Hear what artists and collectors have to say</h2>
+<h2>Source poem</h2>
 <div class="poem">
 <p>Perché voler portare una cosa con sé, quando la si può portare dentro di sé?
 La valigia dell’inconscio è molto più leggera e imprevedibile.
@@ -234,11 +234,12 @@ $("stage").onclick=()=>{stop();showTrait(ti+1);};
 const W=Array.from({length:12},(_,i)=>"work-"+String(i+1).padStart(2,"0")+".jpg");
 const G=Array.from({length:9},(_,i)=>"gif-"+String(i+1).padStart(2,"0")+".gif");
 const cellHTML=(f,alt,kind,i)=>'<button type="button" onclick="zoom(\''+kind+'\','+i+')"><img src="'+B+f+'" alt="'+alt+'" loading="lazy"></button>';
-$("works").innerHTML=W.map((f,i)=>cellHTML(f,"Wunderkammer object","w",i)).join("");
+$("works").innerHTML=W.map((f,i)=>cellHTML(f,"Testimonial about Isa Kost's Wunderkammer, "+(i+1)+" of 12","w",i)).join("");
 $("gifs").innerHTML=G.map((f,i)=>cellHTML(f,"Wunderkammer render","g",i)).join("");
 function zoom(kind,i){const f=kind=="w"?W[i]:G[i];
-  $("lbi").src=B+f;$("lbi").alt="Wunderkammer, Isa Kost";
-  $("lbc").textContent="Isa Kost \u00b7 Wunderkammer \u00b7 2025";
+  $("lbi").src=B+f;
+  $("lbi").alt=kind=="w"?"Testimonial about Isa Kost's Wunderkammer":"Wunderkammer render, Isa Kost";
+  $("lbc").textContent=kind=="w"?"Testimonial \u00b7 "+(i+1)+" of 12":"Isa Kost \u00b7 Wunderkammer \u00b7 2025";
   lb.classList.add("on");$("lbx").focus();}
 function unzoom(){lb.classList.remove("on");}
 $("lbx").onclick=unzoom;lb.onclick=e=>{if(e.target===lb)unzoom();};
