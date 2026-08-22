@@ -9,9 +9,6 @@
 body{background:var(--paper);color:var(--ink);font:400 15px/1.55 "IBM Plex Sans",sans-serif;padding:26px 22px 46px}
 .wrap{max-width:1060px;margin:0 auto}
 a:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
-.banner{display:grid;grid-auto-flow:column;grid-template-rows:repeat(3,54px);grid-auto-columns:54px;gap:2px;overflow:hidden;margin:-26px -22px 34px;background:var(--ink)}@media(max-width:640px){.banner{grid-template-rows:repeat(2,46px);grid-auto-columns:46px;margin-bottom:26px}}.banner img{width:100%;height:100%;object-fit:cover;display:block}
-.banner2{margin:0 0 40px}
-@media(max-width:640px){.banner2{margin-bottom:30px}}
 .mast{text-align:center;margin-bottom:30px}
 .logo img{width:clamp(132px,15vw,176px);height:auto;display:inline-block}
 .tag{font:italic 300 clamp(23px,3.4vw,37px)/1.15 Fraunces,serif;color:var(--ink);letter-spacing:-.015em;max-width:24ch;margin:16px auto 0}
@@ -57,14 +54,12 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transfo
 .nav a:hover{color:var(--copper)}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body>
-<div class="banner" id="ban" aria-hidden="true"></div>
 <div class="wrap">
 <header class="mast">
 <a class="logo" href="https://www.sovrn.art" target="_blank"><img src="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/sovrn_logo-removebg.png" alt="Sovrn Art" width="256" height="256"></a>
 <p class="tag">an indie studio for sovereign artists</p>
 </header>
 <p class="about">Sovrn Art is an independent, artist-first platform by <a href="https://twitter.com/shibboleth88" target="_blank">Ezra Shibboleth</a> and <a href="https://www.vanarman.com" target="_blank">Pindar Van Arman</a>, with <a href="https://x.com/lorepunk" target="_blank">lorepunk</a> providing copy and ops support. We value rigorous artistic processes, meaningfully constructed serial collections, substantial narratives, and structures that uphold the principles of sovereignty and decentralization.</p>
-<div class="banner banner2" id="ban2" aria-hidden="true"></div>
 
 <div class="sec">
 <h2>Curated collections</h2>
@@ -126,25 +121,7 @@ SO=[["X","twitter.jpg","https://twitter.com/sovrnart"],
 ["CENTS Discord","cents-discord.png","https://discord.gg/USQwhGj8HC",1],
 ["Van Arman Discord","van-arman-discord.png","https://discord.gg/eQXjJHx8FF",1]];
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
-/* Two mosaic bands. Pool of 157 tiles: b001-b131 are works from fourteen
-   collections — including the Reflection layer SVGs and a byteGAN, rasterised
-   from the on-chain files — and b132-b157 are CENTS. Each band drops one cent
-   after every five works, so cents are one tile in six. The bands share no
-   tile; each list runs on past the fold so the band fills any width. */
-const T=i=>'img/banner/b'+String(i).padStart(3,"0")+'.jpg',
-rng=(a,b)=>Array.from({length:b-a+1},(_,k)=>a+k);
-function band(id,art,cts){
-  const seq=[];let c=0;
-  for(let i=0;i<art.length;i++){
-    seq.push(art[i]);
-    if((i+1)%5===0&&c<cts.length)seq.push(cts[c++]);
-  }
-  while(c<cts.length)seq.push(cts[c++]);
-  document.getElementById(id).innerHTML=seq.concat(seq).slice(0,150)
-    .map(i=>'<img src="'+T(i)+'" alt="" loading="lazy">').join("");
-}
-band("ban", rng(1,65),   rng(132,144));
-band("ban2",rng(66,131), rng(145,157));
+
 document.getElementById("g").innerHTML=C.map(c=>
 '<a class="card" href="'+c[2]+'" target="_blank"><span class="im"><img src="'+encodeURI(c[3])+'" alt="'+esc(c[0])+'" width="500" height="500" loading="lazy"></span><span class="ti">'+esc(c[0])+'<span class="go">&#8599;</span></span><span class="ar">'+esc(c[1])+'</span></a>').join("");
 document.getElementById("m").innerHTML=MU.map(m=>
