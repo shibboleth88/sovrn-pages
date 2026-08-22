@@ -33,7 +33,7 @@ h2{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform
 .card:hover .pp{color:var(--copper)}
 </style></head><body><div class="wrap">
 <header class="mast">
-<a class="logo" href="https://www.sovrn.art" target="_top"><img src="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/sovrn_logo-removebg.png" alt="Sovrn Art" width="256" height="256"></a>
+<a class="logo" href="https://www.sovrn.art" target="_blank"><img src="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/sovrn_logo-removebg.png" alt="Sovrn Art" width="256" height="256"></a>
 <p class="tag">an indie studio for sovereign artists</p>
 </header>
 <p class="about">Sovrn Art is an independent, artist-first platform by <a href="https://twitter.com/shibboleth88" target="_blank">Ezra Shibboleth</a> and <a href="https://www.vanarman.com" target="_blank">Pindar Van Arman</a>, with <a href="https://x.com/lorepunk" target="_blank">lorepunk</a> providing copy and ops support. We value rigorous artistic processes, meaningfully constructed serial collections, substantial narratives, and structures that uphold the principles of sovereignty and decentralization.</p>
@@ -75,11 +75,11 @@ SO=[["X","twitter.jpg","https://twitter.com/sovrnart"],
 ["CENTS Discord","cents-discord.png","https://discord.gg/USQwhGj8HC",1],
 ["Van Arman Discord","van-arman-discord.png","https://discord.gg/eQXjJHx8FF",1]];
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
-const tg=u=>u.includes("sovrn.art")?' target="_top"':' target="_blank"';
+const tg=u=>u.includes("sovrn.art")?' target="_blank"':' target="_blank"';
 document.getElementById("g").innerHTML=C.map(c=>
 '<a class="card" href="'+c[2]+'"'+tg(c[2])+'><span class="im"><img src="'+encodeURI(c[3])+'" alt="'+esc(c[0])+'" width="500" height="500" loading="lazy"></span><span class="ti">'+esc(c[0])+'</span><span class="ar">'+esc(c[1])+'</span><span class="pp">project page &#8599;</span></a>').join("");
 document.getElementById("mk").innerHTML=MK.map(m=>
-'<a href="https://www.sovrn.art/marketplaces" target="_top"><img src="'+encodeURI(H+m[1])+'" alt=""><span>'+m[0]+'</span></a>').join("");
+'<a href="https://www.sovrn.art/marketplaces" target="_blank"><img src="'+encodeURI(H+m[1])+'" alt=""><span>'+m[0]+'</span></a>').join("");
 document.getElementById("so").innerHTML=SO.map(m=>
 '<a href="'+m[2]+'" target="_blank"><img src="'+encodeURI((m[3]?P:H)+m[1])+'" alt=""><span>'+m[0]+'</span></a>').join("");
 </script></body></html>

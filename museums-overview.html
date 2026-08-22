@@ -52,6 +52,6 @@ const C=[
 ["https://www.sovrn.art/museums/lacma","LACMA, Los Angeles","AI Imagined Portrait Painted by a Robot #2","One work · Pindar Van Arman",
 "A 2018 robotic painting, donated by Cozomo de’ Medici among the first blockchain-minted works to enter an American art museum.",
 "lacma.jpeg"]];
-const cell=c=>'<a class="card" href="'+c[0]+'" target="_top"><span class="im'+(c[6]?' pad':'')+'"><img src="'+B+encodeURIComponent(c[5])+'" alt="'+c[1]+'" loading="lazy"></span><span class="pl">'+c[1]+'</span><span class="ti">'+c[2]+'</span><span class="me">'+c[3]+'</span><span class="bl">'+c[4]+'</span></a>';
+const cell=c=>'<a class="card" href="'+c[0]+'" target="_blank"><span class="im'+(c[6]?' pad':'')+'"><img src="'+B+encodeURIComponent(c[5])+'" alt="'+c[1]+'" loading="lazy"></span><span class="pl">'+c[1]+'</span><span class="ti">'+c[2]+'</span><span class="me">'+c[3]+'</span><span class="bl">'+c[4]+'</span></a>';
 document.getElementById("g1").innerHTML=C.map(cell).join("");
 </script></body></html>
