@@ -10,6 +10,8 @@ body{background:var(--paper);color:var(--ink);font:400 15px/1.55 "IBM Plex Sans"
 .wrap{max-width:1060px;margin:0 auto}
 a:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
 .banner{display:grid;grid-auto-flow:column;grid-template-rows:repeat(3,54px);grid-auto-columns:54px;gap:2px;overflow:hidden;margin:-26px -22px 34px;background:var(--ink)}@media(max-width:640px){.banner{grid-template-rows:repeat(2,46px);grid-auto-columns:46px;margin-bottom:26px}}.banner img{width:100%;height:100%;object-fit:cover;display:block}
+.banner2{margin:0 0 40px}
+@media(max-width:640px){.banner2{margin-bottom:30px}}
 .mast{text-align:center;margin-bottom:30px}
 .logo img{width:clamp(132px,15vw,176px);height:auto;display:inline-block}
 .tag{font:italic 300 clamp(23px,3.4vw,37px)/1.15 Fraunces,serif;color:var(--ink);letter-spacing:-.015em;max-width:24ch;margin:16px auto 0}
@@ -62,6 +64,7 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transfo
 <p class="tag">an indie studio for sovereign artists</p>
 </header>
 <p class="about">Sovrn Art is an independent, artist-first platform by <a href="https://twitter.com/shibboleth88" target="_blank">Ezra Shibboleth</a> and <a href="https://www.vanarman.com" target="_blank">Pindar Van Arman</a>, with <a href="https://x.com/lorepunk" target="_blank">lorepunk</a> providing copy and ops support. We value rigorous artistic processes, meaningfully constructed serial collections, substantial narratives, and structures that uphold the principles of sovereignty and decentralization.</p>
+<div class="banner banner2" id="ban2" aria-hidden="true"></div>
 
 <div class="sec">
 <h2>Curated collections</h2>
@@ -123,13 +126,20 @@ SO=[["X","twitter.jpg","https://twitter.com/sovrnart"],
 ["CENTS Discord","cents-discord.png","https://discord.gg/USQwhGj8HC",1],
 ["Van Arman Discord","van-arman-discord.png","https://discord.gg/eQXjJHx8FF",1]];
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
-/* mosaic band: 53 works drawn from Latent Couture, Seasons of Mobility,
-   Wunderkammer and the Francisco Carolinum set, interleaved so neighbours
-   come from different collections. Listed twice so the band fills any width;
-   the second pass repeats 53 tiles later and reads as texture. */
-const NB=53;
-document.getElementById("ban").innerHTML=Array.from({length:NB*2},(_,i)=>
-'<img src="img/banner/b'+String(i%NB+1).padStart(2,"0")+'.jpg" alt="" loading="lazy">').join("");
+/* Two mosaic bands. Pool: tiles 1-53 are works from Latent Couture, Seasons of
+   Mobility, Wunderkammer and the Francisco Carolinum set; 54-118 are CENTS.
+   Each band interleaves the two so neighbouring tiles differ, and the bands
+   share no tile. Each list runs twice so the band fills any width. */
+const T=i=>'img/banner/b'+String(i).padStart(2,"0")+'.jpg',
+rng=(a,b)=>Array.from({length:b-a+1},(_,k)=>a+k);
+function band(id,art,cts){
+  const seq=[],n=Math.max(art.length,cts.length);
+  for(let i=0;i<n;i++){if(art[i])seq.push(art[i]);if(cts[i])seq.push(cts[i]);}
+  document.getElementById(id).innerHTML=seq.concat(seq)
+    .map(i=>'<img src="'+T(i)+'" alt="" loading="lazy">').join("");
+}
+band("ban", rng(1,27),  rng(54,86));
+band("ban2",rng(28,53), rng(87,118));
 document.getElementById("g").innerHTML=C.map(c=>
 '<a class="card" href="'+c[2]+'" target="_blank"><span class="im"><img src="'+encodeURI(c[3])+'" alt="'+esc(c[0])+'" width="500" height="500" loading="lazy"></span><span class="ti">'+esc(c[0])+'<span class="go">&#8599;</span></span><span class="ar">'+esc(c[1])+'</span></a>').join("");
 document.getElementById("m").innerHTML=MU.map(m=>
