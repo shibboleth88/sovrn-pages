@@ -126,20 +126,25 @@ SO=[["X","twitter.jpg","https://twitter.com/sovrnart"],
 ["CENTS Discord","cents-discord.png","https://discord.gg/USQwhGj8HC",1],
 ["Van Arman Discord","van-arman-discord.png","https://discord.gg/eQXjJHx8FF",1]];
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
-/* Two mosaic bands. Pool: tiles 1-53 are works from Latent Couture, Seasons of
-   Mobility, Wunderkammer and the Francisco Carolinum set; 54-118 are CENTS.
-   Each band interleaves the two so neighbouring tiles differ, and the bands
-   share no tile. Each list runs twice so the band fills any width. */
-const T=i=>'img/banner/b'+String(i).padStart(2,"0")+'.jpg',
+/* Two mosaic bands. Pool of 200 tiles: b001-b167 are works from fourteen
+   collections — including the Reflection layer SVGs and a byteGAN, rasterised
+   from the on-chain files — and b168-b200 are CENTS. Each band drops one cent
+   after every five works, so cents are one tile in six. The bands share no
+   tile; each list runs on past the fold so the band fills any width. */
+const T=i=>'img/banner/b'+String(i).padStart(3,"0")+'.jpg',
 rng=(a,b)=>Array.from({length:b-a+1},(_,k)=>a+k);
 function band(id,art,cts){
-  const seq=[],n=Math.max(art.length,cts.length);
-  for(let i=0;i<n;i++){if(art[i])seq.push(art[i]);if(cts[i])seq.push(cts[i]);}
-  document.getElementById(id).innerHTML=seq.concat(seq)
+  const seq=[];let c=0;
+  for(let i=0;i<art.length;i++){
+    seq.push(art[i]);
+    if((i+1)%5===0&&c<cts.length)seq.push(cts[c++]);
+  }
+  while(c<cts.length)seq.push(cts[c++]);
+  document.getElementById(id).innerHTML=seq.concat(seq).slice(0,150)
     .map(i=>'<img src="'+T(i)+'" alt="" loading="lazy">').join("");
 }
-band("ban", rng(1,27),  rng(54,86));
-band("ban2",rng(28,53), rng(87,118));
+band("ban", rng(1,84),   rng(168,184));
+band("ban2",rng(85,167), rng(185,200));
 document.getElementById("g").innerHTML=C.map(c=>
 '<a class="card" href="'+c[2]+'" target="_blank"><span class="im"><img src="'+encodeURI(c[3])+'" alt="'+esc(c[0])+'" width="500" height="500" loading="lazy"></span><span class="ti">'+esc(c[0])+'<span class="go">&#8599;</span></span><span class="ar">'+esc(c[1])+'</span></a>').join("");
 document.getElementById("m").innerHTML=MU.map(m=>
