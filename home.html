@@ -11,18 +11,18 @@ body{background:var(--paper);color:var(--ink);font:400 15px/1.55 "IBM Plex Sans"
 a:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
 .mast{text-align:center;margin-bottom:30px}
 .logo img{width:110px;height:110px;display:inline-block}
-.tag{font:italic 300 clamp(20px,3vw,28px)/1.25 Fraunces,serif;color:var(--ink);margin-top:14px}
+.tag{font:italic 300 clamp(34px,6.2vw,66px)/1.06 Fraunces,serif;color:var(--ink);letter-spacing:-.02em;max-width:17ch;margin:20px auto 0}
 .about{max-width:66ch;font-size:14.5px;color:var(--slate);margin:0 auto 34px}
 .about a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--copper)}
 .about a:hover{color:var(--copper)}
-h2{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin:0 0 18px;padding-bottom:15px;border-bottom:1px solid var(--rule)}
+h2{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--copper);margin:0 0 20px;padding-bottom:15px;border-bottom:1px solid var(--rule)}
 h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:var(--slate);margin:0 0 12px}
 .sec{margin-top:44px}
 /* collections — order is the site's own and is left exactly as it stands */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:26px 20px;align-items:start}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:34px 24px;align-items:start}@media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr);gap:28px 20px}}@media(max-width:520px){.grid{grid-template-columns:1fr}}
 .card{display:flex;flex-direction:column;text-decoration:none;color:inherit}
-.im{display:block;width:100%;aspect-ratio:1;background:var(--ink);overflow:hidden;margin-bottom:11px}
-.im img{display:block;width:100%;height:100%;object-fit:cover;transition:opacity .18s}
+.im{display:block;width:100%;background:var(--ink);overflow:hidden;margin-bottom:12px}
+.im img{display:block;width:100%;height:auto;transition:opacity .18s}
 .card:hover .im img{opacity:.8}
 .ti{display:block;font:italic 300 21px/1.18 Fraunces,serif;margin-bottom:4px}
 .card:hover .ti{color:var(--copper)}
@@ -121,7 +121,7 @@ SO=[["X","twitter.jpg","https://twitter.com/sovrnart"],
 ["Van Arman Discord","van-arman-discord.png","https://discord.gg/eQXjJHx8FF",1]];
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 document.getElementById("g").innerHTML=C.map(c=>
-'<a class="card" href="'+c[2]+'" target="_blank"><span class="im"><img src="'+encodeURI(c[3])+'" alt="'+esc(c[0])+'" width="500" height="500" loading="lazy"></span><span class="ti">'+esc(c[0])+'<span class="go">&#8599;</span></span><span class="ar">'+esc(c[1])+'</span></a>').join("");
+'<a class="card" href="'+c[2]+'" target="_blank"><span class="im"><img src="'+encodeURI(c[3])+'" alt="'+esc(c[0])+'"'+(/\.svg$/.test(c[3])?' width="500" height="500"':'')+' loading="lazy"></span><span class="ti">'+esc(c[0])+'<span class="go">&#8599;</span></span><span class="ar">'+esc(c[1])+'</span></a>').join("");
 document.getElementById("m").innerHTML=MU.map(m=>
 '<li><a href="'+m[3]+'" target="_blank"><span class="mv">'+esc(m[0])+'</span><span class="ms">'+esc(m[1])+'</span><span class="md">'+esc(m[2])+'</span></a></li>').join("");
 document.getElementById("mk").innerHTML=MK.map(m=>
