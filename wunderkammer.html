@@ -42,7 +42,7 @@ h2{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform
 .idx button:focus-visible{outline:2px solid var(--copper);outline-offset:1px}
 .idx .tk{flex:none;width:30px;text-align:right;opacity:.5}
 /* galleries */
-.works{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.works{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}@media(max-width:820px){.works{grid-template-columns:repeat(2,1fr)}}@media(max-width:440px){.works{grid-template-columns:1fr}}
 .works button{border:0;padding:0;background:var(--ink);cursor:zoom-in;display:block;aspect-ratio:1;overflow:hidden}
 .works img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .15s}
 .works button:hover img{opacity:.75}
@@ -120,8 +120,7 @@ dd{margin:0;word-break:break-all}
 </div>
 
 <div class="sec">
-<h2>Renders</h2>
-<p class="n2">Shareable GIF renders of the collection.</p>
+<h2>Selected works</h2>
 <div class="works" id="gifs"></div>
 </div>
 
@@ -232,7 +231,7 @@ $("clear").onclick=()=>{stop();paint(()=>false,"\u00a0",null);
 $("stage").onclick=()=>{stop();showTrait(ti+1);};
 // galleries
 const W=Array.from({length:12},(_,i)=>"work-"+String(i+1).padStart(2,"0")+".jpg");
-const G=Array.from({length:9},(_,i)=>"gif-"+String(i+1).padStart(2,"0")+".gif");
+const G=Array.from({length:8},(_,i)=>"gif-"+String(i+1).padStart(2,"0")+".gif");
 const cellHTML=(f,alt,kind,i)=>'<button type="button" onclick="zoom(\''+kind+'\','+i+')"><img src="'+B+f+'" alt="'+alt+'" loading="lazy"></button>';
 $("works").innerHTML=W.map((f,i)=>cellHTML(f,"Testimonial about Isa Kost's Wunderkammer, "+(i+1)+" of 12","w",i)).join("");
 $("gifs").innerHTML=G.map((f,i)=>cellHTML(f,"Wunderkammer render","g",i)).join("");
