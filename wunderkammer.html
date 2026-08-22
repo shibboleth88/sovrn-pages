@@ -18,9 +18,9 @@ h2{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform
 .sec{margin-top:32px;padding-top:18px;border-top:1px solid var(--rule)}
 .n2{max-width:66ch;color:var(--slate);font-size:13.5px;margin-bottom:16px}
 /* the cabinet */
-.stage{position:relative;background:#000;width:100%;aspect-ratio:1930/1080;overflow:hidden;display:block;border:0;padding:0;cursor:crosshair}
+.stage{position:relative;background:var(--paper);width:100%;aspect-ratio:1930/1080;overflow:hidden;display:block;border:0;padding:0;cursor:default}
 .stage img{position:absolute;inset:0;width:100%;height:100%;display:block}
-.stage .ov{opacity:0;transition:opacity .45s}
+.stage .ov{opacity:0;transition:opacity .35s}
 .stage .ov.on{opacity:1}
 .now{display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin-top:9px;flex-wrap:wrap}
 .now .lbl{font:italic 300 21px/1.2 Fraunces,serif}
@@ -29,11 +29,18 @@ h2{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform
 .ctrl button{background:none;border:1px solid var(--rule);color:var(--ink);font:inherit;padding:7px 12px;cursor:pointer;margin-right:8px;transition:border-color .15s,color .15s}
 .ctrl button:hover{border-color:var(--copper);color:var(--copper)}
 .ctrl button:focus-visible{outline:2px solid var(--copper);outline-offset:2px}
-.idx{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:2px 14px}
-.idx button{background:none;border:0;padding:3px 0;text-align:left;font:400 12.5px/1.45 "IBM Plex Mono",monospace;color:var(--slate);cursor:pointer;transition:color .12s}
+.traits{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.traits button{background:none;border:1px solid var(--rule);padding:6px 11px;font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);cursor:pointer;transition:border-color .15s,color .15s,background .15s}
+.traits button:hover{border-color:var(--copper);color:var(--copper)}
+.traits button[aria-current]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.traits button:focus-visible{outline:2px solid var(--copper);outline-offset:2px}
+.traits .n{opacity:.55;margin-left:6px}
+.idx{margin-top:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:1px 16px;max-height:290px;overflow-y:auto;padding-top:14px;border-top:1px solid var(--rule)}
+.idx button{background:none;border:0;padding:3px 0;text-align:left;font:400 12px/1.5 "IBM Plex Mono",monospace;color:var(--slate);cursor:pointer;transition:color .12s;display:flex;gap:8px}
 .idx button:hover{color:var(--copper)}
 .idx button[aria-current]{color:var(--ink);font-weight:500}
 .idx button:focus-visible{outline:2px solid var(--copper);outline-offset:1px}
+.idx .tk{flex:none;width:30px;text-align:right;opacity:.5}
 /* galleries */
 .works{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
 .works button{border:0;padding:0;background:var(--ink);cursor:zoom-in;display:block;aspect-ratio:1;overflow:hidden}
@@ -87,13 +94,13 @@ dd{margin:0;word-break:break-all}
 
 <div class="sec">
 <h2>The cabinet</h2>
-<p class="n2">All 108 objects hold a place on one body. Choose any name to find it, or let the cabinet walk itself.</p>
-<button class="stage" type="button" id="stage" aria-label="The Wunderkammer, with the current object outlined">
+<p class="n2">Every object carries traits &mdash; alive or dead, light, dark or red, an element, a kind. Choose a trait and each object holding it lights on the body at once. The cabinet reads itself through if left alone.</p>
+<button class="stage" type="button" id="stage" aria-label="The Wunderkammer, with the current trait outlined">
   <img id="bg" alt="Wunderkammer, the full cabinet">
-  <img class="ov" id="ov" alt="">
 </button>
 <div class="now"><span class="lbl" id="lbl">&nbsp;</span><span class="ct" id="ct"></span></div>
-<div class="ctrl"><button type="button" id="play">Pause</button><button type="button" id="next">Next object</button></div>
+<div class="ctrl"><button type="button" id="play">Pause</button><button type="button" id="all">Show all 108</button><button type="button" id="clear">Clear</button></div>
+<div class="traits" id="traits"></div>
 <div class="idx" id="idx"></div>
 </div>
 
@@ -182,32 +189,47 @@ That belong to both the World and the extra-World.<span class="who">Chiara Zocch
 </div>
 <div id="lb" role="dialog" aria-label="Artwork"><button id="lbx" aria-label="Close">&times;</button><img id="lbi" alt=""><p class="cap" id="lbc"></p></div>
 <script>
-const N=["AngelFish","AtlasBeetle","AtlasVertabra","BegoniaEscargot","BigBellySeahorse","BlueDragonFlood","BlueTongue","CaladiumPinkCloud","CaperFlower","CatSkull","CerambyxBeetleLoved","ChineseMoneyPlant","ClownTriggerFish","CockeyedSquid","ColumbineStrength","CometMoth","Cornflower","CrepuscularBurnetMoth","CrimsonSpeckledMoth","EmperorScorpion","FemaleReproductiveSystem","FireBug","FlamingoSkull","FlamingoTongueSnail","FlowerBeetle","FlowerFish","FlyingGecko","FoxSkull","FragileStar","GardeniaBlood","GhostCrab","GiantForestScorpion","GinkoLeaf","GoldenBeetle","GoldenTailedGecko","GoliathBeetle","Grasshopper","GreenTreePython","GuardianCrabAnguish","HandBones","HarlequinBeetle","HeartConstellations","HornedPoppy","HumanSkull","ImperialSeaUrchin","ImpulsiveBrain","JewelFishWish","JuneBeetle","Juno","KnobbyStar","LeafInsect","LeafTailedGecko","LeafySeadragonEye","LettuceCoral","LilyOfTheIncas","LionFishRoar","LizardSkull","LongnoseFilefish","MantisShrimp","MauveStinger","MexicanCrocodileSkull","MexicanTigerMoth","MonarchButterfly","MonsteraLeaf","MoonMoth","MoonfishLove","NelsonMilkSnake","Pansy","PeachBlossomMoth","PeacockMoth","PelvicBoneMoon","PicassoTriggerFish","PoisonDartFrog","PolkaDotBegonia","RabbitSkull","RaptorSkullVitality","RedCoral","RedFootedShell","RubberFig","RyukinGoldfish","SacredBreasts","SacredEar","SacredEyes","SacredFoot","SacredHeart","SacredLeftHand","SacredLungs","SacredProfile","SacredThroat","SalamanderBubbles","SeaFanCoral","SkeletonTarantula","SnapdragonDrops","SowbreadLeaf","SpiderLily","SquatLobster","SquirrelSkull","StagBeetleCircus","StarryNightButterfly","StripedLizard","SublimeTortoiseBeetle","SunSpider","SwordFernLeaf","SwordfishSkull","TreeFrog","Triton","VibratingLungs","ZebraJumpingSpider"];
+const O=[["AngelFish",1,["alive","red","water","fish"]],["AtlasBeetle",2,["alive","light","earth","insect"]],["AtlasVertabra",3,["dead","light","fire","body part"]],["BegoniaEscargot",4,["dead","light","earth","leaf"]],["BigBellySeahorse",5,["alive","light","water","marine animal"]],["BlueDragonFlood",6,["alive","light","water","marine animal"]],["BlueTongue",7,["dead","light","fire","body part"]],["CaladiumPinkCloud",8,["dead","light","earth","leaf"]],["CaperFlower",9,["alive","dark","earth","flower"]],["CatSkull",10,["dead","red","earth","skull"]],["CerambyxBeetleLoved",11,["alive","duality","earth","insect"]],["ChineseMoneyPlant",12,["dead","dark","earth","leaf"]],["ClownTriggerFish",13,["alive","light","water","fish"]],["CockeyedSquid",14,["alive","light","water","marine animal"]],["ColumbineStrength",15,["alive","duality","earth","flower"]],["CometMoth",16,["alive","dark","air","moth"]],["Cornflower",17,["alive","light","earth","flower"]],["CrepuscularBurnetMoth",18,["alive","light","air","moth"]],["CrimsonSpeckledMoth",19,["alive","red","air","moth"]],["EmperorScorpion",20,["alive","light","earth","scorpion"]],["FemaleReproductiveSystem",21,["dead","red","fire","body part"]],["FireBug",22,["alive","light","earth","insect"]],["FlamingoSkull",23,["dead","dark","air","skull"]],["FlamingoTongueSnail",24,["alive","dark","water","marine animal"]],["FlowerBeetle",25,["alive","light","earth","insect"]],["FlowerFish",26,["alive","dark","water","fish"]],["FlyingGecko",27,["alive","light","earth","reptile"]],["FoxSkull",28,["dead","multitude","earth","skull"]],["FragileStar",29,["alive","dark","water","marine animal"]],["GardeniaBlood",30,["alive","red","earth","flower"]],["GhostCrab",31,["alive","red","water","marine animal"]],["GiantForestScorpion",32,["alive","light","earth","scorpion"]],["GinkoLeaf",33,["dead","red","earth","leaf"]],["GoldenBeetle",34,["alive","light","earth","insect"]],["GoldenTailedGecko",35,["alive","duality","earth","reptile"]],["GoliathBeetle",36,["alive","red","earth","insect"]],["Grasshopper",37,["alive","light","earth","insect"]],["GreenTreePython",38,["alive","red","earth","reptile"]],["GuardianCrabAnguish",39,["alive","light","water","marine animal"]],["HandBones",40,["dead","light","fire","body part"]],["HarlequinBeetle",41,["alive","light","earth","insect"]],["HeartConstellations",42,["dead","light","fire","body part"]],["HornedPoppy",43,["alive","dark","earth","flower"]],["HumanSkull",44,["dead","red","fire","skull"]],["ImperialSeaUrchin",45,["alive","dark","water","marine animal"]],["ImpulsiveBrain",46,["dead","light","fire","body part"]],["JewelFishWish",47,["alive","light","water","fish"]],["JuneBeetle",48,["alive","light","earth","insect"]],["Juno",49,["dead","red","water","marine animal"]],["KnobbyStar",50,["alive","light","water","marine animal"]],["LeafInsect",51,["alive","light","earth","insect"]],["LeafTailedGecko",52,["alive","light","earth","reptile"]],["LeafySeadragonEye",53,["alive","duality","water","marine animal"]],["LettuceCoral",54,["alive","light","water","marine animal"]],["LilyOfTheIncas",55,["alive","red","earth","flower"]],["LionFishRoar",56,["alive","dark","water","fish"]],["LizardSkull",57,["dead","red","earth","skull"]],["LongnoseFilefish",58,["alive","light","water","fish"]],["MantisShrimp",59,["alive","duality","water","marine animal"]],["MauveStinger",60,["alive","light","water","marine animal"]],["MexicanCrocodileSkull",61,["dead","light","water","skull"]],["MexicanTigerMoth",62,["alive","dark","air","moth"]],["MonarchButterfly",63,["alive","light","air","butterfly"]],["MonsteraLeaf",64,["dead","light","earth","leaf"]],["MoonfishLove",65,["alive","light","water","fish"]],["MoonMoth",66,["alive","duality","air","moth"]],["NelsonMilkSnake",67,["alive","light","earth","reptile"]],["Pansy",68,["alive","light","earth","flower"]],["PeachBlossomMoth",69,["alive","light","air","moth"]],["PeacockMoth",70,["alive","duality","air","moth"]],["ZebraJumpingSpider",71,["alive","red","earth","spider"]],["PicassoTriggerFish",72,["alive","red","water","fish"]],["PoisonDartFrog",73,["alive","red","earth","amphibian"]],["PolkaDotBegonia",74,["dead","red","earth","leaf"]],["RabbitSkull",75,["dead","dark","earth","skull"]],["RaptorSkullVitality",76,["dead","multitude","air","skull"]],["RedCoral",77,["alive","duality","water","marine animal"]],["RedFootedShell",78,["dead","light","water","marine animal"]],["RubberFig",79,["dead","red","earth","leaf"]],["RyukinGoldfish",80,["alive","light","water","fish"]],["SacredBreasts",81,["sacred","light","fire","ex voto"]],["SacredEar",82,["sacred","red","fire","ex voto"]],["SacredEyes",83,["sacred","red","fire","ex voto"]],["SacredFoot",84,["sacred","dark","fire","ex voto"]],["SacredHeart",85,["sacred","light","fire","ex voto"]],["SacredLeftHand",86,["sacred","red","fire","ex voto"]],["SacredLungs",87,["sacred","light","fire","ex voto"]],["SacredProfile",88,["sacred","red","fire","ex voto"]],["SacredThroat",89,["sacred","light","fire","ex voto"]],["SalamanderBubbles",90,["alive","light","water","reptile"]],["SeaFanCoral",91,["alive","light","water","marine animal"]],["SkeletonTarantula",92,["alive","red","earth","spider"]],["SnapdragonDrops",93,["alive","red","earth","flower"]],["SowbreadLeaf",94,["dead","red","earth","leaf"]],["SpiderLily",95,["alive","dark","earth","flower"]],["SquatLobster",96,["alive","duality","water","marine animal"]],["SquirrelSkull",97,["dead","light","earth","skull"]],["StagBeetleCircus",98,["alive","duality","earth","insect"]],["StarryNightButterfly",99,["alive","light","air","butterfly"]],["StripedLizard",100,["alive","red","earth","reptile"]],["SublimeTortoiseBeetle",101,["alive","light","earth","insect"]],["SunSpider",102,["alive","dark","earth","spider"]],["SwordFernLeaf",103,["dead","light","earth","leaf"]],["SwordfishSkull",104,["dead","light","water","skull"]],["TreeFrog",105,["alive","light","earth","amphibian"]],["Triton",106,["dead","dark","water","marine animal"]],["VibratingLungs",107,["dead","light","fire","body part"]],["PelvicBoneMoon",108,["dead","light","fire","body part"]]];
 const B="img/wunderkammer/",$=i=>document.getElementById(i),lb=$("lb");
 const small={of:1,the:1,and:1};
 const label=s=>s.match(/[A-Z][a-z]*|\d+/g).map((p,i)=>i&&small[p.toLowerCase()]?p.toLowerCase():p).join(" ");
 $("bg").src=B+"cabinet.png";
-$("idx").innerHTML=N.map((n,i)=>'<button type="button" data-i="'+i+'">'+label(n)+'</button>').join("");
-const btns=[...$("idx").children];
-let cur=-1,timer=null,playing=true;
-function show(i){
-  cur=(i+N.length)%N.length;
-  const n=N[cur];
-  $("ov").src=B+"sp/"+n+".png";
-  $("ov").classList.add("on");
-  $("lbl").textContent=label(n);
-  $("ct").textContent=(cur+1)+" of "+N.length;
-  btns.forEach((b,k)=>k===cur?b.setAttribute("aria-current","true"):b.removeAttribute("aria-current"));
-  const b=btns[cur];
-  if(b&&b.scrollIntoViewIfNeeded)b.scrollIntoViewIfNeeded();
+// one overlay per object, laid over the ground; shown in groups by trait
+const stage=$("stage"),ovs=O.map(o=>{const im=document.createElement("img");
+  im.className="ov";im.alt="";im.loading="lazy";im.src=B+"sp/"+o[0]+".png";stage.appendChild(im);return im;});
+const TR=[...new Set(O.flatMap(o=>o[2]))].sort();
+const count=tr=>O.filter(o=>o[2].includes(tr)).length;
+$("traits").innerHTML=TR.map((tr,i)=>'<button type="button" data-t="'+i+'">'+tr+'<span class="n">'+count(tr)+'</span></button>').join("");
+$("idx").innerHTML=O.map((o,i)=>'<button type="button" data-i="'+i+'"><span class="tk">'+o[1]+'</span><span>'+label(o[0])+'</span></button>').join("");
+const tBtns=[...$("traits").children],iBtns=[...$("idx").children];
+let ti=-1,timer=null;
+function paint(pred,text,n){
+  ovs.forEach((im,k)=>im.classList.toggle("on",pred(O[k])));
+  $("lbl").textContent=text;$("ct").textContent=n===null?"":n+(n===1?" object":" objects");
 }
-function step(){show(cur+1);}
-function stop(){playing=false;clearInterval(timer);timer=null;$("play").textContent="Play";}
-function start(){if(timer)return;playing=true;$("play").textContent="Pause";timer=setInterval(step,2200);}
-$("idx").onclick=e=>{const b=e.target.closest("button");if(!b)return;stop();show(+b.dataset.i);};
-$("next").onclick=()=>{stop();step();};
-$("play").onclick=()=>playing?stop():start();
-$("stage").onclick=()=>{stop();step();};
+function showTrait(i){
+  ti=(i+TR.length)%TR.length;const tr=TR[ti];
+  paint(o=>o[2].includes(tr),tr,count(tr));
+  tBtns.forEach((b,k)=>k===ti?b.setAttribute("aria-current","true"):b.removeAttribute("aria-current"));
+  iBtns.forEach(b=>b.removeAttribute("aria-current"));
+}
+function showOne(i){
+  const o=O[i];ti=-1;
+  paint(x=>x===o,label(o[0]),null);
+  $("ct").textContent=o[1]+" of 108 \u00b7 "+o[2].join(" \u00b7 ");
+  tBtns.forEach(b=>b.removeAttribute("aria-current"));
+  iBtns.forEach((b,k)=>k===i?b.setAttribute("aria-current","true"):b.removeAttribute("aria-current"));
+}
+function stop(){clearInterval(timer);timer=null;$("play").textContent="Play";}
+function start(){if(timer)return;$("play").textContent="Pause";timer=setInterval(()=>showTrait(ti+1),2600);}
+$("traits").onclick=e=>{const b=e.target.closest("button");if(!b)return;stop();showTrait(+b.dataset.t);};
+$("idx").onclick=e=>{const b=e.target.closest("button");if(!b)return;stop();showOne(+b.dataset.i);};
+$("play").onclick=()=>timer?stop():start();
+$("all").onclick=()=>{stop();paint(()=>true,"The whole cabinet",O.length);
+  tBtns.concat(iBtns).forEach(b=>b.removeAttribute("aria-current"));};
+$("clear").onclick=()=>{stop();paint(()=>false,"\u00a0",null);
+  tBtns.concat(iBtns).forEach(b=>b.removeAttribute("aria-current"));};
+$("stage").onclick=()=>{stop();showTrait(ti+1);};
 // galleries
 const W=Array.from({length:12},(_,i)=>"work-"+String(i+1).padStart(2,"0")+".jpg");
 const G=Array.from({length:9},(_,i)=>"gif-"+String(i+1).padStart(2,"0")+".gif");
@@ -222,6 +244,6 @@ function unzoom(){lb.classList.remove("on");}
 $("lbx").onclick=unzoom;lb.onclick=e=>{if(e.target===lb)unzoom();};
 onkeydown=e=>{if(e.key=="Escape")unzoom();};
 // respect reduced motion: show the first object, do not walk
-if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches){show(0);stop();}
-else{show(0);start();}
+if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches){showTrait(0);stop();}
+else{showTrait(0);start();}
 </script></body></html>
