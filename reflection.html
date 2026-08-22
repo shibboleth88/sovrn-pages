@@ -23,7 +23,7 @@ const E=[["Artist site","vanarman.com","https://www.vanarman.com/","@pva_pfp.jpg
 ["Discord","Van Arman community","https://discord.gg/CJxStHNv3z","van-arman-discord.png"]];
 const $=i=>document.getElementById(i),e=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;"),
 src=t=>t==119?Q+"reflection_119_layers_smooth%20for%20site.svg":B+"reflection_"+t+"_layers_smooth.svg",
-ext=u=>u.includes("sovrn.art")?"":' target=_blank';
+ext=u=>u.includes("sovrn.art")?' target=_top':' target=_blank';
 $("hero").src=src(W[0][0]);
 $("g").innerHTML=W.map(w=>'<figure><img src="'+src(w[0])+'" alt="'+e(w[1]||"Reflection #"+w[0])+'" loading="lazy"><figcaption>'+(w[1]?e(w[1])+' <i>#'+w[0]+'</i>':'#'+w[0])+'</figcaption></figure>').join("");
 const row=x=>'<li><a href="'+x[2]+'"'+ext(x[2])+'>'+(x[0]?'<span class="k">'+e(x[0])+'</span>':'')+(x[3]?'<img class="ic" src="'+encodeURI((x[3][0]=="@"?Q+x[3].slice(1):I+x[3]))+'" alt="">':'')+e(x[1])+'</a></li>';
