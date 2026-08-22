@@ -9,9 +9,10 @@
 body{background:var(--paper);color:var(--ink);font:400 15px/1.55 "IBM Plex Sans",sans-serif;padding:26px 22px 46px}
 .wrap{max-width:1060px;margin:0 auto}
 a:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
+.banner{display:grid;grid-auto-flow:column;grid-template-rows:repeat(3,54px);grid-auto-columns:54px;gap:2px;overflow:hidden;margin:-26px -22px 34px;background:var(--ink)}@media(max-width:640px){.banner{grid-template-rows:repeat(2,46px);grid-auto-columns:46px;margin-bottom:26px}}.banner img{width:100%;height:100%;object-fit:cover;display:block}
 .mast{text-align:center;margin-bottom:30px}
-.logo img{width:110px;height:110px;display:inline-block}
-.tag{font:italic 300 clamp(34px,6.2vw,66px)/1.06 Fraunces,serif;color:var(--ink);letter-spacing:-.02em;max-width:17ch;margin:20px auto 0}
+.logo img{width:clamp(132px,15vw,176px);height:auto;display:inline-block}
+.tag{font:italic 300 clamp(23px,3.4vw,37px)/1.15 Fraunces,serif;color:var(--ink);letter-spacing:-.015em;max-width:24ch;margin:16px auto 0}
 .about{max-width:66ch;font-size:14.5px;color:var(--slate);margin:0 auto 34px}
 .about a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--copper)}
 .about a:hover{color:var(--copper)}
@@ -21,8 +22,8 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transfo
 /* collections — order is the site's own and is left exactly as it stands */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:34px 24px;align-items:start}@media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr);gap:28px 20px}}@media(max-width:520px){.grid{grid-template-columns:1fr}}
 .card{display:flex;flex-direction:column;text-decoration:none;color:inherit}
-.im{display:block;width:100%;background:var(--ink);overflow:hidden;margin-bottom:12px}
-.im img{display:block;width:100%;height:auto;transition:opacity .18s}
+.im{display:block;width:100%;aspect-ratio:1;background:var(--ink);overflow:hidden;margin-bottom:12px}
+.im img{display:block;width:100%;height:100%;object-fit:cover;transition:opacity .18s}
 .card:hover .im img{opacity:.8}
 .ti{display:block;font:italic 300 21px/1.18 Fraunces,serif;margin-bottom:4px}
 .card:hover .ti{color:var(--copper)}
@@ -53,7 +54,9 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transfo
 .nav a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--copper);padding-bottom:3px}
 .nav a:hover{color:var(--copper)}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
-</style></head><body><div class="wrap">
+</style></head><body>
+<div class="banner" id="ban" aria-hidden="true"></div>
+<div class="wrap">
 <header class="mast">
 <a class="logo" href="https://www.sovrn.art" target="_blank"><img src="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/sovrn_logo-removebg.png" alt="Sovrn Art" width="256" height="256"></a>
 <p class="tag">an indie studio for sovereign artists</p>
@@ -120,8 +123,15 @@ SO=[["X","twitter.jpg","https://twitter.com/sovrnart"],
 ["CENTS Discord","cents-discord.png","https://discord.gg/USQwhGj8HC",1],
 ["Van Arman Discord","van-arman-discord.png","https://discord.gg/eQXjJHx8FF",1]];
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+/* mosaic band: 53 works drawn from Latent Couture, Seasons of Mobility,
+   Wunderkammer and the Francisco Carolinum set, interleaved so neighbours
+   come from different collections. Listed twice so the band fills any width;
+   the second pass repeats 53 tiles later and reads as texture. */
+const NB=53;
+document.getElementById("ban").innerHTML=Array.from({length:NB*2},(_,i)=>
+'<img src="img/banner/b'+String(i%NB+1).padStart(2,"0")+'.jpg" alt="" loading="lazy">').join("");
 document.getElementById("g").innerHTML=C.map(c=>
-'<a class="card" href="'+c[2]+'" target="_blank"><span class="im"><img src="'+encodeURI(c[3])+'" alt="'+esc(c[0])+'"'+(/\.svg$/.test(c[3])?' width="500" height="500"':'')+' loading="lazy"></span><span class="ti">'+esc(c[0])+'<span class="go">&#8599;</span></span><span class="ar">'+esc(c[1])+'</span></a>').join("");
+'<a class="card" href="'+c[2]+'" target="_blank"><span class="im"><img src="'+encodeURI(c[3])+'" alt="'+esc(c[0])+'" width="500" height="500" loading="lazy"></span><span class="ti">'+esc(c[0])+'<span class="go">&#8599;</span></span><span class="ar">'+esc(c[1])+'</span></a>').join("");
 document.getElementById("m").innerHTML=MU.map(m=>
 '<li><a href="'+m[3]+'" target="_blank"><span class="mv">'+esc(m[0])+'</span><span class="ms">'+esc(m[1])+'</span><span class="md">'+esc(m[2])+'</span></a></li>').join("");
 document.getElementById("mk").innerHTML=MK.map(m=>
