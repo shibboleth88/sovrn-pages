@@ -126,9 +126,9 @@ SO=[["X","twitter.jpg","https://twitter.com/sovrnart"],
 ["CENTS Discord","cents-discord.png","https://discord.gg/USQwhGj8HC",1],
 ["Van Arman Discord","van-arman-discord.png","https://discord.gg/eQXjJHx8FF",1]];
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
-/* Two mosaic bands. Pool of 172 tiles: b001-b143 are works from fourteen
+/* Two mosaic bands. Pool of 223 tiles: b001-b186 are works from fourteen
    collections — including the Reflection layer SVGs and a byteGAN, rasterised
-   from the on-chain files — and b144-b172 are CENTS. Each band drops one cent
+   from the on-chain files — and b187-b223 are CENTS. Each band drops one cent
    after every five works, so cents are one tile in six. The bands share no
    tile; each list runs on past the fold so the band fills any width. */
 const T=i=>'img/banner/b'+String(i).padStart(3,"0")+'.jpg',
@@ -143,8 +143,8 @@ function band(id,art,cts){
   document.getElementById(id).innerHTML=seq.concat(seq).slice(0,150)
     .map(i=>'<img src="'+T(i)+'" alt="" loading="lazy">').join("");
 }
-band("ban", rng(1,71),   rng(144,157));
-band("ban2",rng(72,143), rng(158,172));
+band("ban", rng(1,93),   rng(187,204));
+band("ban2",rng(94,186), rng(205,223));
 document.getElementById("g").innerHTML=C.map(c=>
 '<a class="card" href="'+c[2]+'" target="_blank"><span class="im"><img src="'+encodeURI(c[3])+'" alt="'+esc(c[0])+'" width="500" height="500" loading="lazy"></span><span class="ti">'+esc(c[0])+'<span class="go">&#8599;</span></span><span class="ar">'+esc(c[1])+'</span></a>').join("");
 document.getElementById("m").innerHTML=MU.map(m=>
