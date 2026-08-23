@@ -124,11 +124,18 @@
 var GIF = (function () {
   function palette(frames, maxColours) {
     var px = [];
+    // A fixed sample budget across ALL frames, not per frame. Sampling per frame
+    // meant 72 frames fed ~1.8M points into median cut, and the repeated sorting
+    // there — not the encoding — was the bulk of the time.
+    var BUDGET = 24000;
+    var perFrame = Math.max(1, Math.floor(BUDGET / frames.length));
     for (var f = 0; f < frames.length; f++) {
-      var d = frames[f].data;
-      // A 1080x1080 frame is 1.2M pixels; we only need the spread, not all of it.
-      var step = Math.max(4, Math.floor(d.length / 4 / 24000) * 4);
-      for (var i = 0; i < d.length; i += step) px.push([d[i], d[i + 1], d[i + 2]]);
+      var d = frames[f].data, count = d.length / 4;
+      var stride = Math.max(1, Math.floor(count / perFrame));
+      for (var i = 0; i < count; i += stride) {
+        var o = i * 4;
+        px.push([d[o], d[o + 1], d[o + 2]]);
+      }
     }
     var boxes = [px];
     while (boxes.length < maxColours) {
@@ -158,19 +165,31 @@ var GIF = (function () {
     });
   }
 
-  function nearest(pal, r, g, b, memo) {
-    var key = (r >> 2 << 12) | (g >> 2 << 6) | (b >> 2);
+  // 6 bits per channel -> 262,144 slots. A plain object here cost ~55s on a
+  // 72-frame Reflection; a typed array does the same work in a couple of seconds.
+  function newMemo() {
+    var m = new Int16Array(1 << 18);
+    m.fill(-1);
+    return m;
+  }
+
+  function nearest(palFlat, n, r, g, b, memo) {
+    var key = ((r >> 2) << 12) | ((g >> 2) << 6) | (b >> 2);
     var hit = memo[key];
-    if (hit !== undefined) return hit;
+    if (hit >= 0) return hit;
     var best = 0, bd = Infinity;
-    for (var i = 0; i < pal.length; i++) {
-      var dr = r - pal[i][0], dg = g - pal[i][1], db = b - pal[i][2];
+    for (var i = 0, j = 0; i < n; i++, j += 3) {
+      var dr = r - palFlat[j], dg = g - palFlat[j + 1], db = b - palFlat[j + 2];
       var d = dr * dr * 0.3 + dg * dg * 0.59 + db * db * 0.11;
       if (d < bd) { bd = d; best = i; }
     }
     memo[key] = best;
     return best;
   }
+
+  // The dictionary is keyed (prefix << 8) | nextByte, so it fits an Int32Array of
+  // 2^20 — the same object-versus-typed-array difference as the colour cache.
+  var LZW_DICT = new Int32Array(1 << 20);
 
   function lzw(indices, minCodeSize) {
     var out = [], cur = 0, curBits = 0;
@@ -180,17 +199,24 @@ var GIF = (function () {
       while (curBits >= 8) { out.push(cur & 255); cur >>= 8; curBits -= 8; }
     }
     var clear = 1 << minCodeSize, eoi = clear + 1;
-    var size = minCodeSize + 1, next = eoi + 1, dict = {};
+    var size = minCodeSize + 1, next = eoi + 1;
+    LZW_DICT.fill(-1);
     emit(clear, size);
     var prefix = indices[0];
     for (var i = 1; i < indices.length; i++) {
-      var k = indices[i], key = prefix * 5003 + k;
-      if (dict[key] !== undefined) { prefix = dict[key]; continue; }
+      var k = indices[i], key = (prefix << 8) | k;
+      var hit = LZW_DICT[key];
+      if (hit >= 0) { prefix = hit; continue; }
       emit(prefix, size);
-      dict[key] = next++;
+      LZW_DICT[key] = next++;
       if (next > (1 << size)) {
         if (size < 12) size++;
-        else { emit(clear, size); dict = {}; next = eoi + 1; size = minCodeSize + 1; }
+        else {
+          emit(clear, size);
+          LZW_DICT.fill(-1);
+          next = eoi + 1;
+          size = minCodeSize + 1;
+        }
       }
       prefix = k;
     }
@@ -200,11 +226,43 @@ var GIF = (function () {
     return out;
   }
 
+  /**
+   * frames: [ImageData] all the same size. Returns a Blob.
+   *
+   * Frames after the first are encoded as **only the rectangle that changed**,
+   * with unchanged pixels left transparent so the previous frame shows through
+   * (disposal "do not dispose"). Writing every frame in full is what made the
+   * Reflection cascade too heavy to give enough frames to look smooth.
+   */
   function encode(frames, delaysMs, maxColours) {
     var w = frames[0].width, h = frames[0].height;
-    var pal = palette(frames, maxColours || 256);
-    var bits = Math.max(2, Math.ceil(Math.log2(Math.max(2, pal.length))));
-    var palSize = 1 << bits, memo = {}, out = [];
+    // One palette entry is spent on transparency.
+    var pal = palette(frames, (maxColours || 256) - 1);
+    var transparent = pal.length;
+    var bits = Math.max(2, Math.ceil(Math.log2(Math.max(2, pal.length + 1))));
+    var palSize = 1 << bits, memo = newMemo();
+    // Growable byte buffer: pushing one byte at a time into a JS array over a few
+    // megabytes is itself a measurable cost.
+    var buf = new Uint8Array(1 << 20), len = 0;
+    function need(n) {
+      if (len + n <= buf.length) return;
+      var b2 = new Uint8Array(Math.max(buf.length * 2, len + n));
+      b2.set(buf.subarray(0, len));
+      buf = b2;
+    }
+    var out = {
+      push: function () {
+        need(arguments.length);
+        for (var ai = 0; ai < arguments.length; ai++) buf[len++] = arguments[ai];
+      }
+    };
+    // Flat Uint8Array beats an array of triples inside the hot loop.
+    var palFlat = new Uint8Array(pal.length * 3);
+    for (var pi = 0; pi < pal.length; pi++) {
+      palFlat[pi * 3] = pal[pi][0];
+      palFlat[pi * 3 + 1] = pal[pi][1];
+      palFlat[pi * 3 + 2] = pal[pi][2];
+    }
     function short_(v) { out.push(v & 255, (v >> 8) & 255); }
 
     "GIF89a".split("").forEach(function (c) { out.push(c.charCodeAt(0)); });
@@ -218,28 +276,67 @@ var GIF = (function () {
     "NETSCAPE2.0".split("").forEach(function (c) { out.push(c.charCodeAt(0)); });
     out.push(3, 1, 0, 0, 0);
 
+    var prev = null, prev32 = null;
     for (var f = 0; f < frames.length; f++) {
+      var cur = frames[f].data;
+      // Compare whole pixels as 32-bit words rather than three byte tests.
+      var cur32 = new Uint32Array(cur.buffer, cur.byteOffset, w * h);
+      var x0 = 0, y0 = 0, fw = w, fh = h;
+
+      if (prev) {
+        // bounding box of what actually moved
+        var minX = w, minY = h, maxX = -1, maxY = -1;
+        for (var y = 0; y < h; y++) {
+          var row = y * w;
+          for (var x = 0; x < w; x++) {
+            if (cur32[row + x] !== prev32[row + x]) {
+              if (x < minX) minX = x;
+              if (x > maxX) maxX = x;
+              if (y < minY) minY = y;
+              if (y > maxY) maxY = y;
+            }
+          }
+        }
+        if (maxX < 0) { minX = minY = 0; maxX = maxY = 0; }   // nothing moved
+        x0 = minX; y0 = minY; fw = maxX - minX + 1; fh = maxY - minY + 1;
+      }
+
       var delay = Math.max(2, Math.round((delaysMs[f] || 100) / 10));  // centiseconds
-      out.push(0x21, 0xF9, 4, 0x04, delay & 255, (delay >> 8) & 255, 0, 0);
+      // packed: disposal 1 (leave in place) | transparent colour present
+      out.push(0x21, 0xF9, 4, prev ? 0x05 : 0x04,
+               delay & 255, (delay >> 8) & 255, prev ? transparent : 0, 0);
       out.push(0x2C);
-      short_(0); short_(0); short_(w); short_(h);
+      short_(x0); short_(y0); short_(fw); short_(fh);
       out.push(0);
-      var d = frames[f].data, idx = new Uint8Array(w * h);
-      for (var p = 0, q = 0; p < d.length; p += 4, q++) {
-        idx[q] = nearest(pal, d[p], d[p + 1], d[p + 2], memo);
+
+      var idx = new Uint8Array(fw * fh), q = 0;
+      for (var yy = y0; yy < y0 + fh; yy++) {
+        var base = yy * w;
+        for (var xx = x0; xx < x0 + fw; xx++) {
+          var pxi = base + xx;
+          if (prev32 && cur32[pxi] === prev32[pxi]) {
+            idx[q++] = transparent;
+          } else {
+            var oo = pxi * 4;
+            idx[q++] = nearest(palFlat, pal.length, cur[oo], cur[oo + 1], cur[oo + 2], memo);
+          }
+        }
       }
       out.push(bits);
       var comp = lzw(idx, bits);
-      for (var s = 0; s < comp.length; s += 255) {
-        var n = Math.min(255, comp.length - s);
-        out.push(n);
-        for (var z = 0; z < n; z++) out.push(comp[s + z]);
+      for (var sIdx = 0; sIdx < comp.length; sIdx += 255) {
+        var n = Math.min(255, comp.length - sIdx);
+        need(n + 1);
+        buf[len++] = n;
+        for (var z = 0; z < n; z++) buf[len++] = comp[sIdx + z];
       }
       out.push(0);
+      prev = cur; prev32 = cur32;
     }
     out.push(0x3B);
-    return new Blob([new Uint8Array(out)], { type: "image/gif" });
+    return new Blob([buf.subarray(0, len)], { type: "image/gif" });
   }
+
   return { encode: encode };
 })();
 
@@ -257,7 +354,11 @@ var LABELS = { reflection: "Reflection", wunderkammer: "Wunderkammer", bytegans:
 var ARTISTS = { reflection: "Pindar Van Arman", wunderkammer: "Isa Kost",
                 bytegans: "Pindar Van Arman" };
 var ORDER = ["reflection", "wunderkammer", "bytegans"];
-var REFLECTION_FRAMES = 20;      // an 8s cascade; more than this is a very large GIF
+// The cascade runs 8s. At 20 frames that is 2.5fps and reads as a slideshow, so
+// it gets many more — affordable because frames after the first only carry the
+// rectangle that changed, and because Reflection renders at 480 only.
+var REFLECTION_FRAMES = 72;
+var REFLECTION_SIZE = 480;
 
 var data = null, scope = null, sel = null, cache = {}, token = 0;
 var lastRows = [];   // what the current search turned up, for the Enter shortcut
@@ -414,6 +515,7 @@ function openWork(r) {
   $("prev").removeAttribute("src");
   $("dl").disabled = true;
   $("src").disabled = true;
+  syncSizes(r.slug);
 
   fetchWork(r.slug, r.id).then(function (uri) {
     if (mine !== token) return;                       // superseded by a newer pick
@@ -427,6 +529,23 @@ function openWork(r) {
     $("warn").textContent = "Couldn't read that work from the contract — "
       + (e && e.message ? e.message : "try again in a moment") + ".";
   });
+}
+
+// Reflection is 480-only; the other two keep the choice.
+function sizesFor(slug) { return slug === "reflection" ? [480] : [480, 720]; }
+
+function syncSizes(slug) {
+  var el = $("size"), allowed = sizesFor(slug);
+  var want = allowed.indexOf(parseInt(el.value, 10)) >= 0
+    ? parseInt(el.value, 10) : allowed[allowed.length - 1];
+  el.textContent = "";
+  allowed.forEach(function (n) {
+    var o = document.createElement("option");
+    o.value = String(n); o.textContent = n + "px";
+    if (n === want) o.selected = true;
+    el.appendChild(o);
+  });
+  el.disabled = allowed.length < 2;
 }
 
 function meta(r) {
@@ -661,7 +780,9 @@ function rasterise(uri, size) {
 var built = null;
 
 function build() {
-  var mine = token, w = sel, size = parseInt($("size").value, 10);
+  var mine = token, w = sel;
+  var size = w.slug === "reflection" ? REFLECTION_SIZE
+                                     : parseInt($("size").value, 10);
   $("dl").disabled = true;
   $("warn").textContent = "Rendering at " + size + "px…";
   var maker = w.slug === "bytegans" ? bytegansFrames
@@ -687,6 +808,7 @@ function build() {
       // an honest limit of the format rather than something to hide.
       line += " — GIF holds 256 colours, so this one bands a little";
     }
+    line += " · " + (1000 / r.delays[0]).toFixed(1) + " fps";
     $("warn").textContent = line;
   }).catch(function (e) {
     if (mine !== token) return;
