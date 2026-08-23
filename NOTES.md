@@ -397,6 +397,32 @@ animations frame by frame has to shift each one's clock by its own `begin` and
 wrap; ignore it and all twenty-odd fades run in lockstep, which looks like the
 smoothing did nothing.
 
+### Two things that make a rebuilt cascade look wrong
+
+Both were found by checking against the browser's own SMIL clock rather than
+trusting the arithmetic: inline the SVG, `pauseAnimations()`, `setCurrentTime(t)`,
+then read `getComputedStyle(g).opacity`. That is ground truth, and it disagreed.
+
+**`begin` is not an offset you can wrap around.** An animation with
+`begin="4.8s"` has not started at `t=0`; SMIL shows the element's base value
+until then. Wrapping backwards past `begin` reports a mid-fade opacity for a
+layer the browser is still showing untouched — truth 1.000, computed 0.000. The
+rule is: `t < begin` → `values[0]`; otherwise `((t - begin) % dur) / dur`.
+
+**The first eight seconds are a startup, not the loop.** The fades begin
+staggered from 0 up to about 6s and only then repeat every 8s, so sampling
+`[0, 8)` catches layers sitting at base opacity waiting their turn, and the
+result does not loop. **Sample a window that starts after the last `begin`**,
+where every fade is in its repeating phase. Corrected, evaluation agrees with the
+browser to 0.0000 at every sampled point, and the wrap from last frame back to
+first is in line with the median frame-to-frame change instead of a jump.
+
+### Resolution matters here
+
+Reflection is pure vector, ~700 paths, natively 1200px. Rasterising it at 480
+throws the fine work away — if the output is meant to look crisp, render at 720
+or better and accept the file size.
+
 ### How to know it is the artist's rule and not an invention
 
 The tool proves itself. It fetches the six minted originals from the contract,
