@@ -122,7 +122,6 @@
   .shapes button:hover{border-color:var(--accent);color:var(--accent)}
   .shapes button[aria-pressed=true]{border-color:var(--accent);color:var(--on-accent);
     background:var(--accent)}
-  .shapes .ratio{opacity:.65;margin-left:6px}
   /* The slots mirror the composition, so the shape is legible before you build it. */
   .slots{display:grid;gap:6px;width:100%;max-width:430px;margin:0 0 12px;
          background:#16181d;padding:8px;border-radius:4px}
@@ -145,7 +144,10 @@
     white-space:nowrap;
     background:linear-gradient(to top,rgba(8,10,12,.8),rgba(8,10,12,0));
     font:400 9.5px/1.3 "IBM Plex Mono",monospace}
-  .crow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .crow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 0}
+  /* [hidden] loses to a class that sets display, so say it outright. Single
+     mode was still showing the composite size box and a dead Make button. */
+  .crow[hidden],.slots[hidden]{display:none}
   .chint{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
          margin:9px 0 0}
   .warn{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--accent);margin:9px 0 0}
@@ -185,24 +187,24 @@
     <p class="clabel">Compose — pick a shape, then search and click to fill it</p>
     <div class="shapes" id="shapes" role="group" aria-label="Composition"></div>
     <div class="slots" id="slots" hidden></div>
-    <div class="crow" id="crow" hidden>
-      <label>size
-        <select id="csize">
-          <option value="720">720px</option>
-          <option value="1080">1080px</option>
-          <option value="1440" selected>1440px</option>
-        </select>
-      </label>
-      <button class="go" id="mkgrid" disabled>Make it</button>
-      <button class="go ghost" id="clearset">Clear</button>
-    </div>
-    <p class="chint" id="chint"></p>
   </div>
   <div class="find">
     <input id="q" type="search" autocomplete="off" spellcheck="false"
            placeholder="Search by title or token ID…" aria-label="Search by title or token ID">
   </div>
   <div class="sets" id="sets" role="group" aria-label="Limit to a collection"></div>
+  <div class="crow" id="crow" hidden>
+    <label>size
+      <select id="csize">
+        <option value="720">720px</option>
+        <option value="1080">1080px</option>
+        <option value="1440" selected>1440px</option>
+      </select>
+    </label>
+    <button class="go" id="mkgrid" disabled>Make it</button>
+    <button class="go ghost" id="clearset">Clear</button>
+  </div>
+  <p class="chint" id="chint"></p>
 
   <div class="panel" hidden id="panel">
     <!-- Controls sit above the artwork: at 1080px the image is taller than the
@@ -211,7 +213,7 @@
       <h2 id="pt">—</h2>
       <p class="meta" id="pm"></p>
       <div class="row">
-        <label>size
+        <label id="ssize">size
           <select id="size">
             <option value="480">480px</option>
             <option value="720" selected>720px</option>
@@ -850,6 +852,16 @@ function chooseResult(r) {
   openWork(r);
 }
 
+// A composite has no token, no SVG, and no per-work size — it was encoded at
+// the size the composer chose. Leaving these on screen offered choices that did
+// nothing, and touching the size box cleared the built GIF out from under the
+// download button.
+function singleOnly(on) {
+  $("ssize").hidden = !on;
+  $("add").hidden = !on;
+  $("src").hidden = !on;
+}
+
 function closePanel() {
   sel = null;
   built = null;
@@ -884,6 +896,7 @@ addEventListener("resize", function () { if (built) reportScale(); });
 function openWork(r) {
   var mine = ++token;
   sel = { slug: r.slug, id: r.id, title: r.title };
+  singleOnly(true);
   $("panel").hidden = false;
   $("pt").textContent = r.title;
   $("pm").innerHTML = meta(r);
@@ -1432,12 +1445,7 @@ function buildShapes() {
     var b = document.createElement("button");
     b.type = "button";
     b.setAttribute("aria-pressed", String(n === shape));
-    b.appendChild(document.createTextNode(
-      lay.name.charAt(0).toUpperCase() + lay.name.slice(1)));
-    var r = document.createElement("span");
-    r.className = "ratio";
-    r.textContent = lay.label;
-    b.appendChild(r);
+    b.textContent = lay.name.charAt(0).toUpperCase() + lay.name.slice(1);
     b.onclick = function () {
       shape = n;
       if (shape > 1 && theSet.length > shape) theSet.length = shape;  // keep the first few
@@ -1656,6 +1664,7 @@ $("mkgrid").onclick = function () {
       built = { blob: blob, size: geo.W, key: lay.name };
       sel = { slug: "compose", id: 0, title: lay.name,
               names: theSet.map(function (w) { return w.title; }) };
+      singleOnly(false);
       var img = $("prev");
       img.style.width = geo.W + "px";
       img.src = URL.createObjectURL(blob);
@@ -1712,7 +1721,16 @@ function deliver() {
 }
 
 $("dl").onclick = function () {
-  if (!sel || !sel.uri && sel.slug !== "compose") return;
+  // A composite is already encoded by the time it reaches the screen — Make did
+  // that work. This used to fall through to build(), which reads sel.slug to
+  // choose a frame maker; "compose" matched none of them, so it landed on
+  // reflectionFrames and handed it a work with no SVG. Nothing resolved and
+  // nothing threw, so the bar sat at "Rendering frames" for good.
+  if (sel && sel.slug === "compose") {
+    if (built) deliver();
+    return;
+  }
+  if (!sel || !sel.uri) return;
   var want = parseInt($("size").value, 10);
   // Reuse the last render only if it is this work at this size.
   if (built && built.key === sel.slug + ":" + sel.id && built.size === want) {
