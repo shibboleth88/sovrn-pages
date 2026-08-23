@@ -504,7 +504,7 @@ function boot() {
   ORDER.forEach(function (slug) {
     var b = document.createElement("button");
     b.type = "button";
-    b.textContent = LABELS[slug] + " (" + data[slug].count + ")";
+    b.textContent = LABELS[slug];
     b.setAttribute("aria-pressed", "false");
     b.onclick = function () {
       scope = (scope === slug) ? null : slug;      // click again to clear
@@ -514,6 +514,8 @@ function boot() {
     b._slug = slug;
     strip.appendChild(b);
   });
+  scope = "reflection";
+  mark();
   buildPanels();
   buildShapes();
   renderComposer();
@@ -633,10 +635,20 @@ document.addEventListener("visibilitychange", function () {
   if (document.hidden) stopRotating(); else startRotating();
 });
 
+var EXAMPLES = {
+  reflection:   "\u201ccogito\u201d, \u201cmachine\u201d, or 883",
+  wunderkammer: "\u201cbeetle\u201d, \u201cseahorse\u201d, or 12",
+  bytegans:     "\u201coctoGAN\u201d, \u201cskull\u201d, or 469"
+};
+
 function mark() {
   [].forEach.call($("sets").children, function (b) {
     b.setAttribute("aria-pressed", String(b._slug === scope));
   });
+  $("note").textContent = scope
+    ? "Search " + LABELS[scope] + " by title or token ID \u2014 " + EXAMPLES[scope] + "."
+    : "Search every collection by title or token ID \u2014 "
+      + "\u201cskull\u201d, \u201ccogito\u201d, \u201coctoGAN\u201d, or 883.";
 }
 
 $("q").addEventListener("input", function () { search(this.value.trim()); });
