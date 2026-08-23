@@ -5,7 +5,7 @@
 <title>sovrn.art — an indie studio for sovereign artists</title>
 <style>
 :root{
-  --paper:#e9e9e5;--ink:#16181d;--slate:#5c6470;--faint:#7e848d;
+  --paper:#e9e9e5;--ink:#16181d;--slate:#5c6470;
   --rule:#c9c9c2;--hair:#d8d8d2;--accent:#0f6b66;--accent-d:#0b514d;
   --gap:clamp(46px,6vw,72px);
 }
@@ -77,14 +77,13 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transfo
 .card:hover .ti{color:var(--accent)}
 .ti .go{font-style:normal;font-size:.58em;color:var(--accent);margin-left:6px;opacity:0;transition:opacity .18s,transform .18s;display:inline-block}
 .card:hover .ti .go{opacity:1;transform:translate(1px,-1px)}
-/* the row stretches to its tallest card, and the meta line is pinned to the
-   bottom, so a title that wraps cannot knock its neighbours out of line */
-.mt{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:auto;padding-top:11px;border-top:1px solid var(--hair)}
 /* a line adapted from each collection's own page */
 .de{display:block;font:400 13.5px/1.6;color:var(--slate);margin:0 0 12px;max-width:44ch}
-.ar{display:block;font:500 12.5px/1.45 "IBM Plex Sans",sans-serif;color:var(--ink)}
-.ix{flex:none;font:500 10.5px/1.4 "IBM Plex Mono",monospace;letter-spacing:.1em;color:var(--faint);transition:color .18s}
-.card:hover .ix{color:var(--accent)}
+/* The row stretches to its tallest card and the credit is pinned to the
+   bottom, so a long title or description cannot knock its neighbours out of
+   line. It carries the card's weight now that the index is gone. */
+.ar{display:block;margin-top:auto;padding-top:12px;border-top:1px solid var(--hair);font:500 15px/1.4 "IBM Plex Sans",sans-serif;color:var(--ink);transition:color .18s}
+.card:hover .ar{color:var(--accent)}
 /* ---------- museums and exhibitions — a ledger, no photographs ---------- */
 .mus{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(28px,4vw,52px)}
 @media(max-width:760px){.mus{grid-template-columns:1fr}}
@@ -167,7 +166,7 @@ P="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/abd8a9f0416
 S="https://www.sovrn.art/curated/";
 const C=[
 ["CENTS","Rutherford Chang","https://www.sovrn.art/cents",H+"cent_homepage.jpg","The performance of value"],
-["Emerging Faces","Pindar Van Arman","https://www.vanarman.com/emergence",H+"emerging-faces.jpg","The first paintings autonomously created from neural networks — in Van Arman’s words, an emergent form of imagination existing purely in the interaction between the system and the paint."],
+["Emerging Faces","Pindar Van Arman","https://www.vanarman.com/emergence",H+"emerging-faces.jpg","The first robotic paintings autonomously created from neural networks (2017)."],
 ["Reflection","Pindar Van Arman",S+"reflection",F+"reflection_889_layers_smooth.svg","Van Arman’s Reflective AI process, executed fully on-chain"],
 ["Wunderkammer","Isa Kost",S+"wunderkammer",H+"wunderkammer_homepage.gif","An on-chain Cabinet of Wonders, to give eternal life to the dead presences that Isa Kost has carried through the years — every object a dead memory that has called out to be found."],
 ["Painting with Fire: a history in GANs","Bård Ionson",S+"painting-with-fire",H+"fire_homepage.jpg","The evolution of GANs from 2014 to 2023, seen through the eyes of fire. Fourteen vintage models and two hundred works, each invoking the same elemental image."],
@@ -431,8 +430,7 @@ document.getElementById("g").innerHTML=C.map((c,i)=>{
   (PL[s]?'<img class="q" alt="" width="500" height="500" aria-hidden="true">':'')+
   '</span><span class="ti">'+esc(c[0])+'<span class="go">&#8599;</span></span>'+
   '<span class="de">'+esc(c[4])+'</span>'+
-  '<span class="mt"><span class="ar">'+esc(c[1])+'</span>'+
-  '<span class="ix" aria-hidden="true">'+String(i+1).padStart(2,"0")+'</span></span></a>';
+  '<span class="ar">'+esc(c[1])+'</span></a>';
 }).join("");
 /* Rotation. One swap per tick at most, and only for cards actually on screen,
    so the grid never pulses in unison and the page never pulls more than about

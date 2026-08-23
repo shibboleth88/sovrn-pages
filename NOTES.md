@@ -52,10 +52,13 @@ tagline, section heads, card titles, exhibition titles. IBM Plex Sans for prose.
 IBM Plex Mono, uppercase and letterspaced, for labels, dates, venues and
 numbers. Nothing else.
 
-**A card is: image, title, description, hairline, then artist and index.** The
-grid rows stretch and `.mt` is pinned with `margin-top: auto`, so a title or a
-description that runs long cannot knock its neighbours out of line. The
-descriptions are adapted from each collection's own page — see below.
+**A card is: image, title, description, hairline, artist.** The grid rows
+stretch and the credit line is pinned with `margin-top: auto`, so a title or a
+description that runs long cannot knock its neighbours out of line. The artist
+carries the weight at the foot of the card — 15px, medium, ink, going accent on
+hover. The descriptions are adapted from each collection's own page, and vary
+a lot in length on purpose: some are a single line, which reads as an epigram
+against the longer cards rather than as truncation. See below.
 
 **Watch for `.nav`.** It was defined twice, once for the sticky header and once
 for the footer link rows, which silently gave those rows `position: sticky` and
