@@ -46,6 +46,11 @@
   .hits button:hover{background:var(--paper);color:var(--accent)}
   .hits button:disabled{cursor:default;color:var(--slate);font-style:italic}
   .hits .tag{flex:none;font:400 11px/1.4 "IBM Plex Mono",monospace;color:var(--slate)}
+  .hits .plus{flex:none;width:24px;height:24px;border-radius:50%;
+    border:1px solid var(--rule);color:var(--slate);display:flex;
+    align-items:center;justify-content:center;cursor:pointer;
+    font:400 14px/1 "IBM Plex Mono",monospace;transition:border-color .12s,color .12s}
+  .hits .plus:hover{border-color:var(--accent);color:var(--accent)}
   .note{color:var(--slate);font:italic 400 14px/1.6 "IBM Plex Sans",sans-serif;
         padding:26px 0 8px;margin:0}
   /* Three panels, one per collection, each rotating through its own works.
@@ -772,7 +777,27 @@ function search(q) {
     tag.className = "tag";
     tag.textContent = LABELS[r.slug] + " · " + (r.why || r.id);
 
-    b.appendChild(th); b.appendChild(mid); b.appendChild(tag);
+    // Add straight from the row: filling a triptych should not mean opening
+    // three works one at a time.
+    var plus = document.createElement("span");
+    plus.className = "plus";
+    plus.setAttribute("role", "button");
+    plus.setAttribute("tabindex", "0");
+    plus.title = "Add to the set";
+    plus.textContent = "+";
+    var take = function (e) {
+      e.stopPropagation();
+      if (theSet.length >= shape || inSet(r)) return;
+      plus.textContent = "…";
+      queuedWork(r.slug, r.id).then(function (uri) {
+        addToSet({ slug: r.slug, id: r.id, title: r.title, uri: uri });
+        plus.textContent = "✓";
+      }).catch(function () { plus.textContent = "+"; });
+    };
+    plus.onclick = take;
+    plus.onkeydown = function (e) { if (e.key === "Enter" || e.key === " ") take(e); };
+
+    b.appendChild(th); b.appendChild(mid); b.appendChild(tag); b.appendChild(plus);
     b.onclick = function () { chooseResult(r); };
     box.appendChild(b);
     // The first rows are on screen by definition, so load them outright; the
@@ -871,9 +896,19 @@ function openWork(r) {
     if (mine !== token) return;                       // superseded by a newer pick
     sel.uri = uri;
     $("src").disabled = false;
+    $("dl").disabled = false;
     $("pm").innerHTML = meta(r) + " · on-chain";
+    hideProgress();
+    // The artwork itself, animating, at once — no encoder involved. Rendering a
+    // GIF here meant every pick cost a full render, and composing a triptych
+    // threw three of them away before you pressed Make.
+    var img = $("prev");
+    img.style.width = parseInt($("size").value, 10) + "px";
+    img.src = uri;
+    img.onload = reportScale;
+    built = null;
+    $("warn").textContent = "";
     syncAddButton();
-    return build();
   }).catch(function (e) {
     if (mine !== token) return;
     $("pm").innerHTML = meta(r);
@@ -884,7 +919,11 @@ function openWork(r) {
 
 // Reflection is pure vector, ~700 paths, natively 1200px — at 480 the fine work
 // is simply gone, so it gets the same choice as the others and defaults high.
-function sizesFor(slug) { return [480, 720]; }
+function sizesFor(slug) {
+  // Reflection is 480 only. It is the heavy one — 868 paths against a byteGAN's
+  // zero — and at 720 a tych containing one is too big to post comfortably.
+  return slug === "reflection" ? [480] : [480, 720];
+}
 
 function syncSizes(slug) {
   var el = $("size"), allowed = sizesFor(slug);
@@ -1319,7 +1358,15 @@ function build() {
   });
 }
 
-$("size").onchange = function () { if (sel && sel.uri) build(); };
+$("size").onchange = function () {
+  // Nothing is re-encoded here — the preview is the live artwork, and the GIF is
+  // built when it is asked for.
+  built = null;
+  if (sel && sel.uri) {
+    $("prev").style.width = parseInt($("size").value, 10) + "px";
+    reportScale();
+  }
+};
 
 /* --------------------------------------------------------------- composing */
 
@@ -1469,7 +1516,10 @@ $("mkgrid").onclick = function () {
   var lay = LAYOUTS[shape];
   if (theSet.length !== shape) return;
   var mine = ++token;
-  var geo = geometry(lay, parseInt($("size").value, 10));
+  var heavy = theSet.some(function (w) { return w.slug === "reflection"; });
+  var want = parseInt($("size").value, 10);
+  if (heavy && want > 480) want = 480;      // same reason as the single download
+  var geo = geometry(lay, want);
 
   $("mkgrid").disabled = true;
   $("panel").hidden = false;
@@ -1534,7 +1584,8 @@ $("mkgrid").onclick = function () {
       $("dl").disabled = false;
       var kb = blob.size / 1024;
       $("warn").textContent = COMPOSE_FRAMES + " frames · " + geo.W + "×" + geo.H
-        + " (" + lay.label + ") · "
+        + " (" + lay.label + ")" + (heavy && parseInt($("size").value, 10) > 480
+            ? " · held at 480 because Reflection is in it" : "") + " · "
         + (kb > 1024 ? (kb / 1024).toFixed(1) + "MB" : Math.round(kb) + "KB")
         + " · " + (1000 / 150).toFixed(1) + " fps"
         + (blob.size > 15 * 1024 * 1024
@@ -1575,11 +1626,21 @@ $("src").onclick = function () {
   if (sel && sel.uri) grab(sel.uri, fileName(sel) + ".svg");
 };
 
-$("dl").onclick = function () {
-  if (!built || !sel) return;
+function deliver() {
   var url = URL.createObjectURL(built.blob);
   grab(url, fileName(sel) + ".gif");
   setTimeout(function () { URL.revokeObjectURL(url); }, 30000);
+}
+
+$("dl").onclick = function () {
+  if (!sel || !sel.uri && sel.slug !== "compose") return;
+  var want = parseInt($("size").value, 10);
+  // Reuse the last render only if it is this work at this size.
+  if (built && built.key === sel.slug + ":" + sel.id && built.size === want) {
+    deliver();
+    return;
+  }
+  build().then(function () { if (built) deliver(); });
 };
 </script>
 </body>
