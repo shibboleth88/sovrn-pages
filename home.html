@@ -9,12 +9,14 @@
 body{background:var(--paper);color:var(--ink);font:400 15px/1.55 "IBM Plex Sans",sans-serif;padding:26px 22px 46px}
 .wrap{max-width:1060px;margin:0 auto}
 a:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
-.banner{display:grid;gap:2px;overflow:hidden;margin:-26px -22px 34px;background:var(--ink);-webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent);mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent)}
+.banner{overflow:hidden;margin:-26px -22px 34px;background:var(--ink);-webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent);mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent)}
+.mg{display:grid;gap:2px}
 @media(max-width:640px){.banner{margin-bottom:26px}}
-.banner img,.banner span{display:block;width:100%;height:100%}
-.banner img{object-fit:cover}
+.mg img,.mg span{display:block;width:100%;height:100%}
+.mg img{object-fit:cover;transition:opacity .55s}
+.mg img.o{opacity:0}
 /* a cell left bare reads as the ink beneath; a rare one takes the copper */
-.banner span{background:var(--copper)}
+.mg span{background:var(--copper)}
 .banner2{margin:0 0 40px}
 @media(max-width:640px){.banner2{margin-bottom:30px}}
 /* site navigation. position:fixed pins to the Sites frame, not the viewport —
@@ -102,9 +104,28 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transfo
     h2.big,.sec>h2{animation:titlein linear both;animation-timeline:view();animation-range:entry 2% entry 26%}
   }
 }
+/* Two thirds of each band sits outside the window -- around 2000px of tiles
+   already loaded and never seen. The grid travels slowly inside its frame to
+   bring them through, about eight pixels a second, reversing at each end so
+   there is no seam and no edge is ever exposed. JS sets --travel from the real
+   frame width and the duration from it, so the speed holds at any size.
+   A band out of view is paused, and none of this runs if motion is unwelcome. */
+@media (prefers-reduced-motion: no-preference){
+  @keyframes bandA{from{transform:translate3d(0,0,0)}
+                   to{transform:translate3d(calc(var(--travel,0px) * -1),0,0)}}
+  @keyframes bandB{from{transform:translate3d(calc(var(--travel,0px) * -1),0,0)}
+                   to{transform:translate3d(0,0,0)}}
+  .mg{will-change:transform}
+  #ban{animation:bandA var(--dur,240s) linear infinite alternate}
+  #ban2{animation:bandB var(--dur,240s) linear infinite alternate}
+  /* the id selectors above set the animation shorthand, so these have to carry
+     an id too or they lose on specificity and never apply */
+  .banner.off #ban,.banner.off #ban2{animation-play-state:paused}
+  .nomotion #ban,.nomotion #ban2{animation:none}
+}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body>
-<div class="banner" id="ban" aria-hidden="true"></div>
+<div class="banner" aria-hidden="true"><div class="mg" id="ban"></div></div>
 <nav class="nav"><div class="navin"><button id="mb" aria-expanded="false" aria-controls="mn" aria-label="Site navigation"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></div></nav>
 <div class="wrap">
 <header class="mast">
@@ -112,7 +133,7 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transfo
 <p class="tag">an indie studio for sovereign artists</p>
 </header>
 <p class="about">Sovrn Art is an independent, artist-first platform by <a href="https://twitter.com/shibboleth88" target="_blank">Ezra Shibboleth</a> and <a href="https://www.vanarman.com" target="_blank">Pindar Van Arman</a>, with <a href="https://x.com/lorepunk" target="_blank">lorepunk</a> providing copy and ops support. We value rigorous artistic processes, meaningfully constructed serial collections, substantial narratives, and structures that uphold the principles of sovereignty and decentralization.</p>
-<div class="banner banner2" id="ban2" aria-hidden="true"></div>
+<div class="banner banner2" aria-hidden="true"><div class="mg" id="ban2"></div></div>
 
 <div class="sec">
 <h2 class="big">Sovrn Curated</h2>
@@ -269,8 +290,8 @@ function mosaic(id,art,cts,p){
     mark(r,c,w,h);cells+=w*h;if(w>1||h>1)last=c;
     const t=c/cols,big=w>1||h>1;
     out+='<img src="'+T(pick("a",art,big,fieldL(t),fieldW(t)),big)+
-      '" alt="" loading="lazy" style="grid-area:'+(r+1)+'/'+(c+1)+
-      '/span '+h+'/span '+w+'">';};
+      '" alt="" loading="lazy" data-c="'+c+'" data-k="a" data-b="'+(big?1:0)+
+      '" style="grid-area:'+(r+1)+'/'+(c+1)+'/span '+h+'/span '+w+'">';};
   /* every band gets one block at full height, somewhere across the middle, so
      the composition has an anchor rather than relying on the dice */
   if(rows>2){const fc=(cols*(.18+.64*R()))|0,fw=R()<.5?3:2;
@@ -304,15 +325,36 @@ function mosaic(id,art,cts,p){
       if(R()<Math.min(.85,Math.max(0,cells/6-cent6)*.32)&&!nextTo(cent,r,c)){
         mark(r,c,1,1);cells++;cent6++;cent[r][c]=true;
         out+='<img src="'+T(pick("c",cts,false),false)+
-          '" alt="" loading="lazy" style="grid-area:'+(r+1)+'/'+(c+1)+'/span 1/span 1">';
+          '" alt="" loading="lazy" data-c="'+c+'" data-k="c" data-b="0'+
+          '" style="grid-area:'+(r+1)+'/'+(c+1)+'/span 1/span 1">';
         continue;}
     }
     put(r,c,w,h);
   }
   const el=document.getElementById(id);
+  /* Replace one cell with another work from the same pool, at the same size and
+     kind, chosen against the field at that column so the passage keeps its
+     colour. Decode first: a cell must never fade up onto a blank. */
+  el._swap=img=>{
+    const c=+img.dataset.c,big=img.dataset.b==="1",k=img.dataset.k,t=c/cols,
+      next=T(k==="c"?pick("c",cts,false)
+                    :pick("a",art,big,fieldL(t),fieldW(t)),big),
+      pre=new Image();
+    pre.onload=()=>{img.classList.add("o");
+      setTimeout(()=>{img.src=pre.src;img.classList.remove("o");},560);};
+    pre.src=next;};
   el.style.gridTemplateRows="repeat("+rows+","+cell+"px)";
   el.style.gridTemplateColumns="repeat("+cols+","+cell+"px)";
   el.innerHTML=out;
+  el._wide=cols*cell+(cols-1)*2;
+  fit(el);
+}
+/* Travel only as far as there is band left, or widening the window walks the
+   grid past its own end and shows the frame behind it. Recomputed on resize. */
+function fit(el){
+  const room=Math.max(0,el._wide-el.parentElement.clientWidth);
+  el.style.setProperty("--travel",room+"px");
+  el.style.setProperty("--dur",Math.round(room/8)+"s");   /* ~8px a second */
 }
 /* the upper band runs finer, the lower one coarser, so they read as a pair
    rather than a repeat */
@@ -322,6 +364,37 @@ const drawBands=()=>{
 };
 drawBands();
 MQ.addEventListener("change",drawBands);
+let rz;addEventListener("resize",()=>{clearTimeout(rz);
+  rz=setTimeout(()=>["ban","ban2"].forEach(i=>{
+    const el=document.getElementById(i); if(el&&el._wide)fit(el);}),160);});
+/* Turnover. One cell somewhere in the mosaic dissolves into another work every
+   couple of seconds -- only in a band that is on screen, only cells actually in
+   the window, and never while the tab is hidden. At one tile every 2.2s the
+   band pulls a few KB a minute, and the eye catches it as a change rather than
+   as movement. */
+(function(){
+  const frames=[...document.querySelectorAll(".banner")];
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+      e.target._on=e.isIntersecting;
+      e.target.classList.toggle("off",!e.isIntersecting);}),
+    {rootMargin:"80px"});
+  frames.forEach(f=>io.observe(f));
+  /* Travelling reveals tiles that then lazy-load, so on a metered connection
+     the band holds still as well as stopping its turnover. */
+  const cn=navigator.connection,save=cn&&cn.saveData;
+  if(save)document.documentElement.classList.add("nomotion");
+  if(save||matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  setInterval(()=>{
+    if(document.hidden)return;
+    const live=frames.filter(f=>f._on).map(f=>f.querySelector(".mg")).filter(g=>g&&g._swap);
+    if(!live.length)return;
+    const g=live[Math.random()*live.length|0],
+      inview=[...g.querySelectorAll("img")].filter(im=>{
+        const r=im.getBoundingClientRect();
+        return r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight;});
+    if(inview.length)g._swap(inview[Math.random()*inview.length|0]);
+  },2200);
+})();
 /* Each card cycles through works from its own collection. The folder name is
    the last segment of the card's own link, so the two can never drift apart.
    Emerging Faces is absent from this map on purpose: its card holds the single
