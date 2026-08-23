@@ -45,6 +45,39 @@
   .hits .tag{flex:none;font:400 11px/1.4 "IBM Plex Mono",monospace;color:var(--slate)}
   .note{color:var(--slate);font:italic 400 14px/1.6 "IBM Plex Sans",sans-serif;
         padding:26px 0 8px;margin:0}
+  /* opening gallery — real works, live, so the page never greets you with nothing */
+  .gallery{margin:22px 0 0}
+  .gtitle{font:400 11px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
+          margin:0 0 10px;letter-spacing:.04em}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .tile{position:relative;padding:0;border:1px solid var(--rule);background:var(--card);
+        border-radius:3px;overflow:hidden;cursor:pointer;aspect-ratio:1;
+        transition:border-color .14s,transform .14s}
+  .tile:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .tile img{width:100%;height:100%;object-fit:cover;display:block}
+  .tile figcaption{position:absolute;left:0;right:0;bottom:0;padding:16px 9px 7px;
+    text-align:left;color:#f4f2ee;
+    background:linear-gradient(to top,rgba(8,10,12,.82),rgba(8,10,12,0));
+    font:italic 300 13px/1.25 Fraunces,Georgia,serif;
+    opacity:0;transition:opacity .14s}
+  .tile:hover figcaption,.tile:focus-visible figcaption{opacity:1}
+  .tile .who{display:block;font:400 9.5px/1.4 "IBM Plex Mono",monospace;
+             letter-spacing:.05em;opacity:.8;margin-top:2px}
+  .tile.loading{background:
+    linear-gradient(100deg,var(--card) 20%,var(--rule) 40%,var(--card) 60%);
+    background-size:220% 100%;animation:sweep 1.4s ease-in-out infinite}
+  @keyframes sweep{to{background-position:-120% 0}}
+  /* thumbnails in the results list */
+  .hits button{gap:11px}
+  .thumb{flex:none;width:42px;height:42px;border:1px solid var(--rule);border-radius:2px;
+         background:var(--paper);overflow:hidden}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .hits .rowtext{flex:1;min-width:0}
+  .hits .rowtext span{display:block}
+  .hits .rowtitle{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  @media (prefers-reduced-motion:reduce){
+    .tile{transition:none} .tile:hover{transform:none} .tile.loading{animation:none}
+  }
   .more{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
         padding:10px 14px;margin:0;border-top:1px solid var(--rule)}
   .panel{background:var(--card);border:1px solid var(--rule);border-radius:8px;
@@ -141,6 +174,10 @@
 
   <div class="hits" id="hits" role="listbox"></div>
   <p class="note" id="note">Search by title or token ID — “skull”, “cogito”, “octoGAN”, or 883.</p>
+  <div class="gallery" id="gallery" hidden>
+    <p class="gtitle" id="gtitle">A few from the collections</p>
+    <div class="tiles" id="tiles"></div>
+  </div>
 </div>
 
 <script>
@@ -412,6 +449,73 @@ function boot() {
     b._slug = slug;
     strip.appendChild(b);
   });
+  openingGallery();
+}
+
+/* ------------------------------------------------------- the opening gallery */
+
+// Real works, fetched from the contracts and left to animate on their own — an
+// SVG in an <img> runs its SMIL and any nested GIF quite happily
+// (sovrn-pages/NOTES.md). Each tile is the work it shows, so clicking it opens
+// exactly that piece rather than something merely representative.
+var GALLERY_PICKS = [
+  ["bytegans", 6], ["wunderkammer", 3], ["reflection", 3]
+];
+
+function randomIds(slug, n) {
+  var rec = data[slug], out = [], seen = {};
+  while (out.length < n) {
+    var id = rec.first_token + Math.floor(Math.random() * rec.count);
+    if (seen[id]) continue;
+    seen[id] = 1;
+    out.push(id);
+  }
+  return out;
+}
+
+function openingGallery() {
+  var picks = [];
+  GALLERY_PICKS.forEach(function (p) {
+    randomIds(p[0], p[1]).forEach(function (id) { picks.push({ slug: p[0], id: id }); });
+  });
+  // interleave so the grid is not three blocks of one collection
+  picks.sort(function () { return Math.random() - 0.5; });
+
+  var tiles = $("tiles");
+  tiles.textContent = "";
+  picks.forEach(function (pk) {
+    var rec = data[pk.slug];
+    var title = rec.titles[pk.id - rec.first_token];
+    var fig = document.createElement("button");
+    fig.type = "button";
+    fig.className = "tile loading";
+    fig.title = title + " — " + ARTISTS[pk.slug];
+    var img = document.createElement("img");
+    img.alt = title;
+    // Deliberately NOT loading="lazy". These twelve are the first thing on the
+    // page, and a lazy image that is never scrolled to is never loaded at all in
+    // some contexts (sovrn-pages/NOTES.md records exactly that).
+    img.decoding = "async";
+    var cap = document.createElement("figcaption");
+    cap.textContent = title;
+    var who = document.createElement("span");
+    who.className = "who";
+    who.textContent = LABELS[pk.slug] + " · " + ARTISTS[pk.slug];
+    cap.appendChild(who);
+    fig.appendChild(img);
+    fig.appendChild(cap);
+    fig.onclick = function () {
+      $("q").value = "";
+      openWork({ slug: pk.slug, id: pk.id, title: title });
+      $("panel").scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    tiles.appendChild(fig);
+    queuedWork(pk.slug, pk.id).then(function (uri) {
+      img.src = uri;
+      fig.classList.remove("loading");
+    }).catch(function () { fig.remove(); });
+  });
+  $("gallery").hidden = false;
 }
 
 function mark() {
@@ -433,13 +537,46 @@ $("q").addEventListener("keydown", function (e) {
   }
 });
 
+// Thumbnails load only when a row is actually on screen. Forty rows would mean
+// forty contract calls otherwise, and a Reflection token is ~115KB.
+var thumbWatcher = null;
+
+function watchThumb(row, img, r, eager) {
+  row._thumb = { img: img, r: r };
+  if (eager || !("IntersectionObserver" in window)) { fillThumb(row); return; }
+  if (!thumbWatcher) {
+    thumbWatcher = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        thumbWatcher.unobserve(e.target);
+        fillThumb(e.target);
+      });
+    }, { root: document.getElementById("hits"), rootMargin: "150px" });
+  }
+  thumbWatcher.observe(row);
+}
+
+function fillThumb(row) {
+  var t = row._thumb;
+  if (!t || t.done) return;
+  t.done = true;
+  queuedWork(t.r.slug, t.r.id).then(function (uri) { t.img.src = uri; })
+                              .catch(function () {});
+}
+
 function search(q) {
   var box = $("hits");
   box.textContent = "";
   // A new search means the previous work is no longer what is on screen.
   closePanel();
-  if (!q) { lastRows = []; $("note").hidden = false; return; }
+  if (!q) {
+    lastRows = [];
+    $("note").hidden = false;
+    $("gallery").hidden = false;
+    return;
+  }
   $("note").hidden = true;
+  $("gallery").hidden = true;
 
   var lower = q.toLowerCase();
   var slugs = scope ? [scope] : ORDER;
@@ -481,17 +618,34 @@ function search(q) {
     return;
   }
 
-  rows.forEach(function (r) {
+  rows.forEach(function (r, rowIndex) {
     var b = document.createElement("button");
     b.type = "button";
+
+    var th = document.createElement("span");
+    th.className = "thumb";
+    var im = document.createElement("img");
+    im.alt = "";
+    th.appendChild(im);
+
+    var mid = document.createElement("span");
+    mid.className = "rowtext";
     var t = document.createElement("span");
+    t.className = "rowtitle";
     t.textContent = r.title;
+    mid.appendChild(t);
+
     var tag = document.createElement("span");
     tag.className = "tag";
     tag.textContent = LABELS[r.slug] + " · " + (r.why || r.id);
-    b.appendChild(t); b.appendChild(tag);
+
+    b.appendChild(th); b.appendChild(mid); b.appendChild(tag);
     b.onclick = function () { openWork(r); };
     box.appendChild(b);
+    // The first rows are on screen by definition, so load them outright; the
+    // rest wait for the observer.
+    if (rowIndex < 8) { watchThumb(b, im, r, true); }
+    else { watchThumb(b, im, r, false); }
   });
 
   if (total > rows.length) {
@@ -641,6 +795,30 @@ function fetchWork(slug, id) {
     cache[key] = image;
     return image;
   });
+}
+
+// Artwork requests are capped: a results list can hold forty rows, and firing
+// forty contract calls at once is both rude and slower than a small queue.
+var artQueue = [], artActive = 0, ART_MAX = 3;
+
+function queuedWork(slug, id) {
+  var key = slug + ":" + id;
+  if (cache[key]) return Promise.resolve(cache[key]);
+  return new Promise(function (resolve, reject) {
+    artQueue.push({ slug: slug, id: id, resolve: resolve, reject: reject });
+    pumpArt();
+  });
+}
+
+function pumpArt() {
+  while (artActive < ART_MAX && artQueue.length) {
+    var job = artQueue.shift();
+    artActive++;
+    fetchWork(job.slug, job.id).then(job.resolve, job.reject).then(function () {
+      artActive--;
+      pumpArt();
+    }, function () { artActive--; pumpArt(); });
+  }
 }
 
 // atob gives one byte per char; decode as UTF-8 so accented titles survive.
@@ -1006,9 +1184,15 @@ function grab(href, filename) {
   document.body.appendChild(a); a.click(); a.remove();
 }
 
+function slugify(str) {
+  return String(str)
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")   // clé -> cle
+    .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
 function fileName(w) {
-  var s = w.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-  return w.slug + "-" + w.id + (s ? "-" + s : "");
+  return [slugify(w.title), slugify(LABELS[w.slug]), slugify(ARTISTS[w.slug])]
+    .filter(Boolean).join("-");
 }
 
 $("src").onclick = function () {
