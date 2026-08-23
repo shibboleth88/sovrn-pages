@@ -71,6 +71,27 @@
   .ghost{background:transparent;border:1px solid var(--rule);color:var(--slate)}
   .ghost:hover{border-color:var(--accent);color:var(--accent)}
   .warn{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--accent);margin:9px 0 0}
+  /* Real progress, not a spinner: a 14s Reflection build has a known frame count,
+     so show how far along it is. */
+  .prog{margin:11px 0 0;max-width:340px}
+  .prog[hidden]{display:none}
+  .track{height:3px;background:var(--rule);border-radius:2px;overflow:hidden}
+  .bar{height:100%;width:0;background:var(--accent);border-radius:2px;
+       transition:width .18s linear}
+  .plabel{font:400 11px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
+          margin:6px 0 0;display:flex;align-items:center;gap:7px}
+  /* three dots breathing in sequence, so a slow step still reads as alive */
+  .dots{display:inline-flex;gap:3px}
+  .dots i{width:4px;height:4px;border-radius:50%;background:var(--accent);
+          display:block;animation:puff 1.05s ease-in-out infinite}
+  .dots i:nth-child(2){animation-delay:.17s}
+  .dots i:nth-child(3){animation-delay:.34s}
+  @keyframes puff{0%,70%,100%{opacity:.25;transform:scale(.8)}
+                  35%{opacity:1;transform:scale(1)}}
+  @media (prefers-reduced-motion:reduce){
+    .dots i{animation:none;opacity:.7}
+    .bar{transition:none}
+  }
 </style>
 </head>
 <body>
@@ -104,6 +125,13 @@
         </label>
         <button class="go" id="dl">Download GIF</button>
         <button class="go ghost" id="src">Original SVG</button>
+      </div>
+      <div class="prog" id="prog" hidden>
+        <div class="track"><div class="bar" id="bar"></div></div>
+        <p class="plabel" id="plabel">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span id="ptext">Reading the contract</span>
+        </p>
       </div>
       <p class="warn" id="warn"></p>
     </div>
@@ -475,12 +503,36 @@ function search(q) {
   }
 }
 
+function showProgress(text, done, total) {
+  $("prog").hidden = false;
+  $("ptext").textContent = text;
+  $("bar").style.width = (total ? Math.round(done / total * 100) : 0) + "%";
+}
+
+function hideProgress() {
+  $("prog").hidden = true;
+  $("bar").style.width = "0";
+}
+
+// Hand control back between frames so the bar can update.
+//
+// Deliberately NOT requestAnimationFrame: rAF is tied to painting, and a hidden
+// or backgrounded tab throttles it to a crawl or stops it altogether — which
+// would stall the render itself, not just the bar. (sovrn-pages/NOTES.md records
+// the in-app preview pane firing one rAF in three seconds.) setTimeout keeps
+// running regardless, so the work always finishes and the bar catches up
+// whenever the browser does paint.
+function yieldToPaint() {
+  return new Promise(function (r) { setTimeout(r, 0); });
+}
+
 function closePanel() {
   sel = null;
   built = null;
   token++;                       // invalidates any fetch still in flight
   $("panel").hidden = true;
   $("shrunk").hidden = true;
+  hideProgress();
   $("prev").removeAttribute("src");
   $("prev").style.width = "";
 }
@@ -510,7 +562,8 @@ function openWork(r) {
   sel = { slug: r.slug, id: r.id, title: r.title };
   $("panel").hidden = false;
   $("pt").textContent = r.title;
-  $("pm").innerHTML = meta(r) + " · reading the contract…";
+  $("pm").innerHTML = meta(r);
+  showProgress("Reading the contract", 0, 1);
   $("warn").textContent = "";
   $("prev").removeAttribute("src");
   $("dl").disabled = true;
@@ -618,7 +671,7 @@ function svgToUri(text) {
 // base64'd inside the SVG, and the wrapper only carries image-rendering:
 // pixelated. Decode that GIF and scale by a whole-number factor with smoothing
 // off, or the hard pixel edges smear.
-function bytegansFrames(w, size) {
+function bytegansFrames(w, size, onStep) {
   var svg = svgOf(w);
   var m = svg.match(/data:image\/gif;base64,([A-Za-z0-9+/=\s]+)/);
   if (!m) throw new Error("no GIF inside the wrapper");
@@ -628,10 +681,11 @@ function bytegansFrames(w, size) {
     c.width = g.width * f; c.height = g.height * f;
     var ctx = c.getContext("2d", { willReadFrequently: true });
     ctx.imageSmoothingEnabled = false;
-    g.frames.forEach(function (bmp) {
+    g.frames.forEach(function (bmp, i) {
       ctx.clearRect(0, 0, c.width, c.height);
       ctx.drawImage(bmp, 0, 0, c.width, c.height);
       out.push(ctx.getImageData(0, 0, c.width, c.height));
+      if (onStep) onStep(i + 1, g.frames.length);
     });
     return { frames: out, delays: g.delays, colours: 256 };
   });
@@ -641,7 +695,7 @@ function bytegansFrames(w, size) {
 // overlay, and the artist's seal. Rather than reproduce that layout by hand, swap
 // the animated layer's data URI for one still frame at a time and let the SVG do
 // its own compositing.
-function wunderkammerFrames(w, size) {
+function wunderkammerFrames(w, size, onStep) {
   var svg = svgOf(w);
   var gifs = svg.match(/data:image\/gif;base64,[A-Za-z0-9+/=\s]+/g) || [];
   var animated = null;
@@ -665,7 +719,11 @@ function wunderkammerFrames(w, size) {
         ctx.clearRect(0, 0, c.width, c.height);
         ctx.drawImage(bmp, 0, 0);
         var swapped = svg.replace(animated.raw, c.toDataURL("image/png"));
-        return rasterise(svgToUri(swapped), size).then(function (im) { out.push(im); });
+        return rasterise(svgToUri(swapped), size).then(function (im) {
+          out.push(im);
+          if (onStep) onStep(out.length, animated.data.frames.length);
+          return yieldToPaint();
+        });
       });
     });
     return step.then(function () {
@@ -764,7 +822,7 @@ function smoothReflection(svg) {
 // Reflection animates with SMIL. Serialising a seeked SVG would just give back
 // the original markup, so instead each <animate> is evaluated at time t and
 // written onto its parent as a static opacity, then removed.
-function reflectionFrames(w, size) {
+function reflectionFrames(w, size, onStep) {
   var svg = smoothReflection(svgOf(w));
   var doc = new DOMParser().parseFromString(svg, "image/svg+xml");
   var anims = [].slice.call(doc.querySelectorAll("animate"));
@@ -816,6 +874,8 @@ function reflectionFrames(w, size) {
         var text = new XMLSerializer().serializeToString(doc);
         return rasterise(svgToUri(text), size).then(function (im) {
           out.push(im); delays.push(ms);
+          if (onStep) onStep(out.length, REFLECTION_FRAMES);
+          return yieldToPaint();
         });
       });
     })(i / REFLECTION_FRAMES);
@@ -891,12 +951,22 @@ function build() {
   var mine = token, w = sel;
   var size = parseInt($("size").value, 10);
   $("dl").disabled = true;
-  $("warn").textContent = "Rendering at " + size + "px…";
+  $("warn").textContent = "";
+  showProgress("Rendering frames", 0, 1);
   var maker = w.slug === "bytegans" ? bytegansFrames
             : w.slug === "wunderkammer" ? wunderkammerFrames
             : reflectionFrames;
-  return maker(w, size).then(function (r) {
+  return maker(w, size, function (done, total) {
     if (mine !== token) return;
+    showProgress("Rendering frame " + done + " of " + total, done, total);
+  }).then(function (r) {
+    if (mine !== token) return;
+    // Encoding is one synchronous stretch, so paint the label before starting it
+    // or it never appears.
+    showProgress("Encoding the GIF", 1, 1);
+    return yieldToPaint().then(function () { return r; });
+  }).then(function (r) {
+    if (!r || mine !== token) return;
     var blob = GIF.encode(r.frames, r.delays, r.colours);
     built = { blob: blob, size: size, key: w.slug + ":" + w.id };
     var img = $("prev");
@@ -916,9 +986,11 @@ function build() {
       line += " — GIF holds 256 colours, so this one bands a little";
     }
     line += " · " + (1000 / r.delays[0]).toFixed(1) + " fps";
+    hideProgress();
     $("warn").textContent = line;
   }).catch(function (e) {
     if (mine !== token) return;
+    hideProgress();
     $("warn").textContent = "Couldn't build that GIF — " + (e.message || e)
       + ". “Original SVG” still works.";
   });
