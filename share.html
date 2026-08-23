@@ -1498,15 +1498,18 @@ function renderComposer() {
   }
 
   var ready = theSet.length === shape;
+  // The button says what it does and is simply unavailable until it can do it.
+  // Labelling it "Add 3 more" made a disabled control read like an instruction —
+  // it looked clickable and did nothing. How many are still needed belongs in
+  // the hint, which was already saying it.
   $("mkgrid").disabled = !ready;
-  $("mkgrid").textContent = ready ? "Make " + lay.name
-    : "Add " + (shape - theSet.length) + " more";
+  $("mkgrid").textContent = "Make " + lay.name;
   var g = geometry(lay, parseInt(($("csize") || {}).value || 1440, 10));
   $("chint").textContent = ready
     ? lay.label + " on a black ground · " + g.W + "×" + g.H + " · " + g.cell
       + "px per work — whole, nothing cropped. Drag the boxes to rearrange."
-    : "Search and click works — each one drops into the next box. "
-      + lay.name.charAt(0).toUpperCase() + lay.name.slice(1) + " needs " + shape + ".";
+    : theSet.length + " of " + shape + " chosen — search and click works, each one"
+      + " drops into the next box.";
   syncAddButton();
 }
 
