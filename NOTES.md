@@ -378,6 +378,25 @@ Four wrinkles the artist's renders show and a naive walk would miss:
 python3 tools/reflection-smooth.py minted.svg smoothed.svg
 ```
 
+### There is a JavaScript port too
+
+`share.html` needs the same rule in the browser, so `smoothReflection()` there is
+a direct port of this script. It was checked the only way worth trusting:
+**byte-identical output to `reflection-smooth.py`** on tokens 0, 515, 700, 883,
+884 and 998 (21–26 fades depending on the piece). Re-check it that way after any
+change to either side.
+
+Matching byte-for-byte meant matching Python's number formatting: `str()` on a
+float keeps a trailing `.0` while `%g` strips trailing zeros, and both forms
+appear in the emitted attributes. `pyFloat()` and `pyG()` in the page exist only
+for that.
+
+One thing the rule does not say out loud, and that will silently ruin the result:
+**every added fade is staggered purely by `begin`.** Anything evaluating these
+animations frame by frame has to shift each one's clock by its own `begin` and
+wrap; ignore it and all twenty-odd fades run in lockstep, which looks like the
+smoothing did nothing.
+
 ### How to know it is the artist's rule and not an invention
 
 The tool proves itself. It fetches the six minted originals from the contract,
