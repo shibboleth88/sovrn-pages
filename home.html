@@ -228,9 +228,19 @@ band("ban2",rng(94,186), rng(205,223));
    the last segment of the card's own link, so the two can never drift apart.
    Emerging Faces is absent from this map on purpose: its card holds the single
    portrait it has always had. */
-const PL={cents:24,reflection:24,wunderkammer:36,"painting-with-fire":32,mementi:24,
-"possibility-spaces":24,"perimeter-town":24,"seasons-of-mobility":28,"latent-couture":21,
-bytegans:24,"rabbit-takeover":7,sightseers:24,"cope-vol-1":24,"ai-spaceships":24};
+const PL={cents:24,"painting-with-fire":32,mementi:24,"possibility-spaces":24,
+"perimeter-town":24,"seasons-of-mobility":28,"latent-couture":21,"rabbit-takeover":7,
+sightseers:24,"cope-vol-1":24,"ai-spaceships":24,
+/* the three on-chain sets rotate the SVGs themselves, so those cards animate */
+reflection:[24,"reflection","reflection","svg"],
+wunderkammer:[36,"wunderkammer-works","wunderkammer","svg"],
+bytegans:[24,"bytegans","bytegan","svg"]};
+/* a plain count means img/collections/<slug>/<slug>-NN.jpg; an array spells out
+   [count, folder, filename prefix, extension] for the sets that live elsewhere */
+const works=s=>{const p=PL[s],A=Array.isArray(p);
+  const n=A?p[0]:p,d=A?p[1]:"collections/"+s,x=A?p[2]:s,e=A?p[3]:"jpg";
+  return Array.from({length:n},(_,j)=>
+    "img/"+d+"/"+x+"-"+String(j+1).padStart(2,"0")+"."+e);};
 const slugOf=c=>c[2].split("/").pop();
 document.getElementById("g").innerHTML=C.map((c,i)=>{
   const s=slugOf(c),rot=PL[s]?' data-p="'+s+'" data-i="'+i+'"':'';
@@ -254,8 +264,7 @@ document.getElementById("g").innerHTML=C.map((c,i)=>{
   const st=[...document.querySelectorAll(".card[data-p]")].map((el,n)=>{
     const s=el.dataset.p,im=el.querySelectorAll(".im img");
     return {el,on:false,k:0,front:0,a:im[0],b:im[1],due:1800+n*700,
-      q:shuf(Array.from({length:PL[s]},(_,j)=>
-        "img/collections/"+s+"/"+s+"-"+String(j+1).padStart(2,"0")+".jpg"))};
+      q:shuf(works(s))};
   });
   const ix=new Map(st.map((s,n)=>[s.el,n]));
   const io=new IntersectionObserver(es=>es.forEach(e=>{st[ix.get(e.target)].on=e.isIntersecting;}),
