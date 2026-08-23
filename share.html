@@ -673,11 +673,98 @@ function wunderkammerFrames(w, size) {
   });
 }
 
+/* --------------------------------------------------------------------------
+ * Reflection: rebuild the artist's smooth cascade from the minted file.
+ *
+ * A minted Reflection carries only SEVEN fades. The artist's Francisco
+ * Carolinum renders have 20-26, and the minted file contains everything needed
+ * to reconstruct them: HTML comments number each painting pass, and
+ * startanim/endanim bracket the seven he minted. Walk the groups from pass 11,
+ * give each drawn layer its own fade one every 0.4s, and leave the minted seven
+ * alone.
+ *
+ * This is a direct port of sovrn-pages/tools/reflection-smooth.py, which proves
+ * itself by reproducing six of the artist's own renders exactly. The port was
+ * checked the same way: byte-identical output to that script on tokens 0, 515,
+ * 700, 884, 883 and 998. If you change anything here, re-check it that way.
+ * -------------------------------------------------------------------------- */
+var ROWCLS = ["fortyeightrows", "eightyrows", "twentyfourrows"];
+var FADE_STEP = 0.4;
+
+// Python's str() on a float keeps a trailing ".0"; "%g" strips trailing zeros.
+// Both appear in the output, and matching them is what makes it byte-identical.
+function pyFloat(v) { return Number.isInteger(v) ? v.toFixed(1) : String(v); }
+function pyG(v) { return String(Number(v.toPrecision(6))); }
+
+function nextNonSpace(svg, pos) {
+  var i = pos;
+  while (i < svg.length && /\s/.test(svg.charAt(i))) i++;
+  return svg.substr(i, 12);
+}
+
+function scanGroups(svg) {
+  var gs = [], sec = -1;
+  var re = /<!--([\s\S]*?)-->|<g\b([^>]*?)(\/?)>/g, m;
+  while ((m = re.exec(svg)) !== null) {
+    if (m[1] !== undefined) {
+      var n = /^\s*(\d+):/.exec(m[1]);
+      if (n) sec = parseInt(n[1], 10);
+      continue;
+    }
+    var cls = /class="([^"]+)"/.exec(m[2]);
+    var rest = nextNonSpace(svg, re.lastIndex);
+    gs.push({ pos: re.lastIndex, sec: sec, cls: cls ? cls[1] : null,
+              minted: rest.indexOf("<animate") === 0,
+              empty: !!m[3] || rest.indexOf("</g>") === 0 });
+  }
+  return gs;
+}
+
+function fadePlan(svg) {
+  var gs = scanGroups(svg);
+  var p20 = gs.filter(function (g) { return g.sec === 20; });
+  var p20dead = p20.some(function (g) { return g.empty; });
+  var p20last = p20.length ? p20[p20.length - 1] : null;
+  var out = [], k = 0, seen13 = false;
+  for (var i = 0; i < gs.length; i++) {
+    var g = gs[i];
+    if (g.sec < 11 || g.minted) continue;
+    // pass 13's opening group holds a slot in the sequence but does not fade
+    if (g.sec === 13 && !seen13) { seen13 = true; k++; continue; }
+    // the grid beneath the strokes never fades
+    if (g.sec === 11 && ROWCLS.indexOf(g.cls) >= 0) continue;
+    // pass 20 fades nothing when it painted nothing, and its closing wrapper
+    // really belongs to pass 21
+    if (g.sec === 20 && (p20dead || g === p20last)) continue;
+    // passes 19 and 20 fade their unclassed wrappers too; everything else needs a class
+    if (!(g.cls || g.sec === 19 || g.sec === 20)) continue;
+    out.push([g.pos, Number((k * FADE_STEP).toFixed(10))]);
+    k++;
+  }
+  return out;
+}
+
+function fadeTag(begin) {
+  var k3 = 0.125 + 0.0625 * begin;
+  return '<animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" '
+       + 'keyTimes="0;0.0625;' + pyG(k3) + ';' + pyG(k3 + 0.0625) + ';1" '
+       + 'begin="' + pyFloat(begin) + 's" dur="8s" '
+       + 'repeatCount="indefinite" fill="freeze" />';
+}
+
+function smoothReflection(svg) {
+  var ins = fadePlan(svg).sort(function (a, b) { return b[0] - a[0]; });
+  for (var i = 0; i < ins.length; i++) {
+    svg = svg.slice(0, ins[i][0]) + fadeTag(ins[i][1]) + svg.slice(ins[i][0]);
+  }
+  return svg;
+}
+
 // Reflection animates with SMIL. Serialising a seeked SVG would just give back
 // the original markup, so instead each <animate> is evaluated at time t and
 // written onto its parent as a static opacity, then removed.
 function reflectionFrames(w, size) {
-  var svg = svgOf(w);
+  var svg = smoothReflection(svgOf(w));
   var doc = new DOMParser().parseFromString(svg, "image/svg+xml");
   var anims = [].slice.call(doc.querySelectorAll("animate"));
   var dur = 8;
@@ -691,6 +778,10 @@ function reflectionFrames(w, size) {
       attr: a.getAttribute("attributeName") || "opacity",
       values: (a.getAttribute("values") || "").split(";").map(parseFloat),
       keys: (a.getAttribute("keyTimes") || "").split(";").map(parseFloat),
+      // Every added fade is staggered purely by `begin`; ignoring it would put
+      // all of them in lockstep and undo the whole cascade.
+      begin: parseFloat(a.getAttribute("begin") || "0") || 0,
+      dur: parseFloat(a.getAttribute("dur") || "8") || 8,
       node: a
     };
   });
@@ -703,7 +794,10 @@ function reflectionFrames(w, size) {
       step = step.then(function () {
         plan.forEach(function (p) {
           if (p.values.length < 2 || p.values.length !== p.keys.length) return;
-          p.parent.setAttribute(p.attr, String(valueAt(p.values, p.keys, frac)));
+          // Each animation runs on its own clock: shift global time by `begin`
+          // and wrap, since these repeat indefinitely.
+          var local = (((frac * dur - p.begin) % p.dur) + p.dur) % p.dur / p.dur;
+          p.parent.setAttribute(p.attr, String(valueAt(p.values, p.keys, local)));
         });
         var text = new XMLSerializer().serializeToString(doc);
         return rasterise(svgToUri(text), size).then(function (im) {
