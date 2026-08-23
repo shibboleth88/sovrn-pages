@@ -158,12 +158,11 @@ const NAV=(()=>{
   const group=(label,rows)=>'<li><div class="grp" role="button" tabindex="0" aria-expanded="false">'+
     esc(label)+'<span class="tog" aria-hidden="true">+</span></div><ul class="sub">'+
     rows.map(r=>item(r[0],r[1])).join("")+'</ul></li>';
-  return item("Home","https://www.sovrn.art/home")
-    + group("Curated", C.map(c=>[c[0],c[2]]))
-    + group("Museums", MU.map(m=>[m[0],m[3]]))
+  /* venue only in the menu — the city stays on the ledger below */
+  return group("Curated", C.map(c=>[c[0],c[2]]))
+    + group("Museums", MU.map(m=>[m[0].split(",")[0],m[3]]))
     + item("Marketplaces","https://www.sovrn.art/marketplaces")
-    + item("About","https://www.sovrn.art/about")
-    + item("Contact","https://www.sovrn.art/contact");
+    + item("About","https://www.sovrn.art/about");
 })();
 const mb=document.getElementById("mb"),mn=document.getElementById("mn");
 mn.innerHTML=NAV;
