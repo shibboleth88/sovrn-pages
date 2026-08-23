@@ -17,6 +17,7 @@
           --accent:#5cc2ba;--on-accent:#10201e;--card:#1d2027}
   }
   *{box-sizing:border-box}
+  [hidden]{display:none!important}
   body{margin:0;background:var(--paper);color:var(--ink);
        font:400 15px/1.55 "IBM Plex Sans",system-ui,sans-serif}
   header{padding:18px 20px 14px;border-bottom:1px solid var(--rule)}
@@ -145,16 +146,12 @@
     background:linear-gradient(to top,rgba(8,10,12,.8),rgba(8,10,12,0));
     font:400 9.5px/1.3 "IBM Plex Mono",monospace}
   .crow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 0}
-  /* [hidden] loses to a class that sets display, so say it outright. Single
-     mode was still showing the composite size box and a dead Make button. */
-  .crow[hidden],.slots[hidden]{display:none}
   .chint{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
          margin:9px 0 0}
   .warn{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--accent);margin:9px 0 0}
   /* Real progress, not a spinner: a 14s Reflection build has a known frame count,
      so show how far along it is. */
   .prog{margin:11px 0 0;max-width:340px}
-  .prog[hidden]{display:none}
   .track{height:3px;background:var(--rule);border-radius:2px;overflow:hidden}
   .bar{height:100%;width:0;background:var(--accent);border-radius:2px;
        transition:width .18s linear}
@@ -201,6 +198,7 @@
         <option value="1440" selected>1440px</option>
       </select>
     </label>
+    <label><input type="checkbox" id="ctitles"> titles</label>
     <button class="go" id="mkgrid" disabled>Make it</button>
     <button class="go ghost" id="clearset">Clear</button>
   </div>
@@ -220,6 +218,7 @@
             <option value="1080">1080px</option>
           </select>
         </label>
+        <label id="stitlebox"><input type="checkbox" id="stitles"> title</label>
         <button class="go" id="dl">Download GIF</button>
         <button class="go ghost" id="add">Add to set</button>
         <button class="go ghost" id="src">Original SVG</button>
@@ -858,6 +857,7 @@ function chooseResult(r) {
 // download button.
 function singleOnly(on) {
   $("ssize").hidden = !on;
+  $("stitlebox").hidden = !on;
   $("add").hidden = !on;
   $("src").hidden = !on;
 }
@@ -1333,7 +1333,7 @@ var built = null;
 
 function build() {
   var mine = token, w = sel;
-  var size = parseInt($("size").value, 10);
+  var size = parseInt($("size").value, 10), caps = withTitles;
   $("dl").disabled = true;
   $("warn").textContent = "";
   showProgress("Rendering frames", 0, 1);
@@ -1349,11 +1349,13 @@ function build() {
     // Encoding is one synchronous stretch, so paint the label before starting it
     // or it never appears.
     showProgress("Encoding the GIF", RENDER_SHARE, 1);
-    return yieldToPaint().then(function () { return r; });
+    return yieldToPaint().then(function () {
+      return caps ? captioned(r, w.title) : r;
+    });
   }).then(function (r) {
     if (!r || mine !== token) return;
     var blob = GIF.encode(r.frames, r.delays, r.colours);
-    built = { blob: blob, size: size, key: w.slug + ":" + w.id };
+    built = { blob: blob, size: size, key: w.slug + ":" + w.id + (caps ? ":t" : "") };
     var img = $("prev");
     img.style.width = r.frames[0].width + "px";
     img.src = URL.createObjectURL(blob);
@@ -1397,7 +1399,8 @@ $("size").onchange = function () {
 // a wall. That is what makes these ratios possible without cropping anything:
 // two squares side by side are naturally 2:1 and three are 3:1, both wider than
 // X shows whole, but on a 16:9 ground they simply sit with space around them.
-var GROUND = "#16181d";            // the site's ink — a gallery wall, not a page
+var GROUND = "#000000";            // black, so the ground reads as nothing at all
+var withTitles = false;            // burn each work's title in under it?
 var theSet = [], shape = 1;     // 1 = single; 2/3/4 = a tych
 var COMPOSE_FRAMES = 30;           // one full loop of every work, together
 
@@ -1408,23 +1411,71 @@ var LAYOUTS = {
   4: { name: "quadtych", cols: 2, rows: 2, ratio: 1,      label: "1:1" }
 };
 
+// A title sits in its own band directly under its work, like a wall label, so
+// there is never a question which title belongs to which picture.
+var CAP_FONT = '"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
+
+function capHeight(width) { return Math.max(13, Math.round(width * 0.030)); }
+
+// Shrink to fit, and ellipsize only when even the smallest size will not do —
+// a Reflection title can run to fifty characters and must not overrun its work.
+function drawCap(ctx, text, x, y, w, h) {
+  var t = String(text || ""), px = Math.max(9, Math.round(h * 0.5));
+  while (px > 9) {
+    ctx.font = "400 " + px + "px " + CAP_FONT;
+    if (ctx.measureText(t).width <= w) break;
+    px--;
+  }
+  ctx.font = "400 " + px + "px " + CAP_FONT;
+  if (ctx.measureText(t).width > w) {
+    while (t.length > 1 && ctx.measureText(t + "\u2026").width > w) t = t.slice(0, -1);
+    t = t.replace(/\s+$/, "") + "\u2026";
+  }
+  ctx.fillStyle = "#9aa1ad";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+  ctx.fillText(t, x, Math.round(y + h * 0.52));
+}
+
 // Geometry for a layout at a given output width: the largest square that lets
 // every work fit with its margin and gutters, and the block centred on the ground.
-function geometry(lay, width) {
+function geometry(lay, width, caps) {
   var W = width, H = Math.round(width / lay.ratio);
   var m = Math.round(width * 0.035), g = Math.round(width * 0.028);
+  var capH = caps ? capHeight(width) : 0;   // each row is a band taller
   var cell = Math.floor(Math.min(
     (W - 2 * m - (lay.cols - 1) * g) / lay.cols,
-    (H - 2 * m - (lay.rows - 1) * g) / lay.rows));
+    (H - 2 * m - (lay.rows - 1) * g - lay.rows * capH) / lay.rows));
   var blockW = cell * lay.cols + g * (lay.cols - 1);
-  var blockH = cell * lay.rows + g * (lay.rows - 1);
-  return { W: W, H: H, cell: cell, gutter: g,
+  var blockH = (cell + capH) * lay.rows + g * (lay.rows - 1);
+  return { W: W, H: H, cell: cell, gutter: g, capH: capH,
            left: Math.round((W - blockW) / 2), top: Math.round((H - blockH) / 2) };
 }
 
 function cellBox(lay, geo, k) {
   return { x: geo.left + (k % lay.cols) * (geo.cell + geo.gutter),
-           y: geo.top + Math.floor(k / lay.cols) * (geo.cell + geo.gutter) };
+           y: geo.top + Math.floor(k / lay.cols) * (geo.cell + geo.capH + geo.gutter) };
+}
+
+// One work, with its title under it, on the same ground the tychs use.
+function captioned(r, title) {
+  var w = r.frames[0].width, h = r.frames[0].height, capH = capHeight(w);
+  var c = document.createElement("canvas");
+  c.width = w; c.height = h + capH;
+  var ctx = c.getContext("2d", { willReadFrequently: true });
+  var scratch = document.createElement("canvas");
+  scratch.width = w; scratch.height = h;
+  var sctx = scratch.getContext("2d");
+  var out = [];
+  for (var i = 0; i < r.frames.length; i++) {
+    ctx.fillStyle = GROUND;
+    ctx.fillRect(0, 0, c.width, c.height);
+    sctx.putImageData(r.frames[i], 0, 0);
+    ctx.drawImage(scratch, 0, 0);
+    drawCap(ctx, title, 0, h, w, capH);
+    out.push(ctx.getImageData(0, 0, c.width, c.height));
+  }
+  return { frames: out, delays: r.delays, colours: r.colours };
 }
 
 function inSet(w) {
@@ -1521,7 +1572,7 @@ function renderComposer() {
   // the hint, which was already saying it.
   $("mkgrid").disabled = !ready;
   $("mkgrid").textContent = "Make " + lay.name;
-  var g = geometry(lay, parseInt(($("csize") || {}).value || 1440, 10));
+  var g = geometry(lay, parseInt(($("csize") || {}).value || 1440, 10), withTitles);
   $("chint").textContent = ready
     ? lay.label + " on a black ground · " + g.W + "×" + g.H + " · " + g.cell
       + "px per work — whole, nothing cropped. Drag the boxes to rearrange."
@@ -1584,6 +1635,25 @@ $("add").onclick = function () { if (sel && sel.uri) addToSet(sel); };
 $("clearset").onclick = function () { theSet = []; renderComposer(); };
 $("csize").onchange = function () { renderComposer(); };
 
+// The same preference either way, so the box is always to hand — beside Make
+// when composing, beside Download when it is a single work.
+function syncTitleBoxes() {
+  $("ctitles").checked = withTitles;
+  $("stitles").checked = withTitles;
+}
+$("ctitles").onchange = function () {
+  withTitles = this.checked;
+  syncTitleBoxes();
+  // Deliberately not clearing `built`: what is on screen is the composite that
+  // was made, and Download should keep handing over exactly that until Make is
+  // pressed again.
+  renderComposer();
+};
+$("stitles").onchange = function () {
+  withTitles = this.checked;
+  syncTitleBoxes();
+};
+
 // Frames for one work at whatever size its cell needs.
 function framesFor(w, size, frameCount, onStep) {
   if (w.slug === "bytegans") return bytegansFrames(w, size, onStep);
@@ -1599,7 +1669,7 @@ $("mkgrid").onclick = function () {
   // what governs sharpness, and at 480 a triptych cell is only 140px — a 1200px
   // Reflection crushed to nothing. Measured worst case, four Reflections in a
   // quadtych at 1440: 650px cells and 6.69MB, against X's 14MB ceiling.
-  var geo = geometry(lay, parseInt($("csize").value, 10));
+  var geo = geometry(lay, parseInt($("csize").value, 10), withTitles);
 
   $("mkgrid").disabled = true;
   $("panel").hidden = false;
@@ -1655,6 +1725,9 @@ $("mkgrid").onclick = function () {
           }
           sctx.putImageData(f, 0, 0);
           ctx.drawImage(scratch, box.x, box.y, geo.cell, geo.cell);
+          if (geo.capH) {
+            drawCap(ctx, theSet[k].title, box.x, box.y + geo.cell, geo.cell, geo.capH);
+          }
         }
         frames.push(ctx.getImageData(0, 0, geo.W, geo.H));
         delays.push(150);
@@ -1749,7 +1822,8 @@ $("dl").onclick = function () {
   if (!sel || !sel.uri) return;
   var want = parseInt($("size").value, 10);
   // Reuse the last render only if it is this work at this size.
-  if (built && built.key === sel.slug + ":" + sel.id && built.size === want) {
+  if (built && built.key === sel.slug + ":" + sel.id + (withTitles ? ":t" : "")
+      && built.size === want) {
     deliver();
     return;
   }
