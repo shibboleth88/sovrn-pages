@@ -9,7 +9,7 @@
 body{background:var(--paper);color:var(--ink);font:400 15px/1.55 "IBM Plex Sans",sans-serif;padding:26px 22px 46px}
 .wrap{max-width:1060px;margin:0 auto}
 a:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
-.banner{overflow:hidden;margin:-26px -22px 34px;background:var(--ink);-webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent);mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent)}
+.banner{overflow:hidden;margin:-26px -22px 34px;background:var(--ink)}
 .mg{display:grid;gap:2px}
 @media(max-width:640px){.banner{margin-bottom:26px}}
 .mg img,.mg span{display:block;width:100%;height:100%}
@@ -238,7 +238,11 @@ const CL="f3lkkskcehronolsk4hwj3qfmha3ehncrweievbedqqxoxnkq6dmn9hyi2gjeygkfrfxdo
   warm=i=>parseInt(CL[(i-1)*2+1],36)/35;
 
 function mosaic(id,art,cts,p){
-  const rows=MQ.matches?2:3, cell=MQ.matches?46:54, cols=MQ.matches?46:58,
+  const el=document.getElementById(id),
+        rows=MQ.matches?2:3, cell=MQ.matches?46:54,
+        /* enough columns to fill the frame and no more, so the whole band is
+           on screen; turnover cycles the rest of the pool through it */
+        cols=Math.max(6,Math.ceil((el.parentElement.clientWidth+2)/(cell+2))),
         R=prng(SEED+p.salt), q={};
   /* Two slow waves drift across the band, one in lightness and one in warmth.
      Tiles are chosen to follow them, so the mosaic gathers into dark and light
@@ -312,7 +316,6 @@ function mosaic(id,art,cts,p){
     }
     put(r,c,w,h);
   }
-  const el=document.getElementById(id);
   /* Replace one cell with another work from the same pool, at the same size and
      kind, chosen against the field at that column so the passage keeps its
      colour. Decode first: a cell must never fade up onto a blank. */
@@ -327,6 +330,12 @@ function mosaic(id,art,cts,p){
   el.style.gridTemplateRows="repeat("+rows+","+cell+"px)";
   el.style.gridTemplateColumns="repeat("+cols+","+cell+"px)";
   el.innerHTML=out;
+  /* the column count rounds up, so a little of the band sits past the frame.
+     Split it between the two edges: a slight bleed both sides reads as a
+     full-bleed mosaic, one clipped tile on the right reads as a mistake. */
+  const over=cols*cell+(cols-1)*2-el.parentElement.clientWidth;
+  el.style.marginLeft=(over>0?-over/2:0)+"px";
+  el._cols=cols;
 }
 /* the upper band runs finer, the lower one coarser, so they read as a pair
    rather than a repeat */
@@ -336,6 +345,12 @@ const drawBands=()=>{
 };
 drawBands();
 MQ.addEventListener("change",drawBands);
+/* the column count comes from the frame, so a resize that changes it rebuilds */
+let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{
+  const cell=MQ.matches?46:54;
+  const stale=["ban","ban2"].some(i=>{const el=document.getElementById(i);
+    return el&&el._cols!==Math.max(6,Math.ceil((el.parentElement.clientWidth+2)/(cell+2)));});
+  if(stale)drawBands();},200);});
 /* Turnover, and the only thing that moves: the bands hold still. One cell
    somewhere in the mosaic dissolves into another work every couple of seconds
    -- only in a band that is on screen, only cells actually in the window, and

@@ -342,10 +342,28 @@ window, and never while the tab is hidden. It stops for
 `prefers-reduced-motion`, and under Data Saver, since every turn pulls another
 tile.
 
-A consequence worth knowing: roughly 2000px of each band sits outside the
-window and, with nothing scrolling, is never seen. Those tiles still act as the
-pool that turnover draws from, so nothing is wasted, but no visitor sees that
-part of the composition.
+**The band is sized to the frame.** Columns are computed from
+`parentElement.clientWidth`, so the whole mosaic is on screen — about 22 columns
+at a 1240px window, against the 58 it used to run. The count rounds up, so a
+little sits past the frame; that surplus is split between the two edges with a
+negative `margin-left`, because a slight bleed on both sides reads as full-bleed
+while one clipped tile on the right reads as a mistake. A resize that changes
+the column count rebuilds the band. There is no edge mask any more: the band now
+ends where the frame does, so fading its own last tiles would be wrong.
+
+Nothing is lost by the smaller band — the rest of the pool is what turnover
+draws from, and with roughly 69 cells instead of 213 a given cell now comes
+round about every two and a half minutes rather than every seven.
+
+**What turnover costs.** Measured over four minutes at one swap per 2.2s: 69
+tiles on screen at the start, 176 distinct tiles requested by the end, so about
+27 new tiles a minute — early on, essentially every swap is a fresh fetch.
+Tiles average 13.6KB, so roughly 370KB a minute. The important part is that this
+is bounded: the whole library is 435 files and 5.9MB, and once a visitor has
+seen enough of it every further swap is a cache hit and costs nothing. Running
+turnover faster does not raise the total, it just reaches the ceiling sooner —
+at one swap every 300ms it would saturate in two or three minutes. CPU is not
+the constraint at any rate: a swap is one opacity transition on one element.
 
 Two dead ends, in case either looks tempting again:
 
