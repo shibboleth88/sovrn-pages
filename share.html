@@ -124,14 +124,15 @@
     background:var(--accent)}
   .shapes .ratio{opacity:.65;margin-left:6px}
   /* The slots mirror the composition, so the shape is legible before you build it. */
-  .slots{display:grid;gap:6px;width:100%;max-width:430px;margin:0 0 12px}
-  .slot{position:relative;overflow:hidden;border-radius:3px;background:var(--card);
-        border:1px dashed var(--rule);min-height:0}
-  .slot.filled{border-style:solid}
+  .slots{display:grid;gap:6px;width:100%;max-width:430px;margin:0 0 12px;
+         background:#16181d;padding:8px;border-radius:4px}
+  .slot{position:relative;overflow:hidden;border-radius:2px;background:#1e2128;
+        border:1px dashed #363b45;min-height:0}
+  .slot.filled{border-color:transparent}
   .slot img{width:100%;height:100%;object-fit:cover;display:block}
   .slot .n{position:absolute;inset:0;display:flex;align-items:center;
-    justify-content:center;color:var(--slate);
-    font:400 15px/1 "IBM Plex Mono",monospace;opacity:.45}
+    justify-content:center;color:#7b8290;
+    font:400 15px/1 "IBM Plex Mono",monospace;opacity:.7}
   .slot .rm{position:absolute;top:4px;right:4px;width:19px;height:19px;padding:0;
     border:none;border-radius:50%;background:rgba(8,10,12,.68);color:#fff;
     font:500 12px/1 "IBM Plex Mono",monospace;cursor:pointer;letter-spacing:0;
@@ -221,6 +222,13 @@
     <div class="shapes" id="shapes" role="group" aria-label="Composition"></div>
     <div class="slots" id="slots"></div>
     <div class="crow">
+      <label>size
+        <select id="csize">
+          <option value="720">720px</option>
+          <option value="1080">1080px</option>
+          <option value="1440" selected>1440px</option>
+        </select>
+      </label>
       <button class="go" id="mkgrid" disabled>Make it</button>
       <button class="go ghost" id="clearset">Clear</button>
     </div>
@@ -920,9 +928,10 @@ function openWork(r) {
 // Reflection is pure vector, ~700 paths, natively 1200px — at 480 the fine work
 // is simply gone, so it gets the same choice as the others and defaults high.
 function sizesFor(slug) {
-  // Reflection is 480 only. It is the heavy one — 868 paths against a byteGAN's
-  // zero — and at 720 a tych containing one is too big to post comfortably.
-  return slug === "reflection" ? [480] : [480, 720];
+  // Reflection renders 72 frames against the others' handful, so it is the one
+  // that grows: 3.9MB at 720, roughly 8.8MB at 1080, and past X's 14MB by 1440.
+  // Composites are a separate control and go larger, because they use 30 frames.
+  return slug === "reflection" ? [480, 720, 1080] : [480, 720, 1080];
 }
 
 function syncSizes(slug) {
@@ -1374,7 +1383,7 @@ $("size").onchange = function () {
 // a wall. That is what makes these ratios possible without cropping anything:
 // two squares side by side are naturally 2:1 and three are 3:1, both wider than
 // X shows whole, but on a 16:9 ground they simply sit with space around them.
-var GROUND = "#e9e9e5";            // the site's paper
+var GROUND = "#16181d";            // the site's ink — a gallery wall, not a page
 var theSet = [], shape = 3;
 var COMPOSE_FRAMES = 30;           // one full loop of every work, together
 
@@ -1484,10 +1493,13 @@ function renderComposer() {
   $("mkgrid").disabled = !ready;
   $("mkgrid").textContent = ready ? "Make " + lay.name
     : "Add " + (shape - theSet.length) + " more";
+  var g = geometry(lay, parseInt(($("csize") || {}).value || 1440, 10));
   $("chint").textContent = ready
-    ? lay.label + " on a paper ground — every work whole, nothing cropped."
-    : "Open a work and press “Add to set”. " + lay.name.charAt(0).toUpperCase()
-      + lay.name.slice(1) + " needs " + shape + ".";
+    ? lay.label + " on a black ground · " + g.W + "×" + g.H + " · " + g.cell
+      + "px per work — whole, nothing cropped."
+    : "Add works with the + beside a search result, or open one and press “Add to"
+      + " set”. " + lay.name.charAt(0).toUpperCase() + lay.name.slice(1)
+      + " needs " + shape + ".";
   syncAddButton();
 }
 
@@ -1504,6 +1516,7 @@ function syncAddButton() {
 
 $("add").onclick = function () { if (sel && sel.uri) addToSet(sel); };
 $("clearset").onclick = function () { theSet = []; renderComposer(); };
+$("csize").onchange = function () { renderComposer(); };
 
 // Frames for one work at whatever size its cell needs.
 function framesFor(w, size, frameCount, onStep) {
@@ -1516,10 +1529,11 @@ $("mkgrid").onclick = function () {
   var lay = LAYOUTS[shape];
   if (theSet.length !== shape) return;
   var mine = ++token;
-  var heavy = theSet.some(function (w) { return w.slug === "reflection"; });
-  var want = parseInt($("size").value, 10);
-  if (heavy && want > 480) want = 480;      // same reason as the single download
-  var geo = geometry(lay, want);
+  // Composites carry their own size, and it runs large on purpose: the cell is
+  // what governs sharpness, and at 480 a triptych cell is only 140px — a 1200px
+  // Reflection crushed to nothing. Measured worst case, four Reflections in a
+  // quadtych at 1440: 650px cells and 6.69MB, against X's 14MB ceiling.
+  var geo = geometry(lay, parseInt($("csize").value, 10));
 
   $("mkgrid").disabled = true;
   $("panel").hidden = false;
@@ -1584,8 +1598,7 @@ $("mkgrid").onclick = function () {
       $("dl").disabled = false;
       var kb = blob.size / 1024;
       $("warn").textContent = COMPOSE_FRAMES + " frames · " + geo.W + "×" + geo.H
-        + " (" + lay.label + ")" + (heavy && parseInt($("size").value, 10) > 480
-            ? " · held at 480 because Reflection is in it" : "") + " · "
+        + " (" + lay.label + ") · " + geo.cell + "px cells · "
         + (kb > 1024 ? (kb / 1024).toFixed(1) + "MB" : Math.round(kb) + "KB")
         + " · " + (1000 / 150).toFixed(1) + " fps"
         + (blob.size > 15 * 1024 * 1024
