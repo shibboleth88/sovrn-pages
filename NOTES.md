@@ -64,6 +64,23 @@ name in `~/Downloads` and then discards it.
 paragraphs, list items, images, links — which is what the copy and the image
 sequence should be rebuilt from.
 
+**A "Webpage, Complete" save beats the scrape.** If the page can be saved from
+a browser, that archive holds the *original* assets — on Painting with Fire,
+1080–1280px JPEGs and PNGs where the CDN scrape only yielded 256–512px, because
+Sites serves downscaled renditions in the page. Take the saved copy when there
+is one; scrape only when there is not. The saved HTML is also a full DOM
+snapshot, so `tools/sites-extract.py` reads its structure cleanly even though
+the page will not re-render offline (its layout depends on scripts tied to the
+live domain).
+
+**Do not try to shrink an animated GIF here.** Both PIL and ffmpeg made the
+Painting with Fire animations *larger* — PIL took a 6.3MB file to 19.1MB by
+writing full frames instead of deltas, and ffmpeg's palettegen route took an
+18MB file to 28MB. Even H.264 only got that one to 14MB, because the source is
+high-entropy AI animation that does not compress. The artists' own encodings
+are already the best available: keep them byte-for-byte, and where one is too
+heavy to ship, use its first frame as a still and say so.
+
 **Most of what you scrape is not artwork.** Across the nine collection pages,
 171 images came down and only 81 were worth keeping. The rest were: testimonial
 cards, which are other people's quotes rendered as flat bright-green images and
