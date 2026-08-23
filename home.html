@@ -232,7 +232,9 @@ const PL={cents:24,"painting-with-fire":32,mementi:24,"possibility-spaces":24,
 "perimeter-town":24,"seasons-of-mobility":28,"latent-couture":21,"rabbit-takeover":7,
 sightseers:24,"cope-vol-1":24,"ai-spaceships":24,
 /* the three on-chain sets rotate the SVGs themselves, so those cards animate */
-reflection:[24,"reflection","reflection","svg"],
+/* the six fully animated renders; the raster.art copies in img/reflection are
+   a stripped variant whose content layers carry no <animate> at all */
+reflection:[6,"collections/reflection","reflection","svg"],
 wunderkammer:[36,"wunderkammer-works","wunderkammer","svg"],
 bytegans:[24,"bytegans","bytegan","svg"]};
 /* a plain count means img/collections/<slug>/<slug>-NN.jpg; an array spells out
@@ -259,11 +261,13 @@ document.getElementById("g").innerHTML=C.map((c,i)=>{
   const cn=navigator.connection; if(cn&&cn.saveData)return;
   const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));
     const v=a[i];a[i]=a[j];a[j]=v;}return a;};
-  const TICK=1400,DWELL=14000;
+  /* Reflection's layers cascade over a full fifteen seconds before the loop
+     comes round, so that card holds longer than the rest. */
+  const TICK=1400,DWELL=14000,HOLD={reflection:19000};
   let clock=0;
   const st=[...document.querySelectorAll(".card[data-p]")].map((el,n)=>{
     const s=el.dataset.p,im=el.querySelectorAll(".im img");
-    return {el,on:false,k:0,front:0,a:im[0],b:im[1],due:1800+n*700,
+    return {el,s,on:false,k:0,front:0,a:im[0],b:im[1],due:1800+n*700,
       q:shuf(works(s))};
   });
   const ix=new Map(st.map((s,n)=>[s.el,n]));
@@ -284,7 +288,7 @@ document.getElementById("g").innerHTML=C.map((c,i)=>{
     for(const s of st)if(s.on&&clock>=s.due&&(!pick||s.due<pick.due))pick=s;
     if(!pick)return;
     swap(pick);
-    pick.due=clock+DWELL+Math.random()*8000;
+    pick.due=clock+(HOLD[pick.s]||DWELL)+Math.random()*8000;
   },TICK);
 })();
 document.getElementById("m").innerHTML=MU.map(m=>
