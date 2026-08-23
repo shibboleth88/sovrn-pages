@@ -97,6 +97,140 @@ gained; leave them byte-for-byte.
 
 ---
 
+## Reconstructing a Sites page faithfully
+
+This is the method that finally worked, after two rebuilds that did not. Read
+the first rule before anything else.
+
+### Never judge the layout from tag order
+
+The mistake that cost the most: I read these pages by walking the HTML for
+`<img>` and `<p>` in document order, saw runs of ten and twenty-one images, and
+concluded the pages were chaotic. **Tag order says nothing about layout.** Sites
+lays out in a grid, so a run of twenty-one image tags was a three-column
+checkerboard, and a run of ten was five two-column feature rows. Both were
+deliberate and rather good.
+
+Render the page and measure it. Everything else follows from that.
+
+### The pipeline
+
+Chrome has to be a real one driven over the DevTools protocol — the image CDN
+only serves to a browser that has loaded the page, and the token in each URL
+changes per render (see the section above). Start it once and run three passes:
+
+```bash
+CH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+"$CH" --headless=new --disable-gpu --remote-debugging-port=9222 \
+      --user-data-dir=/tmp/prof --window-size=1280,1000 about:blank &
+
+node tools/sites-geom.mjs  geom/  <slug>   # every box: what sits where
+node tools/sites-bg.mjs    bg/    <slug>   # the CSS background heroes
+node tools/sites-grab.mjs  raw/   <slug>   # the content images
+```
+
+**`sites-bg.mjs` is not optional.** Every one of these pages opens on a
+full-bleed artwork carrying the title in white, and it is a CSS
+`background-image`, not an `<img>`. An image scrape cannot see it. That single
+omission is why the first nine pages I built all lacked a hero.
+
+### Bands: group the boxes, and the design appears
+
+Sort every box by `y` and start a new band whenever an element's top clears the
+bottom of everything in the current one. Each band is a row of the original
+layout, and the elements inside it, sorted by `x`, are its columns. That
+reconstruction is exact — it is the page's own geometry, not an inference.
+
+### Role comes from the displayed size, not the natural size
+
+This is the part that stops an artist's portrait ending up loose in a gallery.
+Judge every image by how large it is *rendered*:
+
+| rendered | role |
+|---|---|
+| under ~110px square | site chrome — logos, social icons. Drop. |
+| height under ~60px | a divider strip |
+| ~362px in a row of three | a gallery tile, or a testimonial card |
+| one image over ~900px wide | a full-width feature |
+| ~362px **sharing its band with prose** | the artist's portrait — belongs in the artist section |
+
+Two more filters that pull their weight:
+
+- **Green-dominant frames are testimonial cards.** Sample a 32×32 thumbnail and
+  test `g > 170 and r,b < 160 and g - max(r,b) > 50` over more than a third of
+  it.
+- **Anything appearing on more than one collection page is chrome.** A
+  perceptual hash across all pages catches the sovrn mark, the Raster wordmark
+  and the social icons in one pass, where a size threshold cannot.
+
+### The testimonial cards are the design, not clutter
+
+Worth stating plainly because I got it wrong twice. On Painting with Fire and
+Possibility Spaces the bright-green cards alternate with bands of artworks in a
+strict checkerboard, with the artist's pull-quotes set between. Strip them and
+the page loses its rhythm entirely. **Keep them as the images they are** —
+never transcribe them; they are other people's words and they belong to the
+page as pictures.
+
+### What only `data-code` will find
+
+Some of the richest content is neither an image nor an `<a>` tag. The Mementi
+interview is a YouTube embed and its references piece a Spotify episode; the GAN
+timeline is a 70,000-character standalone page with 178 entries. All three live
+in `data-code` attributes on the parent page. If a band shows a caption above a
+400px vertical gap with nothing in it, that gap is an embed — go and look.
+
+### Two traps in link extraction
+
+Both of these fail silently, which is how a whole reading list disappeared:
+
+- Requiring `href` to start with `http` drops every **relative** URL.
+- Sites wraps many outbound links as `google.com/url?q=…`, so unwrap the `q`
+  parameter before filtering by domain.
+
+### Animated GIFs: one thing works, everything else backfires
+
+Measured on this collection, re-encoding almost always makes them **bigger** —
+PIL took a 6.3MB file to 19.1MB by writing full frames instead of deltas, and
+ffmpeg's palettegen route took an 18MB file to 28MB. Even H.264 only reached
+14MB. The artists' own encodings are already tight.
+
+The one reliable win is **scaling to the size the page actually displays**. That
+18MB piece renders in a 362px slot; re-encoded at 380px it came out at 2.8MB
+with nothing visibly lost. Frame rate helps when the count is silly — a
+657-frame animation halved at 6fps. Neither helps when the source is already
+small: a 288px file grew when touched. So: check the displayed size first, and
+if the source is not bigger than the slot, leave it alone.
+
+### Verify by rendering, and check what you replaced
+
+Screenshot the rebuilt page and look at it. Two bugs got through everything else
+and were obvious on sight: a pull-quote that had matched the opening paragraph,
+because that paragraph quotes the same line inside itself; and then my fix for
+it, a `str.replace(old, new, 1)` that hit the *first occurrence in the document*
+rather than the one inside the blockquote, and swapped the two. Anchor
+replacements on enough surrounding markup to be unique.
+
+### The house structure these pages resolve to
+
+Hero with the title over it → metadata → the statement → the artist beside their
+portrait → the collection's own rhythm (checkerboard bands, or full-width works,
+or feature rows pairing an image with its text) → pull-quotes between → any
+resources, interviews and reading → links out.
+
+Done: byteGANs, Noctilucent Mementi, Painting with Fire. Still to do:
+Possibility Spaces, Perimeter Town, Rabbit Takeover, Sightseers, cope. Vol 1,
+AI Spaceships — geometry, heroes and assets are already captured for all six.
+
+### One practical note
+
+More than one session works in this repo. Two pushes were rejected mid-task
+because another had landed `share.html` and a batch of notes. `git pull --rebase`
+before starting, inspect `git log HEAD..origin/main` before reconciling, and
+rebase rather than forcing.
+
+---
+
 ## The design system
 
 `--accent` is teal, `#0f6b66`. It replaced a copper `#8a4f2a`, and the value was
