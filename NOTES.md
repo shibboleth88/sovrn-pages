@@ -294,7 +294,22 @@ lower coarser, so the pair does not read as a repeat. The seed comes from the
 clock — **`?mosaic=<n>` pins it**, which is the only way to compare two runs or
 to reproduce something you saw.
 
-Three rules that took a couple of passes to get right:
+**The composition is colour-led.** Each tile carries two base36 digits in the
+`CL` string in `home.html` — lightness, then warmth, where warmth is how far the
+tile leans toward copper scaled by how colourful it is, so greys land mid-scale
+and go anywhere. Two slow waves drift across the band, one per axis, and each
+tile is chosen from the last seven in the bag by whichever sits closest to the
+field there. A small window keeps it a lean rather than a sort. Hue on its own
+is no good for this: 84 of the 223 tiles fall in one warm bin, mostly the
+copper cents. Lightness spans 0.10 to 0.94 evenly and is the axis worth
+composing on, so it is weighted three to one.
+
+Blocks come in five shapes — 1×1, 2×1, 1×2, 2×2 and 3×3, plus a 2×3 — and every
+band gets one full-height anchor somewhere across the middle so the composition
+does not depend on the dice. Large blocks end up covering half the upper band
+and about sixty per cent of the lower one.
+
+Five rules that took a couple of passes to get right:
 
 - **Draw from a bag keyed by size class.** One shared bag lets a large block
   draw a tile that only exists at 160 px, and you get a broken image.
@@ -304,6 +319,21 @@ Three rules that took a couple of passes to get right:
   works around it.
 - **Keep bare cells apart.** Two touching rests merge into what looks like a
   hole rather than a pause.
+- **Let the two rectangle orientations take turns going first.** Sharing one
+  roll means wide always wins it and the band never gets a tall block.
+- **The anchor must not set the spacing clock.** It is placed before the walk
+  starts, so if it updates the `last` column that the `c - last` spacing check
+  reads, every column to its left fails the check and the whole half comes out
+  flat. This one is invisible in the code and obvious in a render.
+- **Place cents on rising odds, not on a threshold.** Firing the moment the
+  running share dips below a sixth drops a penny straight after every large
+  block, at a cadence you can read across the band. Letting the probability
+  rise with the shortfall still averages a sixth but lands irregularly.
+
+Latent Couture is shot tall, so its fourteen banner tiles — `b017 b022 b025
+b040 b046 b063 b091 b099 b117 b122 b151 b164 b178 b185` — are cropped from the
+top in both tiers, or the square crop takes the headpieces off. The same applies
+to its cards, which use `object-position: top`.
 
 The old uniform-grid version flowed in columns of three, which meant a cent
 every sixth tile landed every cent in the same row; it rotated the slot by

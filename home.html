@@ -228,45 +228,86 @@ SEED=(()=>{const q=new URLSearchParams(location.search).get("mosaic");
 const prng=s=>()=>{s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);
   t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
 
+/* Two axes per tile, one base36 digit each: lightness, then warmth. Warmth is
+   how far the tile leans toward copper or away from it, scaled by how colourful
+   it is, so greys sit mid-scale on their own and go anywhere. */
+const CL="f3lkkskcehronolsk4hwj3qfmha3ehncrweievbedqqxoxnkq6dmn9hyi2gjeygkfrfxdo8wkflukejmfrg3wixs9deiffeoerquizqigthgd8evaesmoplt71h5jgdkhjaal2fwktm1lmhnqhkmgyjkesjhphdggaot32iubrie9edslga3fvtimang42hphyffnyhrttimaemhmh7beieldivvuygbmdablngrktgrp29pjzn9oaesahlph5mxreg6gvup7fgooglhgrhll5hnpocqfvf58wo0g0jeophnmpkhf6hoj3hyoip1msijuybdgzazgpjmlsshfaliosdsdji4ghbltyrxgrjj6ifclygtp2feqztzsyszrzszszrzqzqzszrzrzrzrztzrztzrztztzszrzrzrzszrzpyszszrztzszszrzrzsz",
+  lum=i=>parseInt(CL[(i-1)*2],36)/35,
+  warm=i=>parseInt(CL[(i-1)*2+1],36)/35;
+
 function mosaic(id,art,cts,p){
   const rows=MQ.matches?2:3, cell=MQ.matches?46:54, cols=MQ.matches?46:58,
         R=prng(SEED+p.salt), q={};
-  /* draw from a shuffled bag and refill it, so a tile cannot recur nearby */
-  const pick=(kind,src,big)=>{
+  /* Two slow waves drift across the band, one in lightness and one in warmth.
+     Tiles are chosen to follow them, so the mosaic gathers into dark and light
+     passages and warm and cool ones instead of averaging out into noise. */
+  const f1=1+R()*1.8, f2=.7+R()*1.4, a1=R()*6.283, a2=R()*6.283,
+        fieldL=t=>.5+.38*Math.sin(t*6.283*f1+a1),
+        fieldW=t=>.5+.42*Math.sin(t*6.283*f2+a2);
+  /* Draw from a shuffled bag, but look at the last few and take whichever sits
+     closest to the field here. A small window keeps it a lean, not a sort. */
+  const pick=(kind,src,big,tL,tW)=>{
     const key=kind+(big?"L":"S");let bag=q[key];
     if(!bag||!bag.length){bag=q[key]=src.filter(i=>!big||!SMALLONLY.has(i));
       for(let i=bag.length-1;i>0;i--){const j=R()*(i+1)|0,v=bag[i];bag[i]=bag[j];bag[j]=v;}}
-    return bag.pop();};
-  const occ=Array.from({length:rows},()=>new Array(cols).fill(false)),
-    free=(r,c,s)=>{for(let i=0;i<s;i++)for(let j=0;j<s;j++)
-      if(r+i>=rows||c+j>=cols||occ[r+i][c+j])return false;return true;},
-    mark=(r,c,s)=>{for(let i=0;i<s;i++)for(let j=0;j<s;j++)occ[r+i][c+j]=true;};
+    if(tL==null)return bag.pop();
+    let at=bag.length-1,bd=1e9;
+    for(let n=Math.max(0,bag.length-7);n<bag.length;n++){
+      const i=bag[n],d=3*Math.abs(lum(i)-tL)+Math.abs(warm(i)-tW);
+      if(d<bd){bd=d;at=n;}}
+    return bag.splice(at,1)[0];};
   const grid=()=>Array.from({length:rows},()=>new Array(cols).fill(false)),
-    bare=grid(),cent=grid(),
+    occ=grid(),bare=grid(),cent=grid(),
     nextTo=(g,r,c)=>{for(let i=-1;i<2;i++)for(let j=-1;j<2;j++){
       const y=r+i,x=c+j;if(y>=0&&y<rows&&x>=0&&x<cols&&g[y][x])return true;}
-      return false;};
+      return false;},
+    free=(r,c,w,h)=>{for(let i=0;i<h;i++)for(let j=0;j<w;j++)
+      if(r+i>=rows||c+j>=cols||occ[r+i][c+j])return false;return true;},
+    mark=(r,c,w,h)=>{for(let i=0;i<h;i++)for(let j=0;j<w;j++)occ[r+i][c+j]=true;};
   let out="",last=-9,cells=0,cent6=0;
+  const put=(r,c,w,h)=>{
+    mark(r,c,w,h);cells+=w*h;if(w>1||h>1)last=c;
+    const t=c/cols,big=w>1||h>1;
+    out+='<img src="'+T(pick("a",art,big,fieldL(t),fieldW(t)),big)+
+      '" alt="" loading="lazy" style="grid-area:'+(r+1)+'/'+(c+1)+
+      '/span '+h+'/span '+w+'">';};
+  /* every band gets one block at full height, somewhere across the middle, so
+     the composition has an anchor rather than relying on the dice */
+  if(rows>2){const fc=(cols*(.18+.64*R()))|0,fw=R()<.5?3:2;
+    if(free(0,fc,fw,3))put(0,fc,fw,3);
+    last=-9;}   /* the anchor must not set the spacing clock, or every column
+                   to its left fails c-last and the whole half goes flat */
   for(let c=0;c<cols;c++)for(let r=0;r<rows;r++){
     if(occ[r][c])continue;
-    const roll=R();let s=1;
-    if(rows>2&&roll<p.p3&&c-last>4&&free(r,c,3))s=3;
-    else if(roll<p.p2&&c-last>1&&free(r,c,2))s=2;
-    if(s>1)last=c;
-    mark(r,c,s);
-    const area="grid-area:"+(r+1)+"/"+(c+1)+"/span "+s+"/span "+s;
-    if(s===1&&R()<p.bare&&!nextTo(bare,r,c)){    /* a rest in the field */
-      cells++;bare[r][c]=true;
-      if(R()<0.22)out+='<span style="'+area+'"></span>';
-      continue;}
-    /* Hold cents near a sixth of the area. They stay one cell -- a penny is
-       small, bright and round, and enlarged it pulls the eye off the works
-       around it -- and never touch each other: after a large block the area
-       rule wants to catch up, and left alone it lays them in a run. */
-    const isc=s===1&&cent6*6<cells&&!nextTo(cent,r,c);
-    cells+=s*s; if(isc){cent6++;cent[r][c]=true;}
-    out+='<img src="'+T(pick(isc?"c":"a",isc?cts:art,s>1),s>1)+
-         '" alt="" loading="lazy" style="'+area+'">';
+    let w=1,h=1;
+    /* the two rectangles take turns going first, or wide always wins the roll
+       and the band never gets a tall block */
+    const rect=R()<.5?[[2,1],[1,2]]:[[1,2],[2,1]],
+      tries=rows>2
+      ?[[3,3,p.p3],[2,3,p.p3*1.3],[2,2,p.p2],[rect[0][0],rect[0][1],p.rect],
+        [rect[1][0],rect[1][1],p.rect]]
+      :[[2,2,p.p2],[rect[0][0],rect[0][1],p.rect],[rect[1][0],rect[1][1],p.rect]];
+    for(const [tw,th,pr] of tries)
+      if(R()<pr&&c-last>=(tw>2||th>2?4:1)&&free(r,c,tw,th)){w=tw;h=th;break;}
+    if(w===1&&h===1){
+      if(R()<p.bare&&!nextTo(bare,r,c)){        /* a rest in the field */
+        mark(r,c,1,1);cells++;bare[r][c]=true;
+        if(R()<0.22)out+='<span style="grid-area:'+(r+1)+'/'+(c+1)+'/span 1/span 1"></span>';
+        continue;}
+      /* Cents hold near a sixth of the area. They stay one cell -- a penny is
+         small, bright and round, and enlarged it pulls the eye off the works
+         around it -- and never touch, or the area rule lays them in a run. */
+      /* Placing one the moment the share dips puts a penny straight after every
+         large block, at a cadence you can read across the band. Let the odds
+         rise with the shortfall instead, so they still average a sixth but
+         land irregularly. */
+      if(R()<Math.min(.85,Math.max(0,cells/6-cent6)*.32)&&!nextTo(cent,r,c)){
+        mark(r,c,1,1);cells++;cent6++;cent[r][c]=true;
+        out+='<img src="'+T(pick("c",cts,false),false)+
+          '" alt="" loading="lazy" style="grid-area:'+(r+1)+'/'+(c+1)+'/span 1/span 1">';
+        continue;}
+    }
+    put(r,c,w,h);
   }
   const el=document.getElementById(id);
   el.style.gridTemplateRows="repeat("+rows+","+cell+"px)";
@@ -276,8 +317,8 @@ function mosaic(id,art,cts,p){
 /* the upper band runs finer, the lower one coarser, so they read as a pair
    rather than a repeat */
 const drawBands=()=>{
-  mosaic("ban", rng(1,93),   rng(187,204),{salt:0,p3:0.06,p2:0.22,bare:0.045});
-  mosaic("ban2",rng(94,186), rng(205,223),{salt:1,p3:0.11,p2:0.32,bare:0.035});
+  mosaic("ban", rng(1,93),   rng(187,204),{salt:0,p3:.05,p2:.15,rect:.20,bare:.045});
+  mosaic("ban2",rng(94,186), rng(205,223),{salt:1,p3:.08,p2:.22,rect:.28,bare:.035});
 };
 drawBands();
 MQ.addEventListener("change",drawBands);
