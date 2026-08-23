@@ -241,9 +241,10 @@ function mosaic(id,art,cts,p){
     free=(r,c,s)=>{for(let i=0;i<s;i++)for(let j=0;j<s;j++)
       if(r+i>=rows||c+j>=cols||occ[r+i][c+j])return false;return true;},
     mark=(r,c,s)=>{for(let i=0;i<s;i++)for(let j=0;j<s;j++)occ[r+i][c+j]=true;};
-  const bare=Array.from({length:rows},()=>new Array(cols).fill(false)),
-    nextTo=(r,c)=>{for(let i=-1;i<2;i++)for(let j=-1;j<2;j++){
-      const y=r+i,x=c+j;if(y>=0&&y<rows&&x>=0&&x<cols&&bare[y][x])return true;}
+  const grid=()=>Array.from({length:rows},()=>new Array(cols).fill(false)),
+    bare=grid(),cent=grid(),
+    nextTo=(g,r,c)=>{for(let i=-1;i<2;i++)for(let j=-1;j<2;j++){
+      const y=r+i,x=c+j;if(y>=0&&y<rows&&x>=0&&x<cols&&g[y][x])return true;}
       return false;};
   let out="",last=-9,cells=0,cent6=0;
   for(let c=0;c<cols;c++)for(let r=0;r<rows;r++){
@@ -254,15 +255,17 @@ function mosaic(id,art,cts,p){
     if(s>1)last=c;
     mark(r,c,s);
     const area="grid-area:"+(r+1)+"/"+(c+1)+"/span "+s+"/span "+s;
-    if(s===1&&R()<p.bare&&!nextTo(r,c)){         /* a rest in the field */
+    if(s===1&&R()<p.bare&&!nextTo(bare,r,c)){    /* a rest in the field */
       cells++;bare[r][c]=true;
       if(R()<0.22)out+='<span style="'+area+'"></span>';
       continue;}
-    /* hold cents near a sixth of the area. they stay one cell: a penny is small,
-       bright and round, and enlarged it pulls the eye off the works around it */
-    const cent=s===1&&cent6*6<cells;
-    cells+=s*s; if(cent)cent6+=s*s;
-    out+='<img src="'+T(pick(cent?"c":"a",cent?cts:art,s>1),s>1)+
+    /* Hold cents near a sixth of the area. They stay one cell -- a penny is
+       small, bright and round, and enlarged it pulls the eye off the works
+       around it -- and never touch each other: after a large block the area
+       rule wants to catch up, and left alone it lays them in a run. */
+    const isc=s===1&&cent6*6<cells&&!nextTo(cent,r,c);
+    cells+=s*s; if(isc){cent6++;cent[r][c]=true;}
+    out+='<img src="'+T(pick(isc?"c":"a",isc?cts:art,s>1),s>1)+
          '" alt="" loading="lazy" style="'+area+'">';
   }
   const el=document.getElementById(id);
