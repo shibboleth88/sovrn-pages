@@ -9,7 +9,12 @@
 body{background:var(--paper);color:var(--ink);font:400 15px/1.55 "IBM Plex Sans",sans-serif;padding:26px 22px 46px}
 .wrap{max-width:1060px;margin:0 auto}
 a:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
-.banner{display:grid;grid-auto-flow:column;grid-template-rows:repeat(3,54px);grid-auto-columns:54px;gap:2px;overflow:hidden;margin:-26px -22px 34px;background:var(--ink)}@media(max-width:640px){.banner{grid-template-rows:repeat(2,46px);grid-auto-columns:46px;margin-bottom:26px}}.banner img{width:100%;height:100%;object-fit:cover;display:block}
+.banner{display:grid;gap:2px;overflow:hidden;margin:-26px -22px 34px;background:var(--ink);-webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent);mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent)}
+@media(max-width:640px){.banner{margin-bottom:26px}}
+.banner img,.banner span{display:block;width:100%;height:100%}
+.banner img{object-fit:cover}
+/* a cell left bare reads as the ink beneath; a rare one takes the copper */
+.banner span{background:var(--copper)}
 .banner2{margin:0 0 40px}
 @media(max-width:640px){.banner2{margin-bottom:30px}}
 /* site navigation. position:fixed pins to the Sites frame, not the viewport —
@@ -204,26 +209,75 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false);});
    from the on-chain files — and b187-b223 are CENTS. Each band drops one cent
    after every five works, so cents are one tile in six. The bands share no
    tile; each list runs on past the fold so the band fills any width. */
-const T=i=>'img/banner/b'+String(i).padStart(3,"0")+'.jpg',
-rng=(a,b)=>Array.from({length:b-a+1},(_,k)=>a+k);
-function band(id,art,cts){
-  /* One cent per six tiles, but the cent's slot within each block of six
-     rotates 0,5,4,3,2,1. The band flows in columns of three, so a fixed
-     slot would put every cent in the same row — this spreads them. */
-  const seq=[];let a=0,c=0,k=0;
-  while(a<art.length||c<cts.length){
-    const slot=(k*5)%6;
-    for(let j=0;j<6;j++){
-      if(j===slot&&c<cts.length)seq.push(cts[c++]);
-      else if(a<art.length)seq.push(art[a++]);
-    }
-    if(++k>400)break;
+/* Generative mosaic. Instead of an even field of equal squares, each band is
+   packed: a walk over an occupancy grid drops blocks one, two or three cells
+   square wherever they still fit, leaves the occasional cell bare as a rest,
+   and lands a cent about every sixth tile. Blocks larger than one cell pull
+   from img/banner-lg, which is the same tile at 320px — eleven tiles have no
+   high-resolution source and so stay one cell wide.
+
+   The seed comes from the clock, so no two visits compose the same band.
+   ?mosaic=<n> pins it, which is the only way to compare two runs. */
+const T=(i,lg)=>'img/banner'+(lg?'-lg':'')+'/b'+String(i).padStart(3,"0")+'.jpg',
+rng=(a,b)=>Array.from({length:b-a+1},(_,k)=>a+k),
+SMALLONLY=new Set([7,39,59,82,90,102,108,125,143,145,149]),
+MQ=matchMedia("(max-width:640px)"),
+SEED=(()=>{const q=new URLSearchParams(location.search).get("mosaic");
+  return q?(+q>>>0):(Date.now()>>>0);})();
+/* mulberry32: small, fast, and the same seed always draws the same band */
+const prng=s=>()=>{s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);
+  t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+
+function mosaic(id,art,cts,p){
+  const rows=MQ.matches?2:3, cell=MQ.matches?46:54, cols=MQ.matches?46:58,
+        R=prng(SEED+p.salt), q={};
+  /* draw from a shuffled bag and refill it, so a tile cannot recur nearby */
+  const pick=(kind,src,big)=>{
+    const key=kind+(big?"L":"S");let bag=q[key];
+    if(!bag||!bag.length){bag=q[key]=src.filter(i=>!big||!SMALLONLY.has(i));
+      for(let i=bag.length-1;i>0;i--){const j=R()*(i+1)|0,v=bag[i];bag[i]=bag[j];bag[j]=v;}}
+    return bag.pop();};
+  const occ=Array.from({length:rows},()=>new Array(cols).fill(false)),
+    free=(r,c,s)=>{for(let i=0;i<s;i++)for(let j=0;j<s;j++)
+      if(r+i>=rows||c+j>=cols||occ[r+i][c+j])return false;return true;},
+    mark=(r,c,s)=>{for(let i=0;i<s;i++)for(let j=0;j<s;j++)occ[r+i][c+j]=true;};
+  const bare=Array.from({length:rows},()=>new Array(cols).fill(false)),
+    nextTo=(r,c)=>{for(let i=-1;i<2;i++)for(let j=-1;j<2;j++){
+      const y=r+i,x=c+j;if(y>=0&&y<rows&&x>=0&&x<cols&&bare[y][x])return true;}
+      return false;};
+  let out="",last=-9,cells=0,cent6=0;
+  for(let c=0;c<cols;c++)for(let r=0;r<rows;r++){
+    if(occ[r][c])continue;
+    const roll=R();let s=1;
+    if(rows>2&&roll<p.p3&&c-last>4&&free(r,c,3))s=3;
+    else if(roll<p.p2&&c-last>1&&free(r,c,2))s=2;
+    if(s>1)last=c;
+    mark(r,c,s);
+    const area="grid-area:"+(r+1)+"/"+(c+1)+"/span "+s+"/span "+s;
+    if(s===1&&R()<p.bare&&!nextTo(r,c)){         /* a rest in the field */
+      cells++;bare[r][c]=true;
+      if(R()<0.22)out+='<span style="'+area+'"></span>';
+      continue;}
+    /* hold cents near a sixth of the area. they stay one cell: a penny is small,
+       bright and round, and enlarged it pulls the eye off the works around it */
+    const cent=s===1&&cent6*6<cells;
+    cells+=s*s; if(cent)cent6+=s*s;
+    out+='<img src="'+T(pick(cent?"c":"a",cent?cts:art,s>1),s>1)+
+         '" alt="" loading="lazy" style="'+area+'">';
   }
-  document.getElementById(id).innerHTML=seq.concat(seq).slice(0,150)
-    .map(i=>'<img src="'+T(i)+'" alt="" loading="lazy">').join("");
+  const el=document.getElementById(id);
+  el.style.gridTemplateRows="repeat("+rows+","+cell+"px)";
+  el.style.gridTemplateColumns="repeat("+cols+","+cell+"px)";
+  el.innerHTML=out;
 }
-band("ban", rng(1,93),   rng(187,204));
-band("ban2",rng(94,186), rng(205,223));
+/* the upper band runs finer, the lower one coarser, so they read as a pair
+   rather than a repeat */
+const drawBands=()=>{
+  mosaic("ban", rng(1,93),   rng(187,204),{salt:0,p3:0.06,p2:0.22,bare:0.045});
+  mosaic("ban2",rng(94,186), rng(205,223),{salt:1,p3:0.11,p2:0.32,bare:0.035});
+};
+drawBands();
+MQ.addEventListener("change",drawBands);
 /* Each card cycles through works from its own collection. The folder name is
    the last segment of the card's own link, so the two can never drift apart.
    Emerging Faces is absent from this map on purpose: its card holds the single

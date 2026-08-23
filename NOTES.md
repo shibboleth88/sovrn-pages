@@ -281,10 +281,33 @@ Latent Couture is shot tall (0.69 ratio), so those cards use
 
 ### Mosaic bands
 
-Tile pool `img/banner/`: `b001`–`b186` are works, `b187`–`b223` are CENTS. The
-band flows in **columns of three**, so placing a cent every sixth tile puts every
-cent in the same row. The slot rotates `(k * 5) % 6` to spread them. One cent per
-six tiles is the intended density.
+Tile pool `img/banner/` at 160 px: `b001`–`b186` are works, `b187`–`b223` are
+CENTS. `img/banner-lg/` is the same tile at 320 px, used only by blocks larger
+than one cell. **Eleven tiles have no high-resolution source** — `b007 b039 b059
+b082 b090 b102 b108 b125 b143 b145 b149` — and the `SMALLONLY` set in
+`home.html` keeps them one cell wide. If you add tiles, regenerate both tiers
+and update that set, or a big block will request a file that is not there.
+
+The band is packed generatively: a walk over an occupancy grid drops blocks of
+one, two or three cells wherever they still fit. The upper band runs finer, the
+lower coarser, so the pair does not read as a repeat. The seed comes from the
+clock — **`?mosaic=<n>` pins it**, which is the only way to compare two runs or
+to reproduce something you saw.
+
+Three rules that took a couple of passes to get right:
+
+- **Draw from a bag keyed by size class.** One shared bag lets a large block
+  draw a tile that only exists at 160 px, and you get a broken image.
+- **Count cents by area, not by tile.** A cent every sixth *tile* is far more
+  than a sixth of the *band* once blocks vary in size. Cents also stay one cell:
+  a penny is small, bright and round, and enlarged it pulls the eye off the
+  works around it.
+- **Keep bare cells apart.** Two touching rests merge into what looks like a
+  hole rather than a pause.
+
+The old uniform-grid version flowed in columns of three, which meant a cent
+every sixth tile landed every cent in the same row; it rotated the slot by
+`(k * 5) % 6` to spread them. The packed version has no such problem.
 
 ---
 
