@@ -79,6 +79,19 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transfo
 .nav{display:flex;flex-wrap:wrap;gap:20px;font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
 .nav a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--copper);padding-bottom:3px}
 .nav a:hover{color:var(--copper)}
+/* Scroll-driven assembly. Wrapped in @supports and in a no-preference query,
+   so where it is unsupported — or motion is not wanted — nothing is applied at
+   all and every element simply renders. Nothing can be left stuck invisible. */
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    @keyframes settle{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+    @keyframes slidein{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+    @keyframes titlein{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+    .grid .card{animation:settle linear both;animation-timeline:view();animation-range:entry 4% entry 42%}
+    .mus li{animation:slidein linear both;animation-timeline:view();animation-range:entry 4% entry 34%}
+    h2.big,.sec>h2{animation:titlein linear both;animation-timeline:view();animation-range:entry 2% entry 26%}
+  }
+}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body>
 <div class="banner" id="ban" aria-hidden="true"></div>
