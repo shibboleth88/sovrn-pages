@@ -7,9 +7,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root{--ink:#16181d;--paper:#e9e9e5;--rule:#c9c9c2;--slate:#5c6470;--copper:#8a4f2a;--card:#f4f4f1}
+  :root{--ink:#16181d;--paper:#e9e9e5;--rule:#c9c9c2;--slate:#5c6470;--accent:#2c7a74;--on-accent:#f6f4f0;--card:#f4f4f1}
   @media (prefers-color-scheme:dark){
-    :root{--ink:#e6e6e1;--paper:#16181d;--rule:#33373f;--slate:#9aa1ad;--copper:#c8845a;--card:#1d2027}
+    :root{--ink:#e6e6e1;--paper:#16181d;--rule:#33373f;--slate:#9aa1ad;--accent:#5cc2ba;--on-accent:#10201e;--card:#1d2027}
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--paper);color:var(--ink);
@@ -23,7 +23,7 @@
   .find input{width:100%;padding:11px 13px;border:1px solid var(--rule);border-radius:8px;
     background:var(--card);color:var(--ink);
     font:400 14px/1.4 "IBM Plex Sans",system-ui,sans-serif;outline:none}
-  .find input:focus{border-color:var(--copper)}
+  .find input:focus{border-color:var(--accent)}
   .hits{margin:8px 0 0;border:1px solid var(--rule);border-radius:8px;background:var(--card);
     max-height:260px;overflow-y:auto}
   .hits:empty{display:none}
@@ -31,23 +31,23 @@
     border-bottom:1px solid var(--rule);padding:9px 13px;cursor:pointer;color:var(--ink);
     font:400 13.5px/1.4 "IBM Plex Sans",system-ui,sans-serif}
   .hits button:last-child{border-bottom:none}
-  .hits button:hover{background:var(--paper);color:var(--copper)}
+  .hits button:hover{background:var(--paper);color:var(--accent)}
   .hits .tag{font:400 11px/1 "IBM Plex Mono",monospace;color:var(--slate);margin-left:8px}
   /* collection chips — all visible, no strip to scroll */
   .sets{display:flex;flex-wrap:wrap;gap:7px;padding:14px 0 4px}
   .sets button{background:transparent;border:1px solid var(--rule);
     color:var(--slate);font:400 12.5px/1.4 "IBM Plex Sans",sans-serif;padding:7px 13px;
     border-radius:999px;cursor:pointer;transition:border-color .12s,color .12s}
-  .sets button:hover{border-color:var(--copper);color:var(--copper)}
-  .sets button[aria-pressed=true]{border-color:var(--copper);color:var(--paper);background:var(--copper)}
+  .sets button:hover{border-color:var(--accent);color:var(--accent)}
+  .sets button[aria-pressed=true]{border-color:var(--accent);color:var(--on-accent);background:var(--accent)}
   .credit{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate);margin:10px 0 0}
   /* grid */
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;
         padding:14px 0 24px}
   .grid button{padding:0;border:1px solid var(--rule);background:var(--card);cursor:pointer;
     aspect-ratio:1;overflow:hidden;border-radius:2px}
-  .grid button:hover{border-color:var(--copper)}
-  .grid button[aria-pressed=true]{border-color:var(--copper);outline:1px solid var(--copper)}
+  .grid button:hover{border-color:var(--accent)}
+  .grid button[aria-pressed=true]{border-color:var(--accent);outline:1px solid var(--accent)}
   .grid img{width:100%;height:100%;object-fit:cover;display:block}
   /* Latent Couture is shot tall — a centre crop takes the headpieces off. */
   .grid img.top{object-position:top}
@@ -67,13 +67,13 @@
         display:flex;gap:6px;align-items:center;cursor:pointer}
   select{font:400 12px "IBM Plex Sans",sans-serif;padding:6px 8px;border:1px solid var(--rule);
          border-radius:6px;background:var(--paper);color:var(--ink)}
-  .go{border:none;background:var(--copper);color:#f6f1ec;border-radius:8px;padding:9px 18px;
+  .go{border:none;background:var(--accent);color:var(--on-accent);border-radius:8px;padding:9px 18px;
       font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;
       cursor:pointer}
   .go:disabled{opacity:.45;cursor:default}
   .ghost{background:transparent;border:1px solid var(--rule);color:var(--slate)}
-  .ghost:hover{border-color:var(--copper);color:var(--copper)}
-  .warn{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--copper);margin:9px 0 0}
+  .ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .warn{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--accent);margin:9px 0 0}
   .empty{color:var(--slate);font-style:italic;padding:40px 0}
 </style>
 </head>
@@ -94,7 +94,7 @@
   <div class="sets" id="sets" role="group" aria-label="Collections"></div>
   <p class="credit" id="credit"></p>
   <div class="grid" id="grid"></div>
-  <p class="empty" id="empty">Loading the library…</p>
+  <p class="empty" id="empty">Loading…</p>
 </div>
 
 <div class="panel" hidden id="panel"><div class="wrap">
@@ -113,7 +113,7 @@
       </label>
       <label><input type="checkbox" id="crop"> trim to fit the timeline</label>
       <button class="go" id="dl">Download</button>
-      <button class="go ghost" id="src">Original file</button>
+      <button class="go ghost" id="src">Original</button>
     </div>
     <p class="warn" id="warn"></p>
   </div>
@@ -150,7 +150,11 @@ function boot() {
     b.onclick = function () { pick(i); };
     strip.appendChild(b);
   });
-  pick(0);
+  // Nothing is loaded until the visitor asks for it. The page opens on the
+  // search box; a grid of thumbnails would mean fetching two dozen images
+  // nobody had asked to see.
+  $("empty").textContent = "Search for a work, or pick a collection above.";
+  $("empty").hidden = false;
   // The 999 Reflection titles are a separate 22KB file, pulled once in the
   // background so the first search does not have to wait for it.
   loadReflection();
@@ -239,6 +243,15 @@ function reflRow(id, tag) {
 
 function clearSearch() { $("q").value = ""; $("hits").textContent = ""; }
 
+function resetGrid() {
+  $("grid").textContent = "";
+  $("credit").textContent = "";
+  [].forEach.call($("sets").children, function (b) {
+    b.setAttribute("aria-pressed", "false");
+  });
+  selEl = null;
+}
+
 /* ------------------------------------------ one Reflection work, from chain */
 
 function openToken(id) {
@@ -248,12 +261,12 @@ function openToken(id) {
     cur = { slug: "reflection", title: "Reflection", artist: "Pindar Van Arman",
             animated: true };
     sel = { chain: id, title: title, v: 1 };
-    if (selEl) { selEl.setAttribute("aria-pressed", "false"); selEl = null; }
+    // A work opened from search replaces whatever was on screen. Leaving a
+    // previous collection's grid up while the panel showed something else made
+    // the two contradict each other.
+    resetGrid();
+    $("empty").hidden = true;
     $("panel").hidden = false;
-    // Deliberately leave the grid, the chips and the credit line alone. A work
-    // opened from search is a single piece pulled from the contract, not a
-    // change of collection — rewriting the credit while the grid still showed
-    // another collection just made the two disagree.
     $("pt").textContent = title;
     $("pm").innerHTML = "<b>token " + id + "</b> · list no. " + (id + 1) + " · reading the contract…";
     $("warn").textContent = "";
@@ -348,6 +361,14 @@ function name(w) {
   return w.f.split("/").pop().replace(/\.[^.]+$/, "");
 }
 
+// The published file's own extension — .svg for every vector and on-chain work,
+// .jpg/.png/.gif for the rasters.
+function sourceExt(w) {
+  if (w.chain !== undefined) return "svg";
+  var e = (w.f || "").split(".").pop().toLowerCase();
+  return e === "jpeg" ? "jpg" : (e || "file");
+}
+
 function fileName(w) {
   if (w.chain !== undefined) return "reflection-" + w.chain;
   return name(w);
@@ -373,10 +394,11 @@ function describe(w) {
   if (cur && cur.animated) {
     msgs.push("This work moves. The download is a single frame — for the "
       + "animation, use tools/share.py in the sovrn-bot repo, which renders it "
-      + "to GIF. “Original file” gives you the artwork as published.");
+      + "to GIF. “Original” downloads the artwork as published — the SVG itself.");
   }
   $("warn").innerHTML = msgs.join("<br><br>");
   $("crop").disabled = !(w.w && w.h);
+  $("src").textContent = "Original " + sourceExt(w).toUpperCase();
 }
 
 function ratioName(ar) {
@@ -390,6 +412,8 @@ function ratioName(ar) {
 $("size").onchange = $("crop").onchange = function () { if (sel) describe(sel); };
 
 $("src").onclick = function () {
+  // On-chain works have no file on this server — the SVG came back from the
+  // contract as a data: URI, which downloads directly.
   if (sel.chain !== undefined) {
     if (!sel.uri) return;
     grab(sel.uri, fileName(sel) + ".svg");
@@ -406,7 +430,7 @@ $("dl").onclick = function () {
     btn.disabled = false;
     btn.textContent = "Download";
     if (err || !blob) {
-      $("warn").innerHTML = "Couldn't build that file — try “Original file” instead.";
+      $("warn").innerHTML = "Couldn't build that file — try “Original” instead.";
       return;
     }
     var url = URL.createObjectURL(blob);
