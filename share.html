@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Share an artwork — sovrn.art</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#16181d;--paper:#e9e9e5;--rule:#c9c9c2;--slate:#5c6470;--copper:#8a4f2a;--card:#f4f4f1}
+  @media (prefers-color-scheme:dark){
+    :root{--ink:#e6e6e1;--paper:#16181d;--rule:#33373f;--slate:#9aa1ad;--copper:#c8845a;--card:#1d2027}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font:400 15px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+  header{padding:18px 20px 12px;border-bottom:1px solid var(--rule)}
+  h1{margin:0;font:italic 300 clamp(21px,3vw,28px)/1.15 Fraunces,Georgia,serif}
+  header p{margin:6px 0 0;font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate)}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  /* collection strip */
+  .sets{display:flex;gap:7px;overflow-x:auto;padding:14px 0 4px;scrollbar-width:none}
+  .sets::-webkit-scrollbar{display:none}
+  .sets button{flex:none;white-space:nowrap;background:transparent;border:1px solid var(--rule);
+    color:var(--slate);font:400 12.5px/1.4 "IBM Plex Sans",sans-serif;padding:7px 13px;
+    border-radius:999px;cursor:pointer;transition:border-color .12s,color .12s}
+  .sets button:hover{border-color:var(--copper);color:var(--copper)}
+  .sets button[aria-pressed=true]{border-color:var(--copper);color:var(--paper);background:var(--copper)}
+  .credit{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate);margin:10px 0 0}
+  /* grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;
+        padding:14px 0 24px}
+  .grid button{padding:0;border:1px solid var(--rule);background:var(--card);cursor:pointer;
+    aspect-ratio:1;overflow:hidden;border-radius:2px}
+  .grid button:hover{border-color:var(--copper)}
+  .grid button[aria-pressed=true]{border-color:var(--copper);outline:1px solid var(--copper)}
+  .grid img{width:100%;height:100%;object-fit:cover;display:block}
+  /* Latent Couture is shot tall — a centre crop takes the headpieces off. */
+  .grid img.top{object-position:top}
+  /* panel */
+  .panel{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--rule);
+         padding:14px 20px calc(14px + env(safe-area-inset-bottom))}
+  .panel .wrap{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+  .preview{flex:none;width:132px;height:132px;border:1px solid var(--rule);background:var(--paper);
+    display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .preview img{max-width:100%;max-height:100%;display:block}
+  .controls{flex:1;min-width:260px}
+  .controls h2{margin:0 0 2px;font:500 14px/1.3 "IBM Plex Sans",sans-serif}
+  .meta{font:400 11.5px/1.6 "IBM Plex Mono",monospace;color:var(--slate);margin:0 0 10px}
+  .meta b{color:var(--ink);font-weight:500}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  label{font:400 11.5px/1 "IBM Plex Mono",monospace;color:var(--slate);
+        display:flex;gap:6px;align-items:center;cursor:pointer}
+  select{font:400 12px "IBM Plex Sans",sans-serif;padding:6px 8px;border:1px solid var(--rule);
+         border-radius:6px;background:var(--paper);color:var(--ink)}
+  .go{border:none;background:var(--copper);color:#f6f1ec;border-radius:8px;padding:9px 18px;
+      font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;
+      cursor:pointer}
+  .go:disabled{opacity:.45;cursor:default}
+  .ghost{background:transparent;border:1px solid var(--rule);color:var(--slate)}
+  .ghost:hover{border-color:var(--copper);color:var(--copper)}
+  .warn{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--copper);margin:9px 0 0}
+  .empty{color:var(--slate);font-style:italic;padding:40px 0}
+  a{color:var(--copper)}
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <h1>Share an artwork</h1>
+  <p>pick a work · get a file sized for posting</p>
+</div></header>
+
+<div class="wrap">
+  <div class="sets" id="sets" role="group" aria-label="Collections"></div>
+  <p class="credit" id="credit"></p>
+  <div class="grid" id="grid"></div>
+  <p class="empty" id="empty">Loading the library…</p>
+</div>
+
+<div class="panel" hidden id="panel"><div class="wrap">
+  <div class="preview"><img id="prev" alt=""></div>
+  <div class="controls">
+    <h2 id="pt">—</h2>
+    <p class="meta" id="pm"></p>
+    <div class="row">
+      <label>size
+        <select id="size">
+          <option value="1200">1200px</option>
+          <option value="1600">1600px</option>
+          <option value="2048">2048px</option>
+          <option value="0">original</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="crop"> trim to fit the timeline</label>
+      <button class="go" id="dl">Download</button>
+      <button class="go ghost" id="src">Original file</button>
+    </div>
+    <p class="warn" id="warn"></p>
+  </div>
+</div></div>
+
+<script>
+// Artwork is served from the same origin as this page, so the canvas is never
+// tainted and toBlob() works. Pulling from raster.art instead would taint it and
+// every export would throw.
+var BASE = location.pathname.replace(/[^/]*$/, "");
+// X shows images between about 4:5 and 16:9 whole; outside that band it crops the
+// in-timeline preview. We never pad or alter the work to suit — we just say so.
+var MIN_AR = 0.8, MAX_AR = 16 / 9;
+
+var sets = [], cur = null, sel = null, selEl = null;
+var $ = function (id) { return document.getElementById(id); };
+
+fetch(BASE + "share-manifest.json")
+  .then(function (r) { return r.json(); })
+  .then(function (d) { sets = d.sets; boot(); })
+  .catch(function () {
+    $("empty").textContent = "Couldn't load the artwork index.";
+  });
+
+function boot() {
+  var strip = $("sets");
+  sets.forEach(function (s, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = s.title;
+    b.setAttribute("aria-pressed", "false");
+    b.onclick = function () { pick(i); };
+    strip.appendChild(b);
+  });
+  pick(0);
+}
+
+function pick(i) {
+  cur = sets[i];
+  [].forEach.call($("sets").children, function (b, n) {
+    b.setAttribute("aria-pressed", String(n === i));
+  });
+  $("credit").textContent = cur.artist ? cur.title + " — " + cur.artist : cur.title;
+  $("empty").hidden = true;
+
+  var grid = $("grid");
+  grid.textContent = "";
+  // Latent Couture is shot tall; crop its thumbnails from the top or the square
+  // crop takes the headpieces off.
+  var topCrop = cur.slug === "latent-couture";
+  cur.works.forEach(function (w) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-pressed", "false");
+    var im = document.createElement("img");
+    im.src = BASE + w.f;
+    im.loading = "lazy";
+    im.decoding = "async";
+    im.alt = "";
+    if (topCrop) im.className = "top";
+    b.appendChild(im);
+    b.onclick = function () { choose(w, b); };
+    grid.appendChild(b);
+  });
+  choose(cur.works[0], grid.firstChild);
+}
+
+function choose(w, el) {
+  sel = w;
+  if (selEl) selEl.setAttribute("aria-pressed", "false");
+  selEl = el;
+  if (el) el.setAttribute("aria-pressed", "true");
+
+  $("panel").hidden = false;
+  $("prev").src = BASE + w.f;
+  $("pt").textContent = name(w);
+  describe(w);
+}
+
+function name(w) {
+  return w.f.split("/").pop().replace(/\.[^.]+$/, "");
+}
+
+function describe(w) {
+  var bits = [];
+  if (w.w && w.h) {
+    bits.push("<b>" + w.w + "&times;" + w.h + "</b>");
+    bits.push(ratioName(w.w / w.h));
+  } else {
+    bits.push("<b>vector</b>");
+  }
+  $("pm").innerHTML = bits.join(" · ");
+
+  var msgs = [];
+  if (w.w && w.h && (w.w / w.h < MIN_AR || w.w / w.h > MAX_AR)) {
+    msgs.push("This shape sits outside what X shows whole, so the timeline "
+      + "preview will be cropped — the full work still opens on tap. "
+      + "Tick “trim to fit” if you would rather choose the crop yourself.");
+  }
+  if (cur.animated) {
+    msgs.push("This work moves. The download is a single frame — for the "
+      + "animation, use tools/share.py in the sovrn-bot repo, which renders it "
+      + "to GIF. “Original file” gives you the artwork as published.");
+  }
+  $("warn").innerHTML = msgs.join("<br><br>");
+  $("crop").disabled = !(w.w && w.h);
+}
+
+function ratioName(ar) {
+  if (Math.abs(ar - 1) < 0.03) return "square";
+  if (ar > 1.7) return "wide";
+  if (ar > 1) return "landscape";
+  if (ar > 0.79) return "portrait";
+  return "tall";
+}
+
+$("size").onchange = $("crop").onchange = function () { if (sel) describe(sel); };
+
+$("src").onclick = function () {
+  // The published file, untouched. Sites' embed sandbox allows downloads.
+  grab(BASE + sel.f, sel.f.split("/").pop());
+};
+
+$("dl").onclick = function () {
+  var btn = $("dl");
+  btn.disabled = true;
+  btn.textContent = "Working";
+  render(sel, function (blob, err) {
+    btn.disabled = false;
+    btn.textContent = "Download";
+    if (err || !blob) {
+      $("warn").innerHTML = "Couldn't build that file — try “Original file” instead.";
+      return;
+    }
+    var url = URL.createObjectURL(blob);
+    grab(url, name(sel) + "." + formatFor().ext);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 30000);
+  });
+};
+
+function grab(href, filename) {
+  var a = document.createElement("a");
+  a.href = href;
+  a.download = filename;
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+// A byteGAN is not really a vector: the artwork is an 11x11 animated GIF
+// base64'd inside the SVG, and the wrapper only carries image-rendering:
+// pixelated. Rasterising the SVG and scaling that up interpolates twice over
+// (11 -> 500 -> target, neither an integer step) and the pixel grid smears.
+// Pull the GIF out and scale it by a whole-number factor instead.
+function sourceFor(w, done) {
+  if (cur.slug !== "bytegans") {
+    var img = new Image();
+    img.onload = function () { done(img); };
+    img.onerror = function () { done(null); };
+    img.src = BASE + w.f;
+    return;
+  }
+  fetch(BASE + w.f).then(function (r) { return r.text(); }).then(function (svg) {
+    var m = svg.match(/data:image\/gif;base64,[A-Za-z0-9+/=\s]+/);
+    if (!m) { done(null); return; }
+    var img = new Image();
+    img.onload = function () { done(img); };
+    img.onerror = function () { done(null); };
+    img.src = m[0].replace(/\s/g, "");
+  }).catch(function () { done(null); });
+}
+
+// Pixel art and flat vector go out as PNG. JPEG rings badly on hard edges — a
+// byteGAN exported at q0.92 came back with 142 distinct colours where it should
+// have a handful.
+function formatFor() {
+  return cur.animated ? { mime: "image/png", ext: "png", q: undefined }
+                      : { mime: "image/jpeg", ext: "jpg", q: 0.92 };
+}
+
+function render(w, done) {
+  sourceFor(w, function (img) {
+    if (!img) { done(null, new Error("load")); return; }
+    try {
+      var sw = img.naturalWidth, sh = img.naturalHeight;
+      var sx = 0, sy = 0;
+      if ($("crop").checked && !$("crop").disabled) {
+        var ar = sw / sh;
+        if (ar < MIN_AR) {                 // too tall -> keep the top
+          sh = Math.round(sw / MIN_AR);
+        } else if (ar > MAX_AR) {          // too wide -> keep the middle
+          var nw = Math.round(sh * MAX_AR);
+          sx = Math.round((sw - nw) / 2);
+          sw = nw;
+        }
+      }
+
+      var target = parseInt($("size").value, 10);
+      var dw, dh;
+      var pixelArt = cur.slug === "bytegans";
+      if (!target) {
+        dw = sw; dh = sh;
+      } else if (pixelArt) {
+        // whole-number upscale only, so every source pixel stays a hard square
+        var f = Math.max(1, Math.round(target / Math.max(sw, sh)));
+        dw = sw * f; dh = sh * f;
+      } else {
+        var k = target / Math.max(sw, sh);
+        dw = Math.max(1, Math.round(sw * k));
+        dh = Math.max(1, Math.round(sh * k));
+      }
+
+      var c = document.createElement("canvas");
+      c.width = dw; c.height = dh;
+      var ctx = c.getContext("2d");
+      ctx.imageSmoothingEnabled = !pixelArt;
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, dw, dh);
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, dw, dh);
+      var f2 = formatFor();
+      c.toBlob(function (b) { done(b, null); }, f2.mime, f2.q);
+    } catch (e) {
+      done(null, e);
+    }
+  });
+}
+
+</script>
+</body>
+</html>
