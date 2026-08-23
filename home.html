@@ -104,25 +104,6 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transfo
     h2.big,.sec>h2{animation:titlein linear both;animation-timeline:view();animation-range:entry 2% entry 26%}
   }
 }
-/* Two thirds of each band sits outside the window -- around 2000px of tiles
-   already loaded and never seen. The grid travels slowly inside its frame to
-   bring them through, about eight pixels a second, reversing at each end so
-   there is no seam and no edge is ever exposed. JS sets --travel from the real
-   frame width and the duration from it, so the speed holds at any size.
-   A band out of view is paused, and none of this runs if motion is unwelcome. */
-@media (prefers-reduced-motion: no-preference){
-  @keyframes bandA{from{transform:translate3d(0,0,0)}
-                   to{transform:translate3d(calc(var(--travel,0px) * -1),0,0)}}
-  @keyframes bandB{from{transform:translate3d(calc(var(--travel,0px) * -1),0,0)}
-                   to{transform:translate3d(0,0,0)}}
-  .mg{will-change:transform}
-  #ban{animation:bandA var(--dur,240s) linear infinite alternate}
-  #ban2{animation:bandB var(--dur,240s) linear infinite alternate}
-  /* the id selectors above set the animation shorthand, so these have to carry
-     an id too or they lose on specificity and never apply */
-  .banner.off #ban,.banner.off #ban2{animation-play-state:paused}
-  .nomotion #ban,.nomotion #ban2{animation:none}
-}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body>
 <div class="banner" aria-hidden="true"><div class="mg" id="ban"></div></div>
@@ -346,15 +327,6 @@ function mosaic(id,art,cts,p){
   el.style.gridTemplateRows="repeat("+rows+","+cell+"px)";
   el.style.gridTemplateColumns="repeat("+cols+","+cell+"px)";
   el.innerHTML=out;
-  el._wide=cols*cell+(cols-1)*2;
-  fit(el);
-}
-/* Travel only as far as there is band left, or widening the window walks the
-   grid past its own end and shows the frame behind it. Recomputed on resize. */
-function fit(el){
-  const room=Math.max(0,el._wide-el.parentElement.clientWidth);
-  el.style.setProperty("--travel",room+"px");
-  el.style.setProperty("--dur",Math.round(room/8)+"s");   /* ~8px a second */
 }
 /* the upper band runs finer, the lower one coarser, so they read as a pair
    rather than a repeat */
@@ -364,26 +336,19 @@ const drawBands=()=>{
 };
 drawBands();
 MQ.addEventListener("change",drawBands);
-let rz;addEventListener("resize",()=>{clearTimeout(rz);
-  rz=setTimeout(()=>["ban","ban2"].forEach(i=>{
-    const el=document.getElementById(i); if(el&&el._wide)fit(el);}),160);});
-/* Turnover. One cell somewhere in the mosaic dissolves into another work every
-   couple of seconds -- only in a band that is on screen, only cells actually in
-   the window, and never while the tab is hidden. At one tile every 2.2s the
-   band pulls a few KB a minute, and the eye catches it as a change rather than
-   as movement. */
+/* Turnover, and the only thing that moves: the bands hold still. One cell
+   somewhere in the mosaic dissolves into another work every couple of seconds
+   -- only in a band that is on screen, only cells actually in the window, and
+   never while the tab is hidden. At one tile every 2.2s the band pulls a few KB
+   a minute, and the eye catches it as a change rather than as movement. */
 (function(){
   const frames=[...document.querySelectorAll(".banner")];
-  const io=new IntersectionObserver(es=>es.forEach(e=>{
-      e.target._on=e.isIntersecting;
-      e.target.classList.toggle("off",!e.isIntersecting);}),
+  const io=new IntersectionObserver(es=>es.forEach(e=>{e.target._on=e.isIntersecting;}),
     {rootMargin:"80px"});
   frames.forEach(f=>io.observe(f));
-  /* Travelling reveals tiles that then lazy-load, so on a metered connection
-     the band holds still as well as stopping its turnover. */
-  const cn=navigator.connection,save=cn&&cn.saveData;
-  if(save)document.documentElement.classList.add("nomotion");
-  if(save||matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  /* Each turn pulls another tile, so stand down on a metered connection. */
+  const cn=navigator.connection;
+  if((cn&&cn.saveData)||matchMedia("(prefers-reduced-motion: reduce)").matches)return;
   setInterval(()=>{
     if(document.hidden)return;
     const live=frames.filter(f=>f._on).map(f=>f.querySelector(".mg")).filter(g=>g&&g._swap);

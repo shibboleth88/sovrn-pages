@@ -332,44 +332,44 @@ Five rules that took a couple of passes to get right:
 
 ### Animating the band
 
-Two things move, and neither is scroll-linked.
+The bands hold still. The only movement is turnover: one cell somewhere on
+screen dissolves into another work every 2.2s. The replacement matches that
+cell's kind and size and is chosen against the colour field at its column, so a
+passage keeps its character — each cell carries `data-c`, `data-k` and `data-b`
+for that. The image is decoded before the fade, so a cell never fades up onto a
+blank. It runs only for a band that is on screen, only for cells actually in the
+window, and never while the tab is hidden. It stops for
+`prefers-reduced-motion`, and under Data Saver, since every turn pulls another
+tile.
 
-**The band travels.** Around 2000px of each band sits outside the window —
-tiles already curated and loaded but never seen. The `.mg` grid slides inside
-the `.banner` frame at about 8px a second, reversing at each end, so the whole
-band comes through over four or five minutes. `--travel` and `--dur` are set
-from the real frame width and refreshed on resize; travel is exactly
-`gridWidth - frameWidth`, so an edge is never exposed.
+A consequence worth knowing: roughly 2000px of each band sits outside the
+window and, with nothing scrolling, is never seen. Those tiles still act as the
+pool that turnover draws from, so nothing is wasted, but no visitor sees that
+part of the composition.
 
-**Tiles turn over.** One cell somewhere on screen dissolves into another work
-every 2.2s. The replacement matches the cell's kind and size and is chosen
-against the colour field at that column, so a passage keeps its character. Each
-cell carries `data-c`, `data-k` and `data-b` for that. The image is decoded
-before the fade so a cell never fades up onto a blank.
+Two dead ends, in case either looks tempting again:
 
-Both stop for `prefers-reduced-motion`, and both stop under Data Saver —
-travelling reveals tiles that then lazy-load, so on a metered connection the
-band holds still. Off-screen bands are paused by an IntersectionObserver.
-
-Two traps here:
-
-- **Scroll-linked drift does not work on this band.** `.banner` has
+- **A slow horizontal travel** was built and then dropped — it read as motion
+  rather than as change. If it is ever wanted back, size it as
+  `gridWidth - frameWidth` and refit on resize, or widening the window walks the
+  grid past its own end and shows the frame behind it.
+- **Scroll-linked drift cannot work on this band at all.** `.banner` has
   `overflow: hidden`, which makes it a scroll container, so `animation-timeline:
   view()` on the grid resolves against that box rather than the page and the
-  progress sits at 50% for ever. It is also half wasted on the upper band,
-  which is only on screen for its own 170px.
-- **The pause rules need an id.** `#ban` sets the `animation` shorthand, so
-  `.banner.off .mg` loses on specificity and silently never applies. The rules
-  are written `.banner.off #ban, .banner.off #ban2`.
+  progress sits at 50% for ever.
 
-Verifying this is awkward. Headless `--screenshot` does not capture CSS
-animation state under `--virtual-time-budget` — the band photographs unmoved
-however long the budget — and `getComputedStyle` cannot see a scroll-driven
-animation at all. What does work is injecting a probe that reads
-`getComputedStyle(el).transform` after `setTimeout` waits, or
-`getAnimations()[0]`. Note also that an early screenshot catches lazy images
-mid-load, which looks like enormous frame-to-frame change and like the odd
-broken tile; neither is real.
+If any animation does come back here, note that `#ban` sets the `animation`
+shorthand, so a class-only rule like `.banner.off .mg` loses on specificity and
+silently never applies.
+
+Verifying motion is awkward. Headless `--screenshot` does not capture CSS
+animation state under `--virtual-time-budget` — an animated band photographs
+unmoved however long the budget, and that is not compositor promotion; removing
+`will-change` changes nothing. `getComputedStyle` cannot see a scroll-driven
+animation at all. What works is injecting a probe that reads
+`getComputedStyle(el).transform` after `setTimeout` waits, or `getAnimations()`.
+Note also that an early screenshot catches lazy images mid-load, which reads as
+enormous frame-to-frame change and as the odd broken tile; neither is real.
 
 Latent Couture is shot tall, so its fourteen banner tiles — `b017 b022 b025
 b040 b046 b063 b091 b099 b117 b122 b151 b164 b178 b185` — are cropped from the
