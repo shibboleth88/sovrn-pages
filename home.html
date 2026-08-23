@@ -19,6 +19,7 @@ a:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
 .about a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--copper)}
 .about a:hover{color:var(--copper)}
 h2{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--copper);margin:0 0 20px;padding-bottom:15px;border-bottom:1px solid var(--rule)}
+h2.big{font:italic 300 clamp(27px,3.4vw,38px)/1.1 Fraunces,serif;letter-spacing:-.015em;text-transform:none;color:var(--ink);margin:0 0 20px;padding-bottom:16px}
 h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:var(--slate);margin:0 0 12px}
 .sec{margin-top:44px}
 /* collections — order is the site's own and is left exactly as it stands */
@@ -67,14 +68,14 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transfo
 <div class="banner banner2" id="ban2" aria-hidden="true"></div>
 
 <div class="sec">
-<h2>Curated collections</h2>
+<h2 class="big">Sovrn Curated</h2>
 <div class="grid" id="g"></div>
 </div>
 
 <div class="sec">
 <h2>In museums and exhibitions</h2>
 <ul class="mus" id="m"></ul>
-<div class="nav" style="margin-top:26px"><a href="https://www.sovrn.art/museums/overview" target="_blank">All museums and exhibitions &#8599;</a></div>
+<div class="nav" style="margin-top:26px"><a href="https://www.sovrn.art/museums" target="_blank">All museums and exhibitions &#8599;</a></div>
 </div>
 
 <footer class="ft">
@@ -119,7 +120,7 @@ const MU=[
 ["Kindl Center for Contemporary Art, Berlin","POLY. A Fluid Show","17 Sep 2023 – 25 Feb 2024","https://www.sovrn.art/museums/kindl"],
 ["Vitra Design Museum","Science Fiction Design","18 May 2024 – 10 May 2026","https://www.sovrn.art/museums/vitra"],
 ["Museum of Crypto Art","Five Reflections","Permanent collection","https://www.sovrn.art/museums/moca"],
-["LACMA, Los Angeles","AI Imagined Portrait Painted by a Robot #2","One work","https://www.sovrn.art/museums/lacma"]];
+["LACMA, Los Angeles","AI Imagined Portrait Painted by a Robot #2","Permanent collection","https://www.sovrn.art/museums/lacma"]];
 const MK=[["Raster","raster.jpg"],["Ord","ord.png"],["Satflow","satflow.png"]],
 SO=[["X","twitter.jpg","https://twitter.com/sovrnart"],
 ["Instagram","instagram.png","https://www.instagram.com/sovrn.art",1],
