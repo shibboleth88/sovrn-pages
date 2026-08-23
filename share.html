@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Share an artwork — sovrn.art</title>
+<title>Shareable GIFs of on-chain SVGs — sovrn.art</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -16,9 +16,10 @@
   *{box-sizing:border-box}
   body{margin:0;background:var(--paper);color:var(--ink);
        font:400 15px/1.55 "IBM Plex Sans",system-ui,sans-serif}
-  header{padding:18px 20px 12px;border-bottom:1px solid var(--rule)}
-  h1{margin:0;font:italic 300 clamp(21px,3vw,28px)/1.15 Fraunces,Georgia,serif}
-  header p{margin:6px 0 0;font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate)}
+  header{padding:18px 20px 14px;border-bottom:1px solid var(--rule)}
+  h1{margin:0;font:italic 300 clamp(20px,3vw,27px)/1.2 Fraunces,Georgia,serif}
+  header p{margin:7px 0 0;font:400 11.5px/1.6 "IBM Plex Mono",monospace;color:var(--slate);
+           max-width:64ch}
   .wrap{max-width:900px;margin:0 auto;padding:0 20px}
   .find{margin:16px 0 0}
   .find input{width:100%;padding:12px 14px;border:1px solid var(--rule);border-radius:8px;
@@ -49,10 +50,9 @@
   .panel{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--rule);
          padding:14px 20px calc(14px + env(safe-area-inset-bottom));margin-top:26px}
   .panel .wrap{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
-  .preview{flex:none;width:132px;height:132px;border:1px solid var(--rule);background:var(--paper);
-    display:flex;align-items:center;justify-content:center;overflow:hidden}
-  .preview img{max-width:100%;max-height:100%;display:block}
-  .controls{flex:1;min-width:260px}
+  .preview{flex:none;width:168px;border:1px solid var(--rule);background:var(--paper)}
+  .preview img{width:100%;display:block}
+  .controls{flex:1;min-width:270px}
   .controls h2{margin:0 0 2px;font:500 15px/1.3 "IBM Plex Sans",sans-serif}
   .meta{font:400 11.5px/1.6 "IBM Plex Mono",monospace;color:var(--slate);margin:0 0 10px}
   .meta b{color:var(--ink);font-weight:500}
@@ -73,18 +73,19 @@
 <body>
 
 <header><div class="wrap">
-  <h1>Share an artwork</h1>
-  <p>pick a work · get a shareable format</p>
+  <h1>Shareable GIFs of on-chain SVGs</h1>
+  <p>get animated versions of Sovrn's on-chain collections in a format that can be
+     shared on socials</p>
 </div></header>
 
 <div class="wrap">
   <div class="find">
     <input id="q" type="search" autocomplete="off" spellcheck="false"
-           placeholder="Search works by title…" aria-label="Search works by title">
+           placeholder="Search by title or token ID…" aria-label="Search by title or token ID">
   </div>
   <div class="sets" id="sets" role="group" aria-label="Limit to a collection"></div>
   <div class="hits" id="hits" role="listbox"></div>
-  <p class="note" id="note">Search by title — “skull”, “beetle”, “cogito”, “octoGAN”.</p>
+  <p class="note" id="note">Search by title or token ID — “skull”, “cogito”, “octoGAN”, or 883.</p>
 </div>
 
 <div class="panel" hidden id="panel"><div class="wrap">
@@ -95,12 +96,12 @@
     <div class="row">
       <label>size
         <select id="size">
-          <option value="1200">1200px</option>
-          <option value="1600">1600px</option>
-          <option value="2048">2048px</option>
+          <option value="480">480px</option>
+          <option value="720" selected>720px</option>
+          <option value="1080">1080px</option>
         </select>
       </label>
-      <button class="go" id="dl">Download</button>
+      <button class="go" id="dl">Download GIF</button>
       <button class="go ghost" id="src">Original SVG</button>
     </div>
     <p class="warn" id="warn"></p>
@@ -108,12 +109,140 @@
 </div></div>
 
 <script>
-// These three collections keep their artwork in the contract: tokenURI(id)
-// returns base64 JSON whose image is a base64 SVG. Nothing comes from a gateway,
-// and a data: URI does not taint the canvas, so every work here can be previewed
-// and exported. Sovrn's other eleven collections keep their images on IPFS,
-// which would taint the canvas and break export — which is why this tool covers
-// the on-chain three.
+/* ------------------------------------------------------------------------- *
+ * A minimal GIF89a encoder. Inline because a CDN script is blocked here and
+ * producing GIFs is the whole point of the page. One palette is built across
+ * every frame so colours cannot shimmer frame to frame.
+ * ------------------------------------------------------------------------- */
+var GIF = (function () {
+  function palette(frames, maxColours) {
+    var px = [];
+    for (var f = 0; f < frames.length; f++) {
+      var d = frames[f].data;
+      // A 1080x1080 frame is 1.2M pixels; we only need the spread, not all of it.
+      var step = Math.max(4, Math.floor(d.length / 4 / 24000) * 4);
+      for (var i = 0; i < d.length; i += step) px.push([d[i], d[i + 1], d[i + 2]]);
+    }
+    var boxes = [px];
+    while (boxes.length < maxColours) {
+      var bi = -1, bestRange = -1, bestCh = 0;
+      for (var b = 0; b < boxes.length; b++) {
+        if (boxes[b].length < 2) continue;
+        for (var c = 0; c < 3; c++) {
+          var lo = 255, hi = 0;
+          for (var j = 0; j < boxes[b].length; j++) {
+            var v = boxes[b][j][c];
+            if (v < lo) lo = v;
+            if (v > hi) hi = v;
+          }
+          if (hi - lo > bestRange) { bestRange = hi - lo; bi = b; bestCh = c; }
+        }
+      }
+      if (bi < 0 || bestRange <= 0) break;
+      var box = boxes[bi];
+      box.sort(function (p, q) { return p[bestCh] - q[bestCh]; });
+      var mid = box.length >> 1;
+      boxes.splice(bi, 1, box.slice(0, mid), box.slice(mid));
+    }
+    return boxes.filter(function (b) { return b.length; }).map(function (b) {
+      var r = 0, g = 0, bl = 0;
+      for (var i = 0; i < b.length; i++) { r += b[i][0]; g += b[i][1]; bl += b[i][2]; }
+      return [Math.round(r / b.length), Math.round(g / b.length), Math.round(bl / b.length)];
+    });
+  }
+
+  function nearest(pal, r, g, b, memo) {
+    var key = (r >> 2 << 12) | (g >> 2 << 6) | (b >> 2);
+    var hit = memo[key];
+    if (hit !== undefined) return hit;
+    var best = 0, bd = Infinity;
+    for (var i = 0; i < pal.length; i++) {
+      var dr = r - pal[i][0], dg = g - pal[i][1], db = b - pal[i][2];
+      var d = dr * dr * 0.3 + dg * dg * 0.59 + db * db * 0.11;
+      if (d < bd) { bd = d; best = i; }
+    }
+    memo[key] = best;
+    return best;
+  }
+
+  function lzw(indices, minCodeSize) {
+    var out = [], cur = 0, curBits = 0;
+    function emit(code, size) {
+      cur |= code << curBits;
+      curBits += size;
+      while (curBits >= 8) { out.push(cur & 255); cur >>= 8; curBits -= 8; }
+    }
+    var clear = 1 << minCodeSize, eoi = clear + 1;
+    var size = minCodeSize + 1, next = eoi + 1, dict = {};
+    emit(clear, size);
+    var prefix = indices[0];
+    for (var i = 1; i < indices.length; i++) {
+      var k = indices[i], key = prefix * 5003 + k;
+      if (dict[key] !== undefined) { prefix = dict[key]; continue; }
+      emit(prefix, size);
+      dict[key] = next++;
+      if (next > (1 << size)) {
+        if (size < 12) size++;
+        else { emit(clear, size); dict = {}; next = eoi + 1; size = minCodeSize + 1; }
+      }
+      prefix = k;
+    }
+    emit(prefix, size);
+    emit(eoi, size);
+    if (curBits > 0) out.push(cur & 255);
+    return out;
+  }
+
+  function encode(frames, delaysMs, maxColours) {
+    var w = frames[0].width, h = frames[0].height;
+    var pal = palette(frames, maxColours || 256);
+    var bits = Math.max(2, Math.ceil(Math.log2(Math.max(2, pal.length))));
+    var palSize = 1 << bits, memo = {}, out = [];
+    function short_(v) { out.push(v & 255, (v >> 8) & 255); }
+
+    "GIF89a".split("").forEach(function (c) { out.push(c.charCodeAt(0)); });
+    short_(w); short_(h);
+    out.push(0x80 | ((bits - 1) & 7), 0, 0);
+    for (var i = 0; i < palSize; i++) {
+      var c = pal[i] || [0, 0, 0];
+      out.push(c[0], c[1], c[2]);
+    }
+    out.push(0x21, 0xFF, 11);
+    "NETSCAPE2.0".split("").forEach(function (c) { out.push(c.charCodeAt(0)); });
+    out.push(3, 1, 0, 0, 0);
+
+    for (var f = 0; f < frames.length; f++) {
+      var delay = Math.max(2, Math.round((delaysMs[f] || 100) / 10));  // centiseconds
+      out.push(0x21, 0xF9, 4, 0x04, delay & 255, (delay >> 8) & 255, 0, 0);
+      out.push(0x2C);
+      short_(0); short_(0); short_(w); short_(h);
+      out.push(0);
+      var d = frames[f].data, idx = new Uint8Array(w * h);
+      for (var p = 0, q = 0; p < d.length; p += 4, q++) {
+        idx[q] = nearest(pal, d[p], d[p + 1], d[p + 2], memo);
+      }
+      out.push(bits);
+      var comp = lzw(idx, bits);
+      for (var s = 0; s < comp.length; s += 255) {
+        var n = Math.min(255, comp.length - s);
+        out.push(n);
+        for (var z = 0; z < n; z++) out.push(comp[s + z]);
+      }
+      out.push(0);
+    }
+    out.push(0x3B);
+    return new Blob([new Uint8Array(out)], { type: "image/gif" });
+  }
+  return { encode: encode };
+})();
+
+/* ------------------------------------------------------------------------- */
+
+// These three collections keep their artwork in the contract: tokenURI returns
+// base64 JSON whose image is a base64 SVG. Nothing comes from a gateway, and a
+// data: URI does not taint the canvas, so every work here can be rasterised and
+// re-encoded. Sovrn's other collections keep their images on IPFS, which taints
+// the canvas and makes the export throw.
 var BASE = location.pathname.replace(/[^/]*$/, "");
 var RPC = "https://ethereum-rpc.publicnode.com";
 var MAX_HITS = 40;
@@ -121,8 +250,9 @@ var LABELS = { reflection: "Reflection", wunderkammer: "Wunderkammer", bytegans:
 var ARTISTS = { reflection: "Pindar Van Arman", wunderkammer: "Isa Kost",
                 bytegans: "Pindar Van Arman" };
 var ORDER = ["reflection", "wunderkammer", "bytegans"];
+var REFLECTION_FRAMES = 20;      // an 8s cascade; more than this is a very large GIF
 
-var data = null, scope = null, sel = null, cache = {};
+var data = null, scope = null, sel = null, cache = {}, token = 0;
 var $ = function (id) { return document.getElementById(id); };
 
 fetch(BASE + "onchain-titles.json")
@@ -132,22 +262,24 @@ fetch(BASE + "onchain-titles.json")
 
 function boot() {
   var strip = $("sets");
-  [""].concat(ORDER).forEach(function (slug) {
+  ORDER.forEach(function (slug) {
     var b = document.createElement("button");
     b.type = "button";
-    b.textContent = slug ? LABELS[slug] + " (" + data[slug].count + ")" : "All";
-    b.setAttribute("aria-pressed", String(slug === ""));
-    b.onclick = function () { scope = slug || null; mark(); search($("q").value.trim()); };
+    b.textContent = LABELS[slug] + " (" + data[slug].count + ")";
+    b.setAttribute("aria-pressed", "false");
+    b.onclick = function () {
+      scope = (scope === slug) ? null : slug;      // click again to clear
+      mark();
+      search($("q").value.trim());
+    };
     b._slug = slug;
     strip.appendChild(b);
   });
-  var total = ORDER.reduce(function (n, k) { return n + data[k].count; }, 0);
-  $("q").placeholder = "Search " + total.toLocaleString() + " works by title…";
 }
 
 function mark() {
   [].forEach.call($("sets").children, function (b) {
-    b.setAttribute("aria-pressed", String((b._slug || null) === scope));
+    b.setAttribute("aria-pressed", String(b._slug === scope));
   });
 }
 
@@ -156,12 +288,28 @@ $("q").addEventListener("input", function () { search(this.value.trim()); });
 function search(q) {
   var box = $("hits");
   box.textContent = "";
+  // A new search means the previous work is no longer what is on screen.
+  closePanel();
   if (!q) { $("note").hidden = false; return; }
   $("note").hidden = true;
 
   var lower = q.toLowerCase();
   var slugs = scope ? [scope] : ORDER;
   var rows = [], total = 0;
+
+  // A bare number is a token id. Each collection has its own range, and they do
+  // not agree — Reflection is 0-indexed, the other two are 1-indexed — so offer
+  // whichever collections actually hold that id.
+  if (/^\d+$/.test(q)) {
+    var n = parseInt(q, 10);
+    slugs.forEach(function (slug) {
+      var rec = data[slug], i = n - rec.first_token;
+      if (i >= 0 && i < rec.titles.length) {
+        rows.push({ slug: slug, id: n, title: rec.titles[i], why: "token " + n });
+        total++;
+      }
+    });
+  }
 
   slugs.forEach(function (slug) {
     var rec = data[slug];
@@ -190,14 +338,12 @@ function search(q) {
     t.textContent = r.title;
     var tag = document.createElement("span");
     tag.className = "tag";
-    tag.textContent = LABELS[r.slug] + " · " + r.id;
-    b.appendChild(t);
-    b.appendChild(tag);
+    tag.textContent = LABELS[r.slug] + " · " + (r.why || r.id);
+    b.appendChild(t); b.appendChild(tag);
     b.onclick = function () { openWork(r); };
     box.appendChild(b);
   });
 
-  // Never let a capped list read as the whole answer.
   if (total > rows.length) {
     var more = document.createElement("p");
     more.className = "more";
@@ -207,58 +353,56 @@ function search(q) {
   }
 }
 
+function closePanel() {
+  sel = null;
+  token++;                       // invalidates any fetch still in flight
+  $("panel").hidden = true;
+  $("prev").removeAttribute("src");
+}
+
 /* ---------------------------------------------------- one work, from chain */
 
 function openWork(r) {
+  var mine = ++token;
   sel = { slug: r.slug, id: r.id, title: r.title };
   $("panel").hidden = false;
   $("pt").textContent = r.title;
-  $("pm").innerHTML = "<b>" + LABELS[r.slug] + "</b> · " + ARTISTS[r.slug]
-    + " · token " + r.id + " · reading the contract…";
+  $("pm").innerHTML = meta(r) + " · reading the contract…";
   $("warn").textContent = "";
   $("prev").removeAttribute("src");
   $("dl").disabled = true;
   $("src").disabled = true;
 
   fetchWork(r.slug, r.id).then(function (uri) {
-    if (!sel || sel.slug !== r.slug || sel.id !== r.id) return;  // superseded
+    if (mine !== token) return;                       // superseded by a newer pick
     sel.uri = uri;
-    $("prev").src = uri;
-    $("dl").disabled = false;
     $("src").disabled = false;
-    describe(sel);
+    $("pm").innerHTML = meta(r) + " · on-chain";
+    return build();
   }).catch(function (e) {
-    $("pm").innerHTML = "<b>" + LABELS[r.slug] + "</b> · token " + r.id;
+    if (mine !== token) return;
+    $("pm").innerHTML = meta(r);
     $("warn").textContent = "Couldn't read that work from the contract — "
       + (e && e.message ? e.message : "try again in a moment") + ".";
   });
 }
 
-function describe(w) {
-  $("pm").innerHTML = "<b>" + LABELS[w.slug] + "</b> · " + ARTISTS[w.slug]
-    + " · token " + w.id + " · on-chain";
-  var msgs = ["This work moves. The download is a single frame — for the animation, "
-    + "use tools/share.py in the sovrn-bot repo, which renders it to GIF. "
-    + "“Original SVG” downloads the artwork exactly as the contract stores it."];
-  if (w.slug === "reflection") {
-    // Reflection is 0-indexed while the other two are 1-indexed, so this is
-    // worth saying out loud rather than leaving as a trap.
-    msgs.push("Reflection is 0-indexed: token " + w.id + " is number " + (w.id + 1)
-      + " on the artist's list of 999.");
-  }
-  $("warn").innerHTML = msgs.join("<br><br>");
+function meta(r) {
+  var s = "<b>" + LABELS[r.slug] + "</b> · " + ARTISTS[r.slug] + " · token " + r.id;
+  // Reflection is 0-indexed while the other two are 1-indexed; say so rather
+  // than leaving it as a trap for anyone reading a number off a title card.
+  if (r.slug === "reflection") s += " (no. " + (r.id + 1) + " of 999)";
+  return s;
 }
 
 function fetchWork(slug, id) {
   var key = slug + ":" + id;
   if (cache[key]) return Promise.resolve(cache[key]);
-  var contract = data[slug].contract;
   var call = "0xc87b56dd" + id.toString(16).padStart(64, "0");   // tokenURI(uint256)
   return fetch(RPC, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call",
-                           params: [{ to: contract, data: call }, "latest"] })
+                           params: [{ to: data[slug].contract, data: call }, "latest"] })
   }).then(function (r) { return r.json(); }).then(function (j) {
     if (j.error) throw new Error(j.error.message || "call failed");
     var raw = j.result.slice(2);
@@ -272,8 +416,8 @@ function fetchWork(slug, id) {
     try {
       image = JSON.parse(payload).image;
     } catch (e) {
-      // byteGAN #469's metadata is malformed on-chain — one attributes entry has
-      // an unquoted key. The contract is immutable, so read the field directly.
+      // byteGAN #469's metadata is malformed on-chain — an attributes entry has
+      // an unquoted key — and the contract is immutable, so read the field directly.
       var m = payload.match(/"image"\s*:\s*"([^"]+)"/);
       if (!m) throw new Error("its metadata could not be read");
       image = m[1];
@@ -290,16 +434,230 @@ function b64utf8(b64) {
     Uint8Array.from(atob(b64), function (c) { return c.charCodeAt(0); }));
 }
 
+function svgOf(w) { return b64utf8(w.uri.split("base64,")[1]); }
+
+function loadImage(src) {
+  return new Promise(function (res, rej) {
+    var i = new Image();
+    i.onload = function () { res(i); };
+    i.onerror = function () { rej(new Error("could not rasterise")); };
+    i.src = src;
+  });
+}
+
+function svgToUri(text) {
+  return "data:image/svg+xml;base64," + btoa(
+    String.fromCharCode.apply(null, new TextEncoder().encode(text)));
+}
+
+/* ------------------------------------------------------- frames, per source */
+
+// A byteGAN is not a vector at heart: the artwork is an 11x11 animated GIF
+// base64'd inside the SVG, and the wrapper only carries image-rendering:
+// pixelated. Decode that GIF and scale by a whole-number factor with smoothing
+// off, or the hard pixel edges smear.
+function bytegansFrames(w, size) {
+  var svg = svgOf(w);
+  var m = svg.match(/data:image\/gif;base64,([A-Za-z0-9+/=\s]+)/);
+  if (!m) throw new Error("no GIF inside the wrapper");
+  return decodeGif(m[1]).then(function (g) {
+    var f = Math.max(1, Math.round(size / g.width));
+    var out = [], c = document.createElement("canvas");
+    c.width = g.width * f; c.height = g.height * f;
+    var ctx = c.getContext("2d", { willReadFrequently: true });
+    ctx.imageSmoothingEnabled = false;
+    g.frames.forEach(function (bmp) {
+      ctx.clearRect(0, 0, c.width, c.height);
+      ctx.drawImage(bmp, 0, 0, c.width, c.height);
+      out.push(ctx.getImageData(0, 0, c.width, c.height));
+    });
+    return { frames: out, delays: g.delays, colours: 256 };
+  });
+}
+
+// Wunderkammer stacks four layers — a tiled pattern, a static base, the animated
+// overlay, and the artist's seal. Rather than reproduce that layout by hand, swap
+// the animated layer's data URI for one still frame at a time and let the SVG do
+// its own compositing.
+function wunderkammerFrames(w, size) {
+  var svg = svgOf(w);
+  var gifs = svg.match(/data:image\/gif;base64,[A-Za-z0-9+/=\s]+/g) || [];
+  var animated = null;
+  var chain = Promise.resolve();
+  gifs.forEach(function (g) {
+    chain = chain.then(function () {
+      if (animated) return;
+      return decodeGif(g.split("base64,")[1]).then(function (d) {
+        if (d.frames.length > 1) animated = { raw: g, data: d };
+      });
+    });
+  });
+  return chain.then(function () {
+    if (!animated) return staticFrames(w, size);       // one of the 36 is a single frame
+    var c = document.createElement("canvas");
+    c.width = animated.data.width; c.height = animated.data.height;
+    var ctx = c.getContext("2d");
+    var out = [], step = Promise.resolve();
+    animated.data.frames.forEach(function (bmp) {
+      step = step.then(function () {
+        ctx.clearRect(0, 0, c.width, c.height);
+        ctx.drawImage(bmp, 0, 0);
+        var swapped = svg.replace(animated.raw, c.toDataURL("image/png"));
+        return rasterise(svgToUri(swapped), size).then(function (im) { out.push(im); });
+      });
+    });
+    return step.then(function () {
+      return { frames: out, delays: animated.data.delays, colours: 256 };
+    });
+  });
+}
+
+// Reflection animates with SMIL. Serialising a seeked SVG would just give back
+// the original markup, so instead each <animate> is evaluated at time t and
+// written onto its parent as a static opacity, then removed.
+function reflectionFrames(w, size) {
+  var svg = svgOf(w);
+  var doc = new DOMParser().parseFromString(svg, "image/svg+xml");
+  var anims = [].slice.call(doc.querySelectorAll("animate"));
+  var dur = 8;
+  anims.forEach(function (a) {
+    var d = parseFloat(a.getAttribute("dur") || "8");
+    if (!isNaN(d)) dur = Math.max(dur, d);
+  });
+  var plan = anims.map(function (a) {
+    return {
+      parent: a.parentNode,
+      attr: a.getAttribute("attributeName") || "opacity",
+      values: (a.getAttribute("values") || "").split(";").map(parseFloat),
+      keys: (a.getAttribute("keyTimes") || "").split(";").map(parseFloat),
+      node: a
+    };
+  });
+  plan.forEach(function (p) { if (p.node.parentNode) p.node.parentNode.removeChild(p.node); });
+
+  var out = [], delays = [], step = Promise.resolve();
+  var ms = Math.round(dur * 1000 / REFLECTION_FRAMES);
+  for (var i = 0; i < REFLECTION_FRAMES; i++) {
+    (function (frac) {
+      step = step.then(function () {
+        plan.forEach(function (p) {
+          if (p.values.length < 2 || p.values.length !== p.keys.length) return;
+          p.parent.setAttribute(p.attr, String(valueAt(p.values, p.keys, frac)));
+        });
+        var text = new XMLSerializer().serializeToString(doc);
+        return rasterise(svgToUri(text), size).then(function (im) {
+          out.push(im); delays.push(ms);
+        });
+      });
+    })(i / REFLECTION_FRAMES);
+  }
+  return step.then(function () { return { frames: out, delays: delays, colours: 256 }; });
+}
+
+function valueAt(values, keys, f) {
+  for (var i = 1; i < keys.length; i++) {
+    if (f <= keys[i]) {
+      var span = keys[i] - keys[i - 1];
+      var t = span > 0 ? (f - keys[i - 1]) / span : 0;
+      return values[i - 1] + (values[i] - values[i - 1]) * t;
+    }
+  }
+  return values[values.length - 1];
+}
+
+function staticFrames(w, size) {
+  return rasterise(w.uri, size).then(function (im) {
+    return { frames: [im], delays: [1000], colours: 256 };
+  });
+}
+
+function decodeGif(b64) {
+  var bytes = Uint8Array.from(atob(b64.replace(/\s/g, "")),
+                              function (c) { return c.charCodeAt(0); });
+  var dec = new ImageDecoder({ data: bytes, type: "image/gif" });
+  // tracks.ready and completed settle separately; frameCount is null before the
+  // first of those resolves.
+  return dec.tracks.ready.then(function () {
+    return dec.completed;
+  }).then(function () {
+    var n = dec.tracks.selectedTrack.frameCount, frames = [], delays = [];
+    var step = Promise.resolve();
+    for (var i = 0; i < n; i++) {
+      (function (k) {
+        step = step.then(function () {
+          return dec.decode({ frameIndex: k }).then(function (r) {
+            frames.push(r.image);
+            delays.push(Math.max(20, Math.round((r.image.duration || 100000) / 1000)));
+          });
+        });
+      })(i);
+    }
+    return step.then(function () {
+      return { frames: frames, delays: delays,
+               width: frames[0].displayWidth, height: frames[0].displayHeight };
+    });
+  });
+}
+
+function rasterise(uri, size) {
+  return loadImage(uri).then(function (img) {
+    var sw = img.naturalWidth || size, sh = img.naturalHeight || size;
+    var k = size / Math.max(sw, sh);
+    var c = document.createElement("canvas");
+    c.width = Math.max(1, Math.round(sw * k));
+    c.height = Math.max(1, Math.round(sh * k));
+    var ctx = c.getContext("2d", { willReadFrequently: true });
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(img, 0, 0, c.width, c.height);
+    return ctx.getImageData(0, 0, c.width, c.height);
+  });
+}
+
+/* ------------------------------------------------------------------ build */
+
+var built = null;
+
+function build() {
+  var mine = token, w = sel, size = parseInt($("size").value, 10);
+  $("dl").disabled = true;
+  $("warn").textContent = "Rendering at " + size + "px…";
+  var maker = w.slug === "bytegans" ? bytegansFrames
+            : w.slug === "wunderkammer" ? wunderkammerFrames
+            : reflectionFrames;
+  return maker(w, size).then(function (r) {
+    if (mine !== token) return;
+    var blob = GIF.encode(r.frames, r.delays, r.colours);
+    built = { blob: blob, size: size, key: w.slug + ":" + w.id };
+    $("prev").src = URL.createObjectURL(blob);
+    $("dl").disabled = false;
+    var kb = blob.size / 1024;
+    var line = r.frames.length + " frames · " + r.frames[0].width + "×"
+      + r.frames[0].height + " · " + (kb > 1024 ? (kb / 1024).toFixed(1) + "MB"
+                                                : Math.round(kb) + "KB");
+    if (blob.size > 15 * 1024 * 1024) {
+      line += " — over X's 15MB ceiling; choose a smaller size";
+    } else if (w.slug === "reflection") {
+      // A Reflection measured 3,326 distinct colours; GIF allows 256, so this is
+      // an honest limit of the format rather than something to hide.
+      line += " — GIF holds 256 colours, so this one bands a little";
+    }
+    $("warn").textContent = line;
+  }).catch(function (e) {
+    if (mine !== token) return;
+    $("warn").textContent = "Couldn't build that GIF — " + (e.message || e)
+      + ". “Original SVG” still works.";
+  });
+}
+
+$("size").onchange = function () { if (sel && sel.uri) build(); };
+
 /* ----------------------------------------------------------------- export */
 
 function grab(href, filename) {
   var a = document.createElement("a");
-  a.href = href;
-  a.download = filename;
-  a.rel = "noopener";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+  a.href = href; a.download = filename; a.rel = "noopener";
+  document.body.appendChild(a); a.click(); a.remove();
 }
 
 function fileName(w) {
@@ -312,74 +670,11 @@ $("src").onclick = function () {
 };
 
 $("dl").onclick = function () {
-  var btn = $("dl");
-  btn.disabled = true;
-  btn.textContent = "Working";
-  render(sel, function (blob, err) {
-    btn.disabled = false;
-    btn.textContent = "Download";
-    if (err || !blob) {
-      $("warn").innerHTML = "Couldn't build that file — try “Original SVG” instead.";
-      return;
-    }
-    var url = URL.createObjectURL(blob);
-    grab(url, fileName(sel) + ".png");
-    setTimeout(function () { URL.revokeObjectURL(url); }, 30000);
-  });
+  if (!built || !sel) return;
+  var url = URL.createObjectURL(built.blob);
+  grab(url, fileName(sel) + ".gif");
+  setTimeout(function () { URL.revokeObjectURL(url); }, 30000);
 };
-
-// A byteGAN is not really a vector: the artwork is an 11x11 animated GIF
-// base64'd inside the SVG, and the wrapper only carries image-rendering:
-// pixelated. Rasterising the SVG and scaling that up interpolates twice over,
-// neither step a whole number, and the pixel grid smears. Pull the GIF out and
-// scale it by a whole-number factor instead.
-function sourceFor(w, done) {
-  var img = new Image();
-  img.onload = function () { done(img); };
-  img.onerror = function () { done(null); };
-  if (w.slug !== "bytegans") { img.src = w.uri; return; }
-  try {
-    var svg = b64utf8(w.uri.split("base64,")[1]);
-    var m = svg.match(/data:image\/gif;base64,[A-Za-z0-9+/=\s]+/);
-    img.src = m ? m[0].replace(/\s/g, "") : w.uri;
-  } catch (e) {
-    img.src = w.uri;
-  }
-}
-
-function render(w, done) {
-  sourceFor(w, function (img) {
-    if (!img) { done(null, new Error("load")); return; }
-    try {
-      var sw = img.naturalWidth, sh = img.naturalHeight;
-      var target = parseInt($("size").value, 10);
-      var pixelArt = w.slug === "bytegans";
-      var dw, dh;
-      if (pixelArt) {
-        // whole-number upscale only, so every source pixel stays a hard square
-        var f = Math.max(1, Math.round(target / Math.max(sw, sh)));
-        dw = sw * f; dh = sh * f;
-      } else {
-        var k = target / Math.max(sw, sh);
-        dw = Math.max(1, Math.round(sw * k));
-        dh = Math.max(1, Math.round(sh * k));
-      }
-      var c = document.createElement("canvas");
-      c.width = dw; c.height = dh;
-      var ctx = c.getContext("2d");
-      ctx.imageSmoothingEnabled = !pixelArt;
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(0, 0, dw, dh);
-      ctx.drawImage(img, 0, 0, sw, sh, 0, 0, dw, dh);
-      // PNG throughout: these are flat vector and pixel art, and JPEG rings on
-      // every hard edge — a byteGAN at q0.92 came back with 142 distinct colours
-      // where it should have four.
-      c.toBlob(function (b) { done(b, null); }, "image/png");
-    } catch (e) {
-      done(null, e);
-    }
-  });
-}
 </script>
 </body>
 </html>
