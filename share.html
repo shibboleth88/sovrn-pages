@@ -7,9 +7,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root{--ink:#16181d;--paper:#e9e9e5;--rule:#c9c9c2;--slate:#5c6470;--accent:#2c7a74;--on-accent:#f6f4f0;--card:#f4f4f1}
+  :root{--ink:#16181d;--paper:#e9e9e5;--rule:#c9c9c2;--slate:#5c6470;
+        --accent:#2c7a74;--on-accent:#f6f4f0;--card:#f4f4f1}
   @media (prefers-color-scheme:dark){
-    :root{--ink:#e6e6e1;--paper:#16181d;--rule:#33373f;--slate:#9aa1ad;--accent:#5cc2ba;--on-accent:#10201e;--card:#1d2027}
+    :root{--ink:#e6e6e1;--paper:#16181d;--rule:#33373f;--slate:#9aa1ad;
+          --accent:#5cc2ba;--on-accent:#10201e;--card:#1d2027}
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--paper);color:var(--ink);
@@ -17,49 +19,41 @@
   header{padding:18px 20px 12px;border-bottom:1px solid var(--rule)}
   h1{margin:0;font:italic 300 clamp(21px,3vw,28px)/1.15 Fraunces,Georgia,serif}
   header p{margin:6px 0 0;font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate)}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-  /* search */
-  .find{position:relative;margin:16px 0 4px}
-  .find input{width:100%;padding:11px 13px;border:1px solid var(--rule);border-radius:8px;
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px}
+  .find{margin:16px 0 0}
+  .find input{width:100%;padding:12px 14px;border:1px solid var(--rule);border-radius:8px;
     background:var(--card);color:var(--ink);
-    font:400 14px/1.4 "IBM Plex Sans",system-ui,sans-serif;outline:none}
+    font:400 15px/1.4 "IBM Plex Sans",system-ui,sans-serif;outline:none}
   .find input:focus{border-color:var(--accent)}
-  .hits{margin:8px 0 0;border:1px solid var(--rule);border-radius:8px;background:var(--card);
-    max-height:260px;overflow-y:auto}
+  .sets{display:flex;flex-wrap:wrap;gap:7px;padding:12px 0 0}
+  .sets button{background:transparent;border:1px solid var(--rule);color:var(--slate);
+    font:400 12.5px/1.4 "IBM Plex Sans",sans-serif;padding:7px 13px;border-radius:999px;
+    cursor:pointer;transition:border-color .12s,color .12s}
+  .sets button:hover{border-color:var(--accent);color:var(--accent)}
+  .sets button[aria-pressed=true]{border-color:var(--accent);color:var(--on-accent);
+    background:var(--accent)}
+  .hits{margin:14px 0 0;border:1px solid var(--rule);border-radius:8px;background:var(--card)}
   .hits:empty{display:none}
-  .hits button{display:block;width:100%;text-align:left;background:transparent;border:none;
-    border-bottom:1px solid var(--rule);padding:9px 13px;cursor:pointer;color:var(--ink);
-    font:400 13.5px/1.4 "IBM Plex Sans",system-ui,sans-serif}
+  .hits button{display:flex;justify-content:space-between;gap:12px;align-items:baseline;
+    width:100%;text-align:left;background:transparent;border:none;
+    border-bottom:1px solid var(--rule);padding:10px 14px;cursor:pointer;color:var(--ink);
+    font:400 14px/1.4 "IBM Plex Sans",system-ui,sans-serif}
   .hits button:last-child{border-bottom:none}
   .hits button:hover{background:var(--paper);color:var(--accent)}
-  .hits .tag{font:400 11px/1 "IBM Plex Mono",monospace;color:var(--slate);margin-left:8px}
-  /* collection chips — all visible, no strip to scroll */
-  .sets{display:flex;flex-wrap:wrap;gap:7px;padding:14px 0 4px}
-  .sets button{background:transparent;border:1px solid var(--rule);
-    color:var(--slate);font:400 12.5px/1.4 "IBM Plex Sans",sans-serif;padding:7px 13px;
-    border-radius:999px;cursor:pointer;transition:border-color .12s,color .12s}
-  .sets button:hover{border-color:var(--accent);color:var(--accent)}
-  .sets button[aria-pressed=true]{border-color:var(--accent);color:var(--on-accent);background:var(--accent)}
-  .credit{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate);margin:10px 0 0}
-  /* grid */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;
-        padding:14px 0 24px}
-  .grid button{padding:0;border:1px solid var(--rule);background:var(--card);cursor:pointer;
-    aspect-ratio:1;overflow:hidden;border-radius:2px}
-  .grid button:hover{border-color:var(--accent)}
-  .grid button[aria-pressed=true]{border-color:var(--accent);outline:1px solid var(--accent)}
-  .grid img{width:100%;height:100%;object-fit:cover;display:block}
-  /* Latent Couture is shot tall — a centre crop takes the headpieces off. */
-  .grid img.top{object-position:top}
-  /* panel */
+  .hits button:disabled{cursor:default;color:var(--slate);font-style:italic}
+  .hits .tag{flex:none;font:400 11px/1.4 "IBM Plex Mono",monospace;color:var(--slate)}
+  .note{color:var(--slate);font:italic 400 14px/1.6 "IBM Plex Sans",sans-serif;
+        padding:26px 0 8px;margin:0}
+  .more{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
+        padding:10px 14px;margin:0;border-top:1px solid var(--rule)}
   .panel{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--rule);
-         padding:14px 20px calc(14px + env(safe-area-inset-bottom))}
+         padding:14px 20px calc(14px + env(safe-area-inset-bottom));margin-top:26px}
   .panel .wrap{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
   .preview{flex:none;width:132px;height:132px;border:1px solid var(--rule);background:var(--paper);
     display:flex;align-items:center;justify-content:center;overflow:hidden}
   .preview img{max-width:100%;max-height:100%;display:block}
   .controls{flex:1;min-width:260px}
-  .controls h2{margin:0 0 2px;font:500 14px/1.3 "IBM Plex Sans",sans-serif}
+  .controls h2{margin:0 0 2px;font:500 15px/1.3 "IBM Plex Sans",sans-serif}
   .meta{font:400 11.5px/1.6 "IBM Plex Mono",monospace;color:var(--slate);margin:0 0 10px}
   .meta b{color:var(--ink);font-weight:500}
   .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -67,14 +61,13 @@
         display:flex;gap:6px;align-items:center;cursor:pointer}
   select{font:400 12px "IBM Plex Sans",sans-serif;padding:6px 8px;border:1px solid var(--rule);
          border-radius:6px;background:var(--paper);color:var(--ink)}
-  .go{border:none;background:var(--accent);color:var(--on-accent);border-radius:8px;padding:9px 18px;
-      font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;
-      cursor:pointer}
+  .go{border:none;background:var(--accent);color:var(--on-accent);border-radius:8px;
+      padding:9px 18px;font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.08em;
+      text-transform:uppercase;cursor:pointer}
   .go:disabled{opacity:.45;cursor:default}
   .ghost{background:transparent;border:1px solid var(--rule);color:var(--slate)}
   .ghost:hover{border-color:var(--accent);color:var(--accent)}
   .warn{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--accent);margin:9px 0 0}
-  .empty{color:var(--slate);font-style:italic;padding:40px 0}
 </style>
 </head>
 <body>
@@ -87,14 +80,11 @@
 <div class="wrap">
   <div class="find">
     <input id="q" type="search" autocomplete="off" spellcheck="false"
-           placeholder="Search a collection, a Reflection title, or a token id (0–998)…"
-           aria-label="Search">
-    <div class="hits" id="hits" role="listbox"></div>
+           placeholder="Search works by title…" aria-label="Search works by title">
   </div>
-  <div class="sets" id="sets" role="group" aria-label="Collections"></div>
-  <p class="credit" id="credit"></p>
-  <div class="grid" id="grid"></div>
-  <p class="empty" id="empty">Loading…</p>
+  <div class="sets" id="sets" role="group" aria-label="Limit to a collection"></div>
+  <div class="hits" id="hits" role="listbox"></div>
+  <p class="note" id="note">Search by title — “skull”, “beetle”, “cogito”, “octoGAN”.</p>
 </div>
 
 <div class="panel" hidden id="panel"><div class="wrap">
@@ -108,73 +98,57 @@
           <option value="1200">1200px</option>
           <option value="1600">1600px</option>
           <option value="2048">2048px</option>
-          <option value="0">original</option>
         </select>
       </label>
-      <label><input type="checkbox" id="crop"> trim to fit the timeline</label>
       <button class="go" id="dl">Download</button>
-      <button class="go ghost" id="src">Original</button>
+      <button class="go ghost" id="src">Original SVG</button>
     </div>
     <p class="warn" id="warn"></p>
   </div>
 </div></div>
 
 <script>
-// Artwork is served from the same origin as this page, so the canvas is never
-// tainted and toBlob() works. Pulling from raster.art instead would taint it and
-// every export would throw. (A data: URI does not taint, which is what lets the
-// on-chain Reflection works below export too.)
+// These three collections keep their artwork in the contract: tokenURI(id)
+// returns base64 JSON whose image is a base64 SVG. Nothing comes from a gateway,
+// and a data: URI does not taint the canvas, so every work here can be previewed
+// and exported. Sovrn's other eleven collections keep their images on IPFS,
+// which would taint the canvas and break export — which is why this tool covers
+// the on-chain three.
 var BASE = location.pathname.replace(/[^/]*$/, "");
-// X shows images between about 4:5 and 16:9 whole; outside that band it crops the
-// in-timeline preview. We never pad or alter the work to suit — we just say so.
-var MIN_AR = 0.8, MAX_AR = 16 / 9;
 var RPC = "https://ethereum-rpc.publicnode.com";
-var REFLECTION = "0x5137cfB461d24040F5ce6B85D860c47A24f85412";
+var MAX_HITS = 40;
+var LABELS = { reflection: "Reflection", wunderkammer: "Wunderkammer", bytegans: "byteGANs" };
+var ARTISTS = { reflection: "Pindar Van Arman", wunderkammer: "Isa Kost",
+                bytegans: "Pindar Van Arman" };
+var ORDER = ["reflection", "wunderkammer", "bytegans"];
 
-var sets = [], cur = null, sel = null, selEl = null;
-var reflTitles = null, reflContract = REFLECTION, reflLoading = null;
+var data = null, scope = null, sel = null, cache = {};
 var $ = function (id) { return document.getElementById(id); };
 
-fetch(BASE + "share-manifest.json")
+fetch(BASE + "onchain-titles.json")
   .then(function (r) { return r.json(); })
-  .then(function (d) { sets = d.sets; boot(); })
-  .catch(function () { $("empty").textContent = "Couldn't load the artwork index."; });
+  .then(function (d) { data = d.collections; boot(); })
+  .catch(function () { $("note").textContent = "Couldn't load the title index."; });
 
 function boot() {
   var strip = $("sets");
-  sets.forEach(function (s, i) {
+  [""].concat(ORDER).forEach(function (slug) {
     var b = document.createElement("button");
     b.type = "button";
-    b.textContent = s.title;
-    b.setAttribute("aria-pressed", "false");
-    b.onclick = function () { pick(i); };
+    b.textContent = slug ? LABELS[slug] + " (" + data[slug].count + ")" : "All";
+    b.setAttribute("aria-pressed", String(slug === ""));
+    b.onclick = function () { scope = slug || null; mark(); search($("q").value.trim()); };
+    b._slug = slug;
     strip.appendChild(b);
   });
-  // Nothing is loaded until the visitor asks for it. The page opens on the
-  // search box; a grid of thumbnails would mean fetching two dozen images
-  // nobody had asked to see.
-  $("empty").textContent = "Search for a work, or pick a collection above.";
-  $("empty").hidden = false;
-  // The 999 Reflection titles are a separate 22KB file, pulled once in the
-  // background so the first search does not have to wait for it.
-  loadReflection();
+  var total = ORDER.reduce(function (n, k) { return n + data[k].count; }, 0);
+  $("q").placeholder = "Search " + total.toLocaleString() + " works by title…";
 }
 
-/* ------------------------------------------------------------------ search */
-
-function loadReflection() {
-  if (reflTitles) return Promise.resolve(reflTitles);
-  if (!reflLoading) {
-    reflLoading = fetch(BASE + "reflection-titles.json")
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        reflTitles = d.titles;
-        reflContract = d.contract || REFLECTION;
-        return reflTitles;
-      })
-      .catch(function () { reflLoading = null; return null; });
-  }
-  return reflLoading;
+function mark() {
+  [].forEach.call($("sets").children, function (b) {
+    b.setAttribute("aria-pressed", String((b._slug || null) === scope));
+  });
 }
 
 $("q").addEventListener("input", function () { search(this.value.trim()); });
@@ -182,38 +156,23 @@ $("q").addEventListener("input", function () { search(this.value.trim()); });
 function search(q) {
   var box = $("hits");
   box.textContent = "";
-  if (!q) return;
+  if (!q) { $("note").hidden = false; return; }
+  $("note").hidden = true;
+
   var lower = q.toLowerCase();
-  var rows = [];
+  var slugs = scope ? [scope] : ORDER;
+  var rows = [], total = 0;
 
-  // a bare number is a Reflection token id
-  if (/^\d+$/.test(q)) {
-    var n = parseInt(q, 10);
-    if (n >= 0 && n <= 998) {
-      rows.push(reflRow(n, "token " + n));
-    }
-    // The artist's list runs 1-999 while token ids run 0-998, so a number off a
-    // list or a title card is one higher than the id. Offer both readings.
-    if (n >= 1 && n <= 999) {
-      rows.push(reflRow(n - 1, "list no. " + n + " — token " + (n - 1)));
-    }
-  }
-
-  sets.forEach(function (s, i) {
-    if (s.title.toLowerCase().indexOf(lower) >= 0 ||
-        (s.artist || "").toLowerCase().indexOf(lower) >= 0) {
-      rows.push({ label: s.title, tag: s.artist || "collection",
-                  go: function () { pick(i); clearSearch(); } });
-    }
-  });
-
-  if (reflTitles && lower.length >= 2) {
-    for (var id = 0; id < reflTitles.length && rows.length < 40; id++) {
-      if (reflTitles[id].toLowerCase().indexOf(lower) >= 0) {
-        rows.push(reflRow(id, "Reflection · token " + id));
+  slugs.forEach(function (slug) {
+    var rec = data[slug];
+    for (var i = 0; i < rec.titles.length; i++) {
+      if (rec.titles[i].toLowerCase().indexOf(lower) < 0) continue;
+      total++;
+      if (rows.length < MAX_HITS) {
+        rows.push({ slug: slug, id: rec.first_token + i, title: rec.titles[i] });
       }
     }
-  }
+  });
 
   if (!rows.length) {
     var none = document.createElement("button");
@@ -223,221 +182,115 @@ function search(q) {
     box.appendChild(none);
     return;
   }
-  rows.slice(0, 40).forEach(function (r) {
+
+  rows.forEach(function (r) {
     var b = document.createElement("button");
     b.type = "button";
-    b.appendChild(document.createTextNode(r.label));
     var t = document.createElement("span");
-    t.className = "tag";
-    t.textContent = r.tag;
+    t.textContent = r.title;
+    var tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = LABELS[r.slug] + " · " + r.id;
     b.appendChild(t);
-    b.onclick = r.go;
+    b.appendChild(tag);
+    b.onclick = function () { openWork(r); };
     box.appendChild(b);
   });
+
+  // Never let a capped list read as the whole answer.
+  if (total > rows.length) {
+    var more = document.createElement("p");
+    more.className = "more";
+    more.textContent = total.toLocaleString() + " works match — showing the first "
+      + rows.length + ". Keep typing to narrow it.";
+    box.appendChild(more);
+  }
 }
 
-function reflRow(id, tag) {
-  var title = reflTitles ? reflTitles[id] : "Reflection #" + id;
-  return { label: title, tag: tag, go: function () { openToken(id); } };
-}
+/* ---------------------------------------------------- one work, from chain */
 
-function clearSearch() { $("q").value = ""; $("hits").textContent = ""; }
+function openWork(r) {
+  sel = { slug: r.slug, id: r.id, title: r.title };
+  $("panel").hidden = false;
+  $("pt").textContent = r.title;
+  $("pm").innerHTML = "<b>" + LABELS[r.slug] + "</b> · " + ARTISTS[r.slug]
+    + " · token " + r.id + " · reading the contract…";
+  $("warn").textContent = "";
+  $("prev").removeAttribute("src");
+  $("dl").disabled = true;
+  $("src").disabled = true;
 
-function resetGrid() {
-  $("grid").textContent = "";
-  $("credit").textContent = "";
-  [].forEach.call($("sets").children, function (b) {
-    b.setAttribute("aria-pressed", "false");
-  });
-  selEl = null;
-}
-
-/* ------------------------------------------ one Reflection work, from chain */
-
-function openToken(id) {
-  clearSearch();
-  loadReflection().then(function () {
-    var title = reflTitles ? reflTitles[id] : "token " + id;
-    cur = { slug: "reflection", title: "Reflection", artist: "Pindar Van Arman",
-            animated: true };
-    sel = { chain: id, title: title, v: 1 };
-    // A work opened from search replaces whatever was on screen. Leaving a
-    // previous collection's grid up while the panel showed something else made
-    // the two contradict each other.
-    resetGrid();
-    $("empty").hidden = true;
-    $("panel").hidden = false;
-    $("pt").textContent = title;
-    $("pm").innerHTML = "<b>token " + id + "</b> · list no. " + (id + 1) + " · reading the contract…";
-    $("warn").textContent = "";
-    $("prev").removeAttribute("src");
-
-    fetchToken(id).then(function (dataUri) {
-      sel.uri = dataUri;
-      $("prev").src = dataUri;
-      describe(sel);
-    }).catch(function (e) {
-      $("pm").innerHTML = "<b>token " + id + "</b> · list no. " + (id + 1);
-      $("warn").textContent = "Couldn't read that work from the contract — "
-        + (e && e.message ? e.message : "try again in a moment") + ".";
-    });
+  fetchWork(r.slug, r.id).then(function (uri) {
+    if (!sel || sel.slug !== r.slug || sel.id !== r.id) return;  // superseded
+    sel.uri = uri;
+    $("prev").src = uri;
+    $("dl").disabled = false;
+    $("src").disabled = false;
+    describe(sel);
+  }).catch(function (e) {
+    $("pm").innerHTML = "<b>" + LABELS[r.slug] + "</b> · token " + r.id;
+    $("warn").textContent = "Couldn't read that work from the contract — "
+      + (e && e.message ? e.message : "try again in a moment") + ".";
   });
 }
 
-// Reflection is fully on-chain: tokenURI(id) returns base64 JSON whose image is
-// a base64 SVG — the artwork itself, no gateway. The RPC allows any origin, so
-// this works straight from the browser.
-function fetchToken(id) {
-  var data = "0xc87b56dd" + id.toString(16).padStart(64, "0");   // tokenURI(uint256)
+function describe(w) {
+  $("pm").innerHTML = "<b>" + LABELS[w.slug] + "</b> · " + ARTISTS[w.slug]
+    + " · token " + w.id + " · on-chain";
+  var msgs = ["This work moves. The download is a single frame — for the animation, "
+    + "use tools/share.py in the sovrn-bot repo, which renders it to GIF. "
+    + "“Original SVG” downloads the artwork exactly as the contract stores it."];
+  if (w.slug === "reflection") {
+    // Reflection is 0-indexed while the other two are 1-indexed, so this is
+    // worth saying out loud rather than leaving as a trap.
+    msgs.push("Reflection is 0-indexed: token " + w.id + " is number " + (w.id + 1)
+      + " on the artist's list of 999.");
+  }
+  $("warn").innerHTML = msgs.join("<br><br>");
+}
+
+function fetchWork(slug, id) {
+  var key = slug + ":" + id;
+  if (cache[key]) return Promise.resolve(cache[key]);
+  var contract = data[slug].contract;
+  var call = "0xc87b56dd" + id.toString(16).padStart(64, "0");   // tokenURI(uint256)
   return fetch(RPC, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call",
-                           params: [{ to: reflContract, data: data }, "latest"] })
+                           params: [{ to: contract, data: call }, "latest"] })
   }).then(function (r) { return r.json(); }).then(function (j) {
     if (j.error) throw new Error(j.error.message || "call failed");
     var raw = j.result.slice(2);
     var len = parseInt(raw.slice(64, 128), 16);
-    var bytes = [];
-    for (var i = 0; i < len; i++) {
-      bytes.push(parseInt(raw.substr(128 + i * 2, 2), 16));
+    var bytes = new Uint8Array(len);
+    for (var i = 0; i < len; i++) bytes[i] = parseInt(raw.substr(128 + i * 2, 2), 16);
+    var uri = new TextDecoder().decode(bytes);
+    var payload = uri.indexOf("base64,") >= 0 ? b64utf8(uri.split("base64,")[1])
+                                              : uri.slice(uri.indexOf(",") + 1);
+    var image;
+    try {
+      image = JSON.parse(payload).image;
+    } catch (e) {
+      // byteGAN #469's metadata is malformed on-chain — one attributes entry has
+      // an unquoted key. The contract is immutable, so read the field directly.
+      var m = payload.match(/"image"\s*:\s*"([^"]+)"/);
+      if (!m) throw new Error("its metadata could not be read");
+      image = m[1];
     }
-    var uri = new TextDecoder().decode(new Uint8Array(bytes));
-    var meta = JSON.parse(uri.indexOf("base64,") >= 0
-      ? decodeURIComponent(escape(atob(uri.split("base64,")[1])))
-      : uri.slice(uri.indexOf(",") + 1));
-    if (!meta.image) throw new Error("no image in the token");
-    return meta.image;
+    if (!image) throw new Error("no image in the token");
+    cache[key] = image;
+    return image;
   });
 }
 
-/* ------------------------------------------------------------- the library */
-
-function pick(i) {
-  cur = sets[i];
-  [].forEach.call($("sets").children, function (b, n) {
-    b.setAttribute("aria-pressed", String(n === i));
-  });
-  $("credit").textContent = cur.artist ? cur.title + " — " + cur.artist : cur.title;
-  $("empty").hidden = true;
-
-  var grid = $("grid");
-  grid.textContent = "";
-  // Latent Couture is shot tall; crop its thumbnails from the top or the square
-  // crop takes the headpieces off.
-  var topCrop = cur.slug === "latent-couture";
-  cur.works.forEach(function (w) {
-    var b = document.createElement("button");
-    b.type = "button";
-    b.setAttribute("aria-pressed", "false");
-    var im = document.createElement("img");
-    im.src = BASE + w.f;
-    im.loading = "lazy";
-    im.decoding = "async";
-    im.alt = "";
-    if (topCrop) im.className = "top";
-    b.appendChild(im);
-    b.onclick = function () { choose(w, b); };
-    grid.appendChild(b);
-  });
-  choose(cur.works[0], grid.firstChild);
+// atob gives one byte per char; decode as UTF-8 so accented titles survive.
+function b64utf8(b64) {
+  return new TextDecoder().decode(
+    Uint8Array.from(atob(b64), function (c) { return c.charCodeAt(0); }));
 }
 
-function choose(w, el) {
-  sel = w;
-  if (selEl) selEl.setAttribute("aria-pressed", "false");
-  selEl = el;
-  if (el) el.setAttribute("aria-pressed", "true");
-  $("panel").hidden = false;
-  $("prev").src = BASE + w.f;
-  $("pt").textContent = name(w);
-  describe(w);
-}
-
-function name(w) {
-  if (w.chain !== undefined) {
-    return w.title || ("reflection-" + w.chain);
-  }
-  return w.f.split("/").pop().replace(/\.[^.]+$/, "");
-}
-
-// The published file's own extension — .svg for every vector and on-chain work,
-// .jpg/.png/.gif for the rasters.
-function sourceExt(w) {
-  if (w.chain !== undefined) return "svg";
-  var e = (w.f || "").split(".").pop().toLowerCase();
-  return e === "jpeg" ? "jpg" : (e || "file");
-}
-
-function fileName(w) {
-  if (w.chain !== undefined) return "reflection-" + w.chain;
-  return name(w);
-}
-
-function describe(w) {
-  var bits = [];
-  if (w.chain !== undefined) {
-    bits.push("<b>token " + w.chain + "</b>", "list no. " + (w.chain + 1), "on-chain");
-  } else if (w.w && w.h) {
-    bits.push("<b>" + w.w + "&times;" + w.h + "</b>", ratioName(w.w / w.h));
-  } else {
-    bits.push("<b>vector</b>");
-  }
-  $("pm").innerHTML = bits.join(" · ");
-
-  var msgs = [];
-  if (w.w && w.h && (w.w / w.h < MIN_AR || w.w / w.h > MAX_AR)) {
-    msgs.push("This shape sits outside what X shows whole, so the timeline "
-      + "preview will be cropped — the full work still opens on tap. "
-      + "Tick “trim to fit” if you would rather choose the crop yourself.");
-  }
-  if (cur && cur.animated) {
-    msgs.push("This work moves. The download is a single frame — for the "
-      + "animation, use tools/share.py in the sovrn-bot repo, which renders it "
-      + "to GIF. “Original” downloads the artwork as published — the SVG itself.");
-  }
-  $("warn").innerHTML = msgs.join("<br><br>");
-  $("crop").disabled = !(w.w && w.h);
-  $("src").textContent = "Original " + sourceExt(w).toUpperCase();
-}
-
-function ratioName(ar) {
-  if (Math.abs(ar - 1) < 0.03) return "square";
-  if (ar > 1.7) return "wide";
-  if (ar > 1) return "landscape";
-  if (ar > 0.79) return "portrait";
-  return "tall";
-}
-
-$("size").onchange = $("crop").onchange = function () { if (sel) describe(sel); };
-
-$("src").onclick = function () {
-  // On-chain works have no file on this server — the SVG came back from the
-  // contract as a data: URI, which downloads directly.
-  if (sel.chain !== undefined) {
-    if (!sel.uri) return;
-    grab(sel.uri, fileName(sel) + ".svg");
-    return;
-  }
-  grab(BASE + sel.f, sel.f.split("/").pop());
-};
-
-$("dl").onclick = function () {
-  var btn = $("dl");
-  btn.disabled = true;
-  btn.textContent = "Working";
-  render(sel, function (blob, err) {
-    btn.disabled = false;
-    btn.textContent = "Download";
-    if (err || !blob) {
-      $("warn").innerHTML = "Couldn't build that file — try “Original” instead.";
-      return;
-    }
-    var url = URL.createObjectURL(blob);
-    grab(url, fileName(sel) + "." + formatFor().ext);
-    setTimeout(function () { URL.revokeObjectURL(url); }, 30000);
-  });
-};
+/* ----------------------------------------------------------------- export */
 
 function grab(href, filename) {
   var a = document.createElement("a");
@@ -449,45 +302,49 @@ function grab(href, filename) {
   a.remove();
 }
 
-/* ------------------------------------------------------------------ export */
+function fileName(w) {
+  var s = w.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return w.slug + "-" + w.id + (s ? "-" + s : "");
+}
+
+$("src").onclick = function () {
+  if (sel && sel.uri) grab(sel.uri, fileName(sel) + ".svg");
+};
+
+$("dl").onclick = function () {
+  var btn = $("dl");
+  btn.disabled = true;
+  btn.textContent = "Working";
+  render(sel, function (blob, err) {
+    btn.disabled = false;
+    btn.textContent = "Download";
+    if (err || !blob) {
+      $("warn").innerHTML = "Couldn't build that file — try “Original SVG” instead.";
+      return;
+    }
+    var url = URL.createObjectURL(blob);
+    grab(url, fileName(sel) + ".png");
+    setTimeout(function () { URL.revokeObjectURL(url); }, 30000);
+  });
+};
 
 // A byteGAN is not really a vector: the artwork is an 11x11 animated GIF
 // base64'd inside the SVG, and the wrapper only carries image-rendering:
-// pixelated. Rasterising the SVG and scaling that up interpolates twice over
-// (11 -> 500 -> target, neither an integer step) and the pixel grid smears.
-// Pull the GIF out and scale it by a whole-number factor instead.
+// pixelated. Rasterising the SVG and scaling that up interpolates twice over,
+// neither step a whole number, and the pixel grid smears. Pull the GIF out and
+// scale it by a whole-number factor instead.
 function sourceFor(w, done) {
-  if (w.chain !== undefined) {
-    if (!w.uri) { done(null); return; }
-    var ci = new Image();
-    ci.onload = function () { done(ci); };
-    ci.onerror = function () { done(null); };
-    ci.src = w.uri;
-    return;
-  }
-  if (!cur || cur.slug !== "bytegans") {
-    var img = new Image();
-    img.onload = function () { done(img); };
-    img.onerror = function () { done(null); };
-    img.src = BASE + w.f;
-    return;
-  }
-  fetch(BASE + w.f).then(function (r) { return r.text(); }).then(function (svg) {
+  var img = new Image();
+  img.onload = function () { done(img); };
+  img.onerror = function () { done(null); };
+  if (w.slug !== "bytegans") { img.src = w.uri; return; }
+  try {
+    var svg = b64utf8(w.uri.split("base64,")[1]);
     var m = svg.match(/data:image\/gif;base64,[A-Za-z0-9+/=\s]+/);
-    if (!m) { done(null); return; }
-    var gi = new Image();
-    gi.onload = function () { done(gi); };
-    gi.onerror = function () { done(null); };
-    gi.src = m[0].replace(/\s/g, "");
-  }).catch(function () { done(null); });
-}
-
-// Pixel art and flat vector go out as PNG. JPEG rings badly on hard edges — a
-// byteGAN exported at q0.92 came back with 142 distinct colours where it should
-// have a handful.
-function formatFor() {
-  return (cur && cur.animated) ? { mime: "image/png", ext: "png", q: undefined }
-                               : { mime: "image/jpeg", ext: "jpg", q: 0.92 };
+    img.src = m ? m[0].replace(/\s/g, "") : w.uri;
+  } catch (e) {
+    img.src = w.uri;
+  }
 }
 
 function render(w, done) {
@@ -495,23 +352,10 @@ function render(w, done) {
     if (!img) { done(null, new Error("load")); return; }
     try {
       var sw = img.naturalWidth, sh = img.naturalHeight;
-      var sx = 0, sy = 0;
-      if ($("crop").checked && !$("crop").disabled) {
-        var ar = sw / sh;
-        if (ar < MIN_AR) {                 // too tall -> keep the top
-          sh = Math.round(sw / MIN_AR);
-        } else if (ar > MAX_AR) {          // too wide -> keep the middle
-          var nw = Math.round(sh * MAX_AR);
-          sx = Math.round((sw - nw) / 2);
-          sw = nw;
-        }
-      }
       var target = parseInt($("size").value, 10);
-      var pixelArt = cur && cur.slug === "bytegans" && w.chain === undefined;
+      var pixelArt = w.slug === "bytegans";
       var dw, dh;
-      if (!target) {
-        dw = sw; dh = sh;
-      } else if (pixelArt) {
+      if (pixelArt) {
         // whole-number upscale only, so every source pixel stays a hard square
         var f = Math.max(1, Math.round(target / Math.max(sw, sh)));
         dw = sw * f; dh = sh * f;
@@ -526,9 +370,11 @@ function render(w, done) {
       ctx.imageSmoothingEnabled = !pixelArt;
       ctx.fillStyle = "#fff";
       ctx.fillRect(0, 0, dw, dh);
-      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, dw, dh);
-      var f2 = formatFor();
-      c.toBlob(function (b) { done(b, null); }, f2.mime, f2.q);
+      ctx.drawImage(img, 0, 0, sw, sh, 0, 0, dw, dh);
+      // PNG throughout: these are flat vector and pixel art, and JPEG rings on
+      // every hard edge — a byteGAN at q0.92 came back with 142 distinct colours
+      // where it should have four.
+      c.toBlob(function (b) { done(b, null); }, "image/png");
     } catch (e) {
       done(null, e);
     }
