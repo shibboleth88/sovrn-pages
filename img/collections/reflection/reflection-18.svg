@@ -662,7 +662,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <use x="-40"   y="1175" href="#owner" />
 <use x="-100"  y="1200" href="#owner" />
 </g>
-</g><g><!-- 14:4 -->
+</g><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.25;0.3125;1" begin="2.0s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 14:4 -->
 <g class="blackstrokes">
 <path opacity="0.5" d="M264 725 553 1014"/>
 <path opacity="0.5" d="M270 685 270 760"/>
@@ -951,7 +951,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.2" d="M516 739 516 779"/>
 <path opacity="0.2" d="M534 728 504 758"/>
 <path opacity="0.2" d="M540 759 541 760"/>
-</g></g><!-- 14:endanim --><!-- 15:startanim --><g><!-- 15:6 circles -->      
+</g></g><!-- 14:endanim --><!-- 15:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.325;0.3875;1" begin="3.2s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 15:6 circles -->      
 <g class="circlecolor">
 <circle cx="426.1" cy="563.2" r="114.1"/>
 <path d="m376.2,562.9c0,44.6,15.5,105.2-29.1,114.4-51,10.5-114.2-49.3-114.2-114.1,0-64.8,63.3-124.6,114.2-114.1,44.4,9.2,29,69.5,29.1,113.8Z"/>
@@ -968,7 +968,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <line x1="599.5" y1="166.3" x2="599.5" y2="435.6"/>
 <line x1="312" y1="563.2" x2="231.4" y2="563.2"/>
 <line x1="886.1" y1="562.6" x2="975" y2="562.6"/>
-</g></g><!-- 15:endanim --><!-- 16:startanim --><g><!-- 16:7 touchups -->
+</g></g><!-- 15:endanim --><!-- 16:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.35;0.4125;1" begin="3.6s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 16:7 touchups -->
 <g class="mediumstrokes">
 <path opacity="0.2" d="M426 219 505 298"/>
 <path opacity="0.2" d="M432 216 432 298"/>
@@ -1122,7 +1122,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.2" d="M336 726 349 739"/>
 <path opacity="0.2" d="M354 725 354 736"/>
 </g>
-</g><!-- 16:endanim --><!-- 17:startanim --><g><!-- 17:5 lighten -->
+</g><!-- 16:endanim --><!-- 17:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.375;0.4375;1" begin="4.0s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 17:5 lighten -->
 <g class="lightstrokes">
 <path opacity="0.2" d="M336 378 405 447"/>
 <path opacity="0.2" d="M342 358 342 555"/>
@@ -1222,17 +1222,17 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.2" d="M672 919 672 958"/>
 <path opacity="0.2" d="M678 926 652 952"/>
 <path opacity="0.2" d="M690 941 691 942"/>
-</g></g><!-- 17:endanim --><!-- 18:startanim --><g><!-- 18:1 darken -->
+</g></g><!-- 17:endanim --><!-- 18:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.4;0.4625;1" begin="4.4s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 18:1 darken -->
 <g clip-path="url(#shadowclip)" class="eightyrows">
 <g class="blackcolor" style="stroke-width:1">
 <use x="0" y="0" href="#bin80" />   
 </g>
-</g></g><!-- 18:endanim --><!-- 19:startanim --><g><!-- 19:2 highlight -->
+</g></g><!-- 18:endanim --><!-- 19:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.45;0.5125;1" begin="5.2s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 19:2 highlight -->
 <g clip-path="url(#highlightclip)">
 <g class="highlightcolor" style="stroke-width:1">
 <use x="0" y="0" href="#hex48" />   
 </g>
-</g></g><!-- 19:endanim --><!-- 20:startanim --><g><!-- 20:4 skull flourish --> 
+</g></g><!-- 19:endanim --><!-- 20:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;0;1" keyTimes="0;0.0625;0.5;0.5625;1" begin="6.0s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 20:4 skull flourish --> 
 <g></g></g><g><!-- 21:22:1 final binary -->
 <g class="finalcolor">
 <text  x="456" y="250" class="twentyfourrows">000</text>

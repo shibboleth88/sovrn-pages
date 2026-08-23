@@ -599,7 +599,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <text x="-100" y="1175" class="fortyeightrows">84B5E1D006D7BED2EADB34FE9E7CA500FC9CEDCE1B63503EB9F0381F7FEDC842E16637023D</text>
 <text x="-100" y="1200" class="fortyeightrows">523BE0AA5F16FD7DB106F2931EA6A25FCB2CF582E7D1852DE080695F3AE481F27B06363380</text>
 </g>
-</g><g><!-- 14:4 -->
+</g><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.25;0.3125;1" begin="2.0s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 14:4 -->
 <g class="blackstrokes">
 <path opacity="0.5" d="M264 725 553 1014"/>
 <path opacity="0.5" d="M270 685 270 760"/>
@@ -888,7 +888,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.2" d="M516 739 516 779"/>
 <path opacity="0.2" d="M534 728 504 758"/>
 <path opacity="0.2" d="M540 759 541 760"/>
-</g></g><!-- 14:endanim --><!-- 15:startanim --><g><!-- 15:8 circles -->      
+</g></g><!-- 14:endanim --><!-- 15:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.325;0.3875;1" begin="3.2s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 15:8 circles -->      
 <g class="circlecolor">
 <line x1="763.1" y1="312.6" x2="437.5" y2="312.6"/>
 <line x1="763.1" y1="282.3" x2="437.5" y2="282.3"/>
@@ -903,7 +903,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <line x1="763.4" y1="846.1" x2="437.8" y2="846.1"/>
 <line x1="763.4" y1="815.8" x2="437.8" y2="815.8"/>
 <line x1="764" y1="876.7" x2="438.4" y2="876.7"/>
-</g></g><!-- 15:endanim --><!-- 16:startanim --><g><!-- 16:0 touchups -->
+</g></g><!-- 15:endanim --><!-- 16:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.35;0.4125;1" begin="3.6s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 16:0 touchups -->
 <g class="mediumstrokes">
 <path opacity="0.2" d="M408 460 417 469"/>
 <path opacity="0.2" d="M414 455 414 470"/>
@@ -966,7 +966,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.2" d="M576 911 576 938"/>
 <path opacity="0.2" d="M588 915 560 943"/>
 <path opacity="0.2" d="M594 917 598 921"/>
-</g></g><!-- 16:endanim --><!-- 17:startanim --><g><!-- 17:4 lighten -->
+</g></g><!-- 16:endanim --><!-- 17:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.375;0.4375;1" begin="4.0s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 17:4 lighten -->
 <g class="lightstrokes">>
 <path opacity="0.2" d="M312 400 324 412"/>
 <path opacity="0.2" d="M324 413 324 698"/>
@@ -1041,17 +1041,17 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.2" d="M516 739 516 779"/>
 <path opacity="0.2" d="M534 728 504 758"/>
 <path opacity="0.2" d="M540 759 541 760"/>
-</g></g><!-- 17:endanim --><!-- 18:startanim --><g><!-- 18:3 darken-->
+</g></g><!-- 17:endanim --><!-- 18:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.4;0.4625;1" begin="4.4s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 18:3 darken-->
 <g clip-path="url(#shadowclip)" class="fortyeightrows">
 <g class="blackcolor" style="stroke-width:1">
 <use x="0" y="0" href="#hex48" />
 </g>
-</g></g><!-- 18:endanim --><!-- 19:startanim --><g><!-- 19:0 highlight -->
+</g></g><!-- 18:endanim --><!-- 19:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.45;0.5125;1" begin="5.2s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 19:0 highlight -->
 <g clip-path="url(#highlightclip)">
 <g class="highlightcolor" style="stroke-width:1">
 <use x="0" y="0" href="#bin48" />   
 </g>
-</g></g><!-- 19:endanim --><!-- 20:startanim --><g><!-- 20:4 skull flourish --> 
+</g></g><!-- 19:endanim --><!-- 20:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;0;1" keyTimes="0;0.0625;0.5;0.5625;1" begin="6.0s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 20:4 skull flourish --> 
 <g></g></g><g><!-- 21:22:0 final binary -->
 <g class="finalcolor">
 <text x="456" y="250" class="twentyfourrows">001</text>

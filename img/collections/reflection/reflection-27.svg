@@ -701,7 +701,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <text x="-100" y="1175" class="fortyeightrows">00110011110011111100110001000000011110100100101010010000100101011101100000000110010100011001101110111000010010010010</text>
 <text x="-100" y="1200" class="fortyeightrows">00010010010111110101100101111010001110010111001000110011111010110100010010010001010000010010111100000001110111101111</text>
 </g>
-</g><g><!-- 14:0 -->
+</g><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.25;0.3125;1" begin="2.0s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 14:0 -->
 <g class="blackstrokes">
 <path opacity="0.5" d="M360 550 409 599"/>
 <path opacity="0.5" d="M384 533 384 598"/>
@@ -950,7 +950,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.2" d="M606 906 606 958"/>
 <path opacity="0.2" d="M612 912 563 961"/>
 <path opacity="0.2" d="M618 917 623 922"/>
-</g></g><!-- 14:endanim --><!-- 15:startanim --><g><!-- 15:1 circles -->      
+</g></g><!-- 14:endanim --><!-- 15:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.325;0.3875;1" begin="3.2s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 15:1 circles -->      
 <g class="circlecolor">
 <circle cx="462.1" cy="575.2" r="70.5"/>
 <circle cx="462.1" cy="575.2" r="85.2"/>
@@ -966,7 +966,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <line x1="531" y1="497.8" x2="531" y2="734.2"/>
 <line x1="670.8" y1="497.4" x2="670.8" y2="733.7"/>
 </g>
-</g><!-- 15:endanim --><!-- 16:startanim --><g><!-- 16:8 touchups -->
+</g><!-- 15:endanim --><!-- 16:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.35;0.4125;1" begin="3.6s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 16:8 touchups -->
 <g class="mediumstrokes">
 <path opacity="0.2" d="M294 593 680 979"/>
 <path opacity="0.2" d="M300 567 300 646"/>
@@ -1018,7 +1018,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.2" d="M882 543 485 940"/>
 <path opacity="0.2" d="M894 548 896 550"/>
 <path opacity="0.2" d="M900 568 900 627"/>
-</g></g><!-- 16:endanim --><!-- 17:startanim --><g><!-- 17:5 lighten -->
+</g></g><!-- 16:endanim --><!-- 17:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.375;0.4375;1" begin="4.0s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 17:5 lighten -->
 <g class="lightstrokes">
 <path opacity="0.2" d="M336 378 405 447"/>
 <path opacity="0.2" d="M342 358 342 555"/>
@@ -1118,7 +1118,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.2" d="M672 919 672 958"/>
 <path opacity="0.2" d="M678 926 652 952"/>
 <path opacity="0.2" d="M690 941 691 942"/>
-</g></g><!-- 17:endanim --><!-- 18:startanim --><g><!-- 18:2 darken-->
+</g></g><!-- 17:endanim --><!-- 18:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.4;0.4625;1" begin="4.4s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 18:2 darken-->
 <g clip-path="url(#shadowclip)" style="stroke-width:0.2;fill:#000000;">
   <use transform="scale(5 5)" x="0.5" y="0.5" href="#byte" />
   <use transform="scale(5 5)" x="30.5" y="0.5" href="#byte" />
@@ -1184,12 +1184,12 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
   <use transform="scale(5 5)" x="150.5" y="210.5" href="#byte" />
   <use transform="scale(5 5)" x="180.5" y="210.5" href="#byte" />
   <use transform="scale(5 5)" x="210.5" y="210.5" href="#byte" />
-</g></g><!-- 18:endanim --><!-- 19:startanim --><g><!-- 19:2 highlight -->
+</g></g><!-- 18:endanim --><!-- 19:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.45;0.5125;1" begin="5.2s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 19:2 highlight -->
 <g clip-path="url(#highlightclip)">
 <g class="highlightcolor" style="stroke-width:1">
 <use x="0" y="0" href="#hex48" />   
 </g>
-</g></g><!-- 19:endanim --><!-- 20:startanim --><g><!-- 20:2 skull flourish -->   
+</g></g><!-- 19:endanim --><!-- 20:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;0;1" keyTimes="0;0.0625;0.5;0.5625;1" begin="6.0s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 20:2 skull flourish -->   
 <g clip-path="url(#skullclip)" class="skullcolor" style="stroke-width:0.2;">
   <use transform="scale(5 5)" x="0.5" y="0.5" href="#byte" />
   <use transform="scale(5 5)" x="30.5" y="0.5" href="#byte" />
