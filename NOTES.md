@@ -222,12 +222,25 @@ Done: byteGANs, Noctilucent Mementi, Painting with Fire. Still to do:
 Possibility Spaces, Perimeter Town, Rabbit Takeover, Sightseers, cope. Vol 1,
 AI Spaceships — geometry, heroes and assets are already captured for all six.
 
-### One practical note
+### Working alongside other sessions
 
-More than one session works in this repo. Two pushes were rejected mid-task
-because another had landed `share.html` and a batch of notes. `git pull --rebase`
-before starting, inspect `git log HEAD..origin/main` before reconciling, and
-rebase rather than forcing.
+Several sessions work this repo at once, so expect pushes to be rejected
+mid-task. That is normal and recoverable — but the order matters:
+
+```bash
+git add -A && git commit -m "..."   # commit FIRST
+git pull --rebase origin main       # then rebase onto whatever landed
+git push origin main
+```
+
+`git pull --rebase` **fails outright on a dirty tree** — "error: please commit
+or stash them" — and it is easy to miss that line in a long command and push
+anyway. I did that twice; both pushes happened to succeed, which is luck rather
+than a working sequence.
+
+When a push is rejected, look before acting: `git log HEAD..origin/main` and
+`git diff --stat HEAD...origin/main` show what the other session did. Rebase on
+top of it, then verify their files survived. Never force.
 
 ---
 
