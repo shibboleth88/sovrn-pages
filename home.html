@@ -14,7 +14,8 @@ a:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
 @media(max-width:640px){.banner2{margin-bottom:30px}}
 /* site navigation. position:fixed pins to the Sites frame, not the viewport —
    known and accepted, the same as on the Reflection and CENTS pages. */
-.nav{position:fixed;top:16px;right:16px;z-index:30}
+.nav{position:sticky;top:10px;z-index:30;max-width:1060px;margin:14px auto 0;padding:0 22px;display:flex;justify-content:flex-end}
+.navin{position:relative}
 #mb{width:44px;height:44px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:var(--paper);border:1px solid var(--rule);cursor:pointer;padding:0;transition:border-color .18s}
 #mb:hover,#mb[aria-expanded=true]{border-color:var(--copper)}
 #mb span{display:block;width:19px;height:1.5px;background:var(--ink);transition:transform .22s,opacity .18s}
@@ -22,7 +23,7 @@ a:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
 #mb[aria-expanded=true] span:nth-child(2){opacity:0}
 #mb[aria-expanded=true] span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
 #mb:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
-#mn{list-style:none;margin:9px 0 0;padding:8px 0;background:var(--paper);border:1px solid var(--rule);min-width:232px;max-height:78vh;overflow-y:auto}
+#mn{position:absolute;right:0;top:calc(100% + 9px);list-style:none;margin:0;padding:8px 0;background:var(--paper);border:1px solid var(--rule);min-width:232px;max-height:78vh;overflow-y:auto}
 #mn a,#mn .grp{display:block;width:100%;text-align:left;padding:9px 18px;text-decoration:none;color:var(--ink);font:500 11px/1.35 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;background:none;border:0;cursor:pointer;transition:color .15s,background .15s}
 #mn a:hover,#mn .grp:hover{color:var(--copper);background:#e2e2dc}
 #mn .grp{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:default;color:var(--slate)}
@@ -33,8 +34,8 @@ a:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
 #mn .grp[aria-expanded=true]+.sub{display:block}
 #mn .sub a{padding:7px 16px;font:400 11px/1.4 "IBM Plex Mono",monospace;letter-spacing:.07em;text-transform:none;color:var(--slate)}
 #mn .sub a:hover{color:var(--copper);background:#e2e2dc}
-@media(max-width:640px){.nav{top:10px;right:10px}#mn{min-width:206px}}
-.mast{text-align:center;margin-bottom:30px}
+@media(max-width:640px){.nav{margin-top:10px;padding:0 14px}#mn{min-width:206px}}
+.mast{text-align:center;margin:6px 0 30px}
 .logo img{width:clamp(132px,15vw,176px);height:auto;display:inline-block}
 .tag{font:italic 300 clamp(23px,3.4vw,37px)/1.15 Fraunces,serif;color:var(--ink);letter-spacing:-.015em;max-width:24ch;margin:16px auto 0}
 .about{max-width:66ch;font-size:14.5px;color:var(--slate);margin:0 auto 34px}
@@ -80,8 +81,8 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transfo
 .nav a:hover{color:var(--copper)}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body>
-<nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn" aria-label="Site navigation"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></nav>
 <div class="banner" id="ban" aria-hidden="true"></div>
+<nav class="nav"><div class="navin"><button id="mb" aria-expanded="false" aria-controls="mn" aria-label="Site navigation"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></div></nav>
 <div class="wrap">
 <header class="mast">
 <a class="logo" href="https://www.sovrn.art" target="_blank"><img src="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/sovrn_logo-removebg.png" alt="Sovrn Art" width="256" height="256"></a>
