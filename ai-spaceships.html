@@ -5,70 +5,72 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <title>AI Spaceships — Anne Spalter — sovrn.art</title>
 <style>:root{--paper:#e9e9e5;--ink:#16181d;--slate:#5c6470;--rule:#c9c9c2;--hair:#d8d8d2;
---accent:#0f6b66;--accent-d:#0b514d;--gap:clamp(42px,5.5vw,66px)}
+--accent:#0f6b66;--gap:clamp(46px,5.8vw,80px)}
 *{box-sizing:border-box;margin:0}
 ::selection{background:var(--accent);color:var(--paper)}
-body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif;padding:30px 22px 56px;-webkit-text-size-adjust:100%}
-.wrap{max-width:940px;margin:0 auto}
+body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px 60px}
 a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.hero{position:relative;min-height:min(84vh,720px);display:flex;flex-direction:column;
+ justify-content:center;align-items:center;text-align:center;padding:60px 22px;
+ background:var(--ink) center/cover no-repeat;margin-bottom:var(--gap)}
+.hero::after{content:"";position:absolute;inset:0;background:rgba(10,12,16,.34)}
+.hero>*{position:relative;z-index:1}
+.hero h1{font:italic 300 clamp(32px,5.6vw,60px)/1.05 Fraunces,serif;letter-spacing:-.025em;color:#fff;
+ text-shadow:0 2px 30px rgba(0,0,0,.55);text-wrap:balance}
+.hero .by{margin-top:14px;font:400 clamp(16px,2.2vw,24px)/1.3 Fraunces,serif;color:#f3f1ec;
+ text-shadow:0 2px 22px rgba(0,0,0,.55)}
 .eyebrow{font:500 11px/1.5 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--slate)}
-a.fc{color:inherit;text-decoration:none;border-bottom:1px solid var(--accent);transition:color .15s}
+a.fc{color:inherit;text-decoration:none;border-bottom:1px solid var(--accent)}
 a.fc:hover{color:var(--accent)}
-.head{margin-top:20px;padding-bottom:22px;border-bottom:1px solid var(--rule);position:relative}
-.head::after{content:"";position:absolute;left:0;bottom:-1px;width:54px;height:2px;background:var(--accent)}
-h1{font:italic 300 clamp(34px,6vw,62px)/1.04 Fraunces,serif;letter-spacing:-.025em;text-wrap:balance}
-.by{margin-top:10px;font:400 clamp(17px,2.2vw,21px)/1.3 Fraunces,serif;color:var(--slate)}
-.meta{margin-top:12px;font:500 10.5px/1.6 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:var(--slate)}
-.hold{margin-top:6px;font:400 11.5px/1.7 "IBM Plex Mono",monospace;color:var(--slate)}
-.prose{max-width:66ch}
-.prose p+p{margin-top:15px}
-.prose p{color:var(--slate)}
+.meta{margin-top:16px;font:500 10.5px/1.9 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:var(--slate)}
+.meta a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--hair)}
+.prose{max-width:66ch}.prose p+p{margin-top:15px}.prose p{color:var(--slate)}
 .lead{font-size:18.5px;line-height:1.62;color:var(--ink)!important}
-.sec{margin-top:var(--gap)}
-h2{position:relative;font:italic 300 clamp(24px,3.2vw,34px)/1.12 Fraunces,serif;letter-spacing:-.02em;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--rule)}
-h2::after{content:"";position:absolute;left:0;bottom:-1px;width:44px;height:2px;background:var(--accent)}
-h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin:0 0 12px}
+h2{position:relative;font:italic 300 clamp(25px,3.3vw,36px)/1.12 Fraunces,serif;letter-spacing:-.02em;
+ margin:var(--gap) 0 24px;padding-bottom:16px;border-bottom:1px solid var(--rule)}
+h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;background:var(--accent)}
 figure{margin:0}
-.hero{margin-top:var(--gap)}
-.hero img{width:100%;height:auto;display:block;background:var(--ink)}
-.gal{margin-top:var(--gap);display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(14px,2vw,22px)}
-@media(max-width:640px){.gal{grid-template-columns:1fr}}
-.gal img{width:100%;height:auto;display:block;background:var(--ink)}
-.gal .wide{grid-column:1/-1}
-blockquote{margin:var(--gap) 0 0;padding-left:22px;border-left:2px solid var(--accent);max-width:60ch}
-blockquote p{font:italic 300 clamp(19px,2.6vw,25px)/1.35 Fraunces,serif;color:var(--ink)}
-blockquote cite{display:block;margin-top:12px;font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:var(--slate);font-style:normal}
-.links{margin-top:var(--gap);display:flex;flex-wrap:wrap;gap:22px;font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
-.links a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:4px;transition:color .15s}
+.feature{margin-top:var(--gap)}
+.feature img{width:100%;height:auto;display:block;background:var(--ink)}
+.band{margin-top:clamp(13px,1.7vw,20px);display:grid;gap:clamp(12px,1.6vw,20px)}
+.band.n3{grid-template-columns:repeat(3,1fr)}
+.band.n2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:760px){.band.n3,.band.n2{grid-template-columns:1fr}}
+.band img{width:100%;height:auto;display:block;background:var(--ink)}
+.duo{display:grid;grid-template-columns:minmax(0,380px) 1fr;gap:clamp(20px,3.2vw,46px);
+ align-items:center;margin-top:var(--gap)}
+@media(max-width:760px){.duo{grid-template-columns:1fr}}
+.duo img{width:100%;height:auto;display:block;background:var(--ink)}
+blockquote{margin:var(--gap) 0 0;max-width:62ch;padding-left:22px;border-left:2px solid var(--accent)}
+blockquote p{font:italic 300 clamp(18px,2.4vw,25px)/1.34 Fraunces,serif;color:var(--ink)}
+blockquote cite{display:block;margin-top:12px;font:500 10.5px/1 "IBM Plex Mono",monospace;
+ letter-spacing:.13em;text-transform:uppercase;color:var(--slate);font-style:normal}
+.res{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(24px,4vw,52px)}
+@media(max-width:720px){.res{grid-template-columns:1fr}}
+.res a{display:block;padding:15px 0;border-top:1px solid var(--hair);text-decoration:none;color:inherit;transition:transform .2s}
+.res a:hover{transform:translateX(4px)}
+.res .k{display:block;font:500 10.5px/1.5 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.res .n{display:block;font:italic 300 19px/1.25 Fraunces,serif}
+.res a:hover .n{color:var(--accent)}
+.links{margin-top:var(--gap);padding-top:22px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:22px;
+ font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
+.links a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:4px}
 .links a:hover{color:var(--accent)}
-.foot{margin-top:var(--gap);padding-top:20px;border-top:1px solid var(--rule);font:400 11.5px/1.7 "IBM Plex Mono",monospace;color:var(--slate);max-width:76ch}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}</style></head><body><div class="wrap">
+.foot{margin-top:26px;font:400 11.5px/1.7 "IBM Plex Mono",monospace;color:var(--slate);max-width:76ch}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}</style></head><body>
+<header class="hero" style="background-image:url(img/pages/ai-spaceships/hero.jpg)">
+<h1>AI Spaceships</h1><p class="by">by Anne Spalter</p></header>
+<div class="wrap">
 <p class="eyebrow"><a class="fc" href="https://www.sovrn.art" target="_blank">sovrn.art</a> &middot; Curated collection</p>
-<header class="head">
-<h1>AI Spaceships</h1>
-<p class="by">by Anne Spalter</p>
-<p class="meta">Released 2 June 2022 · Ethereum</p>
-</header>
-<figure class="hero"><img src="img/pages/ai-spaceships/02.jpg" alt="" loading="lazy"></figure>
-<div class="sec"><div class="prose">
-<p class="lead">In the distant future climate change has made Earth uninhabitable.</p>
-<p>In desperation the remaining people on earth build a series of spaceships and try to depart the planet. Some fail at launch and go down in flames. Others warp to the past and engage with steampunk battleships, or warp to the future to face highly evolved deadly plants.</p>
-<p>Research on the plants reveals a way forward: using the powerful psychedelic powers of plant extracts, the ships open neon hyperspace tunnels and travel to a distant earth future. Some land in the frozen north, some land in the tropical equator, and some land in the desert.</p>
-<p>Seeing the spiritual purity of the new settlers, angels arrive and raise the humans to a new level of psychic oneness.</p>
-</div></div>
-<section class="gal">
-<img src="img/pages/ai-spaceships/03.jpg" alt="" loading="lazy">
-<img src="img/pages/ai-spaceships/04.jpg" alt="" loading="lazy">
-<img src="img/pages/ai-spaceships/05.jpg" alt="" loading="lazy">
-<img src="img/pages/ai-spaceships/06.jpg" alt="" loading="lazy">
-<img src="img/pages/ai-spaceships/07.jpg" alt="" loading="lazy">
-</section>
-<div class="sec"><h2>The artist</h2><div class="prose">
-<p>Anne Spalter creates surreal, futuristic landscapes that reimagine the sublime through a hybrid practice combining digital tools with traditional media.</p>
-<p>A recognized pioneer in digital art, Spalter established the first digital fine arts courses at Brown University and the Rhode Island School of Design (RISD) in the 1990s. She is the author of The Computer in the Visual Arts, a widely taught textbook that remains a foundational reference in the field. Together with her husband Michael Spalter, she curates Spalter Digital, one of the world’s largest private collections of early computer art.</p>
-<p>Spalter’s work is included in major international collections, including The Centre Pompidou (Paris), the Victoria &amp; Albert Museum (London), the RISD Museum, and the Buffalo AKG Art Museum. Her digital and AI-generated pieces have been showcased at Sotheby’s, Phillips, and featured in The New York Times.</p>
-<p>She is prominently featured in the books DIGITAL ART: 20 Pioneers Redefining its Boundaries (Schiffer, 2025), On NFTs (Taschen, 2025), and Dismantling the Patriarchy, Bit by Bit: Art, Feminism, and Digital Technology (Bloomsbury Visual Arts, 2021). A frequent lecturer on digital art, Spalter continues to shape contemporary discourse on technology, aesthetics, and the evolving art market.</p>
-</div></div>
-<p class="links"><a href="https://www.raster.art/collections/ai-spaceships" target="_blank">View on Raster &#8599;</a><a href="https://annespalter.com" target="_blank">annespalter.com &#8599;</a></p>
-<p class="foot">AI Spaceships, Anne Spalter. A curated collection on <a class="fc" href="https://www.sovrn.art" target="_blank">sovrn.art</a>.</p>
+<p class="meta">Released 2 June 2022 &middot; Ethereum</p>
+<div class="prose"><p>In the distant future climate change has made Earth uninhabitable.</p></div>
+<div class="prose"><p>In desperation the remaining people on earth build a series of spaceships and try to depart the planet. Some fail at launch and go down in flames. Others warp to the past and engage with steampunk battleships, or warp to the future to face highly evolved deadly plants.</p></div>
+<div class="prose"><p>Research on the plants reveals a way forward: using the powerful psychedelic powers of plant extracts, the ships open neon hyperspace tunnels and travel to a distant earth future. Some land in the frozen north, some land in the tropical equator, and some land in the desert.</p></div>
+<div class="prose"><p>Seeing the spiritual purity of the new settlers, angels arrive and raise the humans to a new level of psychic oneness.</p></div>
+<section class="band n3"><img src="img/pages/ai-spaceships/01.jpg" alt="" loading="lazy"><img src="img/pages/ai-spaceships/02.jpg" alt="" loading="lazy"><img src="img/pages/ai-spaceships/03.jpg" alt="" loading="lazy"></section>
+<section class="band n3"><img src="img/pages/ai-spaceships/04.jpg" alt="" loading="lazy"><img src="img/pages/ai-spaceships/05.jpg" alt="" loading="lazy"><img src="img/pages/ai-spaceships/06.jpg" alt="" loading="lazy"></section>
+<div class="duo"><figure><img src="img/pages/ai-spaceships/07.jpg" alt="" loading="lazy"></figure><div class="prose"><p>Anne Spalter creates surreal, futuristic landscapes that reimagine the sublime through a hybrid practice combining digital tools with traditional media.</p><p>A recognized pioneer in digital art, Spalter established the first digital fine arts courses at Brown University and the Rhode Island School of Design (RISD) in the 1990s. She is the author of The Computer in the Visual Arts, a widely taught textbook that remains a foundational reference in the field. Together with her husband Michael Spalter, she curates Spalter Digital, one of the world’s larges</p><p>Spalter’s work is included in major international collections, including The Centre Pompidou (Paris), the Victoria &amp; Albert Museum (London), the RISD Museum, and the Buffalo AKG Art Museum. Her digital and AI-generated pieces have been showcased at Sotheby’s, Phillips, and featured in The New York Times.</p><p>She is prominently featured in the books DIGITAL ART: 20 Pioneers Redefining its Boundaries (Schiffer, 2025), On NFTs (Taschen, 2025), and Dismantling the Patriarchy, Bit by Bit: Art, Feminism, and Digital Technology (Bloomsbury Visual Arts, 2021). A frequent lecturer on digital art, Spalter continues to shape contemporary discourse on technology, aesthetics, and the evolving art market.</p></div></div>
+<p class="links"><a href="https://www.raster.art/collections/ai-spaceships" target="_blank">View on Raster &#8599;</a><a href="http://annespalter.com" target="_blank">annespalter.com &#8599;</a></p>
+<p class="foot">AI Spaceships, Anne Spalter. Earth uninhabitable, and its last people building ships to leave. A curated collection on <a class="fc" href="https://www.sovrn.art" target="_blank">sovrn.art</a>.</p>
 </div></body></html>
