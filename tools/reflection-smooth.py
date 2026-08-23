@@ -72,6 +72,64 @@ def smooth(svg):
         svg = svg[:pos] + fade(begin) + svg[pos:]
     return svg
 
+# --- proof -------------------------------------------------------------------
+# The reason to trust any of this: run the rule against the six minted originals
+# and it reproduces the artist's own Francisco Carolinum renders exactly. Run
+# `python3 reflection-smooth.py --verify` after touching anything above.
+
+TOKENS = ('515', '884', '885', '886', '888', '889')
+CONTRACT = '0x5137cfb461d24040f5ce6b85d860c47a24f85412'
+FC = ('https://raw.githubusercontent.com/gorgonorgon/sovrn-FC-images/main/'
+      'reflection_%s_layers_smooth.svg')
+RPC = 'https://ethereum-rpc.publicnode.com'
+
+def minted(token):
+    """the artwork as minted, straight from the contract"""
+    import json, base64, urllib.request
+    data = '0xc87b56dd' + format(int(token), 'x').rjust(64, '0')
+    body = json.dumps({'jsonrpc': '2.0', 'id': 1, 'method': 'eth_call',
+                       'params': [{'to': CONTRACT, 'data': data}, 'latest']}).encode()
+    # publicnode 403s urllib's default User-Agent
+    req = urllib.request.Request(RPC, body, {'Content-Type': 'application/json',
+                                             'User-Agent': 'curl/8.4.0'})
+    h = json.load(urllib.request.urlopen(req, timeout=120))['result'][2:]
+    off = int(h[:64], 16) * 2
+    ln = int(h[off:off + 64], 16) * 2
+    uri = bytes.fromhex(h[off + 64:off + 64 + ln]).decode()
+    meta = json.loads(base64.b64decode(uri.split(',', 1)[1]))
+    return base64.b64decode(meta['image'].split(',', 1)[1]).decode()
+
+def fades(svg):
+    """every group's fade, normalised so formatting differences do not count"""
+    import xml.etree.ElementTree as ET
+    NS = '{http://www.w3.org/2000/svg}'
+    out = []
+    for g in ET.fromstring(svg).iter(NS + 'g'):
+        a = next((c for c in g if c.tag == NS + 'animate'), None)
+        if a is None:
+            out.append(None); continue
+        out.append((round(float(a.get('begin').rstrip('s')), 6),
+                    tuple(round(float(x), 6) for x in a.get('keyTimes').split(';')),
+                    a.get('values'), a.get('dur'),
+                    a.get('repeatCount'), a.get('fill')))
+    return out
+
+def verify():
+    import urllib.request
+    ok = 0
+    for t in TOKENS:
+        got = fades(smooth(minted(t)))
+        req = urllib.request.Request(FC % t, headers={'User-Agent': 'curl/8.4.0'})
+        want = fades(urllib.request.urlopen(req, timeout=60).read().decode())
+        if got == want:
+            print(f'  token {t}: exact — {sum(x is not None for x in got)} fades'); ok += 1
+        else:
+            print(f'  token {t}: {sum(a != b for a, b in zip(got, want))} differ')
+    print(f'\n  {ok}/{len(TOKENS)} exact')
+    return ok == len(TOKENS)
+
 if __name__ == '__main__':
+    if '--verify' in sys.argv:
+        sys.exit(0 if verify() else 1)
     open(sys.argv[2], 'w', encoding='utf-8').write(
         smooth(open(sys.argv[1], encoding='utf-8').read()))
