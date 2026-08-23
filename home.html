@@ -249,7 +249,7 @@ document.getElementById("g").innerHTML=C.map((c,i)=>{
   const cn=navigator.connection; if(cn&&cn.saveData)return;
   const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));
     const v=a[i];a[i]=a[j];a[j]=v;}return a;};
-  const TICK=900,DWELL=7000;
+  const TICK=1400,DWELL=14000;
   let clock=0;
   const st=[...document.querySelectorAll(".card[data-p]")].map((el,n)=>{
     const s=el.dataset.p,im=el.querySelectorAll(".im img");
@@ -275,7 +275,7 @@ document.getElementById("g").innerHTML=C.map((c,i)=>{
     for(const s of st)if(s.on&&clock>=s.due&&(!pick||s.due<pick.due))pick=s;
     if(!pick)return;
     swap(pick);
-    pick.due=clock+DWELL+Math.random()*3000;
+    pick.due=clock+DWELL+Math.random()*8000;
   },TICK);
 })();
 document.getElementById("m").innerHTML=MU.map(m=>
