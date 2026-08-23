@@ -205,6 +205,7 @@ const NAV=(()=>{
   return group("Curated", C.map(c=>[c[0],c[2]]))
     + group("Museums", MU.map(m=>[m[0].split(",")[0],m[3]]))
     + item("Marketplaces","https://www.sovrn.art/marketplaces")
+    + item("Shareable","https://www.sovrn.art/shareable")
     + item("About","https://www.sovrn.art/about");
 })();
 const mb=document.getElementById("mb"),mn=document.getElementById("mn");
