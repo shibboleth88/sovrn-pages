@@ -394,7 +394,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
   <use transform="scale(5 5)" x="180.5" y="210.5" href="#byte" />
   <use transform="scale(5 5)" x="210.5" y="210.5" href="#byte" />
 </g><!-- 11:7 ganStrokes -->
-<g class="blackstrokes">
+<g class="blackstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.125;0.1875;1" begin="0.0s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.33" d="M258 658 376 776"/>
 <path opacity="0.33" d="M276 633 276 724"/>
 <path opacity="0.33" d="M288 616 286 618"/>
@@ -471,7 +471,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.33" d="M828 634 828 873"/>
 <path opacity="0.33" d="M846 669 613 902"/>
 </g>
-<g class="mediumstrokes">
+<g class="mediumstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.15;0.2125;1" begin="0.4s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.33" d="M420 374 501 455"/>
 <path opacity="0.33" d="M426 360 426 422"/>
 <path opacity="0.33" d="M474 303 431 346"/>
@@ -531,7 +531,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.33" d="M804 663 812 671"/>
 <path opacity="0.33" d="M822 696 822 801"/>
 </g>
-<g class="lightstrokes">
+<g class="lightstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.175;0.2375;1" begin="0.8s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.33" d="M354 379 447 472"/>
 <path opacity="0.33" d="M366 362 366 405"/>
 <path opacity="0.33" d="M384 337 382 339"/>
@@ -614,8 +614,8 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.33" d="M840 650 840 655"/>
 </g>
 <!-- 12:0 skull -->
-<g clip-path="url(#skullclip)" class="eightyrows" >
-<g class="skullcolor" >
+<g clip-path="url(#skullclip)" class="eightyrows" ><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.2;0.2625;1" begin="1.2s" dur="8s" repeatCount="indefinite" fill="freeze" />
+<g class="skullcolor" ><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.225;0.2875;1" begin="1.6s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <use x="0" y="0" href="#bin80" />   
 </g>
 </g><!-- 13:1 background big bytegans -->
@@ -637,7 +637,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
   <use transform="scale(10 10)" x="60.5" y="90.5" href="#byte" />
   <use transform="scale(10 10)" x="90.5" y="90.5" href="#byte" />
 </g><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.25;0.3125;1" begin="2.0s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 14:8 -->
-<g class="blackstrokes">
+<g class="blackstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.275;0.3375;1" begin="2.4s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.5" d="M396 563 485 652"/>
 <path opacity="0.5" d="M402 564 402 625"/>
 <path opacity="0.5" d="M408 565 384 589"/>
@@ -740,7 +740,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.5" d="M732 620 743 631"/>
 <path opacity="0.5" d="M744 624 744 630"/>
 </g>
-<g class="darkstrokes">
+<g class="darkstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.3;0.3625;1" begin="2.8s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.2" d="M294 593 680 979"/>
 <path opacity="0.2" d="M300 567 300 646"/>
 <path opacity="0.2" d="M318 396 317 397"/>
@@ -792,7 +792,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.2" d="M894 548 896 550"/>
 <path opacity="0.2" d="M900 568 900 627"/>
 </g>
-<g class="lightstrokes">
+<g class="lightstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.325;0.3875;1" begin="3.2s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.2" d="M612 572 642 602"/>
 <path opacity="0.2" d="M624 470 624 476"/>
 <path opacity="0.2" d="M624 572 607 589"/>
@@ -933,10 +933,10 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.2" d="M570 459 555 474"/>
 <path opacity="0.2" d="M582 476 588 482"/>
 </g></g><!-- 14:endanim --><!-- 15:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.325;0.3875;1" begin="3.2s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 15:0 circles -->      
-<g class="circlecolor">
+<g class="circlecolor"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.35;0.4125;1" begin="3.6s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <circle cx="600" cy="275.9" r="125.8"/><circle cx="601.9" cy="275.9" r="99.9"/><circle cx="602.7" cy="275.9" r="83.2"/><circle cx="602.7" cy="275.9" r="65.5"/><circle cx="602.7" cy="275.9" r="45"/><line x1="602.7" y1="279.9" x2="602.7" y2="833.7"/><line x1="474.2" y1="279.9" x2="474.2" y2="967.9"/><line x1="726" y1="275.9" x2="722" y2="963.9"/><line x1="377.3" y1="467" x2="377.3" y2="848.4"/><line x1="822.9" y1="467" x2="822.9" y2="848.4"/><circle cx="377.3" cy="467" r="98.1"/><circle cx="822.9" cy="467" r="98.1"/><circle cx="822.9" cy="467" r="65.5"/><circle cx="377.3" cy="467" r="65.5"/><circle cx="822.9" cy="848.4" r="65.5"/><circle cx="377.3" cy="848.4" r="65.5"/><circle cx="822.9" cy="848.4" r="35.5"/><circle cx="377.3" cy="848.4" r="35.5"/>
 </g></g><!-- 15:endanim --><!-- 16:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.35;0.4125;1" begin="3.6s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 16:1 touchups -->
-<g class="mediumstrokes">
+<g class="mediumstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.375;0.4375;1" begin="4.0s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.2" d="M525 973 576 1024"/>
 <path opacity="0.2" d="M530 970 530 1011"/>
 <path opacity="0.2" d="M535 967 509 993"/>
@@ -1050,7 +1050,7 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.2" d="M790 643 816 669"/>
 </g>
 </g><!-- 16:endanim --><!-- 17:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.375;0.4375;1" begin="4.0s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 17:3 lighten -->
-<g class="lightstrokes">
+<g class="lightstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.4;0.4625;1" begin="4.4s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.2" d="M306 310 369 373"/>
 <path opacity="0.2" d="M312 294 312 496"/>
 <path opacity="0.2" d="M324 288 307 305"/>
@@ -1184,17 +1184,17 @@ xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:
 <path opacity="0.2" d="M876 560 876 662"/>
 </g>
 </g><!-- 17:endanim --><!-- 18:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.4;0.4625;1" begin="4.4s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 18:0 darken -->
-<g clip-path="url(#shadowclip)" class="fortyeightrows">
-<g class="blackcolor" style="stroke-width:1">
+<g clip-path="url(#shadowclip)" class="fortyeightrows"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.425;0.4875;1" begin="4.8s" dur="8s" repeatCount="indefinite" fill="freeze" />
+<g class="blackcolor" style="stroke-width:1"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.45;0.5125;1" begin="5.2s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <use x="0" y="0" href="#bin48" />   
 </g>
 </g></g><!-- 18:endanim --><!-- 19:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.45;0.5125;1" begin="5.2s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 19:2 highlight -->
-<g clip-path="url(#highlightclip)">
-<g class="highlightcolor" style="stroke-width:1">
+<g clip-path="url(#highlightclip)"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.475;0.5375;1" begin="5.6s" dur="8s" repeatCount="indefinite" fill="freeze" />
+<g class="highlightcolor" style="stroke-width:1"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.5;0.5625;1" begin="6.0s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <use x="0" y="0" href="#hex48" />   
 </g>
 </g></g><!-- 19:endanim --><!-- 20:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;0;1" keyTimes="0;0.0625;0.5;0.5625;1" begin="6.0s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 20:4 skull flourish --> 
-<g></g></g><g><!-- 21:24:6 final hex --><g class="finalcolor">
+<g></g></g><g><!-- 21:24:6 final hex --><g class="finalcolor"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.525;0.5875;1" begin="6.4s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <text x="408" y="550" class="twentyfourrows">EE98DCBF2E</text>
 <text x="408" y="600" class="twentyfourrows">06E842355B4</text>
 </g></g><!-- 21:endanim --><!-- 25:0 Footer -->

@@ -232,11 +232,11 @@ const PL={cents:24,"painting-with-fire":32,mementi:24,"possibility-spaces":24,
 "perimeter-town":24,"seasons-of-mobility":28,"latent-couture":21,"rabbit-takeover":7,
 sightseers:24,"cope-vol-1":24,"ai-spaceships":24,
 /* the three on-chain sets rotate the SVGs themselves, so those cards animate */
-/* Thirty works, every one animating as its source does. The first six are the
-   Francisco Carolinum renders, which the artist derived from the minted files
-   by adding fifteen to nineteen further layer fades. The other twenty-four are
-   the works as minted: verified against the contract, they carry seven layer
-   fades each, so their reveal is the same choreography at a coarser step. */
+/* Thirty works, every one cascading. The first six are the artist's own
+   Francisco Carolinum renders. The other twenty-four were smoothed the same way
+   by tools/reflection-smooth.py, which reads the pass numbering the minted file
+   carries in its comments; run against all six FC renders it reproduces every
+   fade of each, attribute for attribute. */
 reflection:[30,"collections/reflection","reflection","svg"],
 wunderkammer:[36,"wunderkammer-works","wunderkammer","svg"],
 bytegans:[24,"bytegans","bytegan","svg"]};

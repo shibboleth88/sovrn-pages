@@ -396,7 +396,7 @@ M300 240 300 360 300 720 420 720 420 840 540 840 540 720 660 720 660 840 780 840
   <use transform="scale(5 5)" x="180.5" y="210.5" href="#byte" />
   <use transform="scale(5 5)" x="210.5" y="210.5" href="#byte" />
 </g><!-- 11:5 ganStrokes -->
-<g class="blackstrokes">
+<g class="blackstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.125;0.1875;1" begin="0.0s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.33" d="M414 711 516 813"/>
 <path opacity="0.33" d="M420 703 420 792"/>
 <path opacity="0.33" d="M426 695 425 696"/>
@@ -469,7 +469,7 @@ M300 240 300 360 300 720 420 720 420 840 540 840 540 720 660 720 660 840 780 840
 <path opacity="0.33" d="M792 401 793 402"/>
 <path opacity="0.33" d="M798 451 798 476"/>
 </g>
-<g class="mediumstrokes">
+<g class="mediumstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.15;0.2125;1" begin="0.4s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.33" d="M576 624 747 795"/>
 <path opacity="0.33" d="M588 579 588 693"/>
 <path opacity="0.33" d="M594 578 585 587"/>
@@ -519,7 +519,7 @@ M300 240 300 360 300 720 420 720 420 840 540 840 540 720 660 720 660 840 780 840
 <path opacity="0.33" d="M744 373 600 517"/>
 <path opacity="0.33" d="M762 386 763 387"/>
 </g>
-<g class="lightstrokes">
+<g class="lightstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.175;0.2375;1" begin="0.8s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.33" d="M522 396 590 464"/>
 <path opacity="0.33" d="M540 362 540 484"/>
 <path opacity="0.33" d="M546 360 526 380"/>
@@ -550,12 +550,12 @@ M300 240 300 360 300 720 420 720 420 840 540 840 540 720 660 720 660 840 780 840
 <path opacity="0.33" d="M468 737 442 763"/>
 <path opacity="0.33" d="M492 734 496 738"/>
 </g><g clip-path="url(#skullclip)" class="fortyeightrows" >
-<g class="skullcolor" >
+<g class="skullcolor" ><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.2;0.2625;1" begin="1.2s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <use x="0" y="0" href="#hex48" />   
 </g>
 </g><!-- 13:0 background binary -->
 <g clip-path="url(#byteganreverseclip)" >
-<g class="backgroundcolor" style="stroke-width:1">
+<g class="backgroundcolor" style="stroke-width:1"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.25;0.3125;1" begin="2.0s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <text x="-100" y="25" class="fortyeightrows">00001100000010100111110111111111001010000111000100010100101100100001001000000010100000111111011110101000100000010010</text>
 <text x="-100" y="50" class="fortyeightrows">00011101000101000110011101010010110110100001001101100001110111110100100001000011011111111000100100000100010100001110</text>
 <text x="-100" y="75" class="fortyeightrows">00000011101010001010001001010101010000100110000010110011100000010011000011110011110000000000110001010110011110110000</text>
@@ -606,7 +606,7 @@ M300 240 300 360 300 720 420 720 420 840 540 840 540 720 660 720 660 840 780 840
 <text x="-100" y="1200" class="fortyeightrows">00010010010111110101100101111010001110010111001000110011111010110100010010010001010000010010111100000001110111101111</text>
 </g>
 </g><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.25;0.3125;1" begin="2.0s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 14:2 -->
-<g class="blackstrokes">
+<g class="blackstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.275;0.3375;1" begin="2.4s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.5" d="M354 576 407 629"/>
 <path opacity="0.5" d="M360 451 360 741"/>
 <path opacity="0.5" d="M372 663 343 692"/>
@@ -717,7 +717,7 @@ M300 240 300 360 300 720 420 720 420 840 540 840 540 720 660 720 660 840 780 840
 <path opacity="0.5" d="M822 389 822 601"/>
 <path opacity="0.5" d="M846 527 754 619"/>
 </g>
-<g class="darkstrokes">
+<g class="darkstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.3;0.3625;1" begin="2.8s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.2" d="M372 647 545 820"/>
 <path opacity="0.2" d="M402 634 402 718"/>
 <path opacity="0.2" d="M414 455 412 457"/>
@@ -785,7 +785,7 @@ M300 240 300 360 300 720 420 720 420 840 540 840 540 720 660 720 660 840 780 840
 <path opacity="0.2" d="M834 597 834 697"/>
 <path opacity="0.2" d="M846 596 615 827"/>
 </g>
-<g class="lightstrokes">
+<g class="lightstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.325;0.3875;1" begin="3.2s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.2" d="M492 407 555 470"/>
 <path opacity="0.2" d="M498 374 498 450"/>
 <path opacity="0.2" d="M504 346 502 348"/>
@@ -845,10 +845,10 @@ M300 240 300 360 300 720 420 720 420 840 540 840 540 720 660 720 660 840 780 840
 <path opacity="0.2" d="M804 632 828 656"/>
 </g>
 </g><!-- 14:endanim --><!-- 15:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.325;0.3875;1" begin="3.2s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 15:0 circles -->      
-<g class="circlecolor">
+<g class="circlecolor"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.35;0.4125;1" begin="3.6s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <circle cx="600" cy="275.9" r="125.8"/><circle cx="601.9" cy="275.9" r="99.9"/><circle cx="602.7" cy="275.9" r="83.2"/><circle cx="602.7" cy="275.9" r="65.5"/><circle cx="602.7" cy="275.9" r="45"/><line x1="602.7" y1="279.9" x2="602.7" y2="833.7"/><line x1="474.2" y1="279.9" x2="474.2" y2="967.9"/><line x1="726" y1="275.9" x2="722" y2="963.9"/><line x1="377.3" y1="467" x2="377.3" y2="848.4"/><line x1="822.9" y1="467" x2="822.9" y2="848.4"/><circle cx="377.3" cy="467" r="98.1"/><circle cx="822.9" cy="467" r="98.1"/><circle cx="822.9" cy="467" r="65.5"/><circle cx="377.3" cy="467" r="65.5"/><circle cx="822.9" cy="848.4" r="65.5"/><circle cx="377.3" cy="848.4" r="65.5"/><circle cx="822.9" cy="848.4" r="35.5"/><circle cx="377.3" cy="848.4" r="35.5"/>
 </g></g><!-- 15:endanim --><!-- 16:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.35;0.4125;1" begin="3.6s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 16:8 touchups -->
-<g class="mediumstrokes">
+<g class="mediumstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.375;0.4375;1" begin="4.0s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.2" d="M294 593 680 979"/>
 <path opacity="0.2" d="M300 567 300 646"/>
 <path opacity="0.2" d="M318 396 317 397"/>
@@ -900,7 +900,7 @@ M300 240 300 360 300 720 420 720 420 840 540 840 540 720 660 720 660 840 780 840
 <path opacity="0.2" d="M894 548 896 550"/>
 <path opacity="0.2" d="M900 568 900 627"/>
 </g></g><!-- 16:endanim --><!-- 17:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.375;0.4375;1" begin="4.0s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 17:8 lighten -->
-<g class="lightstrokes">
+<g class="lightstrokes"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.4;0.4625;1" begin="4.4s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <path opacity="0.2" d="M612 572 642 602"/>
 <path opacity="0.2" d="M624 470 624 476"/>
 <path opacity="0.2" d="M624 572 607 589"/>
@@ -1041,18 +1041,18 @@ M300 240 300 360 300 720 420 720 420 840 540 840 540 720 660 720 660 840 780 840
 <path opacity="0.2" d="M570 459 555 474"/>
 <path opacity="0.2" d="M582 476 588 482"/>
 </g></g><!-- 17:endanim --><!-- 18:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.4;0.4625;1" begin="4.4s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 18:3 darken-->
-<g clip-path="url(#shadowclip)" class="fortyeightrows">
-<g class="blackcolor" style="stroke-width:1">
+<g clip-path="url(#shadowclip)" class="fortyeightrows"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.425;0.4875;1" begin="4.8s" dur="8s" repeatCount="indefinite" fill="freeze" />
+<g class="blackcolor" style="stroke-width:1"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.45;0.5125;1" begin="5.2s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <use x="0" y="0" href="#hex48" />
 </g>
 </g></g><!-- 18:endanim --><!-- 19:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.45;0.5125;1" begin="5.2s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 19:0 highlight -->
-<g clip-path="url(#highlightclip)">
-<g class="highlightcolor" style="stroke-width:1">
+<g clip-path="url(#highlightclip)"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.475;0.5375;1" begin="5.6s" dur="8s" repeatCount="indefinite" fill="freeze" />
+<g class="highlightcolor" style="stroke-width:1"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.5;0.5625;1" begin="6.0s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <use x="0" y="0" href="#bin48" />   
 </g>
 </g></g><!-- 19:endanim --><!-- 20:startanim --><g><animate attributeType="XML" attributeName="opacity" values="1;0;0;0;1" keyTimes="0;0.0625;0.5;0.5625;1" begin="6.0s" dur="8s" repeatCount="indefinite" fill="freeze" /><!-- 20:4 skull flourish --> 
 <g></g></g><g><!-- 21:22:5 final binary -->
-<g class="finalcolor">
+<g class="finalcolor"><animate attributeType="XML" attributeName="opacity" values="1;0;0;1;1" keyTimes="0;0.0625;0.525;0.5875;1" begin="6.4s" dur="8s" repeatCount="indefinite" fill="freeze" />
 <text x="456" y="250" class="twentyfourrows">000</text>
 <text x="821.8" y="350" class="twentyfourrows">00</text>
 <text x="265.2" y="450" class="twentyfourrows">0000</text>
