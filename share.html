@@ -806,6 +806,8 @@ function search(q) {
   }
 }
 
+var RENDER_SHARE = 0.92;          // encoding gets the last 8% of the bar
+
 function showProgress(text, done, total) {
   $("prog").hidden = false;
   $("ptext").textContent = text;
@@ -1043,13 +1045,19 @@ function bytegansFrames(w, size, onStep) {
     c.width = g.width * f; c.height = g.height * f;
     var ctx = c.getContext("2d", { willReadFrequently: true });
     ctx.imageSmoothingEnabled = false;
+    var step = Promise.resolve();
     g.frames.forEach(function (bmp, i) {
-      ctx.clearRect(0, 0, c.width, c.height);
-      ctx.drawImage(bmp, 0, 0, c.width, c.height);
-      out.push(ctx.getImageData(0, 0, c.width, c.height));
-      if (onStep) onStep(i + 1, g.frames.length);
+      step = step.then(function () {
+        ctx.clearRect(0, 0, c.width, c.height);
+        ctx.drawImage(bmp, 0, 0, c.width, c.height);
+        out.push(ctx.getImageData(0, 0, c.width, c.height));
+        if (onStep) onStep(i + 1, g.frames.length);
+        return i % 4 === 3 ? yieldToPaint() : null;
+      });
     });
-    return { frames: out, delays: g.delays, colours: 256 };
+    return step.then(function () {
+      return { frames: out, delays: g.delays, colours: 256 };
+    });
   });
 }
 
@@ -1321,12 +1329,13 @@ function build() {
             : reflectionFrames;
   return maker(w, size, function (done, total) {
     if (mine !== token) return;
-    showProgress("Rendering frame " + done + " of " + total, done, total);
+    showProgress("Rendering frame " + done + " of " + total,
+                 done / total * RENDER_SHARE, 1);
   }).then(function (r) {
     if (mine !== token) return;
     // Encoding is one synchronous stretch, so paint the label before starting it
     // or it never appears.
-    showProgress("Encoding the GIF", 1, 1);
+    showProgress("Encoding the GIF", RENDER_SHARE, 1);
     return yieldToPaint().then(function () { return r; });
   }).then(function (r) {
     if (!r || mine !== token) return;
@@ -1594,21 +1603,29 @@ $("mkgrid").onclick = function () {
   $("prev").removeAttribute("src");
 
   var total = theSet.length, done = 0, results = [];
-  showProgress("Rendering 0 of " + total, 0, total + 1);
+  showProgress("Rendering work 1 of " + total, 0, 1);
 
   // Sequential: several works rendering at once would contend for the main
   // thread and make the progress meaningless.
   theSet.reduce(function (chain, w, k) {
     return chain.then(function () {
-      return framesFor(w, geo.cell, COMPOSE_FRAMES, null).then(function (r) {
+      // Report per FRAME, not per work. Reporting only "2 of 3" left the bar
+      // frozen for the twenty-odd seconds a Reflection takes, which reads as a
+      // hang. Progress runs continuously across the whole build: each work owns
+      // a slice of the bar and fills it as its frames come in.
+      return framesFor(w, geo.cell, COMPOSE_FRAMES, function (i, m) {
+        var within = m ? i / m : 0;
+        showProgress("Rendering work " + (k + 1) + " of " + total
+                     + " — frame " + i + " of " + m,
+                     (k + within) / total * RENDER_SHARE, 1);
+      }).then(function (r) {
         results[k] = r;
         done++;
-        showProgress("Rendering " + done + " of " + total, done, total + 1);
       });
     });
   }, Promise.resolve()).then(function () {
     if (mine !== token) return;
-    showProgress("Composing", total, total + 1);
+    showProgress("Composing and encoding", RENDER_SHARE, 1);
     return yieldToPaint().then(function () {
       var frames = [], delays = [];
       var c = document.createElement("canvas");
