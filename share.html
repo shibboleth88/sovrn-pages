@@ -625,12 +625,48 @@ function watchThumb(row, img, r, eager) {
   thumbWatcher.observe(row);
 }
 
+// Only Reflection thumbnails are flattened to stills. It is the expensive one —
+// ~700 paths, ~115KB — and its eight-second cascade reads as nothing at 42px, so
+// forty of them animating at once is all cost and no signal. A byteGAN is 1.1KB
+// and lively even that small, and Wunderkammer's glint is nine cheap frames, so
+// both keep moving. Drawing an SVG to a canvas captures one frame anyway, which
+// is what makes the still free.
+var THUMB_PX = 84;          // 2x the 42px box, so it stays sharp on retina
+var thumbStills = {};
+
+function stillFrom(uri, slug) {
+  var key = slug + ":" + uri.length + ":" + uri.slice(-24);
+  if (thumbStills[key]) return Promise.resolve(thumbStills[key]);
+  return loadImage(uri).then(function (img) {
+    var c = document.createElement("canvas");
+    c.width = c.height = THUMB_PX;
+    var ctx = c.getContext("2d");
+    // byteGANs are 11x11 pixel art; smoothing turns them to mush even this small.
+    ctx.imageSmoothingEnabled = slug !== "bytegans";
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, THUMB_PX, THUMB_PX);
+    var sw = img.naturalWidth || THUMB_PX, sh = img.naturalHeight || THUMB_PX;
+    var k = THUMB_PX / Math.max(sw, sh);
+    var dw = Math.round(sw * k), dh = Math.round(sh * k);
+    ctx.drawImage(img, (THUMB_PX - dw) / 2, (THUMB_PX - dh) / 2, dw, dh);
+    var out = c.toDataURL("image/png");
+    thumbStills[key] = out;
+    return out;
+  });
+}
+
+var STILL_THUMBS = { reflection: true };
+
 function fillThumb(row) {
   var t = row._thumb;
   if (!t || t.done) return;
   t.done = true;
-  queuedWork(t.r.slug, t.r.id).then(function (uri) { t.img.src = uri; })
-                              .catch(function () {});
+  queuedWork(t.r.slug, t.r.id)
+    .then(function (uri) {
+      return STILL_THUMBS[t.r.slug] ? stillFrom(uri, t.r.slug) : uri;
+    })
+    .then(function (src) { t.img.src = src; })
+    .catch(function () {});
 }
 
 function search(q) {
