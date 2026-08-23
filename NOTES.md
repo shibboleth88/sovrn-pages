@@ -34,6 +34,51 @@ fetch the page and read the attribute.
 
 ---
 
+## The design system
+
+`--accent` is teal, `#0f6b66`. It replaced a copper `#8a4f2a`, and the value was
+chosen so the contrast against paper barely moves — 5.20:1 against copper's
+5.34:1 — so nothing else in the palette had to be re-tuned. It carries the
+focus rings, hover states, venue labels, link underlines, the arrow on a card,
+the tick under each section head and the rare accent cell in the mosaic.
+
+The rest: `--paper #e9e9e5`, `--ink #16181d`, `--slate #5c6470` for secondary
+prose, `--faint #7e848d` for the catalogue numbers, `--rule` and the lighter
+`--hair` for the two weights of line. `--gap` is the one vertical rhythm value,
+`clamp(46px, 6vw, 72px)`, used for every major section break.
+
+Type: Fraunces italic for display and for anything that names a work — the
+tagline, section heads, card titles, exhibition titles. IBM Plex Sans for prose.
+IBM Plex Mono, uppercase and letterspaced, for labels, dates, venues and
+numbers. Nothing else.
+
+**A card is: image, title, description, hairline, then artist and index.** The
+grid rows stretch and `.mt` is pinned with `margin-top: auto`, so a title or a
+description that runs long cannot knock its neighbours out of line. The
+descriptions are adapted from each collection's own page — see below.
+
+**Watch for `.nav`.** It was defined twice, once for the sticky header and once
+for the footer link rows, which silently gave those rows `position: sticky` and
+22px of phantom padding. The footer rows are `.links` now. Do not reintroduce a
+second `.nav`.
+
+---
+
+## Collection descriptions
+
+Each card carries a sentence adapted from that collection's own page — the
+fifth element of its row in `C`. Sources: most collections have prose on
+`sovrn.art/curated/<slug>`, readable by stripping tags from the fetched page.
+Five do not, because their text lives inside the embed rather than on the Sites
+page: Reflection, Wunderkammer, Seasons of Mobility, Latent Couture and CENTS —
+take those from the HTML in this repo instead. Emerging Faces is not a curated
+page at all; its text is on `vanarman.com/emergence`.
+
+These are the artists' and the site's words, condensed. If a collection page is
+rewritten, the card should be resynced from it rather than edited on its own.
+
+---
+
 ## Never rewrite a URL someone gives you
 
 Google-hosted image URLs end in something like `=w1280`. That size is baked into

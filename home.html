@@ -4,93 +4,112 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <title>sovrn.art — an indie studio for sovereign artists</title>
 <style>
-:root{--paper:#e9e9e5;--ink:#16181d;--slate:#5c6470;--rule:#c9c9c2;--copper:#8a4f2a}
+:root{
+  --paper:#e9e9e5;--ink:#16181d;--slate:#5c6470;--faint:#7e848d;
+  --rule:#c9c9c2;--hair:#d8d8d2;--accent:#0f6b66;--accent-d:#0b514d;
+  --gap:clamp(46px,6vw,72px);
+}
 *{box-sizing:border-box;margin:0}
-body{background:var(--paper);color:var(--ink);font:400 15px/1.55 "IBM Plex Sans",sans-serif;padding:26px 22px 46px}
+::selection{background:var(--accent);color:var(--paper)}
+body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif;padding:26px 22px 56px;-webkit-text-size-adjust:100%}
 .wrap{max-width:1060px;margin:0 auto}
-a:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* ---------- mosaic ---------- */
 .banner{overflow:hidden;margin:-26px -22px 34px;background:var(--ink)}
 .mg{display:grid;gap:2px}
 @media(max-width:640px){.banner{margin-bottom:26px}}
 .mg img,.mg span{display:block;width:100%;height:100%}
 .mg img{object-fit:cover;transition:opacity .55s}
 .mg img.o{opacity:0}
-/* a cell left bare reads as the ink beneath; a rare one takes the copper */
-.mg span{background:var(--copper)}
-.banner2{margin:0 0 40px}
+/* a cell left bare reads as the ink beneath; a rare one takes the accent */
+.mg span{background:var(--accent)}
+.banner2{margin:0 0 var(--gap)}
 @media(max-width:640px){.banner2{margin-bottom:30px}}
-/* site navigation. position:fixed pins to the Sites frame, not the viewport —
-   known and accepted, the same as on the Reflection and CENTS pages. */
+/* ---------- site navigation ---------- */
 .nav{position:sticky;top:10px;z-index:30;max-width:1060px;margin:14px auto 0;padding:0 22px;display:flex;justify-content:flex-end}
 .navin{position:relative}
-#mb{width:44px;height:44px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:var(--paper);border:1px solid var(--rule);cursor:pointer;padding:0;transition:border-color .18s}
-#mb:hover,#mb[aria-expanded=true]{border-color:var(--copper)}
+#mb{width:44px;height:44px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:var(--paper);border:1px solid var(--rule);cursor:pointer;padding:0;transition:border-color .18s,background .18s}
+#mb:hover,#mb[aria-expanded=true]{border-color:var(--accent)}
 #mb span{display:block;width:19px;height:1.5px;background:var(--ink);transition:transform .22s,opacity .18s}
 #mb[aria-expanded=true] span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
 #mb[aria-expanded=true] span:nth-child(2){opacity:0}
 #mb[aria-expanded=true] span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
-#mb:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
-#mn{position:absolute;right:0;top:calc(100% + 9px);list-style:none;margin:0;padding:8px 0;background:var(--paper);border:1px solid var(--rule);min-width:232px;max-height:78vh;overflow-y:auto}
+#mn{position:absolute;right:0;top:calc(100% + 9px);list-style:none;margin:0;padding:8px 0;background:var(--paper);border:1px solid var(--rule);min-width:236px;max-height:78vh;overflow-y:auto;box-shadow:0 10px 30px rgba(22,24,29,.09)}
 #mn a,#mn .grp{display:block;width:100%;text-align:left;padding:9px 18px;text-decoration:none;color:var(--ink);font:500 11px/1.35 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;background:none;border:0;cursor:pointer;transition:color .15s,background .15s}
-#mn a:hover,#mn .grp:hover{color:var(--copper);background:#e2e2dc}
+#mn a:hover,#mn .grp:hover{color:var(--accent);background:#e2e2dc}
 #mn .grp{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:default;color:var(--slate)}
 #mn .grp:hover{color:var(--slate);background:none}
-#mn .grp .tog{flex:none;font-size:13px;line-height:1;color:var(--copper);cursor:pointer;padding:2px 4px;transition:transform .2s}
+#mn .grp .tog{flex:none;font-size:13px;line-height:1;color:var(--accent);cursor:pointer;padding:2px 4px;transition:transform .2s}
 #mn .grp[aria-expanded=true] .tog{transform:rotate(45deg)}
-#mn .sub{list-style:none;margin:0;padding:0;display:none;border-left:2px solid var(--rule);margin-left:18px}
+#mn .sub{list-style:none;margin:0 0 0 18px;padding:0;display:none;border-left:2px solid var(--rule)}
 #mn .grp[aria-expanded=true]+.sub{display:block}
 #mn .sub a{padding:7px 16px;font:400 11px/1.4 "IBM Plex Mono",monospace;letter-spacing:.07em;text-transform:none;color:var(--slate)}
-#mn .sub a:hover{color:var(--copper);background:#e2e2dc}
+#mn .sub a:hover{color:var(--accent);background:#e2e2dc}
 @media(max-width:640px){.nav{margin-top:10px;padding:0 14px}#mn{min-width:206px}}
-.mast{text-align:center;margin:6px 0 30px}
+/* ---------- masthead ---------- */
+.mast{text-align:center;margin:10px 0 clamp(26px,3.4vw,38px)}
 .logo img{width:clamp(132px,15vw,176px);height:auto;display:inline-block}
-.tag{font:italic 300 clamp(23px,3.4vw,37px)/1.15 Fraunces,serif;color:var(--ink);letter-spacing:-.015em;max-width:24ch;margin:16px auto 0}
-.about{max-width:66ch;font-size:14.5px;color:var(--slate);margin:0 auto 34px}
-.about a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--copper)}
-.about a:hover{color:var(--copper)}
-h2{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--copper);margin:0 0 20px;padding-bottom:15px;border-bottom:1px solid var(--rule)}
-h2.big{font:italic 300 clamp(27px,3.4vw,38px)/1.1 Fraunces,serif;letter-spacing:-.015em;text-transform:none;color:var(--ink);margin:0 0 20px;padding-bottom:16px}
-h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:var(--slate);margin:0 0 12px}
-.sec{margin-top:44px}
-/* collections — order is the site's own and is left exactly as it stands */
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:34px 24px;align-items:start}@media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr);gap:28px 20px}}@media(max-width:520px){.grid{grid-template-columns:1fr}}
+.tag{font:italic 300 clamp(24px,3.6vw,40px)/1.12 Fraunces,serif;color:var(--ink);letter-spacing:-.02em;max-width:22ch;margin:18px auto 0;text-wrap:balance}
+.about{max-width:64ch;font-size:15.5px;line-height:1.72;color:var(--slate);margin:0 auto var(--gap)}
+.about a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px;transition:color .15s}
+.about a:hover{color:var(--accent)}
+/* ---------- section heads ---------- */
+.sec{margin-top:var(--gap)}
+h2{position:relative;font:italic 300 clamp(27px,3.6vw,40px)/1.1 Fraunces,serif;letter-spacing:-.02em;text-transform:none;color:var(--ink);margin:0 0 26px;padding-bottom:18px;border-bottom:1px solid var(--rule)}
+/* a short accent tick where the rule begins */
+h2::after{content:"";position:absolute;left:0;bottom:-1px;width:54px;height:2px;background:var(--accent)}
+h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin:0 0 14px}
+/* ---------- collections ---------- */
+/* order is the site's own and is left exactly as it stands */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(30px,3.4vw,42px) clamp(20px,2.4vw,26px)}
+@media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
 .card{display:flex;flex-direction:column;text-decoration:none;color:inherit}
-.im{position:relative;display:block;width:100%;aspect-ratio:1;background:var(--ink);overflow:hidden;margin-bottom:12px;transition:opacity .18s}
-.card:hover .im{opacity:.8}
+.im{position:relative;display:block;width:100%;aspect-ratio:1;background:var(--ink);overflow:hidden;margin-bottom:13px}
 /* two frames stacked; the incoming work fades up over the outgoing one */
-.im img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .85s ease}
+.im img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .85s ease,transform .55s cubic-bezier(.2,.7,.3,1)}
 .im img.q{opacity:0}
+.card:hover .im img{transform:scale(1.035)}
 /* Latent Couture is shot tall — hold the top of the frame so the square crop
    keeps the head and shoulders rather than centring on the hem */
 .im.tp img{object-position:top}
-.ti{display:block;font:italic 300 21px/1.18 Fraunces,serif;margin-bottom:4px}
-.card:hover .ti{color:var(--copper)}
-.ti .go{font-style:normal;font-size:.6em;color:var(--copper);margin-left:5px;opacity:0;transition:opacity .18s}
-.card:hover .ti .go{opacity:1}
-.ar{display:block;font:400 13px/1.4 "IBM Plex Sans",sans-serif;color:var(--slate)}
-/* museums and exhibitions — a ledger, no photographs */
-.mus{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
-@media(max-width:760px){.mus{grid-template-columns:1fr;gap:0}}
-.mus li{border-bottom:1px solid var(--rule)}
-.mus li:nth-child(1),.mus li:nth-child(2){border-top:1px solid var(--rule)}
+.ti{display:block;font:italic 300 21px/1.2 Fraunces,serif;margin-bottom:5px;transition:color .18s;text-wrap:balance}
+.card:hover .ti{color:var(--accent)}
+.ti .go{font-style:normal;font-size:.58em;color:var(--accent);margin-left:6px;opacity:0;transition:opacity .18s,transform .18s;display:inline-block}
+.card:hover .ti .go{opacity:1;transform:translate(1px,-1px)}
+/* the row stretches to its tallest card, and the meta line is pinned to the
+   bottom, so a title that wraps cannot knock its neighbours out of line */
+.mt{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:auto;padding-top:11px;border-top:1px solid var(--hair)}
+/* a line adapted from each collection's own page */
+.de{display:block;font:400 13.5px/1.6;color:var(--slate);margin:0 0 12px;max-width:44ch}
+.ar{display:block;font:500 12.5px/1.45 "IBM Plex Sans",sans-serif;color:var(--ink)}
+.ix{flex:none;font:500 10.5px/1.4 "IBM Plex Mono",monospace;letter-spacing:.1em;color:var(--faint);transition:color .18s}
+.card:hover .ix{color:var(--accent)}
+/* ---------- museums and exhibitions — a ledger, no photographs ---------- */
+.mus{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(28px,4vw,52px)}
+@media(max-width:760px){.mus{grid-template-columns:1fr}}
+.mus li{border-bottom:1px solid var(--hair)}
+.mus li:nth-child(1),.mus li:nth-child(2){border-top:1px solid var(--hair)}
 @media(max-width:760px){.mus li:nth-child(2){border-top:0}}
-.mus a{display:block;padding:13px 0;text-decoration:none;color:inherit;transition:transform .18s}
-.mus a:hover{transform:translateX(5px)}
-.mv{display:block;font:500 10.5px/1.4 "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--copper);margin-bottom:3px}
-.ms{display:block;font:italic 300 19px/1.22 Fraunces,serif;margin-bottom:3px}
-.mus a:hover .ms{color:var(--copper)}
+.mus a{display:block;padding:15px 0;text-decoration:none;color:inherit;transition:transform .2s cubic-bezier(.2,.7,.3,1)}
+.mus a:hover{transform:translateX(4px)}
+.mv{display:block;font:500 10.5px/1.4 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.ms{display:block;font:italic 300 19px/1.24 Fraunces,serif;margin-bottom:4px;transition:color .18s}
+.mus a:hover .ms{color:var(--accent)}
 .md{display:block;font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate)}
-/* footer */
-.ft{margin-top:46px;padding-top:24px;border-top:1px solid var(--rule)}
-.lbl{max-width:60ch;font:400 12.5px/1.6 "IBM Plex Mono",monospace;color:var(--slate);margin-bottom:10px}
-.ico{display:flex;flex-wrap:wrap;gap:13px;margin-bottom:26px}
-.ico a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);border:1px solid var(--rule);padding:7px 13px 7px 8px;transition:border-color .15s,color .15s}
-.ico a:hover{border-color:var(--copper);color:var(--copper)}
+/* ---------- footer ---------- */
+.ft{margin-top:var(--gap);padding-top:28px;border-top:1px solid var(--rule)}
+.lbl{max-width:62ch;font:400 12.5px/1.7 "IBM Plex Mono",monospace;color:var(--slate);margin-bottom:14px}
+.ico{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:32px}
+.ico a{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);border:1px solid var(--rule);padding:8px 14px 8px 9px;transition:border-color .15s,color .15s,background .15s}
+.ico a:hover{border-color:var(--accent);color:var(--accent);background:#e3e5e2}
 .ico img{width:26px;height:26px;object-fit:contain;display:block}
 .ico span{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase}
-.nav{display:flex;flex-wrap:wrap;gap:20px;font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
-.nav a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--copper);padding-bottom:3px}
-.nav a:hover{color:var(--copper)}
+/* footer link rows — deliberately NOT .nav, which is the sticky header above */
+.links{display:flex;flex-wrap:wrap;gap:22px;font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
+.links a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:4px;transition:color .15s,border-color .15s}
+.links a:hover{color:var(--accent);border-color:var(--accent-d)}
+.more{margin-top:30px}
 /* Scroll-driven assembly. Wrapped in @supports and in a no-preference query,
    so where it is unsupported — or motion is not wanted — nothing is applied at
    all and every element simply renders. Nothing can be left stuck invisible. */
@@ -124,7 +143,7 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transfo
 <div class="sec">
 <h2>In museums and exhibitions</h2>
 <ul class="mus" id="m"></ul>
-<div class="nav" style="margin-top:26px"><a href="https://www.sovrn.art/museums" target="_blank">All museums and exhibitions &#8599;</a></div>
+<div class="links more"><a href="https://www.sovrn.art/museums" target="_blank">All museums and exhibitions &#8599;</a></div>
 </div>
 
 <footer class="ft">
@@ -133,7 +152,7 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transfo
 <div class="ico" id="mk"></div>
 <h3>Elsewhere</h3>
 <div class="ico" id="so"></div>
-<div class="nav">
+<div class="links">
 <a href="https://www.sovrn.art/about" target="_blank">About &#8599;</a>
 <a href="https://www.sovrn.art/marketplaces" target="_blank">Marketplaces &#8599;</a>
 </div>
@@ -147,21 +166,21 @@ F="https://raw.githubusercontent.com/gorgonorgon/sovrn-FC-images/main/",
 P="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/abd8a9f041622904ed28ad947c47b9242d11c2f8/",
 S="https://www.sovrn.art/curated/";
 const C=[
-["CENTS","Rutherford Chang","https://www.sovrn.art/cents",H+"cent_homepage.jpg"],
-["Emerging Faces","Pindar Van Arman","https://www.vanarman.com/emergence",H+"emerging-faces.jpg"],
-["Reflection","Pindar Van Arman",S+"reflection",F+"reflection_889_layers_smooth.svg"],
-["Wunderkammer","Isa Kost",S+"wunderkammer",H+"wunderkammer_homepage.gif"],
-["Painting with Fire: a history in GANs","Bård Ionson",S+"painting-with-fire",H+"fire_homepage.jpg"],
-["Noctilucent Mementi","Martin Lukas Ostachowski / MLO.art",S+"mementi",H+"mementi_homepage.jpg"],
-["Possibility Spaces","Look Highward",S+"possibility-spaces",H+"possibility_spaces_homepage.jpg"],
-["Sightseers: Perimeter Town","Norman Harman",S+"perimeter-town",H+"perimeter_town_homepage.jpg"],
-["Seasons of Mobility","bashobits",S+"seasons-of-mobility",H+"seasons-of-mobility.jpg"],
-["Latent Couture","Mikey Woodbridge",S+"latent-couture",H+"latent_couture_homepage.jpg"],
-["byteGANs","Pindar Van Arman",S+"bytegans",H+"bytegan 842.svg"],
-["RABBIT TAKEOVER","Anne Spalter",S+"rabbit-takeover",H+"rabbit_takeover_homepage.jpg"],
-["SIGHTSEERS","Norman Harman",S+"sightseers",H+"sightseers_homepage.jpg"],
-["cope. Vol 1","aleqth",S+"cope-vol-1",P+"cope-vol-1.jpg"],
-["AI Spaceships","Anne Spalter",S+"ai-spaceships",H+"ai-spaceships.jpg"]];
+["CENTS","Rutherford Chang","https://www.sovrn.art/cents",H+"cent_homepage.jpg","Ten thousand copper cents removed from circulation, documented, and inscribed on ten thousand satoshis — the coins themselves smelted into a single block."],
+["Emerging Faces","Pindar Van Arman","https://www.vanarman.com/emergence",H+"emerging-faces.jpg","The first paintings made autonomously from neural networks: an emergent imagination living in the interaction between the system and the paint."],
+["Reflection","Pindar Van Arman",S+"reflection",F+"reflection_889_layers_smooth.svg","Van Arman calls it Reflective AI — feedback loops and multimodal mark-making, the system reflecting on the canvas at every step."],
+["Wunderkammer","Isa Kost",S+"wunderkammer",H+"wunderkammer_homepage.gif","An on-chain cabinet of wonders, giving eternal life to presences Isa Kost has carried: a self-archaeology where finding speaks to what is lost."],
+["Painting with Fire: a history in GANs","Bård Ionson",S+"painting-with-fire",H+"fire_homepage.jpg","Fourteen vintage GAN models and two hundred works, each invoking fire — the emergence of synthetic image generation told through one element."],
+["Noctilucent Mementi","Martin Lukas Ostachowski / MLO.art",S+"mementi",H+"mementi_homepage.jpg","Location-specific mementos forming a visual timeline of the artist’s travels between 2018 and 2023, across four continents and eleven countries."],
+["Possibility Spaces","Look Highward",S+"possibility-spaces",H+"possibility_spaces_homepage.jpg","555 works exploring spiritual experience through the mind’s eye of machine learning, set across twenty-seven realms of deep zoomable images."],
+["Sightseers: Perimeter Town","Norman Harman",S+"perimeter-town",H+"perimeter_town_homepage.jpg","Blithely doomed figures in the desert beyond Las Vegas, where Harman sets the bomb tests against the cataclysmic potential of a new frontier: AI."],
+["Seasons of Mobility","bashobits",S+"seasons-of-mobility",H+"seasons-of-mobility.jpg","The year 1010 After Humanity, when the autonomous trains, buses and cars we built have become a species — rendered in the wabi-sabi tradition."],
+["Latent Couture","Mikey Woodbridge",S+"latent-couture",H+"latent_couture_homepage.jpg","555 AI fashion statements generated from photographs of the artist’s youth. The opposite of a deepfake: reaching into latent space to find the deepreal."],
+["byteGANs","Pindar Van Arman",S+"bytegans",H+"bytegan 842.svg","A kilobyte apiece and fully on-chain. Their dance is recorded on the public ledger, so it will go on forever, exactly as it was intended."],
+["RABBIT TAKEOVER","Anne Spalter",S+"rabbit-takeover",H+"rabbit_takeover_homepage.jpg","A lone rabbit cavorts through a post-armageddon world, travelling by trans-dimensional portal to preside over scenes of mayhem and destruction."],
+["SIGHTSEERS","Norman Harman",S+"sightseers",H+"sightseers_homepage.jpg","A circle of protagonists and bad actors defy the motel perimeter; as night falls their faces glitch and turn increasingly morphic."],
+["cope. Vol 1","aleqth",S+"cope-vol-1",P+"cope-vol-1.jpg","A book drawn a page a day, its making shared live as it went. Each page, and both covers, tokenized on the blockchain."],
+["AI Spaceships","Anne Spalter",S+"ai-spaceships",H+"ai-spaceships.jpg","Climate change has left Earth uninhabitable and its last people build ships to leave \u2014 some warping to steampunk battleships, some to neon hyperspace."]];
 /* venue, what is held or shown, when, page */
 const MU=[
 ["Francisco Carolinum, Linz","Sovrn Full Set","Permanent collection","https://www.sovrn.art/museums/fransisco-carolinum"],
@@ -411,7 +430,9 @@ document.getElementById("g").innerHTML=C.map((c,i)=>{
   '<img src="'+encodeURI(c[3])+'" alt="" width="500" height="500" loading="lazy">'+
   (PL[s]?'<img class="q" alt="" width="500" height="500" aria-hidden="true">':'')+
   '</span><span class="ti">'+esc(c[0])+'<span class="go">&#8599;</span></span>'+
-  '<span class="ar">'+esc(c[1])+'</span></a>';
+  '<span class="de">'+esc(c[4])+'</span>'+
+  '<span class="mt"><span class="ar">'+esc(c[1])+'</span>'+
+  '<span class="ix" aria-hidden="true">'+String(i+1).padStart(2,"0")+'</span></span></a>';
 }).join("");
 /* Rotation. One swap per tick at most, and only for cards actually on screen,
    so the grid never pulses in unison and the page never pulls more than about
