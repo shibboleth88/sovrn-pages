@@ -358,7 +358,7 @@ var ORDER = ["reflection", "wunderkammer", "bytegans"];
 // it gets many more — affordable because frames after the first only carry the
 // rectangle that changed, and because Reflection renders at 480 only.
 var REFLECTION_FRAMES = 72;
-var REFLECTION_SIZE = 480;
+
 
 var data = null, scope = null, sel = null, cache = {}, token = 0;
 var lastRows = [];   // what the current search turned up, for the Enter shortcut
@@ -531,8 +531,9 @@ function openWork(r) {
   });
 }
 
-// Reflection is 480-only; the other two keep the choice.
-function sizesFor(slug) { return slug === "reflection" ? [480] : [480, 720]; }
+// Reflection is pure vector, ~700 paths, natively 1200px — at 480 the fine work
+// is simply gone, so it gets the same choice as the others and defaults high.
+function sizesFor(slug) { return [480, 720]; }
 
 function syncSizes(slug) {
   var el = $("size"), allowed = sizesFor(slug);
@@ -787,17 +788,30 @@ function reflectionFrames(w, size) {
   });
   plan.forEach(function (p) { if (p.node.parentNode) p.node.parentNode.removeChild(p.node); });
 
+  // Every fade starts at its own `begin`, the last of them around 6s in, and only
+  // then repeats every 8s. So the first eight seconds are a STARTUP, with layers
+  // sitting at their base opacity waiting to begin — sampling there gave a GIF
+  // that did not loop and barely moved early on. Sample a window that starts
+  // after the last begin, where the cascade is in its steady repeating state.
+  var maxBegin = 0;
+  plan.forEach(function (p) { if (p.begin > maxBegin) maxBegin = p.begin; });
+  var t0 = maxBegin;
+
   var out = [], delays = [], step = Promise.resolve();
   var ms = Math.round(dur * 1000 / REFLECTION_FRAMES);
   for (var i = 0; i < REFLECTION_FRAMES; i++) {
     (function (frac) {
       step = step.then(function () {
+        var t = t0 + frac * dur;
         plan.forEach(function (p) {
           if (p.values.length < 2 || p.values.length !== p.keys.length) return;
-          // Each animation runs on its own clock: shift global time by `begin`
-          // and wrap, since these repeat indefinitely.
-          var local = (((frac * dur - p.begin) % p.dur) + p.dur) % p.dur / p.dur;
-          p.parent.setAttribute(p.attr, String(valueAt(p.values, p.keys, local)));
+          // Before `begin` an animation has not started and the element sits at
+          // its base value; after, it repeats every dur. Wrapping backwards past
+          // begin — which is what this used to do — reports a mid-fade opacity
+          // for a layer the browser still shows untouched.
+          var v = t < p.begin ? p.values[0]
+                : valueAt(p.values, p.keys, ((t - p.begin) % p.dur) / p.dur);
+          p.parent.setAttribute(p.attr, String(v));
         });
         var text = new XMLSerializer().serializeToString(doc);
         return rasterise(svgToUri(text), size).then(function (im) {
@@ -875,8 +889,7 @@ var built = null;
 
 function build() {
   var mine = token, w = sel;
-  var size = w.slug === "reflection" ? REFLECTION_SIZE
-                                     : parseInt($("size").value, 10);
+  var size = parseInt($("size").value, 10);
   $("dl").disabled = true;
   $("warn").textContent = "Rendering at " + size + "px…";
   var maker = w.slug === "bytegans" ? bytegansFrames
