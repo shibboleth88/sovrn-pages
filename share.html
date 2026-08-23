@@ -47,12 +47,15 @@
         padding:26px 0 8px;margin:0}
   .more{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
         padding:10px 14px;margin:0;border-top:1px solid var(--rule)}
-  .panel{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--rule);
-         padding:14px 20px calc(14px + env(safe-area-inset-bottom));margin-top:26px}
-  .panel .wrap{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
-  .preview{flex:none;width:168px;border:1px solid var(--rule);background:var(--paper)}
-  .preview img{width:100%;display:block}
-  .controls{flex:1;min-width:270px}
+  .panel{background:var(--card);border:1px solid var(--rule);border-radius:8px;
+         padding:16px;margin:16px 0 0}
+  .preview{border:1px solid var(--rule);background:var(--paper);display:inline-block;
+           max-width:100%;line-height:0}
+  /* Rendered at the chosen size, but never wider than the frame it sits in —
+     1080px would overflow a phone, and this page is embedded on one a lot. */
+  .preview img{display:block;max-width:100%;height:auto}
+  .controls{margin:0 0 14px}
+  .shrunk{font:400 11px/1.5 "IBM Plex Mono",monospace;color:var(--slate);margin:6px 0 0}
   .controls h2{margin:0 0 2px;font:500 15px/1.3 "IBM Plex Sans",sans-serif}
   .meta{font:400 11.5px/1.6 "IBM Plex Mono",monospace;color:var(--slate);margin:0 0 10px}
   .meta b{color:var(--ink);font-weight:500}
@@ -84,29 +87,33 @@
            placeholder="Search by title or token ID…" aria-label="Search by title or token ID">
   </div>
   <div class="sets" id="sets" role="group" aria-label="Limit to a collection"></div>
+
+  <div class="panel" hidden id="panel">
+    <!-- Controls sit above the artwork: at 1080px the image is taller than the
+         viewport, and having Download below it put the button off screen. -->
+    <div class="controls">
+      <h2 id="pt">—</h2>
+      <p class="meta" id="pm"></p>
+      <div class="row">
+        <label>size
+          <select id="size">
+            <option value="480">480px</option>
+            <option value="720" selected>720px</option>
+            <option value="1080">1080px</option>
+          </select>
+        </label>
+        <button class="go" id="dl">Download GIF</button>
+        <button class="go ghost" id="src">Original SVG</button>
+      </div>
+      <p class="warn" id="warn"></p>
+    </div>
+    <div class="preview"><img id="prev" alt=""></div>
+    <p class="shrunk" id="shrunk" hidden></p>
+  </div>
+
   <div class="hits" id="hits" role="listbox"></div>
   <p class="note" id="note">Search by title or token ID — “skull”, “cogito”, “octoGAN”, or 883.</p>
 </div>
-
-<div class="panel" hidden id="panel"><div class="wrap">
-  <div class="preview"><img id="prev" alt=""></div>
-  <div class="controls">
-    <h2 id="pt">—</h2>
-    <p class="meta" id="pm"></p>
-    <div class="row">
-      <label>size
-        <select id="size">
-          <option value="480">480px</option>
-          <option value="720" selected>720px</option>
-          <option value="1080">1080px</option>
-        </select>
-      </label>
-      <button class="go" id="dl">Download GIF</button>
-      <button class="go ghost" id="src">Original SVG</button>
-    </div>
-    <p class="warn" id="warn"></p>
-  </div>
-</div></div>
 
 <script>
 /* ------------------------------------------------------------------------- *
@@ -253,6 +260,7 @@ var ORDER = ["reflection", "wunderkammer", "bytegans"];
 var REFLECTION_FRAMES = 20;      // an 8s cascade; more than this is a very large GIF
 
 var data = null, scope = null, sel = null, cache = {}, token = 0;
+var lastRows = [];   // what the current search turned up, for the Enter shortcut
 var $ = function (id) { return document.getElementById(id); };
 
 fetch(BASE + "onchain-titles.json")
@@ -285,17 +293,29 @@ function mark() {
 
 $("q").addEventListener("input", function () { search(this.value.trim()); });
 
+// Enter opens the work when the search has narrowed to exactly one. With more
+// than one it would be a guess, so leave the list for the visitor to choose from.
+$("q").addEventListener("keydown", function (e) {
+  if (e.key !== "Enter") return;
+  e.preventDefault();
+  if (lastRows.length === 1) {
+    this.blur();                       // on a phone, let the keyboard get out of the way
+    openWork(lastRows[0]);
+  }
+});
+
 function search(q) {
   var box = $("hits");
   box.textContent = "";
   // A new search means the previous work is no longer what is on screen.
   closePanel();
-  if (!q) { $("note").hidden = false; return; }
+  if (!q) { lastRows = []; $("note").hidden = false; return; }
   $("note").hidden = true;
 
   var lower = q.toLowerCase();
   var slugs = scope ? [scope] : ORDER;
   var rows = [], total = 0;
+  lastRows = rows;
 
   // A bare number is a token id. Each collection has its own range, and they do
   // not agree — Reflection is 0-indexed, the other two are 1-indexed — so offer
@@ -322,6 +342,7 @@ function search(q) {
     }
   });
 
+  lastRows = rows;
   if (!rows.length) {
     var none = document.createElement("button");
     none.type = "button";
@@ -355,10 +376,31 @@ function search(q) {
 
 function closePanel() {
   sel = null;
+  built = null;
   token++;                       // invalidates any fetch still in flight
   $("panel").hidden = true;
+  $("shrunk").hidden = true;
   $("prev").removeAttribute("src");
+  $("prev").style.width = "";
 }
+
+// The GIF is encoded at the chosen size; the frame may still be narrower than
+// that, so say when what is on screen is not actual size.
+function reportScale() {
+  var img = $("prev");
+  var actual = built ? built.size : 0;
+  var shown = img.clientWidth;
+  var note = $("shrunk");
+  if (actual && shown && shown < actual - 2) {
+    note.textContent = "shown at " + shown + "px to fit — the file is "
+      + actual + "px";
+    note.hidden = false;
+  } else {
+    note.hidden = true;
+  }
+}
+
+addEventListener("resize", function () { if (built) reportScale(); });
 
 /* ---------------------------------------------------- one work, from chain */
 
@@ -629,7 +671,10 @@ function build() {
     if (mine !== token) return;
     var blob = GIF.encode(r.frames, r.delays, r.colours);
     built = { blob: blob, size: size, key: w.slug + ":" + w.id };
-    $("prev").src = URL.createObjectURL(blob);
+    var img = $("prev");
+    img.style.width = r.frames[0].width + "px";
+    img.src = URL.createObjectURL(blob);
+    img.onload = reportScale;
     $("dl").disabled = false;
     var kb = blob.size / 1024;
     var line = r.frames.length + " frames · " + r.frames[0].width + "×"
