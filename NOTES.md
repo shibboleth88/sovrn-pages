@@ -552,7 +552,7 @@ Five rules that took a couple of passes to get right:
 ### Animating the band
 
 The bands hold still. The only movement is turnover: one cell somewhere on
-screen dissolves into another work every 730ms. The replacement matches that
+screen dissolves into another work every 1.46s. The replacement matches that
 cell's kind and size and is chosen against the colour field at its column, so a
 passage keeps its character — each cell carries `data-c`, `data-k` and `data-b`
 for that. The image is decoded before the fade, so a cell never fades up onto a
@@ -578,9 +578,9 @@ Nothing is lost by the smaller band — the rest of the pool is what turnover
 draws from, and with roughly 69 cells instead of 213 a given cell now comes
 round about every two and a half minutes rather than every seven.
 
-**What turnover costs.** Measured at the current 730ms: 82 swaps a minute, and
+**What turnover costs.** Measured at the current 1.46s: 41 swaps a minute, and
 early on essentially every swap is a fresh fetch. Tiles average 13.6KB, so
-around 1.1MB a minute at the start. The important part is that this is bounded —
+around 0.6MB a minute at the start. The important part is that this is bounded —
 the whole library is 435 files and 5.9MB, so a visitor saturates it in roughly
 five minutes and every swap after that is a cache hit costing nothing. Changing
 the rate does not change the total, only how soon the ceiling is reached. CPU is

@@ -374,8 +374,8 @@ let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{
     return el&&el._cols!==Math.max(6,Math.ceil((el.parentElement.clientWidth+2)/(cell+2)));});
   if(stale)drawBands();},200);});
 /* Turnover, and the only thing that moves: the bands hold still. One cell
-   somewhere in the mosaic dissolves into another work about every three
-   quarters of a second -- only in a band that is on screen, only cells actually
+   somewhere in the mosaic dissolves into another work about every second and
+   a half -- only in a band that is on screen, only cells actually
    in the window, and never while the tab is hidden. Faster than the fade, so a
    cell already dissolving is skipped rather than caught halfway. The cost is
    front-loaded and bounded: the whole tile library is under 6MB, and once a
@@ -397,7 +397,7 @@ let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{
         const r=im.getBoundingClientRect();
         return r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight;});
     if(inview.length)g._swap(inview[Math.random()*inview.length|0]);
-  },730);
+  },1460);
 })();
 /* Each card cycles through works from its own collection. The folder name is
    the last segment of the card's own link, so the two can never drift apart.
