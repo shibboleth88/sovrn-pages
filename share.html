@@ -128,7 +128,10 @@
          background:#16181d;padding:8px;border-radius:4px}
   .slot{position:relative;overflow:hidden;border-radius:2px;background:#1e2128;
         border:1px dashed #363b45;min-height:0}
-  .slot.filled{border-color:transparent}
+  .slot.filled{border-color:transparent;cursor:grab}
+  .slot.filled:active{cursor:grabbing}
+  .slot.dragging{opacity:.4}
+  .slot.over{outline:2px solid var(--accent);outline-offset:-2px}
   .slot img{width:100%;height:100%;object-fit:cover;display:block}
   .slot .n{position:absolute;inset:0;display:flex;align-items:center;
     justify-content:center;color:#7b8290;
@@ -178,6 +181,23 @@
 </div></header>
 
 <div class="wrap">
+  <div class="composer" id="composer">
+    <p class="clabel">Compose — pick a shape, then search and click to fill it</p>
+    <div class="shapes" id="shapes" role="group" aria-label="Composition"></div>
+    <div class="slots" id="slots" hidden></div>
+    <div class="crow" id="crow" hidden>
+      <label>size
+        <select id="csize">
+          <option value="720">720px</option>
+          <option value="1080">1080px</option>
+          <option value="1440" selected>1440px</option>
+        </select>
+      </label>
+      <button class="go" id="mkgrid" disabled>Make it</button>
+      <button class="go ghost" id="clearset">Clear</button>
+    </div>
+    <p class="chint" id="chint"></p>
+  </div>
   <div class="find">
     <input id="q" type="search" autocomplete="off" spellcheck="false"
            placeholder="Search by title or token ID…" aria-label="Search by title or token ID">
@@ -217,23 +237,6 @@
 
   <div class="hits" id="hits" role="listbox"></div>
 
-  <div class="composer" id="composer">
-    <p class="clabel">Compose — put works side by side</p>
-    <div class="shapes" id="shapes" role="group" aria-label="Composition"></div>
-    <div class="slots" id="slots"></div>
-    <div class="crow">
-      <label>size
-        <select id="csize">
-          <option value="720">720px</option>
-          <option value="1080">1080px</option>
-          <option value="1440" selected>1440px</option>
-        </select>
-      </label>
-      <button class="go" id="mkgrid" disabled>Make it</button>
-      <button class="go ghost" id="clearset">Clear</button>
-    </div>
-    <p class="chint" id="chint"></p>
-  </div>
   <p class="note" id="note">Search by title or token ID — “skull”, “cogito”, “octoGAN”, or 883.</p>
   <div class="gallery" id="gallery" hidden>
     <p class="gtitle" id="gtitle">From the collections</p>
@@ -785,27 +788,7 @@ function search(q) {
     tag.className = "tag";
     tag.textContent = LABELS[r.slug] + " · " + (r.why || r.id);
 
-    // Add straight from the row: filling a triptych should not mean opening
-    // three works one at a time.
-    var plus = document.createElement("span");
-    plus.className = "plus";
-    plus.setAttribute("role", "button");
-    plus.setAttribute("tabindex", "0");
-    plus.title = "Add to the set";
-    plus.textContent = "+";
-    var take = function (e) {
-      e.stopPropagation();
-      if (theSet.length >= shape || inSet(r)) return;
-      plus.textContent = "…";
-      queuedWork(r.slug, r.id).then(function (uri) {
-        addToSet({ slug: r.slug, id: r.id, title: r.title, uri: uri });
-        plus.textContent = "✓";
-      }).catch(function () { plus.textContent = "+"; });
-    };
-    plus.onclick = take;
-    plus.onkeydown = function (e) { if (e.key === "Enter" || e.key === " ") take(e); };
-
-    b.appendChild(th); b.appendChild(mid); b.appendChild(tag); b.appendChild(plus);
+    b.appendChild(th); b.appendChild(mid); b.appendChild(tag);
     b.onclick = function () { chooseResult(r); };
     box.appendChild(b);
     // The first rows are on screen by definition, so load them outright; the
@@ -850,6 +833,15 @@ function yieldToPaint() {
 // open pushes the work you just chose off the screen. The query text stays, so
 // it is obvious what was searched and easy to pick something else.
 function chooseResult(r) {
+  // In a tych, a click fills the next empty box and the list stays open so the
+  // next work is one more click. In Single it opens the work, as before.
+  if (shape > 1) {
+    if (theSet.length >= shape || inSet(r)) return;
+    queuedWork(r.slug, r.id).then(function (uri) {
+      addToSet({ slug: r.slug, id: r.id, title: r.title, uri: uri });
+    }).catch(function () {});
+    return;
+  }
   $("hits").textContent = "";
   lastRows = [];
   $("q").blur();                 // on a phone, let the keyboard get out of the way
@@ -1384,10 +1376,11 @@ $("size").onchange = function () {
 // two squares side by side are naturally 2:1 and three are 3:1, both wider than
 // X shows whole, but on a 16:9 ground they simply sit with space around them.
 var GROUND = "#16181d";            // the site's ink — a gallery wall, not a page
-var theSet = [], shape = 3;
+var theSet = [], shape = 1;     // 1 = single; 2/3/4 = a tych
 var COMPOSE_FRAMES = 30;           // one full loop of every work, together
 
 var LAYOUTS = {
+  1: { name: "single",   cols: 1, rows: 1, ratio: 1, label: "one work" },
   2: { name: "diptych",  cols: 2, rows: 1, ratio: 16 / 9, label: "16:9" },
   3: { name: "triptych", cols: 3, rows: 1, ratio: 16 / 9, label: "16:9" },
   4: { name: "quadtych", cols: 2, rows: 2, ratio: 1,      label: "1:1" }
@@ -1425,7 +1418,7 @@ function addToSet(w) {
 function buildShapes() {
   var host = $("shapes");
   host.textContent = "";
-  [2, 3, 4].forEach(function (n) {
+  [1, 2, 3, 4].forEach(function (n) {
     var lay = LAYOUTS[n];
     var b = document.createElement("button");
     b.type = "button";
@@ -1438,7 +1431,7 @@ function buildShapes() {
     b.appendChild(r);
     b.onclick = function () {
       shape = n;
-      if (theSet.length > shape) theSet.length = shape;   // keep the first few
+      if (shape > 1 && theSet.length > shape) theSet.length = shape;  // keep the first few
       renderComposer();
     };
     host.appendChild(b);
@@ -1448,8 +1441,19 @@ function buildShapes() {
 function renderComposer() {
   var lay = LAYOUTS[shape];
   [].forEach.call($("shapes").children, function (b, i) {
-    b.setAttribute("aria-pressed", String([2, 3, 4][i] === shape));
+    b.setAttribute("aria-pressed", String([1, 2, 3, 4][i] === shape));
   });
+
+  // Single is the plain mode: no slots, clicking a result just opens the work.
+  if (shape === 1) {
+    $("slots").hidden = true;
+    $("crow").hidden = true;
+    $("chint").textContent = "Search and click a work to see it and download it.";
+    syncAddButton();
+    return;
+  }
+  $("slots").hidden = false;
+  $("crow").hidden = false;
 
   // The slots mirror the composition, so the shape is legible before building.
   var slots = $("slots");
@@ -1462,9 +1466,12 @@ function renderComposer() {
     var w = theSet[i];
     var cell = document.createElement("div");
     cell.className = w ? "slot filled" : "slot";
+    cell.dataset.i = String(i);
     if (w) {
+      cell.draggable = true;
       var img = document.createElement("img");
       img.alt = w.title;
+      img.draggable = false;
       stillFrom(w.uri, w.slug).then(function (target) {
         return function (png) { target.src = png; };
       }(img)).catch(function () {});
@@ -1477,7 +1484,7 @@ function renderComposer() {
       rm.textContent = "×";
       rm.setAttribute("aria-label", "Remove " + w.title);
       rm.onclick = (function (k) {
-        return function () { theSet.splice(k, 1); renderComposer(); };
+        return function (e) { e.stopPropagation(); theSet.splice(k, 1); renderComposer(); };
       })(i);
       cell.appendChild(img); cell.appendChild(cap); cell.appendChild(rm);
     } else {
@@ -1486,6 +1493,7 @@ function renderComposer() {
       n.textContent = String(i + 1);
       cell.appendChild(n);
     }
+    wireDrag(cell);
     slots.appendChild(cell);
   }
 
@@ -1496,11 +1504,49 @@ function renderComposer() {
   var g = geometry(lay, parseInt(($("csize") || {}).value || 1440, 10));
   $("chint").textContent = ready
     ? lay.label + " on a black ground · " + g.W + "×" + g.H + " · " + g.cell
-      + "px per work — whole, nothing cropped."
-    : "Add works with the + beside a search result, or open one and press “Add to"
-      + " set”. " + lay.name.charAt(0).toUpperCase() + lay.name.slice(1)
-      + " needs " + shape + ".";
+      + "px per work — whole, nothing cropped. Drag the boxes to rearrange."
+    : "Search and click works — each one drops into the next box. "
+      + lay.name.charAt(0).toUpperCase() + lay.name.slice(1) + " needs " + shape + ".";
   syncAddButton();
+}
+
+// Rearranging is a swap between two slots, which keeps it predictable: the work
+// you drag onto moves to where you dragged from, rather than everything shuffling.
+var dragFrom = null;
+
+function wireDrag(cell) {
+  cell.addEventListener("dragstart", function (e) {
+    dragFrom = Number(cell.dataset.i);
+    cell.classList.add("dragging");
+    if (e.dataTransfer) { e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", ""); }
+  });
+  cell.addEventListener("dragend", function () {
+    dragFrom = null;
+    [].forEach.call($("slots").children, function (c) {
+      c.classList.remove("dragging"); c.classList.remove("over");
+    });
+  });
+  cell.addEventListener("dragover", function (e) {
+    if (dragFrom === null) return;
+    e.preventDefault();
+    cell.classList.add("over");
+  });
+  cell.addEventListener("dragleave", function () { cell.classList.remove("over"); });
+  cell.addEventListener("drop", function (e) {
+    e.preventDefault();
+    var to = Number(cell.dataset.i);
+    if (dragFrom === null || to === dragFrom) return;
+    var moving = theSet[dragFrom];
+    if (!moving) return;
+    if (theSet[to]) {
+      var tmp = theSet[to]; theSet[to] = moving; theSet[dragFrom] = tmp;
+    } else {
+      theSet.splice(dragFrom, 1);
+      theSet.splice(Math.min(to, theSet.length), 0, moving);
+    }
+    dragFrom = null;
+    renderComposer();
+  });
 }
 
 function syncAddButton() {
