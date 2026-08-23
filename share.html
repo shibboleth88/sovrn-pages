@@ -45,28 +45,24 @@
   .hits .tag{flex:none;font:400 11px/1.4 "IBM Plex Mono",monospace;color:var(--slate)}
   .note{color:var(--slate);font:italic 400 14px/1.6 "IBM Plex Sans",sans-serif;
         padding:26px 0 8px;margin:0}
-  /* opening gallery — real works, live, so the page never greets you with nothing */
+  /* Opening mosaic. Local SVGs from the collection cards, so it paints instantly
+     and costs no contract calls — and they animate on their own inside an <img>. */
   .gallery{margin:22px 0 0}
   .gtitle{font:400 11px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
           margin:0 0 10px;letter-spacing:.04em}
-  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-  .tile{position:relative;padding:0;border:1px solid var(--rule);background:var(--card);
-        border-radius:3px;overflow:hidden;cursor:pointer;aspect-ratio:1;
-        transition:border-color .14s,transform .14s}
-  .tile:hover{border-color:var(--accent);transform:translateY(-2px)}
-  .tile img{width:100%;height:100%;object-fit:cover;display:block}
-  .tile figcaption{position:absolute;left:0;right:0;bottom:0;padding:16px 9px 7px;
-    text-align:left;color:#f4f2ee;
-    background:linear-gradient(to top,rgba(8,10,12,.82),rgba(8,10,12,0));
-    font:italic 300 13px/1.25 Fraunces,Georgia,serif;
-    opacity:0;transition:opacity .14s}
-  .tile:hover figcaption,.tile:focus-visible figcaption{opacity:1}
-  .tile .who{display:block;font:400 9.5px/1.4 "IBM Plex Mono",monospace;
-             letter-spacing:.05em;opacity:.8;margin-top:2px}
-  .tile.loading{background:
-    linear-gradient(100deg,var(--card) 20%,var(--rule) 40%,var(--card) 60%);
-    background-size:220% 100%;animation:sweep 1.4s ease-in-out infinite}
-  @keyframes sweep{to{background-position:-120% 0}}
+  .mosaic{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));
+          gap:4px}
+  .cell{position:relative;aspect-ratio:1;overflow:hidden;border-radius:2px;
+        background:var(--card);cursor:pointer;padding:0;border:0;
+        transition:outline-color .14s;outline:1px solid transparent;outline-offset:-1px}
+  .cell:hover,.cell:focus-visible{outline-color:var(--accent)}
+  /* two stacked images so a swap can cross-fade rather than blink */
+  .cell img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+            display:block;transition:opacity .85s ease}
+  .cell img.out{opacity:0}
+  @media (prefers-reduced-motion:reduce){
+    .cell img{transition:none}
+  }
   /* thumbnails in the results list */
   .hits button{gap:11px}
   .thumb{flex:none;width:42px;height:42px;border:1px solid var(--rule);border-radius:2px;
@@ -175,8 +171,8 @@
   <div class="hits" id="hits" role="listbox"></div>
   <p class="note" id="note">Search by title or token ID — “skull”, “cogito”, “octoGAN”, or 883.</p>
   <div class="gallery" id="gallery" hidden>
-    <p class="gtitle" id="gtitle">A few from the collections</p>
-    <div class="tiles" id="tiles"></div>
+    <p class="gtitle" id="gtitle">From the collections</p>
+    <div class="mosaic" id="mosaic"></div>
   </div>
 </div>
 
@@ -449,74 +445,147 @@ function boot() {
     b._slug = slug;
     strip.appendChild(b);
   });
-  openingGallery();
+  buildMosaic();
 }
 
-/* ------------------------------------------------------- the opening gallery */
+/* -------------------------------------------------------- the opening mosaic */
 
-// Real works, fetched from the contracts and left to animate on their own — an
-// SVG in an <img> runs its SMIL and any nested GIF quite happily
-// (sovrn-pages/NOTES.md). Each tile is the work it shows, so clicking it opens
-// exactly that piece rather than something merely representative.
-var GALLERY_PICKS = [
-  ["bytegans", 6], ["wunderkammer", 3], ["reflection", 3]
-];
+// Local SVGs — the same files the homepage collection cards use. They paint
+// instantly, cost no contract calls, and animate by themselves inside an <img>
+// (sovrn-pages/NOTES.md: SMIL runs, and nested GIFs run, in an <img>).
+var POOLS = {
+  bytegans: { dir: "img/bytegans/", stem: "bytegan-", n: 24 },
+  wunderkammer: { dir: "img/wunderkammer-works/", stem: "wunderkammer-", n: 36 },
+  reflection: { dir: "img/collections/reflection/", stem: "reflection-", n: 30 }
+};
 
-function randomIds(slug, n) {
-  var rec = data[slug], out = [], seen = {};
-  while (out.length < n) {
-    var id = rec.first_token + Math.floor(Math.random() * rec.count);
-    if (seen[id]) continue;
-    seen[id] = 1;
-    out.push(id);
-  }
-  return out;
+function poolPath(slug, i) {
+  var p = POOLS[slug];
+  return BASE + p.dir + p.stem + (i < 10 ? "0" + i : i) + ".svg";
 }
 
-function openingGallery() {
-  var picks = [];
-  GALLERY_PICKS.forEach(function (p) {
-    randomIds(p[0], p[1]).forEach(function (id) { picks.push({ slug: p[0], id: id }); });
-  });
-  // interleave so the grid is not three blocks of one collection
-  picks.sort(function () { return Math.random() - 0.5; });
+function poolPick(slug) {
+  return poolPath(slug, 1 + Math.floor(Math.random() * POOLS[slug].n));
+}
 
-  var tiles = $("tiles");
-  tiles.textContent = "";
-  picks.forEach(function (pk) {
-    var rec = data[pk.slug];
-    var title = rec.titles[pk.id - rec.first_token];
-    var fig = document.createElement("button");
-    fig.type = "button";
-    fig.className = "tile loading";
-    fig.title = title + " — " + ARTISTS[pk.slug];
-    var img = document.createElement("img");
-    img.alt = title;
-    // Deliberately NOT loading="lazy". These twelve are the first thing on the
-    // page, and a lazy image that is never scrolled to is never loaded at all in
-    // some contexts (sovrn-pages/NOTES.md records exactly that).
-    img.decoding = "async";
-    var cap = document.createElement("figcaption");
-    cap.textContent = title;
-    var who = document.createElement("span");
-    who.className = "who";
-    who.textContent = LABELS[pk.slug] + " · " + ARTISTS[pk.slug];
-    cap.appendChild(who);
-    fig.appendChild(img);
-    fig.appendChild(cap);
-    fig.onclick = function () {
-      $("q").value = "";
-      openWork({ slug: pk.slug, id: pk.id, title: title });
-      $("panel").scrollIntoView({ behavior: "smooth", block: "start" });
-    };
-    tiles.appendChild(fig);
-    queuedWork(pk.slug, pk.id).then(function (uri) {
-      img.src = uri;
-      fig.classList.remove("loading");
-    }).catch(function () { fig.remove(); });
-  });
+var mosaicCells = [], turnover = null, mosaicCols = 0;
+// Matches the homepage band: one cell turns over at a time, and the interval is
+// deliberately longer than nothing but shorter than the dissolve, so a cell
+// already fading is skipped rather than caught halfway.
+var TURN_MS = 1460, FADE_MS = 850;
+
+function buildMosaic() {
+  var host = $("mosaic");
+  host.textContent = "";
+  mosaicCells = [];
+  // Unhide BEFORE measuring: a hidden element reports clientWidth 0, which
+  // collapsed the column count to its floor and produced four enormous cells.
   $("gallery").hidden = false;
+
+  // Fill whole rows. A trailing row of two reads as a ragged grid rather than a
+  // composed mosaic, so the count follows the frame the way the homepage band
+  // does — columns from clientWidth, then a fixed number of rows.
+  var CELL = 62, GAP = 4, ROWS = 3;
+  var width = host.clientWidth || (host.parentElement && host.parentElement.clientWidth) || 860;
+  var cols = Math.max(6, Math.floor((width + GAP) / (CELL + GAP)));
+  var count = cols * ROWS;
+  host.style.gridTemplateColumns = "repeat(" + cols + ", 1fr)";
+
+  // Weighted so it reads as a mix rather than three blocks of one thing.
+  var weights = [["bytegans", 3], ["wunderkammer", 2], ["reflection", 2]];
+  var bag = [];
+  weights.forEach(function (w) {
+    for (var i = 0; i < w[1]; i++) bag.push(w[0]);
+  });
+  var order = [];
+  for (var n = 0; n < count; n++) order.push(bag[n % bag.length]);
+  order.sort(function () { return Math.random() - 0.5; });
+
+  order.forEach(function (slug) {
+    var cell = document.createElement("button");
+    cell.type = "button";
+    cell.className = "cell";
+    cell.title = LABELS[slug] + " — " + ARTISTS[slug];
+    cell.setAttribute("aria-label", "Search " + LABELS[slug]);
+    var a = document.createElement("img"), b = document.createElement("img");
+    a.alt = ""; b.alt = ""; b.className = "out";
+    a.decoding = "async"; b.decoding = "async";
+    a.src = poolPick(slug);
+    cell.appendChild(a); cell.appendChild(b);
+    // A mosaic tile is a sample of its collection, not a specific token, so it
+    // scopes the search rather than pretending to be one work.
+    cell.onclick = function () {
+      scope = slug; mark();
+      $("q").focus();
+      search($("q").value.trim());
+    };
+    host.appendChild(cell);
+    mosaicCells.push({ el: cell, slug: slug, front: a, back: b, busy: false });
+  });
+
+  mosaicCols = cols;
+  startTurnover();
 }
+
+function startTurnover() {
+  stopTurnover();
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  // Every turn pulls another file, so stay off under Data Saver.
+  if (navigator.connection && navigator.connection.saveData) return;
+  turnover = setInterval(turnOne, TURN_MS);
+}
+
+function stopTurnover() {
+  if (turnover) { clearInterval(turnover); turnover = null; }
+}
+
+function turnOne() {
+  if (document.hidden || $("gallery").hidden || !mosaicCells.length) return;
+  // only cells actually on screen
+  var visible = mosaicCells.filter(function (c) {
+    if (c.busy) return false;
+    var r = c.el.getBoundingClientRect();
+    return r.bottom > 0 && r.top < innerHeight;
+  });
+  if (!visible.length) return;
+  var cell = visible[Math.floor(Math.random() * visible.length)];
+  cell.busy = true;
+
+  var next = cell.back, src = poolPick(cell.slug);
+  var img = new Image();
+  var release = function () { cell.busy = false; };
+  img.onload = function () {
+    // Decode before the fade, or the cell fades up onto a blank.
+    var ready = img.decode ? img.decode() : Promise.resolve();
+    ready.catch(function () {}).then(function () {
+      next.src = src;
+      next.classList.remove("out");
+      cell.front.classList.add("out");
+      var tmp = cell.front; cell.front = next; cell.back = tmp;
+      setTimeout(release, FADE_MS + 60);
+    });
+  };
+  // Clear the flag on error too, or one failed fetch strands that cell forever.
+  img.onerror = release;
+  img.src = src;
+}
+
+document.addEventListener("visibilitychange", function () {
+  if (document.hidden) stopTurnover(); else startTurnover();
+});
+
+// A resize that changes the column count leaves a part-filled row, so rebuild.
+var resizeTimer = null;
+addEventListener("resize", function () {
+  if (!mosaicCells.length || $("gallery").hidden) return;
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(function () {
+    var host = $("mosaic");
+    var width = host.parentElement ? host.parentElement.clientWidth : 900;
+    var cols = Math.max(4, Math.floor((width + 4) / 66));
+    if (cols !== mosaicCols) buildMosaic();
+  }, 220);
+});
 
 function mark() {
   [].forEach.call($("sets").children, function (b) {
@@ -573,10 +642,12 @@ function search(q) {
     lastRows = [];
     $("note").hidden = false;
     $("gallery").hidden = false;
+    startTurnover();
     return;
   }
   $("note").hidden = true;
   $("gallery").hidden = true;
+  stopTurnover();
 
   var lower = q.toLowerCase();
   var slugs = scope ? [scope] : ORDER;
@@ -1191,8 +1262,7 @@ function slugify(str) {
 }
 
 function fileName(w) {
-  return [slugify(w.title), slugify(LABELS[w.slug]), slugify(ARTISTS[w.slug])]
-    .filter(Boolean).join("-");
+  return slugify(LABELS[w.slug]) + "-" + slugify(w.title);
 }
 
 $("src").onclick = function () {
