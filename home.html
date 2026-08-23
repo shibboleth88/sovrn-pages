@@ -134,12 +134,18 @@ const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 const T=i=>'img/banner/b'+String(i).padStart(3,"0")+'.jpg',
 rng=(a,b)=>Array.from({length:b-a+1},(_,k)=>a+k);
 function band(id,art,cts){
-  const seq=[];let c=0;
-  for(let i=0;i<art.length;i++){
-    seq.push(art[i]);
-    if((i+1)%5===0&&c<cts.length)seq.push(cts[c++]);
+  /* One cent per six tiles, but the cent's slot within each block of six
+     rotates 0,5,4,3,2,1. The band flows in columns of three, so a fixed
+     slot would put every cent in the same row — this spreads them. */
+  const seq=[];let a=0,c=0,k=0;
+  while(a<art.length||c<cts.length){
+    const slot=(k*5)%6;
+    for(let j=0;j<6;j++){
+      if(j===slot&&c<cts.length)seq.push(cts[c++]);
+      else if(a<art.length)seq.push(art[a++]);
+    }
+    if(++k>400)break;
   }
-  while(c<cts.length)seq.push(cts[c++]);
   document.getElementById(id).innerHTML=seq.concat(seq).slice(0,150)
     .map(i=>'<img src="'+T(i)+'" alt="" loading="lazy">').join("");
 }
