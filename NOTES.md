@@ -255,6 +255,27 @@ verbatim.
 
 ---
 
+## Reflection: titles and token ids
+
+The 999 works are titled, and the artist's list numbers them **1–999** while the
+**token ids run 0–998** — so the token id is always **the list number minus
+one**. A number quoted from a list or a title card is almost certainly the list
+number, and `999` is the off-by-one that will bite.
+
+Do not take the rule on faith; the contract will confirm it. `tokenURI(id)`
+returns base64 JSON whose `name` is the title, so any id can be checked directly
+(ids 0, 1, 500, 883 and 998 were, and all match). The count also agrees with
+`totalSupply()` — 999.
+
+Titles are the artist's own and **lowercase**: *cogito ergo sum*, *la clé des
+songes*, *the creative curse*. Do not title-case them.
+
+The full index lives in `shibboleth88/sovrn-bot` as
+`data/reflection-titles.json`, with `tools/reflection-fetch.py` to pull any work
+straight from the contract as SVG.
+
+---
+
 ## Harvesting artwork from raster.art
 
 raster.art lazy-loads its grid behind an `IntersectionObserver`, and **the
@@ -284,6 +305,39 @@ sips -s format jpeg in.avif --out out.jpg
 Note that raster.art serves the **minted** rendition of Reflection, not the
 smooth one. Rate-limits with a 429 if you hit the site directly too often.
 
+### raster.art moved to slug URLs (Aug 2026)
+
+Artwork URLs are now `raster.art/artwork/<slug>`, not `/artwork/<numeric-id>`.
+**The old numeric ids still redirect**, which is the useful part: following one
+is how you map an old link to its current slug, and how you settle which
+collection an ambiguous old id actually pointed at.
+
+The slugs are **not guessable** from the title. Four that catch people out:
+
+| collection | slug |
+|---|---|
+| AI Spaceships | `anne-spalter-ai-spaceships-by-anne-spalter` |
+| cope. Vol 1 | `cope-by-aleqth` |
+| Noctilucent Mementi | `noctilucent-mementi-by-martin-lukas-ostachowski` |
+| Sightseers: Perimeter Town | `sightseers-perimeter-town-by-norman-harman` |
+
+**You cannot check a raster URL with `curl`.** The site sits behind a Vercel bot
+checkpoint that returns **429 to every path, valid or not** — so a good URL and a
+typo are indistinguishable, and reading only the body makes a 429 look like a
+404. What works: open the site in a real browser, **wait ~5 s for the checkpoint
+to clear**, then `fetch()` from inside the page for as many paths as you like.
+Always include a deliberately bogus slug as a control, so you can prove the 404s
+are real.
+
+### Two Raster links on this site point at the wrong collection
+
+Found while mapping the old ids. `1665350` resolves to SIGHTSEERS and `2155303`
+to Seasons of Mobility — but those same two ids also appear on the **RABBIT
+TAKEOVER** and **Latent Couture** pages, which each carry a neighbour's link.
+Both collections have their own Raster pages
+(`rabbit-takeover-by-anne-spalter`, `latent-couture-by-mikey-woodbridge`).
+Worth fixing in the page HTML.
+
 ---
 
 ## Rasterising and resizing
@@ -296,6 +350,50 @@ smooth one. Rate-limits with a 429 if you hit the site directly too often.
 
 `qlmanage` emits blank frames for some inputs; check the output directory rather
 than trusting the exit code, and drop images whose channel extrema are all equal.
+
+### Do not rasterise what is already a raster
+
+**A byteGAN needs no SVG rasteriser at all.** The artwork *is* an animated GIF,
+base64'd inside the SVG; the wrapper only carries `image-rendering: pixelated`.
+Pull the GIF out and upscale it by an **integer factor with NEAREST** — anything
+smooth turns 11 × 11 pixel art to mush.
+
+**Wunderkammer is the opposite trap.** Those files hold **four** embedded
+rasters — the 48 × 48 tiled pattern, a static base, the animated overlay, and
+Isa Kost's seal. Grabbing "the first base64 GIF in the file" gets you the 6 × 6
+tile, which upscales to a plausible-looking 1080 px of nothing and reports
+success. Any extractor should refuse unless the file holds **exactly one**
+embedded raster and that raster is animated; everything else needs a real
+composite render.
+
+### These SVGs have width/height and no viewBox
+
+Both the Reflection and Wunderkammer files declare `width`/`height` (1200 and
+1024) and **no `viewBox`**. So CSS-resizing the element — `svg{width:720px}` —
+scales the viewport while the content stays in its own user-space units, and
+everything past the new edge is simply clipped. A Wunderkammer rendered that way
+loses its right side and its bottom, and still looks like a picture.
+
+**Render at the SVG's native size, then downscale the raster.**
+
+### Seeking an animation to an exact moment
+
+`--virtual-time-budget` quantises the clock (see *Verifying animation*), so it is
+poor for sampling frames. SMIL exposes `setCurrentTime()`, which is exact:
+
+```html
+<script>var s=document.querySelector('svg');
+s.pauseAnimations(); s.setCurrentTime(4.0);</script>
+```
+
+One Chrome launch per frame, each seeking to its own moment. About 3 s a frame on
+a 700-path Reflection, so a 16-frame pass is roughly a minute.
+
+Two cautions. Chrome occasionally writes **no screenshot at all** — retry, then
+report the real frame count rather than silently shipping a short animation. And
+**do not add `--user-data-dir`** to fix that: a fresh profile per launch triggers
+first-run setup and hangs past a two-minute timeout, which is far worse than
+losing the odd frame.
 
 ---
 
@@ -362,6 +460,16 @@ seconds. Two cautions:
 To exercise scroll-dependent code, write a temp copy of the page with a
 `setTimeout(() => scrollTo(0, grid.offsetTop - 120), 50)` appended, point Chrome
 at that, and delete it afterwards.
+
+> **`ImageSequence.Iterator` hands back the same object every time.** So
+> `list(ImageSequence.Iterator(im))` is N references to one image, seeked to the
+> last frame — and every "frame" you then compare is identical. This reports a
+> perfectly good animation as completely static, which cost an afternoon of
+> debugging a renderer that was never broken. **Copy inside the loop:**
+> `[f.convert("RGB").copy() for f in ImageSequence.Iterator(im)]`.
+>
+> Same family of mistake as `ElementTree` dropping comments, above: check that
+> the thing reporting the failure is not the thing that is broken.
 
 ---
 
@@ -525,3 +633,9 @@ every sixth tile landed every cent in the same row; it rotated the slot by
 - The 24 smoothed Reflection renders are generated, not published by the artist.
   The recipe is provably his, but if only released renders should appear, the
   six are `reflection-01` … `-06` and the pool size is a one-line change.
+- **Two Raster links point at the wrong collection.** The RABBIT TAKEOVER and
+  Latent Couture pages each carry a neighbour's artwork id (`1665350` is
+  SIGHTSEERS, `2155303` is Seasons of Mobility). Both collections have their own
+  pages — see *raster.art moved to slug URLs* above. Worth fixing in the HTML,
+  and worth moving every Raster link to the slug form while you are in there,
+  since the numeric ones now survive only by redirect.
