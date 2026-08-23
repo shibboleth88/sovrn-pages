@@ -18,10 +18,24 @@
   h1{margin:0;font:italic 300 clamp(21px,3vw,28px)/1.15 Fraunces,Georgia,serif}
   header p{margin:6px 0 0;font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate)}
   .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-  /* collection strip */
-  .sets{display:flex;gap:7px;overflow-x:auto;padding:14px 0 4px;scrollbar-width:none}
-  .sets::-webkit-scrollbar{display:none}
-  .sets button{flex:none;white-space:nowrap;background:transparent;border:1px solid var(--rule);
+  /* search */
+  .find{position:relative;margin:16px 0 4px}
+  .find input{width:100%;padding:11px 13px;border:1px solid var(--rule);border-radius:8px;
+    background:var(--card);color:var(--ink);
+    font:400 14px/1.4 "IBM Plex Sans",system-ui,sans-serif;outline:none}
+  .find input:focus{border-color:var(--copper)}
+  .hits{margin:8px 0 0;border:1px solid var(--rule);border-radius:8px;background:var(--card);
+    max-height:260px;overflow-y:auto}
+  .hits:empty{display:none}
+  .hits button{display:block;width:100%;text-align:left;background:transparent;border:none;
+    border-bottom:1px solid var(--rule);padding:9px 13px;cursor:pointer;color:var(--ink);
+    font:400 13.5px/1.4 "IBM Plex Sans",system-ui,sans-serif}
+  .hits button:last-child{border-bottom:none}
+  .hits button:hover{background:var(--paper);color:var(--copper)}
+  .hits .tag{font:400 11px/1 "IBM Plex Mono",monospace;color:var(--slate);margin-left:8px}
+  /* collection chips — all visible, no strip to scroll */
+  .sets{display:flex;flex-wrap:wrap;gap:7px;padding:14px 0 4px}
+  .sets button{background:transparent;border:1px solid var(--rule);
     color:var(--slate);font:400 12.5px/1.4 "IBM Plex Sans",sans-serif;padding:7px 13px;
     border-radius:999px;cursor:pointer;transition:border-color .12s,color .12s}
   .sets button:hover{border-color:var(--copper);color:var(--copper)}
@@ -61,17 +75,22 @@
   .ghost:hover{border-color:var(--copper);color:var(--copper)}
   .warn{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--copper);margin:9px 0 0}
   .empty{color:var(--slate);font-style:italic;padding:40px 0}
-  a{color:var(--copper)}
 </style>
 </head>
 <body>
 
 <header><div class="wrap">
   <h1>Share an artwork</h1>
-  <p>pick a work · get a file sized for posting</p>
+  <p>pick a work · get a shareable format</p>
 </div></header>
 
 <div class="wrap">
+  <div class="find">
+    <input id="q" type="search" autocomplete="off" spellcheck="false"
+           placeholder="Search a collection, a Reflection title, or a token id (0–998)…"
+           aria-label="Search">
+    <div class="hits" id="hits" role="listbox"></div>
+  </div>
   <div class="sets" id="sets" role="group" aria-label="Collections"></div>
   <p class="credit" id="credit"></p>
   <div class="grid" id="grid"></div>
@@ -103,21 +122,23 @@
 <script>
 // Artwork is served from the same origin as this page, so the canvas is never
 // tainted and toBlob() works. Pulling from raster.art instead would taint it and
-// every export would throw.
+// every export would throw. (A data: URI does not taint, which is what lets the
+// on-chain Reflection works below export too.)
 var BASE = location.pathname.replace(/[^/]*$/, "");
 // X shows images between about 4:5 and 16:9 whole; outside that band it crops the
 // in-timeline preview. We never pad or alter the work to suit — we just say so.
 var MIN_AR = 0.8, MAX_AR = 16 / 9;
+var RPC = "https://ethereum-rpc.publicnode.com";
+var REFLECTION = "0x5137cfB461d24040F5ce6B85D860c47A24f85412";
 
 var sets = [], cur = null, sel = null, selEl = null;
+var reflTitles = null, reflContract = REFLECTION, reflLoading = null;
 var $ = function (id) { return document.getElementById(id); };
 
 fetch(BASE + "share-manifest.json")
   .then(function (r) { return r.json(); })
   .then(function (d) { sets = d.sets; boot(); })
-  .catch(function () {
-    $("empty").textContent = "Couldn't load the artwork index.";
-  });
+  .catch(function () { $("empty").textContent = "Couldn't load the artwork index."; });
 
 function boot() {
   var strip = $("sets");
@@ -130,7 +151,154 @@ function boot() {
     strip.appendChild(b);
   });
   pick(0);
+  // The 999 Reflection titles are a separate 22KB file, pulled once in the
+  // background so the first search does not have to wait for it.
+  loadReflection();
 }
+
+/* ------------------------------------------------------------------ search */
+
+function loadReflection() {
+  if (reflTitles) return Promise.resolve(reflTitles);
+  if (!reflLoading) {
+    reflLoading = fetch(BASE + "reflection-titles.json")
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        reflTitles = d.titles;
+        reflContract = d.contract || REFLECTION;
+        return reflTitles;
+      })
+      .catch(function () { reflLoading = null; return null; });
+  }
+  return reflLoading;
+}
+
+$("q").addEventListener("input", function () { search(this.value.trim()); });
+
+function search(q) {
+  var box = $("hits");
+  box.textContent = "";
+  if (!q) return;
+  var lower = q.toLowerCase();
+  var rows = [];
+
+  // a bare number is a Reflection token id
+  if (/^\d+$/.test(q)) {
+    var n = parseInt(q, 10);
+    if (n >= 0 && n <= 998) {
+      rows.push(reflRow(n, "token " + n));
+    }
+    // The artist's list runs 1-999 while token ids run 0-998, so a number off a
+    // list or a title card is one higher than the id. Offer both readings.
+    if (n >= 1 && n <= 999) {
+      rows.push(reflRow(n - 1, "list no. " + n + " — token " + (n - 1)));
+    }
+  }
+
+  sets.forEach(function (s, i) {
+    if (s.title.toLowerCase().indexOf(lower) >= 0 ||
+        (s.artist || "").toLowerCase().indexOf(lower) >= 0) {
+      rows.push({ label: s.title, tag: s.artist || "collection",
+                  go: function () { pick(i); clearSearch(); } });
+    }
+  });
+
+  if (reflTitles && lower.length >= 2) {
+    for (var id = 0; id < reflTitles.length && rows.length < 40; id++) {
+      if (reflTitles[id].toLowerCase().indexOf(lower) >= 0) {
+        rows.push(reflRow(id, "Reflection · token " + id));
+      }
+    }
+  }
+
+  if (!rows.length) {
+    var none = document.createElement("button");
+    none.type = "button";
+    none.disabled = true;
+    none.textContent = "Nothing matched that.";
+    box.appendChild(none);
+    return;
+  }
+  rows.slice(0, 40).forEach(function (r) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.appendChild(document.createTextNode(r.label));
+    var t = document.createElement("span");
+    t.className = "tag";
+    t.textContent = r.tag;
+    b.appendChild(t);
+    b.onclick = r.go;
+    box.appendChild(b);
+  });
+}
+
+function reflRow(id, tag) {
+  var title = reflTitles ? reflTitles[id] : "Reflection #" + id;
+  return { label: title, tag: tag, go: function () { openToken(id); } };
+}
+
+function clearSearch() { $("q").value = ""; $("hits").textContent = ""; }
+
+/* ------------------------------------------ one Reflection work, from chain */
+
+function openToken(id) {
+  clearSearch();
+  loadReflection().then(function () {
+    var title = reflTitles ? reflTitles[id] : "token " + id;
+    cur = { slug: "reflection", title: "Reflection", artist: "Pindar Van Arman",
+            animated: true };
+    sel = { chain: id, title: title, v: 1 };
+    if (selEl) { selEl.setAttribute("aria-pressed", "false"); selEl = null; }
+    $("panel").hidden = false;
+    // Deliberately leave the grid, the chips and the credit line alone. A work
+    // opened from search is a single piece pulled from the contract, not a
+    // change of collection — rewriting the credit while the grid still showed
+    // another collection just made the two disagree.
+    $("pt").textContent = title;
+    $("pm").innerHTML = "<b>token " + id + "</b> · list no. " + (id + 1) + " · reading the contract…";
+    $("warn").textContent = "";
+    $("prev").removeAttribute("src");
+
+    fetchToken(id).then(function (dataUri) {
+      sel.uri = dataUri;
+      $("prev").src = dataUri;
+      describe(sel);
+    }).catch(function (e) {
+      $("pm").innerHTML = "<b>token " + id + "</b> · list no. " + (id + 1);
+      $("warn").textContent = "Couldn't read that work from the contract — "
+        + (e && e.message ? e.message : "try again in a moment") + ".";
+    });
+  });
+}
+
+// Reflection is fully on-chain: tokenURI(id) returns base64 JSON whose image is
+// a base64 SVG — the artwork itself, no gateway. The RPC allows any origin, so
+// this works straight from the browser.
+function fetchToken(id) {
+  var data = "0xc87b56dd" + id.toString(16).padStart(64, "0");   // tokenURI(uint256)
+  return fetch(RPC, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call",
+                           params: [{ to: reflContract, data: data }, "latest"] })
+  }).then(function (r) { return r.json(); }).then(function (j) {
+    if (j.error) throw new Error(j.error.message || "call failed");
+    var raw = j.result.slice(2);
+    var len = parseInt(raw.slice(64, 128), 16);
+    var bytes = [];
+    for (var i = 0; i < len; i++) {
+      bytes.push(parseInt(raw.substr(128 + i * 2, 2), 16));
+    }
+    var uri = new TextDecoder().decode(new Uint8Array(bytes));
+    var meta = JSON.parse(uri.indexOf("base64,") >= 0
+      ? decodeURIComponent(escape(atob(uri.split("base64,")[1])))
+      : uri.slice(uri.indexOf(",") + 1));
+    if (!meta.image) throw new Error("no image in the token");
+    return meta.image;
+  });
+}
+
+/* ------------------------------------------------------------- the library */
 
 function pick(i) {
   cur = sets[i];
@@ -167,7 +335,6 @@ function choose(w, el) {
   if (selEl) selEl.setAttribute("aria-pressed", "false");
   selEl = el;
   if (el) el.setAttribute("aria-pressed", "true");
-
   $("panel").hidden = false;
   $("prev").src = BASE + w.f;
   $("pt").textContent = name(w);
@@ -175,14 +342,23 @@ function choose(w, el) {
 }
 
 function name(w) {
+  if (w.chain !== undefined) {
+    return w.title || ("reflection-" + w.chain);
+  }
   return w.f.split("/").pop().replace(/\.[^.]+$/, "");
+}
+
+function fileName(w) {
+  if (w.chain !== undefined) return "reflection-" + w.chain;
+  return name(w);
 }
 
 function describe(w) {
   var bits = [];
-  if (w.w && w.h) {
-    bits.push("<b>" + w.w + "&times;" + w.h + "</b>");
-    bits.push(ratioName(w.w / w.h));
+  if (w.chain !== undefined) {
+    bits.push("<b>token " + w.chain + "</b>", "list no. " + (w.chain + 1), "on-chain");
+  } else if (w.w && w.h) {
+    bits.push("<b>" + w.w + "&times;" + w.h + "</b>", ratioName(w.w / w.h));
   } else {
     bits.push("<b>vector</b>");
   }
@@ -194,7 +370,7 @@ function describe(w) {
       + "preview will be cropped — the full work still opens on tap. "
       + "Tick “trim to fit” if you would rather choose the crop yourself.");
   }
-  if (cur.animated) {
+  if (cur && cur.animated) {
     msgs.push("This work moves. The download is a single frame — for the "
       + "animation, use tools/share.py in the sovrn-bot repo, which renders it "
       + "to GIF. “Original file” gives you the artwork as published.");
@@ -214,7 +390,11 @@ function ratioName(ar) {
 $("size").onchange = $("crop").onchange = function () { if (sel) describe(sel); };
 
 $("src").onclick = function () {
-  // The published file, untouched. Sites' embed sandbox allows downloads.
+  if (sel.chain !== undefined) {
+    if (!sel.uri) return;
+    grab(sel.uri, fileName(sel) + ".svg");
+    return;
+  }
   grab(BASE + sel.f, sel.f.split("/").pop());
 };
 
@@ -230,7 +410,7 @@ $("dl").onclick = function () {
       return;
     }
     var url = URL.createObjectURL(blob);
-    grab(url, name(sel) + "." + formatFor().ext);
+    grab(url, fileName(sel) + "." + formatFor().ext);
     setTimeout(function () { URL.revokeObjectURL(url); }, 30000);
   });
 };
@@ -245,13 +425,23 @@ function grab(href, filename) {
   a.remove();
 }
 
+/* ------------------------------------------------------------------ export */
+
 // A byteGAN is not really a vector: the artwork is an 11x11 animated GIF
 // base64'd inside the SVG, and the wrapper only carries image-rendering:
 // pixelated. Rasterising the SVG and scaling that up interpolates twice over
 // (11 -> 500 -> target, neither an integer step) and the pixel grid smears.
 // Pull the GIF out and scale it by a whole-number factor instead.
 function sourceFor(w, done) {
-  if (cur.slug !== "bytegans") {
+  if (w.chain !== undefined) {
+    if (!w.uri) { done(null); return; }
+    var ci = new Image();
+    ci.onload = function () { done(ci); };
+    ci.onerror = function () { done(null); };
+    ci.src = w.uri;
+    return;
+  }
+  if (!cur || cur.slug !== "bytegans") {
     var img = new Image();
     img.onload = function () { done(img); };
     img.onerror = function () { done(null); };
@@ -261,10 +451,10 @@ function sourceFor(w, done) {
   fetch(BASE + w.f).then(function (r) { return r.text(); }).then(function (svg) {
     var m = svg.match(/data:image\/gif;base64,[A-Za-z0-9+/=\s]+/);
     if (!m) { done(null); return; }
-    var img = new Image();
-    img.onload = function () { done(img); };
-    img.onerror = function () { done(null); };
-    img.src = m[0].replace(/\s/g, "");
+    var gi = new Image();
+    gi.onload = function () { done(gi); };
+    gi.onerror = function () { done(null); };
+    gi.src = m[0].replace(/\s/g, "");
   }).catch(function () { done(null); });
 }
 
@@ -272,8 +462,8 @@ function sourceFor(w, done) {
 // byteGAN exported at q0.92 came back with 142 distinct colours where it should
 // have a handful.
 function formatFor() {
-  return cur.animated ? { mime: "image/png", ext: "png", q: undefined }
-                      : { mime: "image/jpeg", ext: "jpg", q: 0.92 };
+  return (cur && cur.animated) ? { mime: "image/png", ext: "png", q: undefined }
+                               : { mime: "image/jpeg", ext: "jpg", q: 0.92 };
 }
 
 function render(w, done) {
@@ -292,10 +482,9 @@ function render(w, done) {
           sw = nw;
         }
       }
-
       var target = parseInt($("size").value, 10);
+      var pixelArt = cur && cur.slug === "bytegans" && w.chain === undefined;
       var dw, dh;
-      var pixelArt = cur.slug === "bytegans";
       if (!target) {
         dw = sw; dh = sh;
       } else if (pixelArt) {
@@ -307,7 +496,6 @@ function render(w, done) {
         dw = Math.max(1, Math.round(sw * k));
         dh = Math.max(1, Math.round(sh * k));
       }
-
       var c = document.createElement("canvas");
       c.width = dw; c.height = dh;
       var ctx = c.getContext("2d");
@@ -322,7 +510,6 @@ function render(w, done) {
     }
   });
 }
-
 </script>
 </body>
 </html>
