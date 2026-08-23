@@ -34,6 +34,52 @@ fetch the page and read the attribute.
 
 ---
 
+## Getting content back out of Google Sites
+
+The text comes out of a plain fetch — strip the tags and read the page. The
+**images do not**. They sit on `lh3.googleusercontent.com/sitesv/…` and return
+**403 to every request from outside a browser that has actually loaded the
+page**: no `Referer`, `User-Agent` or cookie jar assembled by hand gets past it,
+and the token inside each URL is different on every render, so a URL scraped
+from one fetch is already dead by the time you try it.
+
+What works is driving a real Chrome over the DevTools protocol, reading the
+image URLs from the live page and fetching them **inside that same page
+context**, then writing the bytes out. `tools/sites-grab.mjs` does it —
+Node's built-in `WebSocket` is enough, no dependencies:
+
+```bash
+CH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+"$CH" --headless=new --disable-gpu --remote-debugging-port=9222 \
+      --user-data-dir=/tmp/prof --window-size=1400,1000 about:blank &
+node tools/sites-grab.mjs <outdir> <slug> [<slug> …]
+```
+
+It scrolls each page first so lazy images load, then base64s each blob back
+through the protocol and writes real files. Downloads via an `<a download>`
+click are a dead end — the app sandbox stages the file under a random dotted
+name in `~/Downloads` and then discards it.
+
+`tools/sites-extract.py` pulls the page apart in document order — headings,
+paragraphs, list items, images, links — which is what the copy and the image
+sequence should be rebuilt from.
+
+**Most of what you scrape is not artwork.** Across the nine collection pages,
+171 images came down and only 81 were worth keeping. The rest were: testimonial
+cards, which are other people's quotes rendered as flat bright-green images and
+should not be reproduced as pictures; decorative noise strips; and site chrome.
+Two filters do the sorting. Green-dominant frames are testimonials. And
+**anything that appears on more than one collection page is chrome** — that one
+catches the sovrn logo, the Raster mark and the social icons in a single pass,
+where a size threshold does not.
+
+Do not re-encode animated GIFs with PIL. Re-saving one at 460px with adaptive
+per-frame palettes took a 6.3MB file to 19.1MB, because it wrote full frames
+instead of deltas. The artists' own encodings are better than anything to be
+gained; leave them byte-for-byte.
+
+---
+
 ## The design system
 
 `--accent` is teal, `#0f6b66`. It replaced a copper `#8a4f2a`, and the value was
