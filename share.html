@@ -1663,7 +1663,8 @@ $("mkgrid").onclick = function () {
       var blob = GIF.encode(frames, delays, 256);
       built = { blob: blob, size: geo.W, key: lay.name };
       sel = { slug: "compose", id: 0, title: lay.name,
-              names: theSet.map(function (w) { return w.title; }) };
+              names: theSet.map(function (w) { return w.title; }),
+              sets: theSet.map(function (w) { return w.slug; }) };
       singleOnly(false);
       var img = $("prev");
       img.style.width = geo.W + "px";
@@ -1702,12 +1703,27 @@ function slugify(str) {
     .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+// Cut on a word boundary. Slicing mid-slug left filenames ending in half a
+// title, or in a bare hyphen.
+function clip(str, max) {
+  if (str.length <= max) return str;
+  var cut = str.slice(0, max);
+  var lastGap = cut.lastIndexOf("-");
+  return (lastGap > max / 2 ? cut.slice(0, lastGap) : cut).replace(/-+$/, "");
+}
+
+// Collection first, then the shape if it is a composite, then the titles:
+//   wunderkammer-golden-beetle
+//   reflection-triptych-language-is-a-skin-the-hive-mind-acute-innocence
+// A composite drawn from more than one collection has no single collection to
+// name, so it keeps the studio's own.
 function fileName(w) {
-  if (w.slug === "compose") {
-    return "sovrn-" + slugify(w.title) + "-"
-      + (w.names || []).map(slugify).join("-").slice(0, 80);
-  }
-  return slugify(LABELS[w.slug]) + "-" + slugify(w.title);
+  if (w.slug !== "compose") return slugify(LABELS[w.slug]) + "-" + slugify(w.title);
+  var kinds = [];
+  (w.sets || []).forEach(function (k) { if (kinds.indexOf(k) < 0) kinds.push(k); });
+  var lead = kinds.length === 1 ? slugify(LABELS[kinds[0]]) : "sovrn";
+  return lead + "-" + slugify(w.title) + "-"
+    + clip((w.names || []).map(slugify).join("-"), 80);
 }
 
 $("src").onclick = function () {
