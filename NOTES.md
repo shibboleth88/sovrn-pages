@@ -333,11 +333,15 @@ Five rules that took a couple of passes to get right:
 ### Animating the band
 
 The bands hold still. The only movement is turnover: one cell somewhere on
-screen dissolves into another work every 2.2s. The replacement matches that
+screen dissolves into another work every 730ms. The replacement matches that
 cell's kind and size and is chosen against the colour field at its column, so a
 passage keeps its character — each cell carries `data-c`, `data-k` and `data-b`
 for that. The image is decoded before the fade, so a cell never fades up onto a
-blank. It runs only for a band that is on screen, only for cells actually in the
+blank. The interval is shorter than the dissolve, so a cell already fading
+carries a `_busy` flag and is skipped rather than caught halfway; the flag is
+cleared on error too, or a failed fetch would strand that cell for good.
+Measured over two minutes, one or two cells are in flight at any moment and the
+count does not grow. It runs only for a band that is on screen, only for cells actually in the
 window, and never while the tab is hidden. It stops for
 `prefers-reduced-motion`, and under Data Saver, since every turn pulls another
 tile.
@@ -355,15 +359,14 @@ Nothing is lost by the smaller band — the rest of the pool is what turnover
 draws from, and with roughly 69 cells instead of 213 a given cell now comes
 round about every two and a half minutes rather than every seven.
 
-**What turnover costs.** Measured over four minutes at one swap per 2.2s: 69
-tiles on screen at the start, 176 distinct tiles requested by the end, so about
-27 new tiles a minute — early on, essentially every swap is a fresh fetch.
-Tiles average 13.6KB, so roughly 370KB a minute. The important part is that this
-is bounded: the whole library is 435 files and 5.9MB, and once a visitor has
-seen enough of it every further swap is a cache hit and costs nothing. Running
-turnover faster does not raise the total, it just reaches the ceiling sooner —
-at one swap every 300ms it would saturate in two or three minutes. CPU is not
-the constraint at any rate: a swap is one opacity transition on one element.
+**What turnover costs.** Measured at the current 730ms: 82 swaps a minute, and
+early on essentially every swap is a fresh fetch. Tiles average 13.6KB, so
+around 1.1MB a minute at the start. The important part is that this is bounded —
+the whole library is 435 files and 5.9MB, so a visitor saturates it in roughly
+five minutes and every swap after that is a cache hit costing nothing. Changing
+the rate does not change the total, only how soon the ceiling is reached. CPU is
+not the constraint at any rate: a swap is one opacity transition on one element.
+The earlier 2.2s setting pulled about 370KB a minute for comparison.
 
 Two dead ends, in case either looks tempting again:
 

@@ -320,12 +320,16 @@ function mosaic(id,art,cts,p){
      kind, chosen against the field at that column so the passage keeps its
      colour. Decode first: a cell must never fade up onto a blank. */
   el._swap=img=>{
+    if(img._busy)return;              /* still dissolving; leave it alone */
+    img._busy=1;
     const c=+img.dataset.c,big=img.dataset.b==="1",k=img.dataset.k,t=c/cols,
       next=T(k==="c"?pick("c",cts,false)
                     :pick("a",art,big,fieldL(t),fieldW(t)),big),
       pre=new Image();
     pre.onload=()=>{img.classList.add("o");
-      setTimeout(()=>{img.src=pre.src;img.classList.remove("o");},560);};
+      setTimeout(()=>{img.src=pre.src;img.classList.remove("o");
+        setTimeout(()=>{img._busy=0;},600);},560);};
+    pre.onerror=()=>{img._busy=0;};   /* a miss must not strand the cell */
     pre.src=next;};
   el.style.gridTemplateRows="repeat("+rows+","+cell+"px)";
   el.style.gridTemplateColumns="repeat("+cols+","+cell+"px)";
@@ -352,10 +356,12 @@ let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{
     return el&&el._cols!==Math.max(6,Math.ceil((el.parentElement.clientWidth+2)/(cell+2)));});
   if(stale)drawBands();},200);});
 /* Turnover, and the only thing that moves: the bands hold still. One cell
-   somewhere in the mosaic dissolves into another work every couple of seconds
-   -- only in a band that is on screen, only cells actually in the window, and
-   never while the tab is hidden. At one tile every 2.2s the band pulls a few KB
-   a minute, and the eye catches it as a change rather than as movement. */
+   somewhere in the mosaic dissolves into another work about every three
+   quarters of a second -- only in a band that is on screen, only cells actually
+   in the window, and never while the tab is hidden. Faster than the fade, so a
+   cell already dissolving is skipped rather than caught halfway. The cost is
+   front-loaded and bounded: the whole tile library is under 6MB, and once a
+   visitor has seen enough of it every further swap is a cache hit. */
 (function(){
   const frames=[...document.querySelectorAll(".banner")];
   const io=new IntersectionObserver(es=>es.forEach(e=>{e.target._on=e.isIntersecting;}),
@@ -373,7 +379,7 @@ let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{
         const r=im.getBoundingClientRect();
         return r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight;});
     if(inview.length)g._swap(inview[Math.random()*inview.length|0]);
-  },2200);
+  },730);
 })();
 /* Each card cycles through works from its own collection. The folder name is
    the last segment of the card's own link, so the two can never drift apart.
