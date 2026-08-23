@@ -600,10 +600,7 @@ $("q").addEventListener("input", function () { search(this.value.trim()); });
 $("q").addEventListener("keydown", function (e) {
   if (e.key !== "Enter") return;
   e.preventDefault();
-  if (lastRows.length === 1) {
-    this.blur();                       // on a phone, let the keyboard get out of the way
-    openWork(lastRows[0]);
-  }
+  if (lastRows.length === 1) chooseResult(lastRows[0]);
 });
 
 // Thumbnails load only when a row is actually on screen. Forty rows would mean
@@ -747,7 +744,7 @@ function search(q) {
     tag.textContent = LABELS[r.slug] + " · " + (r.why || r.id);
 
     b.appendChild(th); b.appendChild(mid); b.appendChild(tag);
-    b.onclick = function () { openWork(r); };
+    b.onclick = function () { chooseResult(r); };
     box.appendChild(b);
     // The first rows are on screen by definition, so load them outright; the
     // rest wait for the observer.
@@ -785,6 +782,16 @@ function hideProgress() {
 // whenever the browser does paint.
 function yieldToPaint() {
   return new Promise(function (r) { setTimeout(r, 0); });
+}
+
+// Picking a result closes the list: it has done its job, and leaving forty rows
+// open pushes the work you just chose off the screen. The query text stays, so
+// it is obvious what was searched and easy to pick something else.
+function chooseResult(r) {
+  $("hits").textContent = "";
+  lastRows = [];
+  $("q").blur();                 // on a phone, let the keyboard get out of the way
+  openWork(r);
 }
 
 function closePanel() {
