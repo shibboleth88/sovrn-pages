@@ -50,6 +50,11 @@ blockquote cite{display:block;margin-top:12px;font:500 10.5px/1 "IBM Plex Mono",
 .tl{margin-top:var(--gap);display:grid;grid-template-columns:2fr 1fr;gap:clamp(18px,3vw,36px);align-items:center}
 @media(max-width:760px){.tl{grid-template-columns:1fr}}
 .tl img{width:100%;height:auto;display:block}
+.btnrow{margin-top:28px}
+.btn{display:inline-block;padding:15px 28px;background:var(--accent);color:var(--paper);
+ text-decoration:none;font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;
+ text-transform:uppercase;transition:background .16s,transform .16s}
+.btn:hover{background:var(--ink);transform:translateY(-1px)}
 .links{margin-top:var(--gap);padding-top:22px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:22px;
  font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
 .links a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:4px}
@@ -82,7 +87,7 @@ blockquote cite{display:block;margin-top:12px;font:500 10.5px/1 "IBM Plex Mono",
 <blockquote><p>There is a beauty in the noise, the randomness before the resolution into fire.</p><cite>B&#229;rd Ionson</cite></blockquote>
 <figure class="feature"><img src="img/pages/painting-with-fire/i35.gif" alt="" loading="lazy"></figure>
 <h2>GAN Timeline</h2>
-<div class="tl"><div class="prose"><p>In the course of researching Painting with Fire, Bård has created a timeline of milestones in the history of GANs. This GAN timeline has 200 entries. Each of the 200 artworks includes a &quot;Historic Event&quot; trait that connects to one of these points on the timeline.</p></div><figure><img src="img/pages/painting-with-fire/i38.jpg" alt="" loading="lazy"></figure></div>
-<p class="links"><a href="https://www.sovrn.art/curated/painting-with-fire-timeline" target="_blank">Open the GAN Timeline &#8599;</a><a href="https://www.raster.art/collections/painting-with-fire" target="_blank">View on Raster &#8599;</a><a href="https://bardionson.com" target="_blank">bardionson.com &#8599;</a><a href="https://twitter.com/BardIonson" target="_blank">B&#229;rd Ionson on X &#8599;</a></p>
+<div class="prose"><p>In the course of researching Painting with Fire, Bård has created a timeline of milestones in the history of GANs. This GAN timeline has 200 entries. Each of the 200 artworks includes a &quot;Historic Event&quot; trait that connects to one of these points on the timeline.</p></div><p class="btnrow"><a class="btn" href="https://www.sovrn.art/curated/painting-with-fire-timeline" target="_blank">Open the GAN Timeline &#8599;</a></p>
+<p class="links"><a href="https://www.raster.art/collections/painting-with-fire" target="_blank">View on Raster &#8599;</a><a href="https://bardionson.com" target="_blank">bardionson.com &#8599;</a><a href="https://twitter.com/BardIonson" target="_blank">B&#229;rd Ionson on X &#8599;</a></p>
 <p class="foot">Painting with Fire: a History in GANs, B&#229;rd Ionson, 2023. Two hundred works made with fourteen vintage GAN models, each carrying a Historic Event trait from the timeline. A curated collection on <a class="fc" href="https://www.sovrn.art" target="_blank">sovrn.art</a>.</p>
 </div></body></html>
