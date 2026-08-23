@@ -106,24 +106,39 @@
   .go:disabled{opacity:.45;cursor:default}
   .ghost{background:transparent;border:1px solid var(--rule);color:var(--slate)}
   .ghost:hover{border-color:var(--accent);color:var(--accent)}
-  /* the set tray */
-  .tray{margin:16px 0 0;border-top:1px solid var(--rule);padding:14px 0 0}
-  .tray[hidden]{display:none}
-  .trayhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
-            font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate)}
-  .slots{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0 0;
-         max-width:420px}
-  .slot{position:relative;aspect-ratio:1;border:1px dashed var(--rule);border-radius:3px;
-        background:var(--card);overflow:hidden}
+  /* the composer */
+  .composer{margin:26px 0 0;border-top:1px solid var(--rule);padding:18px 0 0}
+  .clabel{font:400 11px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
+          margin:0 0 10px;letter-spacing:.04em}
+  .shapes{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 14px}
+  .shapes button{background:transparent;border:1px solid var(--rule);color:var(--slate);
+    font:400 12.5px/1.4 "IBM Plex Sans",sans-serif;padding:7px 13px;border-radius:999px;
+    cursor:pointer;transition:border-color .12s,color .12s}
+  .shapes button:hover{border-color:var(--accent);color:var(--accent)}
+  .shapes button[aria-pressed=true]{border-color:var(--accent);color:var(--on-accent);
+    background:var(--accent)}
+  .shapes .ratio{opacity:.65;margin-left:6px}
+  /* The slots mirror the composition, so the shape is legible before you build it. */
+  .slots{display:grid;gap:6px;width:100%;max-width:430px;margin:0 0 12px}
+  .slot{position:relative;overflow:hidden;border-radius:3px;background:var(--card);
+        border:1px dashed var(--rule);min-height:0}
   .slot.filled{border-style:solid}
   .slot img{width:100%;height:100%;object-fit:cover;display:block}
-  .slot button{position:absolute;top:3px;right:3px;width:18px;height:18px;padding:0;
-    border:none;border-radius:50%;background:rgba(8,10,12,.66);color:#fff;
-    font:500 11px/1 "IBM Plex Mono",monospace;cursor:pointer;text-transform:none;
-    letter-spacing:0}
   .slot .n{position:absolute;inset:0;display:flex;align-items:center;
     justify-content:center;color:var(--slate);
-    font:400 15px/1 "IBM Plex Mono",monospace;opacity:.5}
+    font:400 15px/1 "IBM Plex Mono",monospace;opacity:.45}
+  .slot .rm{position:absolute;top:4px;right:4px;width:19px;height:19px;padding:0;
+    border:none;border-radius:50%;background:rgba(8,10,12,.68);color:#fff;
+    font:500 12px/1 "IBM Plex Mono",monospace;cursor:pointer;letter-spacing:0;
+    text-transform:none}
+  .slot .cap{position:absolute;left:0;right:0;bottom:0;padding:14px 6px 4px;
+    color:#f5f3ef;pointer-events:none;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap;
+    background:linear-gradient(to top,rgba(8,10,12,.8),rgba(8,10,12,0));
+    font:400 9.5px/1.3 "IBM Plex Mono",monospace}
+  .crow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .chint{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
+         margin:9px 0 0}
   .warn{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--accent);margin:9px 0 0}
   /* Real progress, not a spinner: a 14s Reflection build has a known frame count,
      so show how far along it is. */
@@ -189,20 +204,23 @@
         </p>
       </div>
       <p class="warn" id="warn"></p>
-      <div class="tray" id="tray" hidden>
-        <div class="trayhead">
-          <span id="traycount">Set: 0 of 4</span>
-          <button class="go" id="mkgrid" disabled>Make 2×2 GIF</button>
-          <button class="go ghost" id="clearset">Clear</button>
-        </div>
-        <div class="slots" id="slots"></div>
-      </div>
     </div>
     <div class="preview"><img id="prev" alt=""></div>
     <p class="shrunk" id="shrunk" hidden></p>
   </div>
 
   <div class="hits" id="hits" role="listbox"></div>
+
+  <div class="composer" id="composer">
+    <p class="clabel">Compose — put works side by side</p>
+    <div class="shapes" id="shapes" role="group" aria-label="Composition"></div>
+    <div class="slots" id="slots"></div>
+    <div class="crow">
+      <button class="go" id="mkgrid" disabled>Make it</button>
+      <button class="go ghost" id="clearset">Clear</button>
+    </div>
+    <p class="chint" id="chint"></p>
+  </div>
   <p class="note" id="note">Search by title or token ID — “skull”, “cogito”, “octoGAN”, or 883.</p>
   <div class="gallery" id="gallery" hidden>
     <p class="gtitle" id="gtitle">From the collections</p>
@@ -480,6 +498,8 @@ function boot() {
     strip.appendChild(b);
   });
   buildPanels();
+  buildShapes();
+  renderComposer();
 }
 
 /* ------------------------------------------------------- the opening panels */
@@ -1301,95 +1321,144 @@ function build() {
 
 $("size").onchange = function () { if (sel && sel.uri) build(); };
 
-/* -------------------------------------------------------------- the set */
+/* --------------------------------------------------------------- composing */
 
-// Four works, laid out 2x2. The artworks are square, so 2x2 is the only
-// arrangement that lands inside the band X shows whole — a row of two is 2:1 and
-// a row of three 3:1, both cropped in the timeline. A grid also says everything
-// at a glance, where a sequence risks being scrolled past before the second work
-// appears.
-var theSet = [], SET_MAX = 4;
-var GRID_FRAMES = 30;          // one full loop of every work, together
+// Works are laid on a ground with a margin and gutters, like pictures matted on
+// a wall. That is what makes these ratios possible without cropping anything:
+// two squares side by side are naturally 2:1 and three are 3:1, both wider than
+// X shows whole, but on a 16:9 ground they simply sit with space around them.
+var GROUND = "#e9e9e5";            // the site's paper
+var theSet = [], shape = 3;
+var COMPOSE_FRAMES = 30;           // one full loop of every work, together
 
-// Both layouts keep every artwork square and uncropped, and both land inside the
-// band X shows whole (roughly 4:5 to 16:9).
-//
-// Three in a row would be 3:1 and get cropped hard, so the triptych is the
-// classic asymmetric one — a dominant work with two supporting it — which comes
-// out 3:2. Four is a plain 2x2 at 1:1. Units are grid squares; the canvas is
-// `cols` units wide.
 var LAYOUTS = {
-  3: { cols: 3, rows: 2, name: "triptych", ratio: "3:2",
-       cells: [ {x:0, y:0, w:2, h:2}, {x:2, y:0, w:1, h:1}, {x:2, y:1, w:1, h:1} ] },
-  4: { cols: 2, rows: 2, name: "2×2 grid", ratio: "1:1",
-       cells: [ {x:0, y:0, w:1, h:1}, {x:1, y:0, w:1, h:1},
-                {x:0, y:1, w:1, h:1}, {x:1, y:1, w:1, h:1} ] }
+  2: { name: "diptych",  cols: 2, rows: 1, ratio: 16 / 9, label: "16:9" },
+  3: { name: "triptych", cols: 3, rows: 1, ratio: 16 / 9, label: "16:9" },
+  4: { name: "quadtych", cols: 2, rows: 2, ratio: 1,      label: "1:1" }
 };
+
+// Geometry for a layout at a given output width: the largest square that lets
+// every work fit with its margin and gutters, and the block centred on the ground.
+function geometry(lay, width) {
+  var W = width, H = Math.round(width / lay.ratio);
+  var m = Math.round(width * 0.035), g = Math.round(width * 0.028);
+  var cell = Math.floor(Math.min(
+    (W - 2 * m - (lay.cols - 1) * g) / lay.cols,
+    (H - 2 * m - (lay.rows - 1) * g) / lay.rows));
+  var blockW = cell * lay.cols + g * (lay.cols - 1);
+  var blockH = cell * lay.rows + g * (lay.rows - 1);
+  return { W: W, H: H, cell: cell, gutter: g,
+           left: Math.round((W - blockW) / 2), top: Math.round((H - blockH) / 2) };
+}
+
+function cellBox(lay, geo, k) {
+  return { x: geo.left + (k % lay.cols) * (geo.cell + geo.gutter),
+           y: geo.top + Math.floor(k / lay.cols) * (geo.cell + geo.gutter) };
+}
 
 function inSet(w) {
   return theSet.some(function (x) { return x.slug === w.slug && x.id === w.id; });
 }
 
 function addToSet(w) {
-  if (theSet.length >= SET_MAX || inSet(w)) return;
+  if (theSet.length >= shape || inSet(w)) return;
   theSet.push({ slug: w.slug, id: w.id, title: w.title, uri: w.uri });
-  renderTray();
+  renderComposer();
 }
 
-function renderTray() {
-  $("tray").hidden = false;
-  var lay = LAYOUTS[theSet.length];
-  $("traycount").textContent = "Set: " + theSet.length + " of " + SET_MAX
-    + (lay ? " — " + lay.name + ", " + lay.ratio : "");
-  $("mkgrid").disabled = !lay;
-  $("mkgrid").textContent = lay ? "Make " + lay.name
-    : (theSet.length < 3 ? "Add " + (3 - theSet.length) + " more" : "Make");
+function buildShapes() {
+  var host = $("shapes");
+  host.textContent = "";
+  [2, 3, 4].forEach(function (n) {
+    var lay = LAYOUTS[n];
+    var b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-pressed", String(n === shape));
+    b.appendChild(document.createTextNode(
+      lay.name.charAt(0).toUpperCase() + lay.name.slice(1)));
+    var r = document.createElement("span");
+    r.className = "ratio";
+    r.textContent = lay.label;
+    b.appendChild(r);
+    b.onclick = function () {
+      shape = n;
+      if (theSet.length > shape) theSet.length = shape;   // keep the first few
+      renderComposer();
+    };
+    host.appendChild(b);
+  });
+}
+
+function renderComposer() {
+  var lay = LAYOUTS[shape];
+  [].forEach.call($("shapes").children, function (b, i) {
+    b.setAttribute("aria-pressed", String([2, 3, 4][i] === shape));
+  });
+
+  // The slots mirror the composition, so the shape is legible before building.
   var slots = $("slots");
   slots.textContent = "";
-  for (var i = 0; i < SET_MAX; i++) {
-    var cell = document.createElement("div");
-    cell.className = "slot";
+  slots.style.gridTemplateColumns = "repeat(" + lay.cols + ", 1fr)";
+  slots.style.gridTemplateRows = "repeat(" + lay.rows + ", 1fr)";
+  slots.style.aspectRatio = lay.cols + " / " + lay.rows;
+
+  for (var i = 0; i < shape; i++) {
     var w = theSet[i];
-    if (!w) {
+    var cell = document.createElement("div");
+    cell.className = w ? "slot filled" : "slot";
+    if (w) {
+      var img = document.createElement("img");
+      img.alt = w.title;
+      stillFrom(w.uri, w.slug).then(function (target) {
+        return function (png) { target.src = png; };
+      }(img)).catch(function () {});
+      var cap = document.createElement("span");
+      cap.className = "cap";
+      cap.textContent = w.title;
+      var rm = document.createElement("button");
+      rm.type = "button";
+      rm.className = "rm";
+      rm.textContent = "×";
+      rm.setAttribute("aria-label", "Remove " + w.title);
+      rm.onclick = (function (k) {
+        return function () { theSet.splice(k, 1); renderComposer(); };
+      })(i);
+      cell.appendChild(img); cell.appendChild(cap); cell.appendChild(rm);
+    } else {
       var n = document.createElement("span");
       n.className = "n";
       n.textContent = String(i + 1);
       cell.appendChild(n);
-    } else {
-      cell.className = "slot filled";
-      cell.title = w.title + " — " + LABELS[w.slug];
-      var img = document.createElement("img");
-      img.alt = w.title;
-      stillFrom(w.uri, w.slug).then(function (im, el) {
-        return function (png) { im.src = png; };
-      }(img)).catch(function () {});
-      var x = document.createElement("button");
-      x.type = "button";
-      x.textContent = "×";
-      x.setAttribute("aria-label", "Remove " + w.title);
-      x.onclick = (function (k) {
-        return function (e) { e.stopPropagation(); theSet.splice(k, 1); renderTray(); };
-      })(i);
-      cell.appendChild(img);
-      cell.appendChild(x);
     }
     slots.appendChild(cell);
   }
+
+  var ready = theSet.length === shape;
+  $("mkgrid").disabled = !ready;
+  $("mkgrid").textContent = ready ? "Make " + lay.name
+    : "Add " + (shape - theSet.length) + " more";
+  $("chint").textContent = ready
+    ? lay.label + " on a paper ground — every work whole, nothing cropped."
+    : "Open a work and press “Add to set”. " + lay.name.charAt(0).toUpperCase()
+      + lay.name.slice(1) + " needs " + shape + ".";
   syncAddButton();
 }
 
 function syncAddButton() {
   var b = $("add");
-  if (!sel || !sel.uri) { b.disabled = true; b.textContent = "Add to set"; return; }
+  if (!b) return;
+  if (!sel || !sel.uri || sel.slug === "compose") {
+    b.disabled = true; b.textContent = "Add to set"; return;
+  }
   if (inSet(sel)) { b.disabled = true; b.textContent = "In the set"; return; }
-  b.disabled = theSet.length >= SET_MAX;
-  b.textContent = theSet.length >= SET_MAX ? "Set is full" : "Add to set";
+  b.disabled = theSet.length >= shape;
+  b.textContent = theSet.length >= shape ? "Set is full" : "Add to set";
 }
 
-$("add").onclick = function () { if (sel && sel.uri) { addToSet(sel); } };
-$("clearset").onclick = function () { theSet = []; renderTray(); };
+$("add").onclick = function () { if (sel && sel.uri) addToSet(sel); };
+$("clearset").onclick = function () { theSet = []; renderComposer(); };
 
-// Frames for one work, at whatever size the grid cell needs.
+// Frames for one work at whatever size its cell needs.
 function framesFor(w, size, frameCount, onStep) {
   if (w.slug === "bytegans") return bytegansFrames(w, size, onStep);
   if (w.slug === "wunderkammer") return wunderkammerFrames(w, size, onStep);
@@ -1397,17 +1466,15 @@ function framesFor(w, size, frameCount, onStep) {
 }
 
 $("mkgrid").onclick = function () {
-  var lay = LAYOUTS[theSet.length];
-  if (!lay) return;
+  var lay = LAYOUTS[shape];
+  if (theSet.length !== shape) return;
   var mine = ++token;
-  var size = parseInt($("size").value, 10);
-  var unit = Math.round(size / lay.cols);          // one grid square, in pixels
-  var W = unit * lay.cols, H = unit * lay.rows;
+  var geo = geometry(lay, parseInt($("size").value, 10));
 
   $("mkgrid").disabled = true;
   $("panel").hidden = false;
-  $("pt").textContent = lay.name === "triptych" ? "Triptych" : "Four works";
-  $("pm").innerHTML = "<b>" + lay.name + "</b> · " + lay.ratio + " · "
+  $("pt").textContent = lay.name.charAt(0).toUpperCase() + lay.name.slice(1);
+  $("pm").innerHTML = "<b>" + lay.label + "</b> · "
     + theSet.map(function (w) { return w.title; }).join(" · ");
   $("warn").textContent = "";
   $("dl").disabled = true;
@@ -1416,13 +1483,11 @@ $("mkgrid").onclick = function () {
   var total = theSet.length, done = 0, results = [];
   showProgress("Rendering 0 of " + total, 0, total + 1);
 
-  // Sequential: four works rendering at once would contend for the main thread
-  // and make the progress meaningless. Each is rendered at ITS OWN cell size —
-  // the triptych's dominant work is twice the others.
+  // Sequential: several works rendering at once would contend for the main
+  // thread and make the progress meaningless.
   theSet.reduce(function (chain, w, k) {
     return chain.then(function () {
-      var px = unit * lay.cells[k].w;
-      return framesFor(w, px, GRID_FRAMES, null).then(function (r) {
+      return framesFor(w, geo.cell, COMPOSE_FRAMES, null).then(function (r) {
         results[k] = r;
         done++;
         showProgress("Rendering " + done + " of " + total, done, total + 1);
@@ -1434,53 +1499,52 @@ $("mkgrid").onclick = function () {
     return yieldToPaint().then(function () {
       var frames = [], delays = [];
       var c = document.createElement("canvas");
-      c.width = W; c.height = H;
+      c.width = geo.W; c.height = geo.H;
       var ctx = c.getContext("2d", { willReadFrequently: true });
       var scratch = document.createElement("canvas");
       var sctx = scratch.getContext("2d");
 
-      for (var i = 0; i < GRID_FRAMES; i++) {
-        ctx.fillStyle = "#fff";
-        ctx.fillRect(0, 0, W, H);
+      for (var i = 0; i < COMPOSE_FRAMES; i++) {
+        ctx.fillStyle = GROUND;
+        ctx.fillRect(0, 0, geo.W, geo.H);
         for (var k = 0; k < results.length; k++) {
-          var src = results[k].frames, box = lay.cells[k];
+          var src = results[k].frames, box = cellBox(lay, geo, k);
           // Every work completes exactly one loop across the composite's loop,
-          // so the whole thing repeats seamlessly however long each natively runs.
-          var f = src[Math.floor(i * src.length / GRID_FRAMES) % src.length];
+          // so it repeats seamlessly however long each piece natively runs.
+          var f = src[Math.floor(i * src.length / COMPOSE_FRAMES) % src.length];
           if (scratch.width !== f.width || scratch.height !== f.height) {
             scratch.width = f.width; scratch.height = f.height;
           }
           sctx.putImageData(f, 0, 0);
-          ctx.drawImage(scratch, box.x * unit, box.y * unit,
-                        box.w * unit, box.h * unit);
+          ctx.drawImage(scratch, box.x, box.y, geo.cell, geo.cell);
         }
-        frames.push(ctx.getImageData(0, 0, W, H));
+        frames.push(ctx.getImageData(0, 0, geo.W, geo.H));
         delays.push(150);
       }
 
       var blob = GIF.encode(frames, delays, 256);
-      built = { blob: blob, size: W, key: lay.name };
-      sel = { slug: "grid", id: 0, title: lay.name,
+      built = { blob: blob, size: geo.W, key: lay.name };
+      sel = { slug: "compose", id: 0, title: lay.name,
               names: theSet.map(function (w) { return w.title; }) };
       var img = $("prev");
-      img.style.width = W + "px";
+      img.style.width = geo.W + "px";
       img.src = URL.createObjectURL(blob);
       img.onload = reportScale;
       hideProgress();
       $("dl").disabled = false;
       var kb = blob.size / 1024;
-      $("warn").textContent = GRID_FRAMES + " frames · " + W + "×" + H
-        + " (" + lay.ratio + ") · "
+      $("warn").textContent = COMPOSE_FRAMES + " frames · " + geo.W + "×" + geo.H
+        + " (" + lay.label + ") · "
         + (kb > 1024 ? (kb / 1024).toFixed(1) + "MB" : Math.round(kb) + "KB")
         + " · " + (1000 / 150).toFixed(1) + " fps"
         + (blob.size > 15 * 1024 * 1024
             ? " — over X's 15MB ceiling, try a smaller size" : "");
-      renderTray();
+      renderComposer();
     });
   }).catch(function (e) {
     if (mine !== token) return;
     hideProgress();
-    renderTray();
+    renderComposer();
     $("warn").textContent = "Couldn't build that — " + (e.message || e) + ".";
   });
 };
@@ -1500,7 +1564,7 @@ function slugify(str) {
 }
 
 function fileName(w) {
-  if (w.slug === "grid") {
+  if (w.slug === "compose") {
     return "sovrn-" + slugify(w.title) + "-"
       + (w.names || []).map(slugify).join("-").slice(0, 80);
   }
