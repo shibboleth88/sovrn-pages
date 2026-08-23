@@ -12,6 +12,28 @@ a:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
 .banner{display:grid;grid-auto-flow:column;grid-template-rows:repeat(3,54px);grid-auto-columns:54px;gap:2px;overflow:hidden;margin:-26px -22px 34px;background:var(--ink)}@media(max-width:640px){.banner{grid-template-rows:repeat(2,46px);grid-auto-columns:46px;margin-bottom:26px}}.banner img{width:100%;height:100%;object-fit:cover;display:block}
 .banner2{margin:0 0 40px}
 @media(max-width:640px){.banner2{margin-bottom:30px}}
+/* site navigation. position:fixed pins to the Sites frame, not the viewport —
+   known and accepted, the same as on the Reflection and CENTS pages. */
+.nav{position:fixed;top:16px;right:16px;z-index:30}
+#mb{width:44px;height:44px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:var(--paper);border:1px solid var(--rule);cursor:pointer;padding:0;transition:border-color .18s}
+#mb:hover,#mb[aria-expanded=true]{border-color:var(--copper)}
+#mb span{display:block;width:19px;height:1.5px;background:var(--ink);transition:transform .22s,opacity .18s}
+#mb[aria-expanded=true] span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+#mb[aria-expanded=true] span:nth-child(2){opacity:0}
+#mb[aria-expanded=true] span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+#mb:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
+#mn{list-style:none;margin:9px 0 0;padding:8px 0;background:var(--paper);border:1px solid var(--rule);min-width:232px;max-height:78vh;overflow-y:auto}
+#mn a,#mn .grp{display:block;width:100%;text-align:left;padding:9px 18px;text-decoration:none;color:var(--ink);font:500 11px/1.35 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;background:none;border:0;cursor:pointer;transition:color .15s,background .15s}
+#mn a:hover,#mn .grp:hover{color:var(--copper);background:#e2e2dc}
+#mn .grp{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:default;color:var(--slate)}
+#mn .grp:hover{color:var(--slate);background:none}
+#mn .grp .tog{flex:none;font-size:13px;line-height:1;color:var(--copper);cursor:pointer;padding:2px 4px;transition:transform .2s}
+#mn .grp[aria-expanded=true] .tog{transform:rotate(45deg)}
+#mn .sub{list-style:none;margin:0;padding:0;display:none;border-left:2px solid var(--rule);margin-left:18px}
+#mn .grp[aria-expanded=true]+.sub{display:block}
+#mn .sub a{padding:7px 16px;font:400 11px/1.4 "IBM Plex Mono",monospace;letter-spacing:.07em;text-transform:none;color:var(--slate)}
+#mn .sub a:hover{color:var(--copper);background:#e2e2dc}
+@media(max-width:640px){.nav{top:10px;right:10px}#mn{min-width:206px}}
 .mast{text-align:center;margin-bottom:30px}
 .logo img{width:clamp(132px,15vw,176px);height:auto;display:inline-block}
 .tag{font:italic 300 clamp(23px,3.4vw,37px)/1.15 Fraunces,serif;color:var(--ink);letter-spacing:-.015em;max-width:24ch;margin:16px auto 0}
@@ -58,6 +80,7 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transfo
 .nav a:hover{color:var(--copper)}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body>
+<nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn" aria-label="Site navigation"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></nav>
 <div class="banner" id="ban" aria-hidden="true"></div>
 <div class="wrap">
 <header class="mast">
@@ -127,6 +150,37 @@ SO=[["X","twitter.jpg","https://twitter.com/sovrnart"],
 ["CENTS Discord","cents-discord.png","https://discord.gg/USQwhGj8HC",1],
 ["Van Arman Discord","van-arman-discord.png","https://discord.gg/eQXjJHx8FF",1]];
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+/* the menu is built from the same C and MU arrays the page renders, so the
+   collection order can never drift from the grid below */
+const NAV=(()=>{
+  const item=(label,href)=>'<li><a href="'+href+'" target="_blank">'+esc(label)+'</a></li>';
+  const group=(label,rows)=>'<li><div class="grp" role="button" tabindex="0" aria-expanded="false">'+
+    esc(label)+'<span class="tog" aria-hidden="true">+</span></div><ul class="sub">'+
+    rows.map(r=>item(r[0],r[1])).join("")+'</ul></li>';
+  return item("Home","https://www.sovrn.art/home")
+    + group("Curated", C.map(c=>[c[0],c[2]]))
+    + group("Museums", MU.map(m=>[m[0],m[3]]))
+    + item("Marketplaces","https://www.sovrn.art/marketplaces")
+    + item("About","https://www.sovrn.art/about")
+    + item("Contact","https://www.sovrn.art/contact");
+})();
+const mb=document.getElementById("mb"),mn=document.getElementById("mn");
+mn.innerHTML=NAV;
+const setMenu=o=>{mb.setAttribute("aria-expanded",o);mn.hidden=!o;
+  if(!o)mn.querySelectorAll(".grp").forEach(g=>{g.setAttribute("aria-expanded","false");g.querySelector(".tog").textContent="+";});};
+mb.onclick=()=>setMenu(mb.getAttribute("aria-expanded")!=="true");
+const toggle=g=>{const open=g.getAttribute("aria-expanded")==="true";
+  g.setAttribute("aria-expanded",!open);g.querySelector(".tog").textContent=open?"+":"\u2212";};
+mn.addEventListener("click",e=>{
+  const g=e.target.closest(".grp"); if(g){toggle(g);return;}
+  if(e.target.closest("a"))setMenu(false);
+});
+mn.addEventListener("keydown",e=>{
+  const g=e.target.closest(".grp");
+  if(g&&(e.key==="Enter"||e.key===" ")){e.preventDefault();toggle(g);}
+});
+document.addEventListener("click",e=>{if(!e.target.closest(".nav"))setMenu(false);});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false);});
 /* Two mosaic bands. Pool of 223 tiles: b001-b186 are works from fourteen
    collections — including the Reflection layer SVGs and a byteGAN, rasterised
    from the on-chain files — and b187-b223 are CENTS. Each band drops one cent
