@@ -1044,9 +1044,46 @@ function rpcCall(to, callData) {
   return attempt(rpcAt);
 }
 
+// Same-origin copies of the artwork, harvested from the contracts and byte-identical
+// to what they return (shibboleth88/sovrn-onchain, verified by re-reading a spread of
+// them and comparing). Tried FIRST, for two reasons. A same-origin file has exactly
+// the page's own availability — if it cannot be reached there is no page either, so
+// nothing is added that can be blocked or go down independently. And it is far
+// smaller: a Reflection work is ~21KB gzipped here against ~338KB of hex over an RPC
+// call, because hex doubles every byte and the ABI pads it.
+//
+// The chain stays as the fallback, so a work missing from the mirror still resolves,
+// and nothing here is load-bearing on the harvest being complete.
+var ART = new URL("../sovrn-onchain/", location.href).href;
+
+function svgToDataUri(text) {
+  // The rest of the page expects a data: URI — same as tokenURI hands back — so the
+  // static path produces one too and everything downstream is untouched.
+  return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(text)));
+}
+
+function fetchStatic(slug, id) {
+  return fetch(ART + slug + "/" + id + ".svg").then(function (r) {
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.text();
+  }).then(function (t) {
+    if (t.indexOf("<svg") < 0) throw new Error("not an SVG");
+    return svgToDataUri(t);
+  });
+}
+
 function fetchWork(slug, id) {
   var key = slug + ":" + id;
   if (cache[key]) return Promise.resolve(cache[key]);
+  return fetchStatic(slug, id).catch(function () {
+    return fetchFromChain(slug, id);
+  }).then(function (image) {
+    cache[key] = image;
+    return image;
+  });
+}
+
+function fetchFromChain(slug, id) {
   var call = "0xc87b56dd" + id.toString(16).padStart(64, "0");   // tokenURI(uint256)
   return rpcCall(data[slug].contract, call).then(function (j) {
     var raw = j.result.slice(2);
@@ -1067,7 +1104,6 @@ function fetchWork(slug, id) {
       image = m[1];
     }
     if (!image) throw new Error("no image in the token");
-    cache[key] = image;
     return image;
   });
 }
