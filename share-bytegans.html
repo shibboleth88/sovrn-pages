@@ -3,15 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shareable GIFs of on-chain SVGs — sovrn.art</title>
+<title>Shareable GIFs of byteGANs — sovrn.art</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Warm the panel image so it arrives with the page. -->
-<link rel="preload" as="image" href="img/collections/reflection/reflection-01.svg" type="image/svg+xml">
-<link rel="preload" as="image" href="img/wunderkammer-works/wunderkammer-08.svg" type="image/svg+xml">
 <link rel="preload" as="image" href="img/bytegans/bytegan-15.svg" type="image/svg+xml">
 <link rel="stylesheet" href="share.css">
 </head>
-<!-- No SHARE_SCOPE, so all three collections. Scoped pages are share-<slug>.html. -->
+<!-- Scoped to byteGANs. Everything but the scope lives in share.js and share.css, shared with the other three pages. -->
 <body>
 <header><div class="wrap">
   <h1>Shareable GIFs of on-chain SVGs</h1>
@@ -84,6 +82,7 @@
     <div class="three" id="three"></div>
   </div>
 </div>
+<script>var SHARE_SCOPE = "bytegans";</script>
 <script src="share.js"></script>
 </body>
 </html>

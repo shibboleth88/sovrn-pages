@@ -1,0 +1,162 @@
+:root{--ink:#16181d;--paper:#e9e9e5;--rule:#c9c9c2;--slate:#5c6470;
+        --accent:#2c7a74;--on-accent:#f6f4f0;--card:#f4f4f1}
+  @media (prefers-color-scheme:dark){
+    :root{--ink:#e6e6e1;--paper:#16181d;--rule:#33373f;--slate:#9aa1ad;
+          --accent:#5cc2ba;--on-accent:#10201e;--card:#1d2027}
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font:400 15px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+  header{padding:18px 20px 14px;border-bottom:1px solid var(--rule)}
+  h1{margin:0;font:italic 300 clamp(20px,3vw,27px)/1.2 Fraunces,Georgia,serif}
+  header p{margin:7px 0 0;font:400 11.5px/1.6 "IBM Plex Mono",monospace;color:var(--slate);
+           max-width:64ch}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px}
+  .find{margin:16px 0 0}
+  .find input{width:100%;padding:12px 14px;border:1px solid var(--rule);border-radius:8px;
+    background:var(--card);color:var(--ink);
+    font:400 15px/1.4 "IBM Plex Sans",system-ui,sans-serif;outline:none}
+  .find input:focus{border-color:var(--accent)}
+  .sets{display:flex;flex-wrap:wrap;gap:7px;padding:12px 0 0}
+  .sets button{background:transparent;border:1px solid var(--rule);color:var(--slate);
+    font:400 12.5px/1.4 "IBM Plex Sans",sans-serif;padding:7px 13px;border-radius:999px;
+    cursor:pointer;transition:border-color .12s,color .12s}
+  .sets button:hover{border-color:var(--accent);color:var(--accent)}
+  .sets button[aria-pressed=true]{border-color:var(--accent);color:var(--on-accent);
+    background:var(--accent)}
+  .hits{margin:14px 0 0;border:1px solid var(--rule);border-radius:8px;background:var(--card)}
+  .hits:empty{display:none}
+  .hits button{display:flex;justify-content:space-between;gap:12px;align-items:baseline;
+    width:100%;text-align:left;background:transparent;border:none;
+    border-bottom:1px solid var(--rule);padding:10px 14px;cursor:pointer;color:var(--ink);
+    font:400 14px/1.4 "IBM Plex Sans",system-ui,sans-serif}
+  .hits button:last-child{border-bottom:none}
+  .hits button:hover{background:var(--paper);color:var(--accent)}
+  .hits button:disabled{cursor:default;color:var(--slate);font-style:italic}
+  .hits .tag{flex:none;font:400 11px/1.4 "IBM Plex Mono",monospace;color:var(--slate)}
+  .hits .plus{flex:none;width:24px;height:24px;border-radius:50%;
+    border:1px solid var(--rule);color:var(--slate);display:flex;
+    align-items:center;justify-content:center;cursor:pointer;
+    font:400 14px/1 "IBM Plex Mono",monospace;transition:border-color .12s,color .12s}
+  .hits .plus:hover{border-color:var(--accent);color:var(--accent)}
+  .note{color:var(--slate);font:italic 400 14px/1.6 "IBM Plex Sans",sans-serif;
+        padding:26px 0 8px;margin:0}
+  /* Three panels, one per collection, each rotating through its own works.
+     Three animating SVGs instead of thirty-nine is what makes Reflection
+     affordable here — and big enough to actually see. */
+  .gallery{margin:22px 0 0}
+  .gtitle{font:400 11px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
+          margin:0 0 10px;letter-spacing:.04em}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  /* scoped to one collection: a lone panel in a third of the row reads as a
+     missing pair, so it gets its own width and sits centred */
+  .three.one{grid-template-columns:minmax(0,360px);justify-content:center}
+  @media (max-width:640px){ .three{grid-template-columns:1fr;gap:14px} }
+  .panelcard{position:relative;aspect-ratio:1;overflow:hidden;border-radius:3px;
+    border:1px solid var(--rule);background:var(--card);cursor:pointer;padding:0;
+    transition:border-color .16s}
+  .panelcard:hover,.panelcard:focus-visible{border-color:var(--accent)}
+  .panelcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    display:block;transition:opacity 1s ease}
+  .panelcard img.out{opacity:0}
+  .panelcard figcaption{position:absolute;left:0;right:0;bottom:0;
+    padding:26px 12px 10px;text-align:left;color:#f5f3ef;pointer-events:none;
+    background:linear-gradient(to top,rgba(8,10,12,.8),rgba(8,10,12,0));
+    font:italic 300 16px/1.2 Fraunces,Georgia,serif}
+  .panelcard .who{display:block;margin-top:3px;
+    font:400 10px/1.4 "IBM Plex Mono",monospace;letter-spacing:.06em;opacity:.85}
+  @media (prefers-reduced-motion:reduce){ .panelcard img{transition:none} }
+  /* thumbnails in the results list */
+  .hits button{gap:11px}
+  .thumb{flex:none;width:42px;height:42px;border:1px solid var(--rule);border-radius:2px;
+         background:var(--paper);overflow:hidden}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .hits .rowtext{flex:1;min-width:0}
+  .hits .rowtext span{display:block}
+  .hits .rowtitle{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  @media (prefers-reduced-motion:reduce){
+    .tile{transition:none} .tile:hover{transform:none} .tile.loading{animation:none}
+  }
+  .more{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
+        padding:10px 14px;margin:0;border-top:1px solid var(--rule)}
+  .panel{background:var(--card);border:1px solid var(--rule);border-radius:8px;
+         padding:16px;margin:16px 0 0}
+  .preview{border:1px solid var(--rule);background:var(--paper);display:inline-block;
+           max-width:100%;line-height:0}
+  /* Rendered at the chosen size, but never wider than the frame it sits in —
+     1080px would overflow a phone, and this page is embedded on one a lot. */
+  .preview img{display:block;max-width:100%;height:auto}
+  .controls{margin:0 0 14px}
+  .shrunk{font:400 11px/1.5 "IBM Plex Mono",monospace;color:var(--slate);margin:6px 0 0}
+  .controls h2{margin:0 0 2px;font:500 15px/1.3 "IBM Plex Sans",sans-serif}
+  .meta{font:400 11.5px/1.6 "IBM Plex Mono",monospace;color:var(--slate);margin:0 0 10px}
+  .meta b{color:var(--ink);font-weight:500}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  label{font:400 11.5px/1 "IBM Plex Mono",monospace;color:var(--slate);
+        display:flex;gap:6px;align-items:center;cursor:pointer}
+  select{font:400 12px "IBM Plex Sans",sans-serif;padding:6px 8px;border:1px solid var(--rule);
+         border-radius:6px;background:var(--paper);color:var(--ink)}
+  .go{border:none;background:var(--accent);color:var(--on-accent);border-radius:8px;
+      padding:9px 18px;font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.08em;
+      text-transform:uppercase;cursor:pointer}
+  .go:disabled{opacity:.45;cursor:default}
+  .ghost{background:transparent;border:1px solid var(--rule);color:var(--slate)}
+  .ghost:hover{border-color:var(--accent);color:var(--accent)}
+  /* the composer */
+  .composer{margin:26px 0 0;border-top:1px solid var(--rule);padding:18px 0 0}
+  .clabel{font:400 11px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
+          margin:0 0 10px;letter-spacing:.04em}
+  .shapes{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 14px}
+  .shapes button{background:transparent;border:1px solid var(--rule);color:var(--slate);
+    font:400 12.5px/1.4 "IBM Plex Sans",sans-serif;padding:7px 13px;border-radius:999px;
+    cursor:pointer;transition:border-color .12s,color .12s}
+  .shapes button:hover{border-color:var(--accent);color:var(--accent)}
+  .shapes button[aria-pressed=true]{border-color:var(--accent);color:var(--on-accent);
+    background:var(--accent)}
+  /* The slots mirror the composition, so the shape is legible before you build it. */
+  .slots{display:grid;gap:6px;width:100%;max-width:430px;margin:0 0 12px;
+         background:#16181d;padding:8px;border-radius:4px}
+  .slot{position:relative;overflow:hidden;border-radius:2px;background:#1e2128;
+        border:1px dashed #363b45;min-height:0}
+  .slot.filled{border-color:transparent;cursor:grab}
+  .slot.filled:active{cursor:grabbing}
+  .slot.dragging{opacity:.4}
+  .slot.over{outline:2px solid var(--accent);outline-offset:-2px}
+  .slot img{width:100%;height:100%;object-fit:cover;display:block}
+  .slot .n{position:absolute;inset:0;display:flex;align-items:center;
+    justify-content:center;color:#7b8290;
+    font:400 15px/1 "IBM Plex Mono",monospace;opacity:.7}
+  .slot .rm{position:absolute;top:4px;right:4px;width:19px;height:19px;padding:0;
+    border:none;border-radius:50%;background:rgba(8,10,12,.68);color:#fff;
+    font:500 12px/1 "IBM Plex Mono",monospace;cursor:pointer;letter-spacing:0;
+    text-transform:none}
+  .slot .cap{position:absolute;left:0;right:0;bottom:0;padding:14px 6px 4px;
+    color:#f5f3ef;pointer-events:none;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap;
+    background:linear-gradient(to top,rgba(8,10,12,.8),rgba(8,10,12,0));
+    font:400 9.5px/1.3 "IBM Plex Mono",monospace}
+  .crow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 0}
+  .chint{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
+         margin:9px 0 0}
+  .warn{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--accent);margin:9px 0 0}
+  /* Real progress, not a spinner: a 14s Reflection build has a known frame count,
+     so show how far along it is. */
+  .prog{margin:11px 0 0;max-width:340px}
+  .track{height:3px;background:var(--rule);border-radius:2px;overflow:hidden}
+  .bar{height:100%;width:0;background:var(--accent);border-radius:2px;
+       transition:width .18s linear}
+  .plabel{font:400 11px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
+          margin:6px 0 0;display:flex;align-items:center;gap:7px}
+  /* three dots breathing in sequence, so a slow step still reads as alive */
+  .dots{display:inline-flex;gap:3px}
+  .dots i{width:4px;height:4px;border-radius:50%;background:var(--accent);
+          display:block;animation:puff 1.05s ease-in-out infinite}
+  .dots i:nth-child(2){animation-delay:.17s}
+  .dots i:nth-child(3){animation-delay:.34s}
+  @keyframes puff{0%,70%,100%{opacity:.25;transform:scale(.8)}
+                  35%{opacity:1;transform:scale(1)}}
+  @media (prefers-reduced-motion:reduce){
+    .dots i{animation:none;opacity:.7}
+    .bar{transition:none}
+  }
