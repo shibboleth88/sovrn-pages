@@ -4,7 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Shareable GIFs of Reflection — sovrn.art</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- The faces the page names. Without this the CSS asked for Fraunces and
+     IBM Plex and silently got Georgia and the system monospace — and the GIF
+     captions came out in whatever mono the viewer happened to have, so the
+     same work exported from two machines did not match. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500&amp;display=swap">
 <!-- Warm the panel image so it arrives with the page. -->
 <link rel="preload" as="image" href="img/collections/reflection/reflection-02.svg" type="image/svg+xml">
 <link rel="stylesheet" href="share.css">

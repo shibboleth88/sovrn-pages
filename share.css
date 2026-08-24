@@ -123,8 +123,8 @@
   /* Mirrors the band captioned() burns into the GIF: same black ground, same
      mono face, same slate. It is a preview of the caption, not the caption. */
   .prevcap{margin:0;background:#000;color:#9aa1ad;text-align:center;
-    font:400 12px/1 "IBM Plex Mono", ui-monospace, monospace;
-    padding:7px 6px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    font:italic 300 15px/1 Fraunces,Georgia,serif;
+    padding:9px 6px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .titleopt{padding:2px 0 12px}
   .titleopt label{display:inline-flex;align-items:center;gap:7px;cursor:pointer;
     font:400 12.5px/1.5 "IBM Plex Sans",sans-serif;color:var(--ink)}

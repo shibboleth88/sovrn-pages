@@ -1272,7 +1272,7 @@ function build() {
     // Encoding is one synchronous stretch, so paint the label before starting it
     // or it never appears.
     showProgress("Encoding the GIF", RENDER_SHARE, 1);
-    return yieldToPaint().then(function () {
+    return Promise.all([yieldToPaint(), capFontReady]).then(function () {
       return caps ? captioned(r, w.title) : r;
     });
   }).then(function (r) {
@@ -1365,20 +1365,35 @@ var LAYOUTS = {
 
 // A title sits in its own band directly under its work, like a wall label, so
 // there is never a question which title belongs to which picture.
-var CAP_FONT = '"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
+// The site sets every work title in Fraunces italic 300 — the h1 on each page and
+// the cards on the hub — so the caption burned into the GIF speaks in the same
+// voice rather than a terminal's. Georgia is the fallback if the webfont is
+// blocked; both are serifs, so the band keeps its proportions either way.
+var CAP_FONT = 'Fraunces, Georgia, "Times New Roman", serif';
+var CAP_FACE = 'italic 300';
+var CAP_MIN_PX = 11;               // a serif gives up sooner than mono does
 
-function capHeight(width) { return Math.max(13, Math.round(width * 0.030)); }
+// Canvas silently falls back when a face is not loaded yet, so the first export
+// would come out Georgia and later ones Fraunces — inconsistent in a way nobody
+// would think to check. Every render waits on this.
+var capFontReady = (document.fonts && document.fonts.load)
+  ? document.fonts.load(CAP_FACE + ' 32px Fraunces').catch(function () {})
+  : Promise.resolve();
+
+// Taller than it was: mono held up at 9px, a serif does not. At 480 this takes the
+// band from 14px to 19px and the type from 9px to 11px.
+function capHeight(width) { return Math.max(18, Math.round(width * 0.040)); }
 
 // Shrink to fit, and ellipsize only when even the smallest size will not do —
 // a Reflection title can run to fifty characters and must not overrun its work.
 function drawCap(ctx, text, x, y, w, h, align) {
-  var t = String(text || ""), px = Math.max(9, Math.round(h * 0.5));
-  while (px > 9) {
-    ctx.font = "400 " + px + "px " + CAP_FONT;
+  var t = String(text || ""), px = Math.max(CAP_MIN_PX, Math.round(h * 0.52));
+  while (px > CAP_MIN_PX) {
+    ctx.font = CAP_FACE + " " + px + "px " + CAP_FONT;
     if (ctx.measureText(t).width <= w) break;
     px--;
   }
-  ctx.font = "400 " + px + "px " + CAP_FONT;
+  ctx.font = CAP_FACE + " " + px + "px " + CAP_FONT;
   if (ctx.measureText(t).width > w) {
     while (t.length > 1 && ctx.measureText(t + "\u2026").width > w) t = t.slice(0, -1);
     t = t.replace(/\s+$/, "") + "\u2026";
@@ -1673,7 +1688,7 @@ $("mkgrid").onclick = function () {
   }, Promise.resolve()).then(function () {
     if (mine !== token) return;
     showProgress("Composing and encoding", RENDER_SHARE, 1);
-    return yieldToPaint().then(function () {
+    return Promise.all([yieldToPaint(), capFontReady]).then(function () {
       var frames = [], delays = [];
       var c = document.createElement("canvas");
       c.width = geo.W; c.height = geo.H;
