@@ -129,6 +129,12 @@
      same pill the shapes and the collection chips use, filling with the accent
      when it is on — rather than as a stray checkbox, which is what made it easy
      to miss entirely. */
+  /* A short piece of prose at the foot of a page. Shared with shareables.html,
+     which used to carry its own copy inline. */
+  .about{max-width:640px;padding:22px 0 40px}
+  .about p{margin:0 0 13px;color:var(--slate);
+           font:400 14px/1.65 "IBM Plex Sans",sans-serif}
+  .about p:last-child{margin-bottom:0}
   .titleopt{padding:2px 0 14px}
   .titlepill{display:inline-flex;align-items:center;gap:9px;cursor:pointer;
     border:1px solid var(--rule);border-radius:999px;padding:9px 17px;

@@ -300,6 +300,7 @@ function boot() {
   });
   scope = LOCK || "reflection";
   mark();
+  syncTitleBoxes();
   buildPanels();
   buildShapes();
   renderComposer();
@@ -308,6 +309,32 @@ function boot() {
 // Naming the collection in the heading matters more than it looks: the page is
 // embedded, so the heading is the only thing telling a visitor what they are
 // looking at.
+// A short piece of prose at the foot of a scoped page. Keyed by collection, so
+// Wunderkammer and byteGANs can have their own the moment there is text for them
+// — nothing else has to change. The combined page shows none of it, having no
+// single collection to speak for.
+var ABOUT = {
+  reflection: [
+    "Reflection encodes and executes Pindar Van Arman\u2019s reflective AI process fully on-chain.",
+    "The resulting artworks live inside a set of Ethereum contracts as encoded vector drawings.",
+    "This tool pulls the SVG data from the contracts and converts it to gifs that play with the parameters specified in the encoding."
+  ]
+};
+
+function renderAbout(slug) {
+  var host = $("pageabout");
+  if (!host) return;
+  var lines = ABOUT[slug];
+  host.textContent = "";
+  host.hidden = !lines;
+  if (!lines) return;
+  lines.forEach(function (line) {
+    var p = document.createElement("p");
+    p.textContent = line;
+    host.appendChild(p);
+  });
+}
+
 function lockTo(slug) {
   $("sets").hidden = true;
   document.title = "Shareable GIFs of " + LABELS[slug] + " \u2014 sovrn.art";
@@ -322,6 +349,7 @@ function lockTo(slug) {
   // [hidden] is !important globally and .gtitle sets no display, so this holds.
   var g = $("gtitle");
   if (g) g.hidden = true;
+  renderAbout(slug);
 }
 
 /* ------------------------------------------------------- the opening panels */
@@ -1352,7 +1380,11 @@ $("size").onchange = function () {
 // two squares side by side are naturally 2:1 and three are 3:1, both wider than
 // X shows whole, but on a 16:9 ground they simply sit with space around them.
 var GROUND = "#000000";            // black, so the ground reads as nothing at all
-var withTitles = false;            // burn each work's title in under it?
+// On by default: the title is what makes a shared GIF legible to someone who did
+// not already know the work, and it is one click to turn off. The markup leaves
+// both boxes unchecked, so boot() calls syncTitleBoxes() to bring the controls and
+// the pill state to meet this — one source of truth rather than two that can drift.
+var withTitles = true;
 var theSet = [], shape = 1;     // 1 = single; 2/3/4 = a tych
 var COMPOSE_FRAMES = 30;           // one full loop of every work, together
 
