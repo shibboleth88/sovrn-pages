@@ -1611,6 +1611,12 @@ $("csize").onchange = function () { renderComposer(); };
 function syncTitleBoxes() {
   $("ctitles").checked = withTitles;
   $("stitles").checked = withTitles;
+  // The pill carries the state, the way the shape and collection chips do.
+  // Done in script rather than with :has() so older mobile browsers get it too.
+  ["ctitles", "stitles"].forEach(function (id) {
+    var pill = $(id).closest(".titlepill");
+    if (pill) pill.classList.toggle("on", withTitles);
+  });
 }
 $("ctitles").onchange = function () {
   withTitles = this.checked;
