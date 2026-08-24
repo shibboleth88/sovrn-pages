@@ -15,9 +15,11 @@
 <!-- The hub: three cards, one per on-chain collection, each leading to that
      collection's own share page. Nothing else — the tool itself lives there.
 
-     No script at all. These SVGs animate by themselves inside an <img> (SMIL
-     runs, and so do nested GIFs — sovrn-pages/NOTES.md), so the cards are alive
-     without a line of JavaScript, and there is nothing here that can fail.
+     The cards turn through a few works from each collection. That is the only
+     thing shareables.js does, and the page does not need it: the markup carries
+     the first frame, and these SVGs animate by themselves inside an <img> (SMIL
+     runs, and so do nested GIFs — sovrn-pages/NOTES.md). With script off the
+     cards are still alive, just not turning.
 
      Every link carries target="_blank". The Sites embed iframe is sandboxed
      WITHOUT allow-top-navigation, so target="_top" silently does nothing and no
@@ -34,26 +36,40 @@
   <p class="gtitle">Pick a collection</p>
   <div class="three">
 
-    <a class="panelcard" href="https://www.sovrn.art/shareable/share-reflection"
+    <a class="panelcard" data-c="reflection"
+       href="https://www.sovrn.art/shareable/share-reflection"
        target="_blank" rel="noopener" aria-label="Shareable GIFs of Reflection">
       <img src="img/collections/reflection/reflection-02.svg" alt="" decoding="async">
-      <figcaption>Reflection<span class="who">Pindar Van Arman · 999 works</span></figcaption>
+      <figcaption>Reflection<span class="who">Pindar Van Arman</span></figcaption>
     </a>
 
-    <a class="panelcard" href="https://www.sovrn.art/shareable/share-wunderkammer"
+    <a class="panelcard" data-c="wunderkammer"
+       href="https://www.sovrn.art/shareable/share-wunderkammer"
        target="_blank" rel="noopener" aria-label="Shareable GIFs of Wunderkammer">
       <img src="img/wunderkammer-works/wunderkammer-08.svg" alt="" decoding="async">
-      <figcaption>Wunderkammer<span class="who">Isa Kost · 108 objects</span></figcaption>
+      <figcaption>Wunderkammer<span class="who">Isa Kost</span></figcaption>
     </a>
 
-    <a class="panelcard" href="https://www.sovrn.art/shareable/share-bytegans"
+    <a class="panelcard" data-c="bytegans"
+       href="https://www.sovrn.art/shareable/share-bytegans"
        target="_blank" rel="noopener" aria-label="Shareable GIFs of byteGANs">
       <img src="img/bytegans/bytegan-15.svg" alt="" decoding="async">
-      <figcaption>byteGANs<span class="who">Pindar Van Arman · 1,111 works</span></figcaption>
+      <figcaption>byteGANs<span class="who">Pindar Van Arman</span></figcaption>
     </a>
 
   </div>
+
+  <p class="gtitle" style="margin-top:22px">Where the work comes from</p>
+  <p class="note">These three collections keep their artwork inside the contract.
+     Asking one of them for a work returns the image itself — a vector drawing,
+     encoded into the reply — rather than an address to go and fetch it from
+     somewhere else. Nothing sits on a server, and nothing can be moved or taken
+     down. It is also what makes these shareable at all: the picture arrives as
+     data, so the browser is free to redraw it as a GIF. Sovrn's other
+     collections keep their images elsewhere, which is why they are not here.</p>
 </div>
+
+<script src="shareables.js"></script>
 
 </body>
 </html>

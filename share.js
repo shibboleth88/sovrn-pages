@@ -316,9 +316,12 @@ function lockTo(slug) {
   if (h) h.textContent = "Shareable GIFs of " + LABELS[slug];
   if (p) p.textContent = "get animated versions of " + ARTISTS[slug] + "'s "
     + LABELS[slug] + " in a format that can be shared on socials";
-  // "From the collections" is a plural promise the scoped page doesn't keep.
+  // The label above the panel goes entirely. "From the collections" is a plural
+  // promise a scoped page doesn't keep, and naming the collection there just
+  // says a third time what the heading and the caption already say.
+  // [hidden] is !important globally and .gtitle sets no display, so this holds.
   var g = $("gtitle");
-  if (g) g.textContent = "From " + LABELS[slug];
+  if (g) g.hidden = true;
 }
 
 /* ------------------------------------------------------- the opening panels */
