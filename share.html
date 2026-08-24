@@ -71,14 +71,15 @@
       </div>
       <p class="warn" id="warn"></p>
     </div>
-    <div class="preview"><img id="prev" alt=""></div>
-    <!-- The title option sits under the artwork, where you can see what it would
-         be captioning. The buttons stay above it: at 1080px the image is taller
-         than the viewport and Download would fall off the bottom. -->
+    <!-- The title option sits at the top of the artwork rather than below it: at
+         1080px the image is taller than the viewport, so anything under it falls
+         off the bottom and is never seen. Above, it is next to Download, where
+         the choice actually gets made. -->
     <div class="titleopt" id="stitlebox">
       <label><input type="checkbox" id="stitles"> Add the title to the GIF</label>
       <span class="thint">printed in a band under the work, like a wall label</span>
     </div>
+    <div class="preview"><img id="prev" alt=""></div>
     <p class="shrunk" id="shrunk" hidden></p>
   </div>
 
