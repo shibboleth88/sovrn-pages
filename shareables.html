@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shareable GIFs — sovrn.art</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- The same three frames the scoped pages open on, so clicking a card lands on
+     an image the browser has already fetched. -->
+<link rel="preload" as="image" href="img/collections/reflection/reflection-02.svg" type="image/svg+xml">
+<link rel="preload" as="image" href="img/wunderkammer-works/wunderkammer-08.svg" type="image/svg+xml">
+<link rel="preload" as="image" href="img/bytegans/bytegan-15.svg" type="image/svg+xml">
+<link rel="stylesheet" href="share.css">
+</head>
+<!-- The hub: three cards, one per on-chain collection, each leading to that
+     collection's own share page. Nothing else — the tool itself lives there.
+
+     No script at all. These SVGs animate by themselves inside an <img> (SMIL
+     runs, and so do nested GIFs — sovrn-pages/NOTES.md), so the cards are alive
+     without a line of JavaScript, and there is nothing here that can fail.
+
+     Every link carries target="_blank". The Sites embed iframe is sandboxed
+     WITHOUT allow-top-navigation, so target="_top" silently does nothing and no
+     target at all gives "refused to connect". _blank is the only one that works.
+     Do not change it. -->
+<body>
+
+<header><div class="wrap">
+  <h1>Shareable GIFs</h1>
+  <p>Sovrn's fully on-chain collections, in a format that can be shared on socials</p>
+</div></header>
+
+<div class="wrap">
+  <p class="gtitle">Pick a collection</p>
+  <div class="three">
+
+    <a class="panelcard" href="https://www.sovrn.art/share-reflection"
+       target="_blank" rel="noopener" aria-label="Shareable GIFs of Reflection">
+      <img src="img/collections/reflection/reflection-02.svg" alt="" decoding="async">
+      <figcaption>Reflection<span class="who">Pindar Van Arman · 999 works</span></figcaption>
+    </a>
+
+    <a class="panelcard" href="https://www.sovrn.art/share-wunderkammer"
+       target="_blank" rel="noopener" aria-label="Shareable GIFs of Wunderkammer">
+      <img src="img/wunderkammer-works/wunderkammer-08.svg" alt="" decoding="async">
+      <figcaption>Wunderkammer<span class="who">Isa Kost · 108 objects</span></figcaption>
+    </a>
+
+    <a class="panelcard" href="https://www.sovrn.art/share-bytegans"
+       target="_blank" rel="noopener" aria-label="Shareable GIFs of byteGANs">
+      <img src="img/bytegans/bytegan-15.svg" alt="" decoding="async">
+      <figcaption>byteGANs<span class="who">Pindar Van Arman · 1,111 works</span></figcaption>
+    </a>
+
+  </div>
+</div>
+
+</body>
+</html>

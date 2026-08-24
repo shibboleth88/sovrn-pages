@@ -89,7 +89,9 @@ def main():
         if not n:
             continue                      # uses the default stagger; nothing pinned
         want = f"{d}{stem}{n:02d}.svg"
-        for name in ("share.html", f"share-{slug}.html"):
+        # shareables.html shows the same frame on its card, so a click lands on an
+        # image already fetched. That claim is only true while they agree.
+        for name in ("share.html", f"share-{slug}.html", "shareables.html"):
             if os.path.exists(os.path.join(ROOT, name)) and want not in read(name):
                 problems.append(
                     f"{name}: preloads a frame other than {want}, which share.js opens on")
