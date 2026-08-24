@@ -501,24 +501,34 @@ function watchThumb(row, img, r, eager) {
 // and lively even that small, and Wunderkammer's glint is nine cheap frames, so
 // both keep moving. Drawing an SVG to a canvas captures one frame anyway, which
 // is what makes the still free.
-var THUMB_PX = 84;          // 2x the 42px box, so it stays sharp on retina
+var THUMB_PX = 84;          // 2x the 42px list row, so it stays sharp on retina
+// Composer slots are a few hundred px wide and there are at most four of them,
+// so they get a real raster. Still a raster rather than the live SVG: four
+// animating Reflections behind the composer is what made this lag before.
+var SLOT_PX = 640;
 var thumbStills = {};
 
-function stillFrom(uri, slug) {
-  var key = slug + ":" + uri.length + ":" + uri.slice(-24);
+function stillFrom(uri, slug, px) {
+  // px matters: the same helper feeds the 42px list rows and the composer slots,
+  // which are several hundred px wide. Baking everything at THUMB_PX meant the
+  // slots were showing an 84px raster blown up five times over — a vector work
+  // rendered as mush. The size is part of the cache key, or the two callers
+  // hand each other the wrong one.
+  px = px || THUMB_PX;
+  var key = slug + ":" + px + ":" + uri.length + ":" + uri.slice(-24);
   if (thumbStills[key]) return Promise.resolve(thumbStills[key]);
   return loadImage(uri).then(function (img) {
     var c = document.createElement("canvas");
-    c.width = c.height = THUMB_PX;
+    c.width = c.height = px;
     var ctx = c.getContext("2d");
-    // byteGANs are 11x11 pixel art; smoothing turns them to mush even this small.
+    // byteGANs are 11x11 pixel art; smoothing turns them to mush at any size.
     ctx.imageSmoothingEnabled = slug !== "bytegans";
     ctx.fillStyle = "#fff";
-    ctx.fillRect(0, 0, THUMB_PX, THUMB_PX);
-    var sw = img.naturalWidth || THUMB_PX, sh = img.naturalHeight || THUMB_PX;
-    var k = THUMB_PX / Math.max(sw, sh);
+    ctx.fillRect(0, 0, px, px);
+    var sw = img.naturalWidth || px, sh = img.naturalHeight || px;
+    var k = px / Math.max(sw, sh);
     var dw = Math.round(sw * k), dh = Math.round(sh * k);
-    ctx.drawImage(img, (THUMB_PX - dw) / 2, (THUMB_PX - dh) / 2, dw, dh);
+    ctx.drawImage(img, (px - dw) / 2, (px - dh) / 2, dw, dh);
     var out = c.toDataURL("image/png");
     thumbStills[key] = out;
     return out;
@@ -1451,7 +1461,7 @@ function renderComposer() {
       var img = document.createElement("img");
       img.alt = w.title;
       img.draggable = false;
-      stillFrom(w.uri, w.slug).then(function (target) {
+      stillFrom(w.uri, w.slug, SLOT_PX).then(function (target) {
         return function (png) { target.src = png; };
       }(img)).catch(function () {});
       var cap = document.createElement("span");

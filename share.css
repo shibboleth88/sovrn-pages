@@ -117,6 +117,15 @@
   /* The slots mirror the composition, so the shape is legible before you build it. */
   .slots{display:grid;gap:6px;width:100%;max-width:430px;margin:0 0 12px;
          background:#16181d;padding:8px;border-radius:4px}
+  /* The title option, under the artwork. Given room of its own rather than
+     squeezed into the button row, where "title" alone said nothing about what
+     ticking it would do. */
+  .titleopt{padding:10px 0 0}
+  .titleopt label{display:inline-flex;align-items:center;gap:7px;cursor:pointer;
+    font:400 12.5px/1.5 "IBM Plex Sans",sans-serif;color:var(--ink)}
+  .titleopt .thint{display:block;margin:3px 0 0 23px;
+    font:400 11px/1.5 "IBM Plex Mono",monospace;color:var(--slate)}
+
   .slot{position:relative;overflow:hidden;border-radius:2px;background:#1e2128;
         border:1px dashed #363b45;min-height:0}
   .slot.filled{border-color:transparent;cursor:grab}
