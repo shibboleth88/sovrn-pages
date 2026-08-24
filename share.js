@@ -759,6 +759,7 @@ function openWork(r) {
     img.src = uri;
     img.onload = reportScale;
     built = null;
+    syncPreviewCap();
     $("warn").textContent = "";
     syncAddButton();
   }).catch(function (e) {
@@ -1281,6 +1282,8 @@ function build() {
     var img = $("prev");
     img.style.width = r.frames[0].width + "px";
     img.src = URL.createObjectURL(blob);
+    // The GIF now carries the caption itself; leaving the band up would show it twice.
+    $("prevcap").hidden = true;
     img.onload = reportScale;
     $("dl").disabled = false;
     var kb = blob.size / 1024;
@@ -1304,14 +1307,42 @@ function build() {
   });
 }
 
+// The preview is meant to be the live artwork; build() swaps in the encoded GIF
+// so you can see what you are about to get. Anything that invalidates that GIF
+// has to put the artwork back, or the screen keeps showing a render that no
+// longer matches the settings — which is how un-ticking the title appeared to do
+// nothing: the captioned GIF was still sitting there.
+function showLiveArtwork() {
+  // The stats line describes the render we are about to discard, so it goes too —
+  // but only when there was one. On the error path built is already null and that
+  // line is holding the error message, which must survive.
+  if (built) $("warn").textContent = "";
+  built = null;
+  if (!sel || !sel.uri) return;
+  var img = $("prev");
+  if ((img.getAttribute("src") || "").slice(0, 5) === "blob:") img.src = sel.uri;
+  img.style.width = parseInt($("size").value, 10) + "px";
+  syncPreviewCap();
+  reportScale();
+}
+
+// The band under the preview stands in for the one captioned() burns into the
+// GIF, so ticking the box shows the effect at once rather than after a render.
+function syncPreviewCap() {
+  var cap = $("prevcap");
+  if (!cap) return;
+  var on = withTitles && sel && sel.title && sel.slug !== "compose";
+  cap.hidden = !on;
+  if (on) {
+    cap.textContent = sel.title;
+    cap.style.width = parseInt($("size").value, 10) + "px";
+  }
+}
+
 $("size").onchange = function () {
   // Nothing is re-encoded here — the preview is the live artwork, and the GIF is
   // built when it is asked for.
-  built = null;
-  if (sel && sel.uri) {
-    $("prev").style.width = parseInt($("size").value, 10) + "px";
-    reportScale();
-  }
+  showLiveArtwork();
 };
 
 /* --------------------------------------------------------------- composing */
@@ -1573,6 +1604,10 @@ $("ctitles").onchange = function () {
 $("stitles").onchange = function () {
   withTitles = this.checked;
   syncTitleBoxes();
+  // Drop the render and put the live artwork back. Without this, un-ticking left
+  // the captioned GIF on screen and the title looked permanent — the download
+  // was already correct, the picture was not.
+  showLiveArtwork();
 };
 
 // Frames for one work at whatever size its cell needs.

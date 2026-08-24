@@ -77,7 +77,13 @@
       <label><input type="checkbox" id="stitles"> Add the title to the GIF</label>
       <span class="thint">printed in a band under the work, like a wall label</span>
     </div>
-    <div class="preview"><img id="prev" alt=""></div>
+    <!-- The band under the artwork mirrors what captioned() burns into the GIF,
+         so ticking the box shows the result immediately instead of only after a
+         render. Same ground, font and colour as drawCap. -->
+    <div class="preview">
+      <img id="prev" alt="">
+      <p class="prevcap" id="prevcap" hidden></p>
+    </div>
     <p class="shrunk" id="shrunk" hidden></p>
   </div>
 
