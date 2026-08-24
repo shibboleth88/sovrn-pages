@@ -61,6 +61,9 @@
   .gtitle{font:400 11px/1.5 "IBM Plex Mono",monospace;color:var(--slate);
           margin:0 0 10px;letter-spacing:.04em}
   .three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  /* scoped to one collection: a lone panel in a third of the row reads as a
+     missing pair, so it gets its own width and sits centred */
+  .three.one{grid-template-columns:minmax(0,360px);justify-content:center}
   @media (max-width:640px){ .three{grid-template-columns:1fr;gap:14px} }
   .panelcard{position:relative;aspect-ratio:1;overflow:hidden;border-radius:3px;
     border:1px solid var(--rule);background:var(--card);cursor:pointer;padding:0;
@@ -505,6 +508,15 @@ var ORDER = ["reflection", "wunderkammer", "bytegans"];
 var REFLECTION_FRAMES = 72;
 
 
+// ?c=<slug> locks the page to one collection: the chips go away, the panels show
+// only that collection, and the copy names it. Three Sites pages can then embed
+// the same implementation rather than three copies of it drifting apart.
+var LOCK = (function () {
+  var m = /[?&]c=([a-z-]+)/.exec(location.search);
+  return m && ORDER.indexOf(m[1]) >= 0 ? m[1] : null;
+})();
+var VIEW = LOCK ? [LOCK] : ORDER;
+
 var data = null, scope = null, sel = null, cache = {}, token = 0;
 var lastRows = [];   // what the current search turned up, for the Enter shortcut
 var $ = function (id) { return document.getElementById(id); };
@@ -515,8 +527,9 @@ fetch(BASE + "onchain-titles.json")
   .catch(function () { $("note").textContent = "Couldn't load the title index."; });
 
 function boot() {
+  if (LOCK) lockTo(LOCK);
   var strip = $("sets");
-  ORDER.forEach(function (slug) {
+  (LOCK ? [] : ORDER).forEach(function (slug) {
     var b = document.createElement("button");
     b.type = "button";
     b.textContent = LABELS[slug];
@@ -529,11 +542,27 @@ function boot() {
     b._slug = slug;
     strip.appendChild(b);
   });
-  scope = "reflection";
+  scope = LOCK || "reflection";
   mark();
   buildPanels();
   buildShapes();
   renderComposer();
+}
+
+// Naming the collection in the heading matters more than it looks: the page is
+// embedded, so the heading is the only thing telling a visitor what they are
+// looking at.
+function lockTo(slug) {
+  $("sets").hidden = true;
+  document.title = "Shareable GIFs of " + LABELS[slug] + " \u2014 sovrn.art";
+  var h = document.querySelector("header h1");
+  var p = document.querySelector("header p");
+  if (h) h.textContent = "Shareable GIFs of " + LABELS[slug];
+  if (p) p.textContent = "get animated versions of " + ARTISTS[slug] + "'s "
+    + LABELS[slug] + " in a format that can be shared on socials";
+  // "From the collections" is a plural promise the scoped page doesn't keep.
+  var g = $("gtitle");
+  if (g) g.textContent = "From " + LABELS[slug];
 }
 
 /* ------------------------------------------------------- the opening panels */
@@ -567,7 +596,8 @@ function buildPanels() {
   panels = [];
   $("gallery").hidden = false;
 
-  ORDER.forEach(function (slug, n) {
+  host.classList.toggle("one", VIEW.length === 1);
+  VIEW.forEach(function (slug, n) {
     var card = document.createElement("button");
     card.type = "button";
     card.className = "panelcard";
