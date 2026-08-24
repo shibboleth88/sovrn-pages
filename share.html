@@ -478,7 +478,22 @@ var GIF = (function () {
 // re-encoded. Sovrn's other collections keep their images on IPFS, which taints
 // the canvas and makes the export throw.
 var BASE = location.pathname.replace(/[^/]*$/, "");
-var RPC = "https://ethereum-rpc.publicnode.com";
+// Ethereum endpoints, tried in order. The first two are public RPCs. The third is
+// Sovrn's own read-only proxy, and it is why this list exists at all: crypto RPC
+// hostnames sit on the "NoCoin"/cryptomining filter lists that uBlock Origin,
+// AdGuard, Brave Shields and DNS filters ship, so a visitor running any of those
+// got "Failed to fetch" on every single work — the request never left the browser
+// — while the page itself loaded fine, because the title index is same-origin.
+// The proxy host is not a crypto domain, so those lists do not touch it. It serves
+// only tokenURI on these three contracts, and caches (tokenURI is immutable).
+var RPCS = [
+  "https://ethereum-rpc.publicnode.com",
+  "https://eth.drpc.org",
+  "https://sovrn-bot-production.up.railway.app/api/eth"
+];
+// Sticky: a results list can fire forty lookups, and once one endpoint has
+// answered there is no sense making all forty rediscover the dead ones.
+var rpcAt = 0;
 var MAX_HITS = 40;
 var LABELS = { reflection: "Reflection", wunderkammer: "Wunderkammer", bytegans: "byteGANs" };
 var ARTISTS = { reflection: "Pindar Van Arman", wunderkammer: "Isa Kost",
@@ -939,8 +954,7 @@ function openWork(r) {
   }).catch(function (e) {
     if (mine !== token) return;
     $("pm").innerHTML = meta(r);
-    $("warn").textContent = "Couldn't read that work from the contract — "
-      + (e && e.message ? e.message : "try again in a moment") + ".";
+    $("warn").textContent = chainTrouble(e, "Couldn't read that work from the contract");
   });
 }
 
@@ -975,16 +989,66 @@ function meta(r) {
   return s;
 }
 
+// Try each endpoint in turn, starting from whichever last worked. A fetch that
+// rejects with a TypeError never completed — blocked, offline or DNS-filtered —
+// which is a different thing from an RPC that answered with an error, and the
+// two deserve different words to the visitor.
+function rpcHost(u) {
+  try { return new URL(u).host; } catch (e) { return u; }
+}
+
+// What to actually tell someone. A blocked request is not the contract's fault
+// and not the chain's, and saying "couldn't read it from the contract" sends
+// people looking in exactly the wrong place.
+function chainTrouble(e, doing) {
+  if (e && e.blocked) {
+    return "Couldn't reach Ethereum — the request was blocked before it left your "
+      + "browser. An ad blocker, privacy extension (uBlock Origin, Brave Shields, "
+      + "AdGuard) or a network filter is the usual cause; allow this page and retry.";
+  }
+  return doing + " — " + ((e && e.message) ? e.message : "try again in a moment") + ".";
+}
+
+function rpcCall(to, callData) {
+  var body = JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call",
+                              params: [{ to: to, data: callData }, "latest"] });
+  var problems = [];
+
+  function attempt(i) {
+    if (i >= RPCS.length) {
+      rpcAt = 0;                       // next action starts from the top again
+      var allBlocked = problems.length > 0 && problems.every(function (p) { return p.blocked; });
+      var e = new Error(allBlocked
+        ? "the request was blocked before it left your browser"
+        : problems.map(function (p) { return p.msg; }).join("; "));
+      e.blocked = allBlocked;
+      throw e;
+    }
+    return fetch(RPCS[i], {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: body
+    }).then(function (r) {
+      if (!r.ok) { var e = new Error("HTTP " + r.status); e.reached = true; throw e; }
+      return r.json();
+    }).then(function (j) {
+      if (j.error) { var e = new Error(j.error.message || "call failed"); e.reached = true; throw e; }
+      if (typeof j.result !== "string") { var e2 = new Error("no result"); e2.reached = true; throw e2; }
+      rpcAt = i;                       // stick to whatever answered
+      return j;
+    }).catch(function (e) {
+      // A TypeError out of fetch() means the request never completed at all.
+      var blocked = !e.reached && (e instanceof TypeError);
+      problems.push({ blocked: blocked, msg: rpcHost(RPCS[i]) + ": " + e.message });
+      return attempt(i + 1);
+    });
+  }
+  return attempt(rpcAt);
+}
+
 function fetchWork(slug, id) {
   var key = slug + ":" + id;
   if (cache[key]) return Promise.resolve(cache[key]);
   var call = "0xc87b56dd" + id.toString(16).padStart(64, "0");   // tokenURI(uint256)
-  return fetch(RPC, {
-    method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call",
-                           params: [{ to: data[slug].contract, data: call }, "latest"] })
-  }).then(function (r) { return r.json(); }).then(function (j) {
-    if (j.error) throw new Error(j.error.message || "call failed");
+  return rpcCall(data[slug].contract, call).then(function (j) {
     var raw = j.result.slice(2);
     var len = parseInt(raw.slice(64, 128), 16);
     var bytes = new Uint8Array(len);
@@ -1390,8 +1454,7 @@ function build() {
   }).catch(function (e) {
     if (mine !== token) return;
     hideProgress();
-    $("warn").textContent = "Couldn't build that GIF — " + (e.message || e)
-      + ". “Original SVG” still works.";
+    $("warn").textContent = chainTrouble(e, "Couldn't build that GIF");
   });
 }
 
@@ -1770,7 +1833,7 @@ $("mkgrid").onclick = function () {
     if (mine !== token) return;
     hideProgress();
     renderComposer();
-    $("warn").textContent = "Couldn't build that — " + (e.message || e) + ".";
+    $("warn").textContent = chainTrouble(e, "Couldn't build that");
   });
 };
 
