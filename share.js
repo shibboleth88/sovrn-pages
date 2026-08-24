@@ -1311,7 +1311,12 @@ function build() {
     img.style.width = r.frames[0].width + "px";
     img.src = URL.createObjectURL(blob);
     // The GIF now carries the caption itself; leaving the band up would show it twice.
-    $("prevcap").hidden = true;
+    // Guarded like every other reach for this element: assets are cached for ten
+    // minutes, so a visitor can briefly hold this script alongside an older shell
+    // that has no such element, and an unguarded throw here would land inside the
+    // render and break the download rather than skip a cosmetic line.
+    var band = $("prevcap");
+    if (band) band.hidden = true;
     img.onload = reportScale;
     $("dl").disabled = false;
     var kb = blob.size / 1024;
