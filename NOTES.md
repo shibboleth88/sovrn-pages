@@ -242,6 +242,24 @@ When a push is rejected, look before acting: `git log HEAD..origin/main` and
 `git diff --stat HEAD...origin/main` show what the other session did. Rebase on
 top of it, then verify their files survived. Never force.
 
+### Backticks in commit messages
+
+`git commit -m "...` inside a double-quoted heredoc runs anything in backticks as
+a shell command and silently drops it from the message. Writing a message about
+`.prose a.cta` cost exactly those words. Either drop the backticks, or write the
+message with a quoted heredoc:
+
+```bash
+git commit -F - <<'MSG'
+Subject line
+
+Body mentioning `.some-selector` safely.
+MSG
+```
+
+There is no fixing it after a push -- amending means force-pushing over whatever
+another session landed, which is not worth it for a garbled message.
+
 ---
 
 ## The design system
