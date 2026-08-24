@@ -1371,7 +1371,7 @@ function capHeight(width) { return Math.max(13, Math.round(width * 0.030)); }
 
 // Shrink to fit, and ellipsize only when even the smallest size will not do —
 // a Reflection title can run to fifty characters and must not overrun its work.
-function drawCap(ctx, text, x, y, w, h) {
+function drawCap(ctx, text, x, y, w, h, align) {
   var t = String(text || ""), px = Math.max(9, Math.round(h * 0.5));
   while (px > 9) {
     ctx.font = "400 " + px + "px " + CAP_FONT;
@@ -1384,9 +1384,13 @@ function drawCap(ctx, text, x, y, w, h) {
     t = t.replace(/\s+$/, "") + "\u2026";
   }
   ctx.fillStyle = "#9aa1ad";
-  ctx.textAlign = "left";
+  // A single work is centred under its own artwork. In a tych each caption
+  // belongs to the cell above it, and centring those reads as one long row of
+  // text rather than a label per work, so those stay left.
+  ctx.textAlign = align === "center" ? "center" : "left";
   ctx.textBaseline = "middle";
-  ctx.fillText(t, x, Math.round(y + h * 0.52));
+  ctx.fillText(t, align === "center" ? Math.round(x + w / 2) : x,
+               Math.round(y + h * 0.52));
 }
 
 // Geometry for a layout at a given output width: the largest square that lets
@@ -1424,7 +1428,7 @@ function captioned(r, title) {
     ctx.fillRect(0, 0, c.width, c.height);
     sctx.putImageData(r.frames[i], 0, 0);
     ctx.drawImage(scratch, 0, 0);
-    drawCap(ctx, title, 0, h, w, capH);
+    drawCap(ctx, title, 0, h, w, capH, "center");
     out.push(ctx.getImageData(0, 0, c.width, c.height));
   }
   return { frames: out, delays: r.delays, colours: r.colours };
@@ -1596,10 +1600,19 @@ function syncTitleBoxes() {
 $("ctitles").onchange = function () {
   withTitles = this.checked;
   syncTitleBoxes();
-  // Deliberately not clearing `built`: what is on screen is the composite that
-  // was made, and Download should keep handing over exactly that until Make is
-  // pressed again.
+  // A composite already on screen was rendered with the old choice, and unlike a
+  // single work there is no live artwork to fall back to — the composite only
+  // exists as the encoded GIF. Keeping it meant un-ticking left the titles both
+  // on screen and in the download. So it is discarded, and Make is the way back.
+  var stale = sel && sel.slug === "compose";
+  if (stale) closePanel();
   renderComposer();
+  if (stale) {
+    $("chint").textContent = withTitles
+      ? "Titles on — press Make it again to add them."
+      : "Titles off — press Make it again to remove them.";
+  }
+  showLiveArtwork();
 };
 $("stitles").onchange = function () {
   withTitles = this.checked;
