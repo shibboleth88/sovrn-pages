@@ -343,6 +343,11 @@ function poolPath(slug, i) {
   return BASE + pool.dir + pool.stem + (i < 10 ? "0" + i : i) + ".svg";
 }
 
+// Where a collection's opening panel starts in its pool, when the default
+// stagger is not the frame we want to open on. Keep in step with the preload
+// links in the share*.html shells.
+var PANEL_START = { reflection: 2 };
+
 var panels = [], rotators = [];
 var HOLD_MS = 7000, FADE_MS = 1000;
 
@@ -365,7 +370,13 @@ function buildPanels() {
     // Start each panel at a different point in its pool so the three do not
     // move in step. No loading="lazy": these are the first thing on the page,
     // and a lazy image never scrolled to is never loaded at all.
-    var startAt = 1 + (n * 7) % POOLS[slug].n;
+    //
+    // Reflection opens on the second of its pool rather than the first. The
+    // stagger below is only there to keep the panels out of lockstep, so
+    // overriding one collection costs nothing — but the <link rel="preload"> in
+    // every share*.html shell names this file, so the two have to move together.
+    // tools/check-share-pages.py holds them to it.
+    var startAt = PANEL_START[slug] || 1 + (n * 7) % POOLS[slug].n;
     a.src = poolPath(slug, startAt);
 
     var cap = document.createElement("figcaption");

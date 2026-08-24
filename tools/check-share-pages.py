@@ -10,8 +10,11 @@ drift a reader would never notice: three pages keep working and the fourth
 quietly loses a button.
 
 Checked here: identical markup across all four, each scoped page declaring the
-scope its filename claims, share.html declaring none, and no page carrying an
-inline <style> or a second inline <script> that has escaped the shared files.
+scope its filename claims, share.html declaring none, no page carrying an inline
+<style> or a second inline <script> that has escaped the shared files, and the
+preload hints naming the frame each panel actually opens on — share.js decides
+that, and a preload pointing at the wrong frame warms an image nobody shows
+while leaving the real one cold.
 """
 import os, re, sys
 
@@ -72,6 +75,24 @@ def main():
             problems.append(f"{name}: does not link share.css")
         if 'src="share.js"' not in text:
             problems.append(f"{name}: does not load share.js")
+
+    # The preload must name the frame share.js actually opens the panel on.
+    js = read("share.js")
+    starts = dict(re.findall(r"(\w+)\s*:\s*(\d+)", 
+                             (re.search(r"var PANEL_START\s*=\s*\{([^}]*)\}", js) or
+                              type("m", (), {"group": lambda *_: ""})()).group(1)))
+    pools = dict(re.findall(r"(\w+):\s*\{\s*dir:\s*\"([^\"]+)\",\s*stem:\s*\"([^\"]+)\"",
+                            js) and [(m[0], (m[1], m[2])) for m in
+                 re.findall(r"(\w+):\s*\{\s*dir:\s*\"([^\"]+)\",\s*stem:\s*\"([^\"]+)\"", js)])
+    for slug, (d, stem) in pools.items():
+        n = int(starts.get(slug, 0))
+        if not n:
+            continue                      # uses the default stagger; nothing pinned
+        want = f"{d}{stem}{n:02d}.svg"
+        for name in ("share.html", f"share-{slug}.html"):
+            if os.path.exists(os.path.join(ROOT, name)) and want not in read(name):
+                problems.append(
+                    f"{name}: preloads a frame other than {want}, which share.js opens on")
 
     for p in problems:
         print("  " + p)
