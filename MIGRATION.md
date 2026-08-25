@@ -1,5 +1,8 @@
 # Moving sovrn.art off Google Sites onto GitHub Pages
 
+> **Done — 25 August 2026.** Merged 21:33 CEST, HTTPS live 21:39:53, all 47 URLs
+> verified. Kept below as the record of how, and of what it cost to find out.
+
 A plan, not a decision. Written 25 August 2026 from a full survey of the live site,
 so the numbers in it are measured rather than estimated. Re-check them before
 starting if much time has passed.
@@ -181,6 +184,15 @@ the destination from a query parameter.
 
    The point for timing: **sovrn.art is down for this whole step.** Don't budget the
    optimistic case — plan on doing the re-set, not on waiting to see whether you need to.
+
+   **Do it only once DNS has settled, not the moment you change the record.** On the
+   real cutover the first re-set was fired while resolvers were still flapping between
+   the old and new value — Google and Cloudflare each answered both ways over a couple
+   of minutes — and it produced `https_certificate: null`, exactly as if nothing had
+   been asked. Waiting until two public resolvers agreed on the new value across four
+   consecutive checks, then re-setting, went `authorization_pending` → `approved` and
+   served HTTPS inside 20 seconds. The rehearsal missed this because its DNS had been
+   in place for hours; a real cutover never has that luxury.
 4. Walk the 39 URLs and confirm every one resolves.
 
 **Rollback is a DNS record.** Point `www` back at `ghs.googlehosted.com` and revert
