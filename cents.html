@@ -49,7 +49,7 @@ ext=u=>!u.startsWith("http")?'':(u.includes("sovrn.art")?' target="_blank"':' ta
 const row=x=>'<li><a href="'+x[1]+'"'+ext(x[1])+'>'+(x[2]&&x[2].includes(".")?'<img src="'+encodeURI(x[2].includes("/")?x[2]:H+x[2])+'" alt="">':'')+e(x[0])+(x[2]&&!x[2].includes(".")?'<span class="src">'+e(x[2])+'</span>':'')+'</a></li>';
 $("u").innerHTML=UP.map(row).join("");$("r").innerHTML=PS.map(row).join("");
 $("p").innerHTML=PR.map(row).join("");$("m").innerHTML=MK.map(row).join("");$("s").innerHTML=SO.map(row).join("");
-$("g").innerHTML=G.map(x=>'<a href="https://www.sovrn.art/museums/ucca" target="_blank"><img src="'+encodeURI(U+x[0])+'" alt="'+e(x[1])+'" loading="lazy"></a>').join("");
+$("g").innerHTML=G.map(x=>'<a href="https://www.sovrn.art/exhibitions/ucca" target="_blank"><img src="'+encodeURI(U+x[0])+'" alt="'+e(x[1])+'" loading="lazy"></a>').join("");
 const mb=$("mb"),mn=$("mn");
 mn.innerHTML=[...document.querySelectorAll("h2[id]")].map(h=>'<li><a href="#'+h.id+'">'+h.textContent+'</a></li>').join("")+'<li><a href="#inq">Inquiries</a></li>';
 const setMenu=o=>{mb.setAttribute("aria-expanded",o);mn.hidden=!o;};
