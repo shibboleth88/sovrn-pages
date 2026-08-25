@@ -93,16 +93,17 @@ def check_urls(host):
     def one(p):
         code, body = fetch(host.rstrip("/") + p + ("/" if "127.0.0.1" in host and p != "/" else ""), "GET")
         listing = b"Directory listing for" in body
-        return p, code, listing
+        stub = b"This page has moved" in body
+        return p, code, listing, stub
     with ThreadPoolExecutor(max_workers=8) as pool:
-        for p, code, listing in pool.map(one, PUBLIC):
+        for p, code, listing, stub in pool.map(one, PUBLIC):
             if code != 200:
                 bad.append((p, code))
                 print(f"    {code}  {p}")
             elif listing:
                 bad.append((p, "listing"))
                 print(f"    no index.html  {p}   (a directory listing, which Pages 404s)")
-            elif b"This page has moved" in body:
+            elif stub:
                 # A stub at <name>.html shadows /<name>: Pages strips .html when
                 # resolving an extensionless request and prefers the file to the
                 # directory. The stub then points back at itself — a redirect loop,
