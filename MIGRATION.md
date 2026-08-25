@@ -119,11 +119,36 @@ whatever URL was current when it was posted.
 So leave a thin redirect at every old flat path: a few lines of HTML that send the
 browser to the new location, one per file. It costs nothing, it protects links we
 do not know about, and it means **nobody outside this repo has to change anything
-at cutover**. Without them, an embed of `share.html?c=reflection` goes blank the
-moment the file moves — and the owner of that page would have no idea why.
+at cutover**. Without them, an embed goes blank the moment the file moves — and
+the owner of that page would have no idea why.
+
+**A known one:** `https://www.vanarman.com/sharable` embeds
+`shibboleth88.github.io/sovrn-pages/share-reflection.html` in a plain, unsandboxed
+iframe. That exact file moves in the restructure, so it needs a stub. Its iframe
+carries no `sandbox` attribute, so any redirect technique works there and the tool
+keeps its full capability, downloads included.
 
 Keep the query string when redirecting: `share.html?c=reflection` has to land on
 the scoped page, not the combined one.
+
+### Write them as meta-refresh plus canonical, and keep them one hop
+
+```html
+<link rel="canonical" href="https://www.sovrn.art/shareable/share-reflection">
+<meta http-equiv="refresh" content="0; url=/shareable/share-reflection">
+```
+
+GitHub Pages cannot emit a 301, and this is the convention it supports —
+`jekyll-redirect-from` generates exactly this shape. Search engines treat a
+meta-refresh as a redirect, and the canonical removes any duplicate-content
+ambiguity.
+
+This pattern is not the kind of thing that gets a site flagged. What does is an
+**open redirect** — a `?url=` parameter forwarding anywhere, which phishing abuses
+— or **cloaking**, serving crawlers something other than what people see. These
+have a fixed destination compiled into the file and are identical for everyone.
+Two rules keep it that way: never let a stub point at another stub, and never take
+the destination from a query parameter.
 
 ## Cutover
 
