@@ -51,6 +51,29 @@ Verified working 2026-08-25: an `eth_call` for `tokenURI(884)` on the Reflection
 contract returns the full work with `access-control-allow-origin` correctly set to
 the GitHub Pages origin.
 
+## Reflection is ~144 contracts, not one
+
+`share.js` reads `tokenURI` from `0x5137cfB4…`, and that is the right address to
+call. It is not, however, "the Reflection contract" in any complete sense, so do
+not write copy that says so.
+
+Tracing real calls across 20 tokens: rendering one work touches **31** contracts —
+13 shared by every work, plus 18 token-specific ones drawn from a pool estimated at
+~131. Call it ~144 for the collection, as a floor.
+
+Two consequences that matter here:
+
+- **Responses are large by design.** One `tokenURI` returns ~163KB, assembled from
+  ~170KB of bytecode across those 31 contracts. That is why an RPC that truncates
+  or size-limits responses fails on this collection specifically — `cloudflare-eth`
+  is already excluded from the harvester for exactly this reason.
+- **The artwork is stored, not recomputed.** The generative process ran once at
+  mint and was written to chain, which is why the works are immutable and why the
+  mirrored SVGs in `sovrn-onchain` can never drift.
+
+Full detail, including why static analysis of the bytecode gives a badly wrong
+answer, is in `sovrn-onchain/CLAUDE.md`.
+
 ## Related repositories
 
 | repo | what it holds |
