@@ -1625,12 +1625,30 @@ function capType(bandH) { return Math.max(CAP_MIN_PX, Math.round(bandH * CAP_RAT
 
 // Shrink to fit, and ellipsize only when even the smallest size will not do —
 // a Reflection title can run to fifty characters and must not overrun its work.
-function drawCap(ctx, text, x, y, w, h, align) {
-  var t = String(text || ""), px = capType(h);
-  while (px > CAP_MIN_PX) {
-    ctx.font = CAP_FACE + " " + px + "px " + CAP_FONT;
-    if (ctx.measureText(t).width <= w) break;
-    px--;
+// One size for every caption in a set. Sizing each to its own title made a short
+// one large and a long one small, which reads as a mistake rather than as a
+// group — so the whole set takes the size the longest title can carry.
+function fitCapSize(ctx, titles, w, h) {
+  var px = capType(h);
+  titles.forEach(function (title) {
+    var t = String(title || "");
+    while (px > CAP_MIN_PX) {
+      ctx.font = CAP_FACE + " " + px + "px " + CAP_FONT;
+      if (ctx.measureText(t).width <= w) break;
+      px--;              // only ever shrinks, so the smallest fit wins
+    }
+  });
+  return px;
+}
+
+function drawCap(ctx, text, x, y, w, h, align, fixedPx) {
+  var t = String(text || ""), px = fixedPx || capType(h);
+  if (!fixedPx) {
+    while (px > CAP_MIN_PX) {
+      ctx.font = CAP_FACE + " " + px + "px " + CAP_FONT;
+      if (ctx.measureText(t).width <= w) break;
+      px--;
+    }
   }
   ctx.font = CAP_FACE + " " + px + "px " + CAP_FONT;
   if (ctx.measureText(t).width > w) {
@@ -1940,6 +1958,10 @@ $("mkgrid").onclick = function () {
       var ctx = c.getContext("2d", { willReadFrequently: true });
       var scratch = document.createElement("canvas");
       var sctx = scratch.getContext("2d");
+      // Measured once for the whole set, not per frame and not per work.
+      var capPx = geo.capH
+        ? fitCapSize(ctx, theSet.map(function (w) { return w.title; }), geo.cell, geo.capH)
+        : 0;
 
       for (var i = 0; i < COMPOSE_FRAMES; i++) {
         ctx.fillStyle = GROUND;
@@ -1955,7 +1977,8 @@ $("mkgrid").onclick = function () {
           sctx.putImageData(f, 0, 0);
           ctx.drawImage(scratch, box.x, box.y, geo.cell, geo.cell);
           if (geo.capH) {
-            drawCap(ctx, theSet[k].title, box.x, box.y + geo.cell, geo.cell, geo.capH);
+            drawCap(ctx, theSet[k].title, box.x, box.y + geo.cell, geo.cell, geo.capH,
+                    null, capPx);
           }
         }
         frames.push(ctx.getImageData(0, 0, geo.W, geo.H));

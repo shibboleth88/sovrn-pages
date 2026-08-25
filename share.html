@@ -51,6 +51,19 @@
   <p class="chint" id="chint"></p>
 
   <p class="note" id="note">Search by title or token ID — “skull”, “cogito”, “octoGAN”, or 883.</p>
+  <!-- Above the card, not inside the panel. A Reflection render is seventy-two
+       frames and the better part of a minute; with the card and the trait
+       filters between the top of the page and the panel, the only sign that
+       anything was happening could sit below the fold, and the page looked
+       stuck. It belongs where it will be seen. -->
+  <div class="prog" id="prog" hidden>
+    <div class="track"><div class="bar" id="bar"></div></div>
+    <p class="plabel" id="plabel">
+      <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span id="ptext">Reading the contract</span>
+    </p>
+  </div>
+
   <div class="gallery" id="gallery" hidden>
     <p class="gtitle" id="gtitle">From the collections</p>
     <div class="galrow">
@@ -78,13 +91,6 @@
         <button class="go" id="dl">Download GIF</button>
         <button class="go ghost" id="add">Add to set</button>
         <button class="go ghost" id="src">Original SVG</button>
-      </div>
-      <div class="prog" id="prog" hidden>
-        <div class="track"><div class="bar" id="bar"></div></div>
-        <p class="plabel" id="plabel">
-          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span id="ptext">Reading the contract</span>
-        </p>
       </div>
       <p class="warn" id="warn"></p>
     </div>
