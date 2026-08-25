@@ -35,7 +35,7 @@ const CO=[
 ["https://www.sovrn.art/museums/moca","Museum of Crypto Art","Five Reflections","Five works · Pindar Van Arman",
 "Five works from Reflection, Van Arman’s fully on-chain execution of his reflective AI process, in MOCA’s permanent collection.",
 "img/pages/overview/moca.png",1],
-["https://www.sovrn.art/museums/arab-bank","Arab Bank Switzerland","Sightseers 104","One work · Norman Harman",
+["https://www.sovrn.art/collections/abs-collection","Arab Bank Switzerland","Sightseers 104","One work · Norman Harman",
 "One of the five hundred SIGHTSEERS, in the bank’s digital art collection alongside OPERATOR, Entangled Others and Anna Lucia.",
 "img/pages/overview/arab-bank.jpg"],
 ["https://www.sovrn.art/museums/lacma","LACMA, Los Angeles","AI Imagined Portrait Painted by a Robot #2","One work · Pindar Van Arman",
