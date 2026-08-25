@@ -2,11 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<base href="/">
-<!-- Every relative path in this file resolves from the site root, which is what
-     lets a page sit at any depth without rewriting its assets. In-page anchors
-     are the one thing <base> breaks, so an in-page anchor must be built
-     from location.pathname rather than written bare. -->
+<!-- Deliberately no <base>: this shell must work on two different roots. It is
+     served from the site root as /share-<slug>.html, and vanarman.com iframes
+     shibboleth88.github.io/sovrn-pages/share-reflection.html, where the site root
+     is /sovrn-pages/ and not "/". Every path here is therefore relative, and
+     SHARE_ROOT tells share.js the same thing about the artwork mirror. The
+     canonical below still names the sovrn.art URL, so search engines consolidate
+     on it without anyone's embed breaking. -->
+<script>var SHARE_ROOT = "./";</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Shareable GIFs of on-chain SVGs — sovrn.art</title>
 <!-- Card and search metadata. Google Sites emitted one og:image for the whole site —

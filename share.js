@@ -231,7 +231,11 @@ var GIF = (function () {
 // the canvas and makes the export throw.
 // Served from the site root now, so data files and image pools are addressed from
 // there rather than from whatever directory the page happens to sit in.
-var BASE = "/";
+// Where this shell's copy of the site starts. A shell at the domain root leaves
+// SHARE_ROOT unset and gets "/". The flat share-<slug>.html shells set "./" instead,
+// because vanarman.com iframes one of them from
+// shibboleth88.github.io/sovrn-pages/ — a project page, where "/" is not our root.
+var BASE = typeof SHARE_ROOT !== "undefined" ? SHARE_ROOT : "/";
 // Ethereum endpoints, tried in order. The first two are public RPCs. The third is
 // Sovrn's own read-only proxy, and it is why this list exists at all: crypto RPC
 // hostnames sit on the "NoCoin"/cryptomining filter lists that uBlock Origin,
@@ -1087,7 +1091,7 @@ function rpcCall(to, callData) {
 //
 // The chain stays as the fallback, so a work missing from the mirror still resolves,
 // and nothing here is load-bearing on the harvest being complete.
-var ART = "/onchain/";
+var ART = BASE + "onchain/";
 
 function svgToDataUri(text) {
   // The rest of the page expects a data: URI — same as tokenURI hands back — so the
