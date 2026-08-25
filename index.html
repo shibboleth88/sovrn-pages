@@ -205,7 +205,9 @@ const MC=[
 ["Museum of Crypto Art","Five Reflections","Permanent collection","/collections/moca","Museum of Crypto Art"],
 ["Arab Bank Switzerland","Sightseers 104","Art collection","/collections/abs-collection","Arab Bank Switzerland"],
 ["LACMA, Los Angeles","AI Imagined Portrait Painted by a Robot #2","Permanent collection","/collections/lacma","LACMA"]];
-const MK=[["Raster","raster.jpg"],["Ord","ord.png"],["Satflow","satflow.png"]],
+const MK=[["Raster","raster.jpg","/marketplaces"],
+["Ord","ord.png","https://ord.net/collection/cents"],
+["Satflow","satflow.png","https://www.satflow.com/ordinals/cents"]],
 SO=[["X","twitter.jpg","https://twitter.com/sovrnart"],
 ["Instagram","instagram.png","https://www.instagram.com/sovrn.art",1],
 ["CENTS Discord","cents-discord.png","https://discord.gg/USQwhGj8HC",1],
@@ -491,7 +493,7 @@ document.getElementById("g").innerHTML=C.map((c,i)=>{
 document.getElementById("m").innerHTML=MU.concat(MC).map(m=>
 '<li><a href="'+m[3]+'"'+tgt(m[3])+'><span class="mv">'+esc(m[0])+'</span><span class="ms">'+esc(m[1])+'</span><span class="md">'+esc(m[2])+'</span></a></li>').join("");
 document.getElementById("mk").innerHTML=MK.map(m=>
-'<a href="/marketplaces"><img src="'+encodeURI(H+m[1])+'" alt=""><span>'+m[0]+'</span></a>').join("");
+'<a href="'+m[2]+'"'+tgt(m[2])+'><img src="'+encodeURI(H+m[1])+'" alt=""><span>'+m[0]+'</span></a>').join("");
 document.getElementById("so").innerHTML=SO.map(m=>
 '<a href="'+m[2]+'"'+tgt(m[2])+'><img src="'+encodeURI((m[3]?P:H)+m[1])+'" alt=""><span>'+m[0]+'</span></a>').join("");
 </script></body></html>
