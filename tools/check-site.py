@@ -102,6 +102,14 @@ def check_urls(host):
             elif listing:
                 bad.append((p, "listing"))
                 print(f"    no index.html  {p}   (a directory listing, which Pages 404s)")
+            elif b"This page has moved" in body:
+                # A stub at <name>.html shadows /<name>: Pages strips .html when
+                # resolving an extensionless request and prefers the file to the
+                # directory. The stub then points back at itself — a redirect loop,
+                # and both it and the real page answer 200, so status alone is blind
+                # to it. This is how /cents stopped opening.
+                bad.append((p, "stub"))
+                print(f"    a redirect stub  {p}   (shadowing its own page — loop)")
     # The misspelling is the live URL and correcting it 404s (NOTES.md).
     if not any(p == "/collections/fransisco-carolinum" for p in PUBLIC):
         bad.append(("fransisco-carolinum missing from the contract", 0))
