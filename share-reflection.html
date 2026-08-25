@@ -2,8 +2,30 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- Deliberately no <base>: this shell must work on two different roots. It is
+     served from the site root as /share-<slug>.html, and vanarman.com iframes
+     shibboleth88.github.io/sovrn-pages/share-reflection.html, where the site root
+     is /sovrn-pages/ and not "/". Every path here is therefore relative, and
+     SHARE_ROOT tells share.js the same thing about the artwork mirror. The
+     canonical below still names the sovrn.art URL, so search engines consolidate
+     on it without anyone's embed breaking. -->
+<script>var SHARE_ROOT = "./";</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Shareable GIFs of Reflection — sovrn.art</title>
+<!-- Card and search metadata. Google Sites emitted one og:image for the whole site —
+     the studio logo, on every page — and gave no way to change it. Serving these
+     pages directly is what makes per-page cards possible at all, so each one names
+     its own image, and cards will not render SVG, which is why the share pages point
+     at a raster rather than at the artwork they are about. -->
+<meta name="description" content="get animated versions of Sovrn&#x27;s on-chain collections in a format that can be shared on socials">
+<link rel="canonical" href="https://www.sovrn.art/shareable/share-reflection">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="sovrn.art">
+<meta property="og:title" content="Shareable GIFs of Reflection">
+<meta property="og:description" content="get animated versions of Sovrn&#x27;s on-chain collections in a format that can be shared on socials">
+<meta property="og:url" content="https://www.sovrn.art/shareable/share-reflection">
+<meta property="og:image" content="https://www.sovrn.art/img/pages/fc-3-blockchains/reflection_fc.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The faces the page names. Without this the CSS asked for Fraunces and

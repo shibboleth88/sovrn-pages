@@ -1,8 +1,25 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en"><head>
+<base href="/"><!-- Relative paths resolve from the site root, so a page can sit at any depth
+     without its assets being rewritten. <base> also rewrites in-page anchors,
+     so an in-page anchor must be built from location.pathname. --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <title>Striker &mdash; CENTS</title>
+<!-- Card and search metadata. Google Sites emitted one og:image for the whole site —
+     the studio logo, on every page — and gave no way to change it. Serving these
+     pages directly is what makes per-page cards possible at all, so each one names
+     its own image, and cards will not render SVG, which is why the share pages point
+     at a raster rather than at the artwork they are about. -->
+<meta name="description" content="Eight cents from the CENTS corpus, photographed, with Lincoln lifted off the field. The rim, the legends and the date are untouched — they are still each coin&#x27;s own.">
+<link rel="canonical" href="https://www.sovrn.art/cents-striker">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="sovrn.art">
+<meta property="og:title" content="Striker — CENTS">
+<meta property="og:description" content="Eight cents from the CENTS corpus, photographed, with Lincoln lifted off the field. The rim, the legends and the date are untouched — they are still each coin&#x27;s own.">
+<meta property="og:url" content="https://www.sovrn.art/cents-striker">
+<meta property="og:image" content="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/cent_homepage.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <style>:root{--paper:#ffffff;--ink:#16181d;--slate:#5c6470;--rule:#dcdcd6;--copper:#8a4f2a;--warm:#b8703f}
 *{box-sizing:border-box;margin:0}
 body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif;padding:30px 22px 44px}
@@ -72,7 +89,7 @@ button:disabled{opacity:.35;cursor:not-allowed}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head>
 <body><div class="wrap">
-<p class="eyebrow"><a class="fc" href="https://www.sovrn.art/cents" target="_blank">CENTS</a> &middot; Striker</p>
+<p class="eyebrow"><a class="fc" href="/cents">CENTS</a> &middot; Striker</p>
 
 <h1>Strike your pfp into a <em>real</em> cent.</h1>
 <p class="lead">Drop in your avatar and it is pressed into the copper of a real Lincoln cent &mdash; the same coins CENTS is made of. <strong>The coin is a photograph. Only your portrait is computed.</strong> Eight cents to choose from, mint red through to heavy verdigris. Free, unlimited, and nothing leaves this page.</p>
@@ -124,7 +141,7 @@ button:disabled{opacity:.35;cursor:not-allowed}
   <p class="fine"><strong>Nothing is uploaded.</strong> The die lives in this page &mdash; your image is read by the browser, struck on your own machine, and forgotten when you close the tab.</p>
 </div>
 
-<p class="more"><a href="https://www.sovrn.art/cents" target="_blank">Back to CENTS &#8599;</a><a href="https://cents.vision/" target="_blank">cents.vision &#8599;</a><a href="https://discord.gg/USQwhGj8HC" target="_blank">CENTS Discord &#8599;</a></p>
+<p class="more"><a href="/cents">Back to CENTS &#8599;</a><a href="https://cents.vision/" target="_blank">cents.vision &#8599;</a><a href="https://discord.gg/USQwhGj8HC" target="_blank">CENTS Discord &#8599;</a></p>
 </div>
 
 <script>

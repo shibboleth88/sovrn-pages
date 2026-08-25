@@ -1,88 +1,20 @@
-<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
-<title>SIGHTSEERS — Norman Harman — sovrn.art</title>
-<style>:root{--paper:#e9e9e5;--ink:#16181d;--slate:#5c6470;--rule:#c9c9c2;--hair:#d8d8d2;
---accent:#0f6b66;--gap:clamp(46px,5.8vw,80px)}
-*{box-sizing:border-box;margin:0}
-::selection{background:var(--accent);color:var(--paper)}
-body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif}
-.wrap{max-width:1180px;margin:0 auto;padding:0 22px 60px}
-a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.hero{position:relative;min-height:min(84vh,720px);display:flex;flex-direction:column;
- justify-content:center;align-items:center;text-align:center;padding:60px 22px;
- background:var(--ink) center/cover no-repeat;margin-bottom:var(--gap)}
-.hero::after{content:"";position:absolute;inset:0;background:rgba(10,12,16,.34)}
-.hero.plain::after{background:none}
-.hero>*{position:relative;z-index:1}
-.hero h1{font:italic 300 clamp(32px,5.6vw,60px)/1.05 Fraunces,serif;letter-spacing:-.025em;color:#fff;
- text-shadow:0 2px 30px rgba(0,0,0,.55);text-wrap:balance}
-.hero .by{margin-top:14px;font:400 clamp(16px,2.2vw,24px)/1.3 Fraunces,serif;color:#f3f1ec;
- text-shadow:0 2px 22px rgba(0,0,0,.55)}
-.eyebrow{font:500 11px/1.5 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--slate)}
-a.fc{color:inherit;text-decoration:none;border-bottom:1px solid var(--accent)}
-a.fc:hover{color:var(--accent)}
-.meta{margin-top:16px;font:500 10.5px/1.9 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:var(--slate)}
-.meta a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--hair)}
-.prose{max-width:66ch}.prose p+p{margin-top:15px}.prose p{color:var(--slate)}
-.lead{font-size:18.5px;line-height:1.62;color:var(--ink)!important}
-h2{position:relative;font:italic 300 clamp(25px,3.3vw,36px)/1.12 Fraunces,serif;letter-spacing:-.02em;
- margin:var(--gap) 0 24px;padding-bottom:16px;border-bottom:1px solid var(--rule)}
-h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;background:var(--accent)}
-figure{margin:0}
-.feature{margin-top:var(--gap)}
-.feature img{width:100%;height:auto;display:block;background:var(--ink)}
-.band{margin-top:clamp(13px,1.7vw,20px);display:grid;gap:clamp(12px,1.6vw,20px)}
-.band.n3{grid-template-columns:repeat(3,1fr)}
-.band.n2{grid-template-columns:repeat(2,1fr)}
-@media(max-width:760px){.band.n3,.band.n2{grid-template-columns:1fr}}
-.band img{width:100%;height:auto;display:block;background:var(--ink)}
-.duo{display:grid;grid-template-columns:minmax(0,380px) 1fr;gap:clamp(20px,3.2vw,46px);
- align-items:center;margin-top:var(--gap)}
-@media(max-width:760px){.duo{grid-template-columns:1fr}}
-.duo img{width:100%;height:auto;display:block;background:var(--ink)}
-blockquote{margin:var(--gap) 0 0;max-width:62ch;padding-left:22px;border-left:2px solid var(--accent)}
-blockquote p{font:italic 300 clamp(18px,2.4vw,25px)/1.34 Fraunces,serif;color:var(--ink)}
-blockquote cite{display:block;margin-top:12px;font:500 10.5px/1 "IBM Plex Mono",monospace;
- letter-spacing:.13em;text-transform:uppercase;color:var(--slate);font-style:normal}
-.res{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(24px,4vw,52px)}
-@media(max-width:720px){.res{grid-template-columns:1fr}}
-.res a{display:block;padding:15px 0;border-top:1px solid var(--hair);text-decoration:none;color:inherit;transition:transform .2s}
-.res a:hover{transform:translateX(4px)}
-.res .k{display:block;font:500 10.5px/1.5 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
-.res .n{display:block;font:italic 300 19px/1.25 Fraunces,serif}
-.res a:hover .n{color:var(--accent)}
-.social{margin-top:16px;display:flex;flex-wrap:wrap;gap:16px;
- font:500 10.5px/1.6 "IBM Plex Mono",monospace;letter-spacing:.11em;text-transform:uppercase}
-.social a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:2px;transition:color .15s}
-.social a:hover{color:var(--accent)}
-.links{margin-top:var(--gap);padding-top:22px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:22px;
- font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
-.links a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:4px}
-.links a:hover{color:var(--accent)}
-.foot{margin-top:26px;font:400 11.5px/1.7 "IBM Plex Mono",monospace;color:var(--slate);max-width:76ch}
-/* the title is painted into the hero image itself; keep it for screen readers */
-.vh{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
- clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}</style></head><body>
-<header class="hero plain" style="background-image:url(img/pages/sightseers/hero.gif)">
-<h1 class="vh">SIGHTSEERS &mdash; by Norman Harman</h1></header>
-<div class="wrap">
-<p class="eyebrow"><a class="fc" href="https://www.sovrn.art" target="_blank">sovrn.art</a> &middot; Curated collection</p>
-<p class="meta">Released 1 October 2022 &middot; Ethereum<br>Arab Bank Switzerland permanent collection<br>Fransisco Carolinum permanent collection</p>
-<div class="prose"><p>A circle of protagonists and bad actors defy the motel perimeter to venture into the land beyond; one where strange clouds and chemical-beaten signs appear on the horizon line. As night falls, the morphing process begins as the SIGHTSEERS start to glitch, faces become increasingly morphic as the wild winds blow and the radio interference increases. The SIGHTSEERS can’t resist the ultimate photo op</p></div>
-<section class="band n2"><img src="img/pages/sightseers/01.jpg" alt="" loading="lazy"><img src="img/pages/sightseers/02.jpg" alt="" loading="lazy"></section>
-<section class="band n2"><img src="img/pages/sightseers/03.jpg" alt="" loading="lazy"><img src="img/pages/sightseers/04.jpg" alt="" loading="lazy"></section>
-<div class="prose"><p>Harman presents a fully fleshed parallel universe, commenting on the relationship to technologies that threaten to destroy humanity as the world falls under the thrall of their novelty. Based on the sightseers who came to watch the nuclear bomb tests that took place in the desert outside of Las Vegas during the 1950s, the SIGHTSEERS landscape is populated with blithely doomed figures. Against this</p></div>
-<section class="band n2"><img src="img/pages/sightseers/05.jpg" alt="" loading="lazy"><img src="img/pages/sightseers/06.jpg" alt="" loading="lazy"></section>
-<div class="prose"><p>A Scottish Artist born in 1977 and member of the art collective Ltd Ink Corporation, Norman Harman distinguishes himself by his incredible creativity in the fields of painting, photography and deconstructive digital art. His passion for the Arts blossomed whilst at the Edinburgh College of Art, where he graduated in 2001, after which his artistic career took off immediately.</p></div>
-<div class="prose"><p>Norman Harman, known as Norrie, exhibited for the first time in Edinburgh in 2001. There, he received the Latimer Prize from the Royal Scottish Academy, which rewards exceptional young Scottish painters.</p></div>
-<div class="prose"><p>After winning this prestigious award, Norman Harman consolidated his position in the art world and gained international recognition. Over the years, he built his own studio and practiced his art in the north of England, before moving back to Edinburgh in 2015.</p></div>
-<div class="prose"><p>As a digital visual deconstructor, Harman creates a series of unique art collections over the course of his “not so young” career. He uses a specially developed algorithm to deliberately corrupt digital files, revealing the beauty of lost transmissions and altered imagery. He explores the different interferences between painting and the digital, creating falsely distorted representations that prov</p></div>
-<div class="prose"><p>Norman Harman’s art, often described as “exploded paintings,” is characterized by his bold use of the digital brush creating compositions that appear corrupted to each viewer.</p></div>
-<div class="prose"><p>His work is widely acclaimed for its complexity, originality and ability to blend beauty, deconstruction, mist, rarity and topical subjects. Recognized as one of the most profitable artists in the CryptoArt field, his work has been exhibited in the UK and Europe. Recent collaborations include Robness Cyberpop, Irvine Welshou and Anton Newcombe.</p></div>
-<p class="social"><a href="http://sightseers.io" target="_blank">sightseers.io</a><a href="https://x.com/NorrieHarman" target="_blank">X</a></p><p class="links"><a href="https://www.raster.art/artwork/sightseers-by-norman-harman" target="_blank">View on Raster &#8599;</a><a href="https://www.arabbank.ch/about-us/art/collection/artist/norman-harman" target="_blank">Arab Bank Switzerland &#8599;</a><a href="https://www.ooekultur.at/location-detail/francisco-carolinum-linz" target="_blank">Francisco Carolinum &#8599;</a></p>
-<p class="foot">SIGHTSEERS, Norman Harman. A defining work of the early wave in AI cryptoart. A curated collection on <a class="fc" href="https://www.sovrn.art" target="_blank">sovrn.art</a>.</p>
-</div></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Moved — sovrn.art</title>
+<!-- This page used to live here, and other sites embed and link these paths:
+     vanarman.com carries share-reflection.html in an iframe, and every link ever
+     posted points at whatever URL was current that day. GitHub Pages cannot emit
+     a 301, so this is the shape it supports — a canonical for search engines and
+     a refresh for people. One hop, fixed destination, never taken from a query
+     parameter: that is the difference between a redirect and an open redirect.
+     The query string is carried across, because share.html?c=reflection has to
+     land on the scoped page and not the combined one. -->
+<link rel="canonical" href="https://www.sovrn.art/curated/sightseers">
+<meta http-equiv="refresh" content="0; url=/curated/sightseers">
+<meta name="robots" content="noindex">
+<script>location.replace("/curated/sightseers" + location.search + location.hash);</script>
+</head>
+<body><p>This page has moved to <a href="/curated/sightseers">/curated/sightseers</a>.</p></body>
+</html>

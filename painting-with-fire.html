@@ -1,103 +1,20 @@
-<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
-<title>Painting with Fire: a History in GANs — Bård Ionson — sovrn.art</title>
-<style>:root{--paper:#e9e9e5;--ink:#16181d;--slate:#5c6470;--rule:#c9c9c2;--hair:#d8d8d2;
---accent:#0f6b66;--gap:clamp(46px,5.6vw,76px)}
-*{box-sizing:border-box;margin:0}
-::selection{background:var(--accent);color:var(--paper)}
-body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif}
-.wrap{max-width:1180px;margin:0 auto;padding:0 22px 60px}
-a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-/* the original runs a shorter banner than the other pages, the fire moving behind the title */
-.hero{position:relative;min-height:min(52vh,440px);display:flex;flex-direction:column;
- justify-content:center;align-items:center;text-align:center;padding:54px 22px;
- background:#120a06 center/cover no-repeat;margin-bottom:var(--gap)}
-.hero::after{content:"";position:absolute;inset:0;background:rgba(12,7,4,.36)}
-.hero>*{position:relative;z-index:1}
-.hero h1{font:italic 300 clamp(30px,5vw,56px)/1.06 Fraunces,serif;letter-spacing:-.025em;color:#fff;
- text-shadow:0 2px 30px rgba(0,0,0,.6)}
-.hero .by{margin-top:14px;font:400 clamp(15px,2.1vw,23px)/1.3 Fraunces,serif;color:#f4f1ec;
- text-shadow:0 2px 22px rgba(0,0,0,.6)}
-.eyebrow{font:500 11px/1.5 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--slate)}
-a.fc{color:inherit;text-decoration:none;border-bottom:1px solid var(--accent)}
-a.fc:hover{color:var(--accent)}
-.meta{margin-top:16px;font:500 10.5px/1.9 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:var(--slate)}
-.prose{max-width:66ch}.prose p+p{margin-top:15px}.prose p{color:var(--slate)}
-.lead{font-size:18.5px;line-height:1.62;color:var(--ink)!important}
-h2{position:relative;font:italic 300 clamp(25px,3.3vw,36px)/1.12 Fraunces,serif;letter-spacing:-.02em;
- margin:var(--gap) 0 26px;padding-bottom:16px;border-bottom:1px solid var(--rule)}
-h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;background:var(--accent)}
-figure{margin:0}
-.strip{margin-top:var(--gap)}
-.strip img{width:100%;height:auto;display:block}
-.duo{display:grid;grid-template-columns:minmax(0,362px) 1fr;gap:clamp(20px,3.2vw,44px);align-items:center;margin-top:var(--gap)}
-@media(max-width:760px){.duo{grid-template-columns:1fr}}
-.duo img{width:100%;height:auto;display:block;background:var(--ink)}
-/* the checkerboard the original runs: a band of three cards, a band of three works */
-.band{margin-top:clamp(14px,1.8vw,22px);display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.6vw,20px)}
-@media(max-width:760px){.band{grid-template-columns:1fr}}
-.band img{width:100%;height:auto;display:block;background:var(--ink)}
-.band.works{margin-top:clamp(12px,1.6vw,20px)}
-.feature{margin-top:var(--gap)}
-.feature img{width:100%;height:auto;display:block;background:var(--ink)}
-blockquote{margin:var(--gap) auto 0;max-width:62ch;padding-left:22px;border-left:2px solid var(--accent)}
-blockquote p{font:italic 300 clamp(19px,2.5vw,26px)/1.34 Fraunces,serif;color:var(--ink)}
-blockquote cite{display:block;margin-top:12px;font:500 10.5px/1 "IBM Plex Mono",monospace;
- letter-spacing:.13em;text-transform:uppercase;color:var(--slate);font-style:normal}
-.tl{margin-top:var(--gap);display:grid;grid-template-columns:2fr 1fr;gap:clamp(18px,3vw,36px);align-items:center}
-@media(max-width:760px){.tl{grid-template-columns:1fr}}
-.tl img{width:100%;height:auto;display:block}
-.btnrow{margin-top:28px}
-.btn{display:inline-block;padding:15px 28px;background:var(--accent);color:var(--paper);
- text-decoration:none;font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;
- text-transform:uppercase;transition:background .16s,transform .16s}
-.btn:hover{background:var(--ink);transform:translateY(-1px)}
-.social{margin-top:16px;display:flex;flex-wrap:wrap;gap:16px;
- font:500 10.5px/1.6 "IBM Plex Mono",monospace;letter-spacing:.11em;text-transform:uppercase}
-.social a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:2px;transition:color .15s}
-.social a:hover{color:var(--accent)}
-.card{background:var(--paper);border:1px solid var(--rule);padding:clamp(18px,2vw,26px);
- display:flex;flex-direction:column;gap:10px}
-.card p{color:var(--slate);font-size:14px;line-height:1.62}
-.card figcaption{margin-top:auto;padding-top:12px;border-top:1px solid var(--hair);
- font:500 10.5px/1.4 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
-.band.cards{align-items:stretch}
-.links{margin-top:var(--gap);padding-top:22px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:22px;
- font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
-.links a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:4px}
-.links a:hover{color:var(--accent)}
-.foot{margin-top:26px;font:400 11.5px/1.7 "IBM Plex Mono",monospace;color:var(--slate);max-width:76ch}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}</style></head><body>
-<header class="hero" style="background-image:url(img/pages/painting-with-fire/hero.gif)">
-<h1>Painting With Fire:<br>a History in GANs</h1><p class="by">by B&#229;rd Ionson</p></header>
-<div class="wrap">
-<p class="eyebrow"><a class="fc" href="https://www.sovrn.art" target="_blank">sovrn.art</a> &middot; Curated collection</p>
-<p class="meta">Released 20 December 2023 &middot; 200 works &middot; Ethereum</p>
-<figure class="strip"><img src="img/pages/painting-with-fire/i01.gif" alt="" loading="lazy"></figure>
-<div class="prose" style="margin-top:var(--gap)">
-<p class="lead">Painting with Fire presents a vignette of transformation: the evolution of GANs from 2014 to 2023 seen through the eyes of fire. Using 14 vintage GAN models, Ionson articulates the emergence of synthetic image generation and the strange turns that it took through time. Each of the 200 artworks invokes the image of fire, showing the wild variety of ways that early generative visual algorithms imagine this elemental force. Ionson explores fire as the quintessence of humanity&#x27;s relationship to both innovation and destruction, embracing the unexpected abstractions of classic AI as a distinctive aesthetic statement. In the artist&#x27;s words, &quot;There is a beauty in the noise, the randomness before the resolution into fire.&quot;</p><p>GAN (generative adversarial network) technologies were developed by researchers and programmers but then utilized by artists in many different forms. Though the technology was invented to make the images as realistic as possible, Bård subverts this to use it chaotically and abstractly; the opposite of what the Ai researchers had in mind. This project celebrates the researchers, innovators and artists who have brought synthetic image generation to life with models such as the aiCAN (Playform), DCGAN, Stylegan 1, 2 and 3, bigGan, biGAN, pix2pix, AttnGan, and more.</p><p>From the biblical burning bush to the the intimacy of a candle flame, Ionson makes fire speak as a paragon of humanity&#x27;s potentials and pitfalls.</p><p>As part of this project, Ionson has constructed a timeline of GAN milestones. The &#x27;historic event&#x27; traits of each token are compiled into what aims to be a definitive chronology of GANs, published on our site here and at bardionson.com/painting-with-fire. Ionson himself is part of this timeline as a foundational figure at the meeting point of AI and cryptoart, and his art is part of the Oxford Bodleian Weston Library and the Centre Pompidou collections, among others.</p></div>
-<h2>The artist</h2>
-<div class="duo"><figure><img src="img/pages/painting-with-fire/i03.jpg" alt="B&#229;rd Ionson" loading="lazy"></figure><div class="prose"><p>Bård Ionson is a pioneer of both crypto and generative art who uses his GAN-algorithms to help flesh out small universes across multiple mediums. The resulting multimedia experiments, spanning image and written word, are but a strange, ultra-expressive tango capitalizing on what AIs do best —generate— and what humans do: imagine.</p><p class="social"><a href="https://bardionson.com/" target="_blank">bardionson.com</a><a href="https://x.com/BardIonson" target="_blank">X</a><a href="https://www.instagram.com/bardionson/" target="_blank">Instagram</a></p></div></div>
-<h2>What artists and collectors say about B&#229;rd Ionson&rsquo;s art</h2>
-<section class="band cards"><figure class="card"><p>From nudes to coins, to political figures, to brands, to religious symbols, to myths: Bård Ionson has been tirelessly training his AI/GAN models with all the icons of our society to generate images that talk to our subconscious. Bård is a pioneer in his field, a master of his technique and a talented artist.</p><p>With his latest series “Painting with Fire” he is depicting the early GAN aesthetic as the very fabric from which our dreams and nightmares are made. Brillant!</p><figcaption>Benoit Couty</figcaption></figure><figure class="card"><p>Ionson is one of the first crypto artists to mint on the blockchain in 2018. With an algorithmic style which favors cohesion of color where edges blend, objects meld together while subjects always remain recognizable in both political and crypto-specific artwork.</p><figcaption>CyborgDAO</figcaption></figure><figure class="card"><p>This new series by Ionson has an artistic but also informative meaning. I have been following Bård since 2018, when I started minting my artworks on the blockchain. His production is extensive, and this latest series perfectly reflects his systematic approach to the art practice. It is a study of the history of using GAN technology for art with the metaphor of fire.</p><figcaption>Mattia Cuttini</figcaption></figure></section>
-<section class="band works"><img src="img/pages/painting-with-fire/i07.gif" alt="" loading="lazy"><img src="img/pages/painting-with-fire/i08.gif" alt="" loading="lazy"><img src="img/pages/painting-with-fire/i09.jpg" alt="" loading="lazy"></section>
-<section class="band cards"><figure class="card"><p>Looking forward to this. Bård is such a fearless and hard working explorer, fermenting all the tools and ideas that come his way into digital embers.</p><figcaption>zaphodok</figcaption></figure><figure class="card"><p>Il fuoco cammina con noi, compagno fedele, nemico inaspettato.</p><p>[Fire walks with us, faithful companion, unexpected enemy.]</p><figcaption>Hackatao</figcaption></figure><figure class="card"><p>Legend.</p><figcaption>Pascal Boyart</figcaption></figure></section>
-<figure class="strip"><img src="img/pages/painting-with-fire/i13.gif" alt="" loading="lazy"></figure>
-<blockquote><p>“Channeling the fire myths of the world, Prometheus, the Phoenix, the gods of the sun and flame. A story of technology brought to humans; to myths of destruction and rebirth. To be immortal; to be a god; it is always a paradox of fire and technology. The morality of the fire is always in question but we desire it and fear it. And yet it has changed us, we have learned so much since we first touched fire. We used it to destroy the wood, smelt the metal and build the chip. And now we teach and show the fire what we know; what we create and our reflection is there telling us our faults. The GAN is but a single neuron in a blazing star; a greater fire is coming.&quot;</p><cite>B&#229;rd Ionson</cite></blockquote>
-<section class="band cards"><figure class="card"><p>Bård’s work is some of the most important in digital art given his early contributions to the space using GAN to create some of the best and most historic art we’ve seen. Few have created with GAN for as long as Bård, and Painting with Fire is a collection that showcases some of the finest of his work.</p><figcaption>batsoupyum</figcaption></figure><figure class="card"><p>It is a high art done by the only artist that could do it justice, and the aesthetics are just gorgeous.</p><figcaption>Pindar Van Arman</figcaption></figure><figure class="card"><p>Bård’s fiery and magical representation of GANs is profound and revealing, teaching us not just about the history of AI but also about its future.</p><figcaption>Chainleft</figcaption></figure></section>
-<section class="band works"><img src="img/pages/painting-with-fire/i17.jpg" alt="" loading="lazy"><img src="img/pages/painting-with-fire/i18.jpg" alt="" loading="lazy"><img src="img/pages/painting-with-fire/i19.gif" alt="" loading="lazy"></section>
-<section class="band cards"><figure class="card"><p>bård’s project is an epic poem of sorts — the posthuman prometheus, perhaps. a narrative written through and about art, rooted in the ancient connection between fire and technology, risk and humility, striving and contentment, foresight and blind faith. it is an embodied history of machine vision that situates today’s tools and approaches in their correct context, by an artist forged in the flames of AI and crypto art.</p><figcaption>sasha stiles</figcaption></figure><img src="img/pages/painting-with-fire/i21.jpg" alt="" loading="lazy"><figure class="card"><p>Bård balances the weighty presence of technology in his work with a lightheartedness I find refreshing. He is not creating for those interested in a sugar rush. His work sustains.</p><figcaption>Kevin Abosch</figcaption></figure></section>
-<section class="band works"><img src="img/pages/painting-with-fire/i23.jpg" alt="" loading="lazy"><img src="img/pages/painting-with-fire/i24.gif" alt="" loading="lazy"><img src="img/pages/painting-with-fire/i25.jpg" alt="" loading="lazy"></section>
-<section class="band cards"><figure class="card"><p>Bård has been transforming his artwork into NFTs longer than most. It’s inspiring to see what he creates and what he gets out of the different tools he uses; one of the true pioneers in the intersection between AI and NFTs.</p><p>Looking forward to see some old fashioned GAN aesthetics.</p><figcaption>Artonymousartifakt</figcaption></figure><figure class="card"><p>Bård exemplifies the poetics of experimentation — he finds the magical core within every medium he touches and gives it voice.</p><p>In Painting with Fire, he gives us a capsule of a transformative passage in AI history, and he binds it to the roots and ends of mind.</p><figcaption>shibboleth</figcaption></figure><figure class="card"><p>Using the element of fire to visually represent the history of GANs so far is a unique way for collectors to witness the evolution of this recent technology in the field of art. And if MLO Art is the historian of crypto art, Bård Ionson is truly the AI art historian.</p><figcaption>Fanny Lakoubay</figcaption></figure></section>
-<section class="band works"><img src="img/pages/painting-with-fire/i29.jpg" alt="" loading="lazy"><img src="img/pages/painting-with-fire/i30.gif" alt="" loading="lazy"><img src="img/pages/painting-with-fire/i31.jpg" alt="" loading="lazy"></section>
-<section class="band cards"><figure class="card"><p>In contemporary art, when I figured out that there’s a digital art community, Bård’s style and approach caught my attention from day zero.</p><p>Such a bright and wise mind who plays with curiosity in many different levels.</p><figcaption>Burcin IO</figcaption></figure><figure class="card"><p>Ionson brilliantly references the story of Prometheus to establish the context for the birth of AI.</p><p>This compelling work combines that powerful imagery with the storytelling of the dawn of Machine Learning. Creating narratives to show both its transformative wonder and destructive possibility.</p><p>Dynamic, captivating and terrifying.</p><figcaption>David Rees</figcaption></figure><figure class="card"><p>As I’ve watched Bård’s work develop over the past couple of years, I’ve continued to be amazed at his indefatigable persistence in pushing the boundaries of GAN art creation. His latest series looks to be the best yet as he builds images that turn some of the annoying variability infecting traditional GANs into powerful visions that demand attention and introspection and won’t let go. He has chosen a difficult path upon which to build his cryptoart career, but one of which he is becoming a true master.</p><figcaption>Lawrence Lee</figcaption></figure></section>
-<blockquote><p>There is a beauty in the noise, the randomness before the resolution into fire.</p><cite>B&#229;rd Ionson</cite></blockquote>
-<figure class="feature"><img src="img/pages/painting-with-fire/i35.gif" alt="" loading="lazy"></figure>
-<h2>GAN Timeline</h2>
-<div class="prose"><p>In the course of researching Painting with Fire, Bård has created a timeline of milestones in the history of GANs. This GAN timeline has 200 entries. Each of the 200 artworks includes a &quot;Historic Event&quot; trait that connects to one of these points on the timeline.</p></div><p class="btnrow"><a class="btn" href="https://www.sovrn.art/curated/painting-with-fire/gan-timeline" target="_blank">Open the GAN Timeline &#8599;</a></p>
-<p class="links"><a href="https://www.raster.art/artwork/painting-with-fire-a-history-in-gans-by-bard-ionson" target="_blank">View on Raster &#8599;</a><a href="https://twitter.com/BardIonson" target="_blank">B&#229;rd Ionson on X &#8599;</a></p>
-<p class="foot">Painting with Fire: a History in GANs, B&#229;rd Ionson, 2023. Two hundred works made with fourteen vintage GAN models, each carrying a Historic Event trait from the timeline. A curated collection on <a class="fc" href="https://www.sovrn.art" target="_blank">sovrn.art</a>.</p>
-</div></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Moved — sovrn.art</title>
+<!-- This page used to live here, and other sites embed and link these paths:
+     vanarman.com carries share-reflection.html in an iframe, and every link ever
+     posted points at whatever URL was current that day. GitHub Pages cannot emit
+     a 301, so this is the shape it supports — a canonical for search engines and
+     a refresh for people. One hop, fixed destination, never taken from a query
+     parameter: that is the difference between a redirect and an open redirect.
+     The query string is carried across, because share.html?c=reflection has to
+     land on the scoped page and not the combined one. -->
+<link rel="canonical" href="https://www.sovrn.art/curated/painting-with-fire">
+<meta http-equiv="refresh" content="0; url=/curated/painting-with-fire">
+<meta name="robots" content="noindex">
+<script>location.replace("/curated/painting-with-fire" + location.search + location.hash);</script>
+</head>
+<body><p>This page has moved to <a href="/curated/painting-with-fire">/curated/painting-with-fire</a>.</p></body>
+</html>

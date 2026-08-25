@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<base href="/"><!-- Relative paths resolve from the site root, so a page can sit at any depth
+     without its assets being rewritten. <base> also rewrites in-page anchors,
+     so an in-page anchor must be built from location.pathname. --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<title>sovrn.art — an indie studio for sovereign artists</title>
+<!-- Card and search metadata. Google Sites emitted one og:image for the whole site —
+     the studio logo, on every page — and gave no way to change it. Serving these
+     pages directly is what makes per-page cards possible at all, so each one names
+     its own image, and cards will not render SVG, which is why the share pages point
+     at a raster rather than at the artwork they are about. -->
+<meta name="description" content="An independent, artist-first studio and curatorial platform for digital and blockchain-based art, run by Pindar Van Arman and Ezra Shibboleth.">
+<link rel="canonical" href="https://www.sovrn.art/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="sovrn.art">
+<meta property="og:title" content="sovrn.art — an indie studio for sovereign artists">
+<meta property="og:description" content="An independent, artist-first studio and curatorial platform for digital and blockchain-based art, run by Pindar Van Arman and Ezra Shibboleth.">
+<meta property="og:url" content="https://www.sovrn.art/">
+<meta property="og:image" content="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/cent_homepage.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root{
+  --paper:#e9e9e5;--ink:#16181d;--slate:#5c6470;
+  --rule:#c9c9c2;--hair:#d8d8d2;--accent:#0f6b66;--accent-d:#0b514d;
+  --gap:clamp(46px,6vw,72px);
+}
+*{box-sizing:border-box;margin:0}
+::selection{background:var(--accent);color:var(--paper)}
+body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif;padding:26px 22px 56px;-webkit-text-size-adjust:100%}
+.wrap{max-width:1060px;margin:0 auto}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* ---------- mosaic ---------- */
+.banner{overflow:hidden;margin:-26px -22px 34px;background:var(--ink)}
+.mg{display:grid;gap:2px}
+@media(max-width:640px){.banner{margin-bottom:26px}}
+.mg img,.mg span{display:block;width:100%;height:100%}
+.mg img{object-fit:cover;transition:opacity .55s}
+.mg img.o{opacity:0}
+/* a cell left bare reads as the ink beneath; a rare one takes the accent */
+.mg span{background:var(--accent)}
+.banner2{margin:0 0 var(--gap)}
+@media(max-width:640px){.banner2{margin-bottom:30px}}
+/* ---------- site navigation ---------- */
+.nav{position:sticky;top:10px;z-index:30;max-width:1060px;margin:14px auto 0;padding:0 22px;display:flex;justify-content:flex-end}
+.navin{position:relative}
+#mb{width:44px;height:44px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:var(--paper);border:1px solid var(--rule);cursor:pointer;padding:0;transition:border-color .18s,background .18s}
+#mb:hover,#mb[aria-expanded=true]{border-color:var(--accent)}
+#mb span{display:block;width:19px;height:1.5px;background:var(--ink);transition:transform .22s,opacity .18s}
+#mb[aria-expanded=true] span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+#mb[aria-expanded=true] span:nth-child(2){opacity:0}
+#mb[aria-expanded=true] span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+#mn{position:absolute;right:0;top:calc(100% + 9px);list-style:none;margin:0;padding:8px 0;background:var(--paper);border:1px solid var(--rule);min-width:236px;max-height:78vh;overflow-y:auto;box-shadow:0 10px 30px rgba(22,24,29,.09)}
+#mn a,#mn .grp{display:block;width:100%;text-align:left;padding:9px 18px;text-decoration:none;color:var(--ink);font:500 11px/1.35 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;background:none;border:0;cursor:pointer;transition:color .15s,background .15s}
+#mn a:hover,#mn .grp:hover{color:var(--accent);background:#e2e2dc}
+#mn .grp{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:default;color:var(--slate)}
+#mn .grp:hover{color:var(--slate);background:none}
+#mn .grp .tog{flex:none;font-size:13px;line-height:1;color:var(--accent);cursor:pointer;padding:2px 4px;transition:transform .2s}
+#mn .grp[aria-expanded=true] .tog{transform:rotate(45deg)}
+/* the label links to the overview; only the +/- toggles the sublist */
+#mn .grp .glabel{flex:1;display:block;width:auto;padding:0;background:none;
+ color:var(--slate);text-decoration:none;font:inherit;letter-spacing:inherit;text-transform:inherit}
+#mn .grp .glabel:hover{color:var(--accent);background:none}
+#mn .grp .tog{background:none;border:0;font:500 13px/1 "IBM Plex Mono",monospace}
+#mn .grp .tog:focus-visible,#mn .grp .glabel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#mn .sub{list-style:none;margin:0 0 0 18px;padding:0;display:none;border-left:2px solid var(--rule)}
+#mn .grp[aria-expanded=true]+.sub{display:block}
+#mn .sub a{padding:7px 16px;font:400 11px/1.4 "IBM Plex Mono",monospace;letter-spacing:.07em;text-transform:none;color:var(--slate)}
+#mn .sub a:hover{color:var(--accent);background:#e2e2dc}
+@media(max-width:640px){.nav{margin-top:10px;padding:0 14px}#mn{min-width:206px}}
+/* ---------- masthead ---------- */
+.mast{text-align:center;margin:10px 0 clamp(26px,3.4vw,38px)}
+.logo img{width:clamp(132px,15vw,176px);height:auto;display:inline-block}
+.tag{font:italic 300 clamp(24px,3.6vw,40px)/1.12 Fraunces,serif;color:var(--ink);letter-spacing:-.02em;max-width:22ch;margin:18px auto 0;text-wrap:balance}
+.about{max-width:64ch;font-size:15.5px;line-height:1.72;color:var(--slate);margin:0 auto var(--gap)}
+.about a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px;transition:color .15s}
+.about a:hover{color:var(--accent)}
+/* ---------- section heads ---------- */
+.sec{margin-top:var(--gap)}
+h2{position:relative;font:italic 300 clamp(27px,3.6vw,40px)/1.1 Fraunces,serif;letter-spacing:-.02em;text-transform:none;color:var(--ink);margin:0 0 26px;padding-bottom:18px;border-bottom:1px solid var(--rule)}
+/* a short accent tick where the rule begins */
+h2::after{content:"";position:absolute;left:0;bottom:-1px;width:54px;height:2px;background:var(--accent)}
+h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin:0 0 14px}
+/* ---------- collections ---------- */
+/* order is the site's own and is left exactly as it stands */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(30px,3.4vw,42px) clamp(20px,2.4vw,26px)}
+@media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+.card{display:flex;flex-direction:column;text-decoration:none;color:inherit}
+.im{position:relative;display:block;width:100%;aspect-ratio:1;background:var(--ink);overflow:hidden;margin-bottom:13px}
+/* two frames stacked; the incoming work fades up over the outgoing one */
+.im img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .85s ease,transform .55s cubic-bezier(.2,.7,.3,1)}
+.im img.q{opacity:0}
+.card:hover .im img{transform:scale(1.035)}
+/* Latent Couture is shot tall — hold the top of the frame so the square crop
+   keeps the head and shoulders rather than centring on the hem */
+.im.tp img{object-position:top}
+.ti{display:block;font:italic 300 21px/1.2 Fraunces,serif;margin-bottom:5px;transition:color .18s;text-wrap:balance}
+.card:hover .ti{color:var(--accent)}
+.ti .go{font-style:normal;font-size:.58em;color:var(--accent);margin-left:6px;opacity:0;transition:opacity .18s,transform .18s;display:inline-block}
+.card:hover .ti .go{opacity:1;transform:translate(1px,-1px)}
+/* a line adapted from each collection's own page */
+.de{display:block;font:400 13.5px/1.6;color:var(--slate);margin:0 0 12px;max-width:44ch}
+/* The row stretches to its tallest card and the credit is pinned to the
+   bottom, so a long title or description cannot knock its neighbours out of
+   line. It carries the card's weight now that the index is gone. */
+.ar{display:block;margin-top:auto;padding-top:12px;border-top:1px solid var(--hair);font:500 15px/1.4 "IBM Plex Sans",sans-serif;color:var(--ink);transition:color .18s}
+.card:hover .ar{color:var(--accent)}
+/* ---------- museums and exhibitions — a ledger, no photographs ---------- */
+.mus{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(28px,4vw,52px)}
+@media(max-width:760px){.mus{grid-template-columns:1fr}}
+.mus li{border-bottom:1px solid var(--hair)}
+.mus li:nth-child(1),.mus li:nth-child(2){border-top:1px solid var(--hair)}
+@media(max-width:760px){.mus li:nth-child(2){border-top:0}}
+.mus a{display:block;padding:15px 0;text-decoration:none;color:inherit;transition:transform .2s cubic-bezier(.2,.7,.3,1)}
+.mus a:hover{transform:translateX(4px)}
+.mv{display:block;font:500 10.5px/1.4 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.ms{display:block;font:italic 300 19px/1.24 Fraunces,serif;margin-bottom:4px;transition:color .18s}
+.mus a:hover .ms{color:var(--accent)}
+.md{display:block;font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate)}
+/* ---------- footer ---------- */
+.ft{margin-top:var(--gap);padding-top:28px;border-top:1px solid var(--rule)}
+.lbl{max-width:62ch;font:400 12.5px/1.7 "IBM Plex Mono",monospace;color:var(--slate);margin-bottom:14px}
+.ico{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:32px}
+.ico a{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);border:1px solid var(--rule);padding:8px 14px 8px 9px;transition:border-color .15s,color .15s,background .15s}
+.ico a:hover{border-color:var(--accent);color:var(--accent);background:#e3e5e2}
+.ico img{width:26px;height:26px;object-fit:contain;display:block}
+.ico span{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase}
+/* footer link rows — deliberately NOT .nav, which is the sticky header above */
+.links{display:flex;flex-wrap:wrap;gap:22px;font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
+.links a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:4px;transition:color .15s,border-color .15s}
+.links a:hover{color:var(--accent);border-color:var(--accent-d)}
+.more{margin-top:30px}
+/* Scroll-driven assembly. Wrapped in @supports and in a no-preference query,
+   so where it is unsupported — or motion is not wanted — nothing is applied at
+   all and every element simply renders. Nothing can be left stuck invisible. */
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    @keyframes settle{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+    @keyframes slidein{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+    @keyframes titlein{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+    .grid .card{animation:settle linear both;animation-timeline:view();animation-range:entry 4% entry 42%}
+    .mus li{animation:slidein linear both;animation-timeline:view();animation-range:entry 4% entry 34%}
+    h2.big,.sec>h2{animation:titlein linear both;animation-timeline:view();animation-range:entry 2% entry 26%}
+  }
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<div class="banner" aria-hidden="true"><div class="mg" id="ban"></div></div>
+<nav class="nav"><div class="navin"><button id="mb" aria-expanded="false" aria-controls="mn" aria-label="Site navigation"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></div></nav>
+<div class="wrap">
+<header class="mast">
+<a class="logo" href="/"><img src="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/sovrn_logo-removebg.png" alt="Sovrn Art" width="256" height="256"></a>
+<p class="tag">an indie studio for sovereign artists</p>
+</header>
+<p class="about">Sovrn Art is an independent, artist-first platform by <a href="https://twitter.com/shibboleth88" target="_blank">Ezra Shibboleth</a> and <a href="https://www.vanarman.com" target="_blank">Pindar Van Arman</a>, with <a href="https://x.com/lorepunk" target="_blank">lorepunk</a> providing copy and ops support. We value rigorous artistic processes, meaningfully constructed serial collections, substantial narratives, and structures that uphold the principles of sovereignty and decentralization.</p>
+<div class="banner banner2" aria-hidden="true"><div class="mg" id="ban2"></div></div>
+
+<div class="sec">
+<h2 class="big">Sovrn Curated</h2>
+<div class="grid" id="g"></div>
+</div>
+
+<div class="sec">
+<h2>In museums and exhibitions</h2>
+<ul class="mus" id="m"></ul>
+<div class="links more"><a href="/museums">All museums and exhibitions &#8599;</a></div>
+</div>
+
+<footer class="ft">
+<h3>Where to collect</h3>
+<p class="lbl">Ethereum collections are on Raster. <i>CENTS</i>, inscribed on Bitcoin, is on Ord and Satflow.</p>
+<div class="ico" id="mk"></div>
+<h3>Elsewhere</h3>
+<div class="ico" id="so"></div>
+<div class="links">
+<a href="/about">About &#8599;</a>
+<a href="/marketplaces">Marketplaces &#8599;</a>
+</div>
+</footer>
+</div>
+<script src="curated-data.js"></script>
+<script>
+/* A new tab only for somewhere else. Internal links used to need
+   target="_blank" because the Sites iframe blocked top navigation; served
+   directly, that just litters the browser with tabs. */
+const tgt=u=>/^https?:/i.test(u)?' target="_blank" rel="noopener"':"";
+
+/* byteGANs is the on-chain SVG, unmodified: it declares width/height but no
+   viewBox, so the card sets explicit dimensions and the browser scales it. */
+
+/* venue, what is held or shown, when, page */
+const MU=[
+["Francisco Carolinum, Linz","Collection Francisco Carolinum — 3 Blockchains, one Collection","9 Sep 2026 – 7 Feb 2027","/exhibitions/fc-3-blockchains","3 Blockchains"],
+["NEORT, Shibuya","SCREENS CONTEXTUALIZED","9 – 22 Feb 2026","/exhibitions/screens-contextualized","Screens Contextualized"],
+["UCCA, Beijing","Rutherford Chang: Hundreds and Thousands","17 Jan – 12 Apr 2026","/exhibitions/ucca","UCCA, Beijing"],
+["Marfa, Texas","A sovrn Pop-Up Gallery","16 – 19 Oct 2025","/exhibitions/marfa-popup","Marfa Pop-Up"],
+["Basel Social Club, Basel","BANKABLE","15 – 21 Jun 2025","/exhibitions/bankable","BANKABLE"],
+["Christie’s, New York","Augmented Intelligence","20 Feb – 5 Mar 2025","/exhibitions/christies-augmented-intelligence","Christie’s"],
+["Vitra Design Museum","Science Fiction Design","18 May 2024 – 10 May 2026","/exhibitions/vitra","Vitra Design Museum"],
+["Kindl Center for Contemporary Art, Berlin","POLY. A Fluid Show","17 Sep 2023 – 25 Feb 2024","/exhibitions/kindl","KINDL, Berlin"]];
+const MC=[
+["Francisco Carolinum, Linz","Sovrn Full Set","Permanent collection","/collections/fransisco-carolinum","Francisco Carolinum"],
+["Museum of Crypto Art","Five Reflections","Permanent collection","/collections/moca","Museum of Crypto Art"],
+["Arab Bank Switzerland","Sightseers 104","Art collection","/collections/abs-collection","Arab Bank Switzerland"],
+["LACMA, Los Angeles","AI Imagined Portrait Painted by a Robot #2","Permanent collection","/collections/lacma","LACMA"]];
+const MK=[["Raster","raster.jpg","/marketplaces"],
+["Ord","ord.png","https://ord.net/collection/cents"],
+["Satflow","satflow.png","https://www.satflow.com/ordinals/cents"]],
+SO=[["X","twitter.jpg","https://twitter.com/sovrnart"],
+["Instagram","instagram.png","https://www.instagram.com/sovrn.art",1],
+["CENTS Discord","cents-discord.png","https://discord.gg/USQwhGj8HC",1],
+["Van Arman Discord","van-arman-discord.png","https://discord.gg/48DDjNE79f",1]];
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+/* the menu is built from the same C and MU arrays the page renders, so the
+   collection order can never drift from the grid below */
+const NAV=(()=>{
+  const item=(label,href)=>'<li><a href="'+href+'"'+tgt(href)+'>'+esc(label)+'</a></li>';
+  const group=(label,href,rows)=>'<li><div class="grp" aria-expanded="false">'+
+    '<a class="glabel" href="'+href+'"'+tgt(href)+'>'+esc(label)+'</a>'+
+    '<button class="tog" type="button" aria-expanded="false" aria-label="Show '+esc(label)+'">+</button>'+
+    '</div><ul class="sub">'+rows.map(r=>item(r[0],r[1])).join("")+'</ul></li>';
+  /* venue only in the menu — the city stays on the ledger below */
+  return group("Curated","/curated", C.map(c=>[c[0],c[2]]))
+    + group("Exhibitions","/exhibitions", MU.map(m=>[m[4],m[3]]))
+    + group("In collections","/collections", MC.map(m=>[m[4],m[3]]))
+    + item("Marketplaces","/marketplaces")
+    + item("Shareable","/shareable")
+    + item("About","/about");
+})();
+const mb=document.getElementById("mb"),mn=document.getElementById("mn");
+mn.innerHTML=NAV;
+const setMenu=o=>{mb.setAttribute("aria-expanded",o);mn.hidden=!o;
+  if(!o)mn.querySelectorAll(".grp").forEach(g=>{g.setAttribute("aria-expanded","false");
+    const t=g.querySelector(".tog");t.textContent="+";t.setAttribute("aria-expanded","false");});};
+mb.onclick=()=>setMenu(mb.getAttribute("aria-expanded")!=="true");
+const toggle=g=>{const open=g.getAttribute("aria-expanded")==="true";
+  g.setAttribute("aria-expanded",!open);
+  const t=g.querySelector(".tog");t.textContent=open?"+":"\u2212";t.setAttribute("aria-expanded",String(!open));};
+mn.addEventListener("click",e=>{
+  if(e.target.closest("a")){setMenu(false);return;}      /* a link always navigates */
+  const t=e.target.closest(".tog"); if(t){toggle(t.closest(".grp"));}
+});
+document.addEventListener("click",e=>{if(!e.target.closest(".nav"))setMenu(false);});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false);});
+/* Two mosaic bands. Pool of 223 tiles: b001-b186 are works from fourteen
+   collections — including the Reflection layer SVGs and a byteGAN, rasterised
+   from the on-chain files — and b187-b223 are CENTS. Each band drops one cent
+   after every five works, so cents are one tile in six. The bands share no
+   tile; each list runs on past the fold so the band fills any width. */
+/* Generative mosaic. Instead of an even field of equal squares, each band is
+   packed: a walk over an occupancy grid drops blocks one, two or three cells
+   square wherever they still fit, leaves the occasional cell bare as a rest,
+   and lands a cent about every sixth tile. Blocks larger than one cell pull
+   from img/banner-lg, which is the same tile at 320px — eleven tiles have no
+   high-resolution source and so stay one cell wide.
+
+   The seed comes from the clock, so no two visits compose the same band.
+   ?mosaic=<n> pins it, which is the only way to compare two runs. */
+const T=(i,lg)=>'img/banner'+(lg?'-lg':'')+'/b'+String(i).padStart(3,"0")+'.jpg',
+rng=(a,b)=>Array.from({length:b-a+1},(_,k)=>a+k),
+SMALLONLY=new Set([7,39,59,82,90,102,108,125,143,145,149]),
+MQ=matchMedia("(max-width:640px)"),
+SEED=(()=>{const q=new URLSearchParams(location.search).get("mosaic");
+  return q?(+q>>>0):(Date.now()>>>0);})();
+/* mulberry32: small, fast, and the same seed always draws the same band */
+const prng=s=>()=>{s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);
+  t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+
+/* Two axes per tile, one base36 digit each: lightness, then warmth. Warmth is
+   how far the tile leans toward copper or away from it, scaled by how colourful
+   it is, so greys sit mid-scale on their own and go anywhere. */
+const CL="f3lkkskcehronolsk4hwj3qfmha3ehncrweievbedqqxoxnkq6dmn9hyi2gjeygkfrfxdo8wkflukejmfrg3wixs9deiffeoerquizqigthgd8evaesmoplt71h5jgdkhjaal2fwktm1lmhnqhkmgyjkesjhphdggaot32iubrie9edslga3fvtimang42hphyffnyhrttimaemhmh7beieldivvuygbmdablngrktgrp29pjzn9oaesahlph5mxreg6gvup7fgooglhgrhll5hnpocqfvf58wo0g0jeophnmpkhf6hoj3hyoip1msijuybdgzazgpjmlsshfaliosdsdji4ghbltyrxgrjj6ifclygtp2feqztzsyszrzszszrzqzqzszrzrzrzrztzrztzrztztzszrzrzrzszrzpyszszrztzszszrzrzsz",
+  lum=i=>parseInt(CL[(i-1)*2],36)/35,
+  warm=i=>parseInt(CL[(i-1)*2+1],36)/35;
+
+function mosaic(id,art,cts,p){
+  const el=document.getElementById(id),
+        rows=MQ.matches?2:3, cell=MQ.matches?46:54,
+        /* enough columns to fill the frame and no more, so the whole band is
+           on screen; turnover cycles the rest of the pool through it */
+        cols=Math.max(6,Math.ceil((el.parentElement.clientWidth+2)/(cell+2))),
+        R=prng(SEED+p.salt), q={};
+  /* Two slow waves drift across the band, one in lightness and one in warmth.
+     Tiles are chosen to follow them, so the mosaic gathers into dark and light
+     passages and warm and cool ones instead of averaging out into noise. */
+  const f1=1+R()*1.8, f2=.7+R()*1.4, a1=R()*6.283, a2=R()*6.283,
+        fieldL=t=>.5+.38*Math.sin(t*6.283*f1+a1),
+        fieldW=t=>.5+.42*Math.sin(t*6.283*f2+a2);
+  /* Draw from a shuffled bag, but look at the last few and take whichever sits
+     closest to the field here. A small window keeps it a lean, not a sort. */
+  const pick=(kind,src,big,tL,tW)=>{
+    const key=kind+(big?"L":"S");let bag=q[key];
+    if(!bag||!bag.length){bag=q[key]=src.filter(i=>!big||!SMALLONLY.has(i));
+      for(let i=bag.length-1;i>0;i--){const j=R()*(i+1)|0,v=bag[i];bag[i]=bag[j];bag[j]=v;}}
+    if(tL==null)return bag.pop();
+    let at=bag.length-1,bd=1e9;
+    for(let n=Math.max(0,bag.length-7);n<bag.length;n++){
+      const i=bag[n],d=3*Math.abs(lum(i)-tL)+Math.abs(warm(i)-tW);
+      if(d<bd){bd=d;at=n;}}
+    return bag.splice(at,1)[0];};
+  const grid=()=>Array.from({length:rows},()=>new Array(cols).fill(false)),
+    occ=grid(),bare=grid(),cent=grid(),
+    nextTo=(g,r,c)=>{for(let i=-1;i<2;i++)for(let j=-1;j<2;j++){
+      const y=r+i,x=c+j;if(y>=0&&y<rows&&x>=0&&x<cols&&g[y][x])return true;}
+      return false;},
+    free=(r,c,w,h)=>{for(let i=0;i<h;i++)for(let j=0;j<w;j++)
+      if(r+i>=rows||c+j>=cols||occ[r+i][c+j])return false;return true;},
+    mark=(r,c,w,h)=>{for(let i=0;i<h;i++)for(let j=0;j<w;j++)occ[r+i][c+j]=true;};
+  let out="",last=-9,cells=0,cent6=0;
+  const put=(r,c,w,h)=>{
+    mark(r,c,w,h);cells+=w*h;if(w>1||h>1)last=c;
+    const t=c/cols,big=w>1||h>1;
+    out+='<img src="'+T(pick("a",art,big,fieldL(t),fieldW(t)),big)+
+      '" alt="" loading="lazy" data-c="'+c+'" data-k="a" data-b="'+(big?1:0)+
+      '" style="grid-area:'+(r+1)+'/'+(c+1)+'/span '+h+'/span '+w+'">';};
+  /* every band gets one block at full height, somewhere across the middle, so
+     the composition has an anchor rather than relying on the dice */
+  if(rows>2){const fc=(cols*(.18+.64*R()))|0,fw=R()<.5?3:2;
+    if(free(0,fc,fw,3))put(0,fc,fw,3);
+    last=-9;}   /* the anchor must not set the spacing clock, or every column
+                   to its left fails c-last and the whole half goes flat */
+  for(let c=0;c<cols;c++)for(let r=0;r<rows;r++){
+    if(occ[r][c])continue;
+    let w=1,h=1;
+    /* the two rectangles take turns going first, or wide always wins the roll
+       and the band never gets a tall block */
+    const rect=R()<.5?[[2,1],[1,2]]:[[1,2],[2,1]],
+      tries=rows>2
+      ?[[3,3,p.p3],[2,3,p.p3*1.3],[2,2,p.p2],[rect[0][0],rect[0][1],p.rect],
+        [rect[1][0],rect[1][1],p.rect]]
+      :[[2,2,p.p2],[rect[0][0],rect[0][1],p.rect],[rect[1][0],rect[1][1],p.rect]];
+    for(const [tw,th,pr] of tries)
+      if(R()<pr&&c-last>=(tw>2||th>2?4:1)&&free(r,c,tw,th)){w=tw;h=th;break;}
+    if(w===1&&h===1){
+      if(R()<p.bare&&!nextTo(bare,r,c)){        /* a rest in the field */
+        mark(r,c,1,1);cells++;bare[r][c]=true;
+        if(R()<0.22)out+='<span style="grid-area:'+(r+1)+'/'+(c+1)+'/span 1/span 1"></span>';
+        continue;}
+      /* Cents hold near a sixth of the area. They stay one cell -- a penny is
+         small, bright and round, and enlarged it pulls the eye off the works
+         around it -- and never touch, or the area rule lays them in a run. */
+      /* Placing one the moment the share dips puts a penny straight after every
+         large block, at a cadence you can read across the band. Let the odds
+         rise with the shortfall instead, so they still average a sixth but
+         land irregularly. */
+      if(R()<Math.min(.85,Math.max(0,cells/6-cent6)*.32)&&!nextTo(cent,r,c)){
+        mark(r,c,1,1);cells++;cent6++;cent[r][c]=true;
+        out+='<img src="'+T(pick("c",cts,false),false)+
+          '" alt="" loading="lazy" data-c="'+c+'" data-k="c" data-b="0'+
+          '" style="grid-area:'+(r+1)+'/'+(c+1)+'/span 1/span 1">';
+        continue;}
+    }
+    put(r,c,w,h);
+  }
+  /* Replace one cell with another work from the same pool, at the same size and
+     kind, chosen against the field at that column so the passage keeps its
+     colour. Decode first: a cell must never fade up onto a blank. */
+  el._swap=img=>{
+    if(img._busy)return;              /* still dissolving; leave it alone */
+    img._busy=1;
+    const c=+img.dataset.c,big=img.dataset.b==="1",k=img.dataset.k,t=c/cols,
+      next=T(k==="c"?pick("c",cts,false)
+                    :pick("a",art,big,fieldL(t),fieldW(t)),big),
+      pre=new Image();
+    pre.onload=()=>{img.classList.add("o");
+      setTimeout(()=>{img.src=pre.src;img.classList.remove("o");
+        setTimeout(()=>{img._busy=0;},600);},560);};
+    pre.onerror=()=>{img._busy=0;};   /* a miss must not strand the cell */
+    pre.src=next;};
+  el.style.gridTemplateRows="repeat("+rows+","+cell+"px)";
+  el.style.gridTemplateColumns="repeat("+cols+","+cell+"px)";
+  el.innerHTML=out;
+  /* the column count rounds up, so a little of the band sits past the frame.
+     Split it between the two edges: a slight bleed both sides reads as a
+     full-bleed mosaic, one clipped tile on the right reads as a mistake. */
+  const over=cols*cell+(cols-1)*2-el.parentElement.clientWidth;
+  el.style.marginLeft=(over>0?-over/2:0)+"px";
+  el._cols=cols;
+}
+/* the upper band runs finer, the lower one coarser, so they read as a pair
+   rather than a repeat */
+const drawBands=()=>{
+  mosaic("ban", rng(1,93),   rng(187,204),{salt:0,p3:.05,p2:.15,rect:.20,bare:.045});
+  mosaic("ban2",rng(94,186), rng(205,223),{salt:1,p3:.08,p2:.22,rect:.28,bare:.035});
+};
+drawBands();
+MQ.addEventListener("change",drawBands);
+/* the column count comes from the frame, so a resize that changes it rebuilds */
+let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{
+  const cell=MQ.matches?46:54;
+  const stale=["ban","ban2"].some(i=>{const el=document.getElementById(i);
+    return el&&el._cols!==Math.max(6,Math.ceil((el.parentElement.clientWidth+2)/(cell+2)));});
+  if(stale)drawBands();},200);});
+/* Turnover, and the only thing that moves: the bands hold still. One cell
+   somewhere in the mosaic dissolves into another work about every second and
+   a half -- only in a band that is on screen, only cells actually
+   in the window, and never while the tab is hidden. Faster than the fade, so a
+   cell already dissolving is skipped rather than caught halfway. The cost is
+   front-loaded and bounded: the whole tile library is under 6MB, and once a
+   visitor has seen enough of it every further swap is a cache hit. */
+(function(){
+  const frames=[...document.querySelectorAll(".banner")];
+  const io=new IntersectionObserver(es=>es.forEach(e=>{e.target._on=e.isIntersecting;}),
+    {rootMargin:"80px"});
+  frames.forEach(f=>io.observe(f));
+  /* Each turn pulls another tile, so stand down on a metered connection. */
+  const cn=navigator.connection;
+  if((cn&&cn.saveData)||matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  setInterval(()=>{
+    if(document.hidden)return;
+    const live=frames.filter(f=>f._on).map(f=>f.querySelector(".mg")).filter(g=>g&&g._swap);
+    if(!live.length)return;
+    const g=live[Math.random()*live.length|0],
+      inview=[...g.querySelectorAll("img")].filter(im=>{
+        const r=im.getBoundingClientRect();
+        return r.right>0&&r.left<innerWidth&&r.bottom>0&&r.top<innerHeight;});
+    if(inview.length)g._swap(inview[Math.random()*inview.length|0]);
+  },1460);
+})();
+/* Each card cycles through works from its own collection. The folder name is
+   the last segment of the card's own link, so the two can never drift apart.
+   Emerging Faces is absent from this map on purpose: its card holds the single
+   portrait it has always had. */
+const PL={cents:24,"painting-with-fire":32,mementi:24,"possibility-spaces":24,
+"perimeter-town":24,"seasons-of-mobility":28,"latent-couture":21,"rabbit-takeover":7,
+sightseers:24,"cope-vol-1":24,"ai-spaceships":24,
+/* the three on-chain sets rotate the SVGs themselves, so those cards animate */
+/* Thirty works, every one cascading. The first six are the artist's own
+   Francisco Carolinum renders. The other twenty-four were smoothed the same way
+   by tools/reflection-smooth.py, which reads the pass numbering the minted file
+   carries in its comments; run against all six FC renders it reproduces every
+   fade of each, attribute for attribute. */
+reflection:[30,"collections/reflection","reflection","svg"],
+wunderkammer:[36,"wunderkammer-works","wunderkammer","svg"],
+bytegans:[24,"bytegans","bytegan","svg"]};
+/* a plain count means img/collections/<slug>/<slug>-NN.jpg; an array spells out
+   [count, folder, filename prefix, extension] for the sets that live elsewhere */
+const works=s=>{const p=PL[s],A=Array.isArray(p);
+  const n=A?p[0]:p,d=A?p[1]:"collections/"+s,x=A?p[2]:s,e=A?p[3]:"jpg";
+  return Array.from({length:n},(_,j)=>
+    "img/"+d+"/"+x+"-"+String(j+1).padStart(2,"0")+"."+e);};
+const slugOf=c=>c[2].split("/").pop();
+document.getElementById("g").innerHTML=C.map((c,i)=>{
+  const s=slugOf(c),rot=PL[s]?' data-p="'+s+'" data-i="'+i+'"':'';
+  return '<a class="card" href="'+c[2]+'"'+tgt(c[2])+rot+'>'+
+  '<span class="im'+(s==="latent-couture"?" tp":"")+'" role="img" aria-label="'+esc(c[0])+'">'+
+  '<img src="'+encodeURI(c[3])+'" alt="" width="500" height="500" loading="lazy">'+
+  (PL[s]?'<img class="q" alt="" width="500" height="500" aria-hidden="true">':'')+
+  '</span><span class="ti">'+esc(c[0])+'<span class="go">&#8599;</span></span>'+
+  '<span class="de">'+esc(c[4])+'</span>'+
+  '<span class="ar">'+esc(c[1])+'</span></a>';
+}).join("");
+/* Rotation. One swap per tick at most, and only for cards actually on screen,
+   so the grid never pulses in unison and the page never pulls more than about
+   one image a second however wide the window is. */
+(function(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const cn=navigator.connection; if(cn&&cn.saveData)return;
+  const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));
+    const v=a[i];a[i]=a[j];a[j]=v;}return a;};
+  /* Reflection's layers cascade over a full fifteen seconds before the loop
+     comes round, so that card holds longer than the rest. */
+  const TICK=1400,DWELL=14000,HOLD={reflection:19000};
+  let clock=0;
+  const st=[...document.querySelectorAll(".card[data-p]")].map((el,n)=>{
+    const s=el.dataset.p,im=el.querySelectorAll(".im img");
+    return {el,s,on:false,k:0,front:0,a:im[0],b:im[1],due:1800+n*700,
+      q:shuf(works(s))};
+  });
+  const ix=new Map(st.map((s,n)=>[s.el,n]));
+  const io=new IntersectionObserver(es=>es.forEach(e=>{st[ix.get(e.target)].on=e.isIntersecting;}),
+    {rootMargin:"140px"});
+  st.forEach(s=>io.observe(s.el));
+  /* decode the next work before showing it, so a frame never flashes in half-drawn */
+  function swap(s){
+    const back=s.front?s.a:s.b,front=s.front?s.b:s.a,url=encodeURI(s.q[s.k++%s.q.length]);
+    const pre=new Image();
+    pre.onload=()=>{back.src=url;back.classList.remove("q");front.classList.add("q");s.front^=1;};
+    pre.src=url;
+  }
+  setInterval(()=>{
+    clock+=TICK;
+    if(document.hidden)return;
+    let pick=null;
+    for(const s of st)if(s.on&&clock>=s.due&&(!pick||s.due<pick.due))pick=s;
+    if(!pick)return;
+    swap(pick);
+    pick.due=clock+(HOLD[pick.s]||DWELL)+Math.random()*8000;
+  },TICK);
+})();
+document.getElementById("m").innerHTML=MU.concat(MC).map(m=>
+'<li><a href="'+m[3]+'"'+tgt(m[3])+'><span class="mv">'+esc(m[0])+'</span><span class="ms">'+esc(m[1])+'</span><span class="md">'+esc(m[2])+'</span></a></li>').join("");
+document.getElementById("mk").innerHTML=MK.map(m=>
+'<a href="'+m[2]+'"'+tgt(m[2])+'><img src="'+encodeURI(H+m[1])+'" alt=""><span>'+m[0]+'</span></a>').join("");
+document.getElementById("so").innerHTML=SO.map(m=>
+'<a href="'+m[2]+'"'+tgt(m[2])+'><img src="'+encodeURI((m[3]?P:H)+m[1])+'" alt=""><span>'+m[0]+'</span></a>').join("");
+</script></body></html>

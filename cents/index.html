@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<base href="/">
+<title>CENTS — Rutherford Chang — sovrn.art</title>
+<!-- Card and search metadata. Google Sites emitted one og:image for the whole site —
+     the studio logo, on every page — and gave no way to change it. Serving these
+     pages directly is what makes per-page cards possible at all, so each one names
+     its own image, and cards will not render SVG, which is why the share pages point
+     at a raster rather than at the artwork they are about. -->
+<meta name="description" content="Rutherford Chang’s CENTS — 10,000 pre-1982 copper pennies, each photographed and inscribed on Bitcoin, the coins themselves melted into a single copper block.">
+<link rel="canonical" href="https://www.sovrn.art/cents">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="sovrn.art">
+<meta property="og:title" content="CENTS — Rutherford Chang">
+<meta property="og:description" content="Rutherford Chang’s CENTS — 10,000 pre-1982 copper pennies, each photographed and inscribed on Bitcoin, the coins themselves melted into a single copper block.">
+<meta property="og:url" content="https://www.sovrn.art/cents">
+<meta property="og:image" content="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/cent_homepage.jpg">
+<meta name="twitter:card" content="summary_large_image"><!-- Relative paths resolve from the site root, so a page can sit at any depth
+     without its assets being rewritten. <base> also rewrites in-page anchors,
+     so an in-page anchor must be built from location.pathname. --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--ink:#0e0e0e;--dim:#191919;--paper:#f2f2f0;--mute:#8e8e8e;--rule:#2c2c2c;--lift:#4a4a4a;--cu:#824C3D;--cut:#c99079}*{box-sizing:border-box;margin:0}body{background:var(--ink);color:var(--paper);font:400 15px/1.55 "IBM Plex Sans",sans-serif}.wrap{max-width:1060px;margin:0 auto;padding:34px 74px 44px 22px}a:focus-visible{outline:2px solid var(--cut);outline-offset:3px}.nav{position:fixed;top:16px;right:16px;z-index:20}#mb{width:42px;height:42px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:var(--ink);border:1px solid var(--rule);cursor:pointer;padding:0;transition:border-color .18s}#mb:hover,#mb[aria-expanded=true]{border-color:var(--cu)}#mb span{display:block;width:18px;height:1.5px;background:var(--paper);transition:transform .22s,opacity .18s}#mb[aria-expanded=true] span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}#mb[aria-expanded=true] span:nth-child(2){opacity:0}#mb[aria-expanded=true] span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}#mb:focus-visible{outline:2px solid var(--cut);outline-offset:3px}#mn{list-style:none;margin:9px 0 0;padding:8px 0;background:var(--ink);border:1px solid var(--rule);min-width:186px}#mn a{display:block;padding:9px 18px;text-decoration:none;color:var(--paper);font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;transition:color .15s,background .15s}#mn a:hover{color:var(--cut);background:var(--dim)}html{scroll-behavior:smooth}h2{scroll-margin-top:74px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}.hero{display:grid;grid-template-columns:minmax(160px,250px) 1fr;gap:38px;align-items:center;margin-bottom:46px}@media(max-width:700px){.hero{grid-template-columns:1fr;gap:24px}.wrap{padding:34px 22px 44px}.nav{top:10px;right:10px}}.coin{display:flex;flex-direction:column;align-items:stretch;gap:18px}.coin img{width:100%;display:block;border-radius:50%}h1{font:200 clamp(46px,10vw,96px)/.9 Fraunces,serif;letter-spacing:-.025em;margin:0 0 10px}.by{font:italic 300 clamp(20px,2.8vw,27px)/1.2 Fraunces,serif;color:var(--mute);margin-bottom:24px}.cta,.inq a{color:var(--paper);background:var(--cu);text-decoration:none;text-transform:uppercase;font-family:"IBM Plex Mono",monospace;font-weight:500;transition:opacity .15s}.cta:hover,.inq a:hover{opacity:.82}.cta{display:inline-flex;align-items:baseline;gap:10px;padding:12px 18px;font-size:11.5px;line-height:1;letter-spacing:.11em}.cta em{font-style:normal;opacity:.62}
+/* under the penny the button stacks, so it fits the narrow column */
+.coin .cta{flex-direction:column;align-items:center;gap:5px;text-align:center;padding:13px 14px}
+.hero>div .by{margin-bottom:0}h2{font:500 10px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin:0 0 4px;padding-top:26px}.ln{list-style:none;padding:0;margin:0 0 32px}.ln li{border-bottom:1px solid var(--rule);transition:border-color .18s}.ln li:first-child{border-top:1px solid var(--rule)}.ln li:hover{border-bottom-color:var(--cu)}.ln a{display:flex;align-items:center;gap:10px;padding:12px 0;text-decoration:none;color:var(--paper);font-size:15.5px;transition:transform .18s,color .18s}.ln a:hover{transform:translateX(6px);color:var(--cut)}.ln img{width:16px;height:16px;object-fit:contain;display:block;flex:none;background:var(--paper);border-radius:50%;padding:2px;box-sizing:content-box}.ln .src{order:-1;flex:none;width:150px;font:500 12px/1.35 "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--cut)}@media(max-width:620px){.ln .src{width:100%;margin-bottom:2px}.ln a:has(.src){flex-wrap:wrap}}.cols{display:grid;grid-template-columns:1fr 1fr;gap:40px}@media(max-width:700px){.cols{grid-template-columns:1fr;gap:0}}.gal{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:6px 0 12px}.gal a{display:block}.gal a:first-child{grid-column:span 2;grid-row:span 2}@media(max-width:700px){.gal{grid-template-columns:repeat(2,1fr)}.gal a:first-child{grid-column:span 2;grid-row:auto}}.gal img{width:100%;height:100%;aspect-ratio:3/2;object-fit:cover;display:block;background:var(--dim);transition:opacity .18s}.gal a:first-child img{aspect-ratio:1}.gal a:hover img{opacity:.6}.cap{font:400 10.5px/1.7 "IBM Plex Mono",monospace;color:var(--mute);margin-bottom:38px;max-width:74ch}.inq{margin:30px 0 10px;text-align:center}.inq a{display:inline-block;padding:19px 40px;font-size:13px;line-height:1;letter-spacing:.16em}
+.ends{margin:20px 0 6px;display:flex;justify-content:center;flex-wrap:wrap;gap:14px 30px;
+ font:500 11px/1.6 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase}
+.ends a{color:var(--mute);text-decoration:none;border-bottom:1px solid var(--cu);
+ padding-bottom:3px;transition:color .15s,border-color .15s}
+.ends a:hover{color:var(--cut);border-color:var(--cut)}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ln a:hover{transform:none}}</style></head><body><nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></nav><div class="wrap"><div class="hero"><span class="coin"><img src="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/cent_homepage.jpg" alt="A 1979 copper penny from CENTS" loading="lazy"><a class="cta" href="https://cents.vision/" target="_blank">cents.vision <em>collection explorer</em></a></span><div><h1>CENTS</h1><p class="by">Rutherford Chang</p></div></div><h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2><div class="gal" id="g"></div><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p><p class="inq" id="inq"><a href="/cents/inquiries">Project inquiries</a></p>
+<p class="ends"><a href="https://cents.vision/" target="_blank">cents.vision &#8599;</a><a href="http://rutherfordchang.com/" target="_blank">rutherfordchang.com &#8599;</a></p></div>
+<script>
+const H="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/",
+U="https://raw.githubusercontent.com/gorgonorgon/UCCA/main/",S="/cents/";
+const UP=[["CENTSbot launched","https://centsbot.up.railway.app/","img/cents/centsbot.png"],
+["Trait Explorer live","https://cents.vision/"],
+["Retrospective at UCCA Beijing","https://ucca.org.cn/en/exhibition/rutherford-chang/"],
+["Rutherford Chang in Taschen’s On NFTs",S+"taschen"]];
+const PS=[["The 21st Century's Biggest Art Trend is Not a Style. But Once You See It, You'll Notice It Everywhere.","https://www.artnews.com/art-in-america/features/21st-century-biggest-trend-not-style-systems-art-hans-haacke-1234786483/","ArtNews"],
+["Hundreds and Thousands","https://www.frieze.com/article/rutherford-chang-hundreds-and-thousands-2026-review","Frieze"],
+["Chang's survey rewrites what a square can do","https://www.artnews.com/art-in-america/aia-reviews/rutherford-chang-ucca-beijing-survey-tetris-1234783323/","Art in America"],
+["From pennies to a Beatles record haul","https://www.theartnewspaper.com/2026/01/14/from-pennies-to-a-beatles-record-haul-the-obsessive-work-of-rutherford-chang-goes-on-show-in-beijing","The Art Newspaper"],
+["Retrospective at UCCA Beijing","https://bitcoinmagazine.com/culture/rutherford-chang-retrospective-hundreds-and-thousands-at-ucca-beijing","Bitcoin Magazine"],
+["Hundreds and Thousands","https://www.monopol-magazin.de/rutherford-chang-hundreds-and-thousands-center-for-contemporary-art-beijing-review","monopol"],
+["Artist page: exhibitions and biography","https://ocula.com/artists/rutherford-chang/","Ocula"],
+["Rutherford Chang: Hundreds and Thousands","https://www.interaliamag.org/articles/rutherford-chang-hundreds-and-thousands/","Interalia"],
+["Rutherford Chang: Hundreds and Thousands","https://www.e-flux.com/announcements/6785689/rutherford-changhundreds-and-thousands","e-flux"],
+["一展带你看懂观念艺术，张能傲回顾展“成百上千”UCCA开幕","https://news.bjd.com.cn/2026/01/17/11529440.shtml","京报网"],
+["收藏、重复与文化记忆｜“张能傲：成百上千”正在UCCA展出","https://news.qq.com/rain/a/20260301A02TA900","腾讯新闻"]];
+const PR=[["Project description",S+"project-description"],["Writing on CENTS",S+"makes-cents"],
+["Trait Explorer","https://cents.vision/"],["Trait Atlas","https://cents.vision/traits-atlas.html"],
+["Trait Council",S+"trait-council"],
+["CENTS Block 839969","https://onlineonly.christies.com/s/beyond-screen/rutherford-chang-b-1979-10/226433"],
+["CENTS on Raster","https://www.raster.art/artwork/2835716"],
+["Artist site","http://rutherfordchang.com/"],["Artist obituary",S+"artist-obituary"]];
+const MK=[["Ord","https://ord.net/collection/cents","ord.png"],
+["Satflow","https://www.satflow.com/s/543B375","satflow.png"]];
+const SO=[["Discord","https://discord.gg/USQwhGj8HC","cents-discord.png"],
+["X","https://x.com/sovrnart","twitter.jpg"],
+["Instagram","https://www.instagram.com/centsbyrutherfordchang/","instagram.png"]];
+const G=[["cents_cube_screens.jpg","The copper block with screens showing the coins"],
+["cents_book_detail.jpg","The book, open to a spread of pennies"],
+["cents_block_smiling.jpg","CENTS Block Copper"],
+["cents_installation.jpg","The CENTS room at UCCA"]];
+const $=i=>document.getElementById(i),e=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;"),
+ext=u=>!u.startsWith("http")?'':(u.includes("sovrn.art")?' target="_blank"':' target="_blank"');
+const row=x=>'<li><a href="'+x[1]+'"'+ext(x[1])+'>'+(x[2]&&x[2].includes(".")?'<img src="'+encodeURI(x[2].includes("/")?x[2]:H+x[2])+'" alt="">':'')+e(x[0])+(x[2]&&!x[2].includes(".")?'<span class="src">'+e(x[2])+'</span>':'')+'</a></li>';
+$("u").innerHTML=UP.map(row).join("");$("r").innerHTML=PS.map(row).join("");
+$("p").innerHTML=PR.map(row).join("");$("m").innerHTML=MK.map(row).join("");$("s").innerHTML=SO.map(row).join("");
+$("g").innerHTML=G.map(x=>'<a href="/exhibitions/ucca"><img src="'+encodeURI(U+x[0])+'" alt="'+e(x[1])+'" loading="lazy"></a>').join("");
+const mb=$("mb"),mn=$("mn");
+mn.innerHTML=[...document.querySelectorAll("h2[id]")].map(h=>'<li><a href="'+location.pathname+'#'+h.id+'">'+h.textContent+'</a></li>').join("")+'<li><a href="'+location.pathname+'#inq">Inquiries</a></li>';
+const setMenu=o=>{mb.setAttribute("aria-expanded",o);mn.hidden=!o;};
+mb.onclick=()=>setMenu(mb.getAttribute("aria-expanded")!=="true");
+mn.onclick=e=>{
+  const a=e.target.closest("a"); if(!a) return;
+  setMenu(false);
+  const id=(a.getAttribute("href")||"").split("#")[1];
+  if(!id) return;                       /* a link off this page: leave it alone */
+  const t=document.getElementById(id); if(!t) return;
+  /* Jump without pushing history. Each anchor was adding an entry, so the back
+     button walked back up the menu instead of leaving the page. */
+  e.preventDefault();
+  t.scrollIntoView({behavior:"smooth",block:"start"});
+  history.replaceState(null,"",location.pathname+"#"+id);
+};
+document.addEventListener("click",e=>{if(!e.target.closest(".nav"))setMenu(false);});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false);});
+</script></body></html>

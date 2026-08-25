@@ -3,8 +3,8 @@
 
     python3 tools/check-share-pages.py
 
-share.html and share-<slug>.html are thin shells over share.css and share.js. All
-four carry the same body markup, so the one way this arrangement can rot is
+share.html and shareable/share-<slug>/index.html are thin shells over share.css and
+share.js. All four carry the same body markup, so the one way this arrangement can rot is
 someone editing the markup in one shell and not the others. That is exactly the
 drift a reader would never notice: three pages keep working and the fourth
 quietly loses a button.
@@ -20,7 +20,24 @@ import os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SLUGS = ["reflection", "wunderkammer", "bytegans"]
-PAGES = ["share.html"] + [f"share-{s}.html" for s in SLUGS]
+
+def scoped(slug):
+    return f"shareable/share-{slug}/index.html"
+
+# Two families of the same shell, and the difference is which root they assume.
+#
+# The nested ones are canonical for sovrn.art and resolve from "/" via <base>.
+# The flat ones exist because they are addressed from outside this repo and cannot
+# move: vanarman.com iframes shibboleth88.github.io/sovrn-pages/share-reflection.html,
+# a project page where "/" is github.io's root and not ours. They therefore carry no
+# <base> and declare SHARE_ROOT instead, so every path stays relative to the shell.
+# Both point rel=canonical at the sovrn.art URL, so this costs nothing in search.
+ROOT_PAGES = ["share.html"] + [f"share-{s}.html" for s in SLUGS]
+NESTED_PAGES = [scoped(s) for s in SLUGS]
+PAGES = ROOT_PAGES + NESTED_PAGES
+HUB = "shareable/index.html"
+
+STUBS = {"shareables.html": "/shareable"}
 
 
 def read(name):
@@ -60,16 +77,37 @@ def main():
     if scope_of(read("share.html")) is not None:
         problems.append("share.html declares a SHARE_SCOPE; it should serve all three")
     for slug in SLUGS:
-        name = f"share-{slug}.html"
-        found = scope_of(read(name))
-        if found != slug:
-            problems.append(f"{name}: declares scope {found!r}, expected {slug!r}")
+        for name in (f"share-{slug}.html", scoped(slug)):
+            found = scope_of(read(name))
+            if found != slug:
+                problems.append(f"{name}: declares scope {found!r}, expected {slug!r}")
+
+    # The whole point of the flat family: it must not assume it is at a domain root.
+    for name in ROOT_PAGES:
+        text = read(name)
+        if '<base href="/">' in text:
+            problems.append(f"{name}: carries <base href=\"/\">, which breaks the "
+                            f"vanarman.com embed served from /sovrn-pages/")
+        if 'var SHARE_ROOT = "./"' not in text:
+            problems.append(f"{name}: does not set SHARE_ROOT, so share.js would "
+                            f"look for the artwork mirror at the origin root")
+    for name in NESTED_PAGES:
+        text = read(name)
+        if '<base href="/">' not in text:
+            problems.append(f"{name}: lost <base href=\"/\">; its assets resolve "
+                            f"from its own directory")
+        if "SHARE_ROOT" in text:
+            problems.append(f"{name}: sets SHARE_ROOT; it should inherit the default")
 
     for name in PAGES:
         text = read(name)
         if "<style>" in text:
             problems.append(f"{name}: has an inline <style>; it belongs in share.css")
-        if len(re.findall(r"<script(?![^>]*\bsrc=)", text)) > (0 if name == "share.html" else 1):
+        # Each shell may declare its root (flat family only) and its scope (all but
+        # share.html, which serves all three). Anything beyond that has escaped
+        # share.js and will drift.
+        declarations = (1 if name in ROOT_PAGES else 0) + (0 if name == "share.html" else 1)
+        if len(re.findall(r"<script(?![^>]*\bsrc=)", text)) > declarations:
             problems.append(f"{name}: has an unexpected inline <script>")
         if 'href="share.css"' not in text:
             problems.append(f"{name}: does not link share.css")
@@ -91,14 +129,23 @@ def main():
         want = f"{d}{stem}{n:02d}.svg"
         # shareables.html shows the same frame on its card, so a click lands on an
         # image already fetched. That claim is only true while they agree.
-        for name in ("share.html", f"share-{slug}.html", "shareables.html"):
+        for name in ("share.html", f"share-{slug}.html", scoped(slug), HUB):
             if os.path.exists(os.path.join(ROOT, name)) and want not in read(name):
                 problems.append(
                     f"{name}: preloads a frame other than {want}, which share.js opens on")
 
+    # The stubs are what keep old inbound links and outside embeds working.
+    for name, target in STUBS.items():
+        if not os.path.exists(os.path.join(ROOT, name)):
+            problems.append(f"{name}: stub is missing; old links and embeds break")
+            continue
+        text = read(name)
+        if 'http-equiv="refresh"' not in text or target not in text:
+            problems.append(f"{name}: stub no longer redirects to {target}")
+
     for p in problems:
         print("  " + p)
-    print(f"\n{len(PAGES)} share pages: " +
+    print(f"\n{len(PAGES)} share shells: " +
           ("all consistent" if not problems else f"{len(problems)} PROBLEM(S)"))
     return 1 if problems else 0
 

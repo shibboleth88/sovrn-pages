@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base href="/">
+<!-- Every relative path in this file resolves from the site root, which is what
+     lets a page sit at any depth without rewriting its assets. In-page anchors
+     are the one thing <base> breaks, so an in-page anchor must be built
+     from location.pathname rather than written bare. -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shareable GIFs — sovrn.art</title>
+<!-- Card and search metadata. Google Sites emitted one og:image for the whole site —
+     the studio logo, on every page — and gave no way to change it. Serving these
+     pages directly is what makes per-page cards possible at all, so each one names
+     its own image, and cards will not render SVG, which is why the share pages point
+     at a raster rather than at the artwork they are about. -->
+<meta name="description" content="Sovrn&#x27;s fully on-chain collections, in a format that can be shared on socials">
+<link rel="canonical" href="https://www.sovrn.art/shareable">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="sovrn.art">
+<meta property="og:title" content="Shareable GIFs">
+<meta property="og:description" content="Sovrn&#x27;s fully on-chain collections, in a format that can be shared on socials">
+<meta property="og:url" content="https://www.sovrn.art/shareable">
+<meta property="og:image" content="https://www.sovrn.art/img/pages/fc-3-blockchains/reflection_fc.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- The faces the page names. Without this the CSS asked for Fraunces and
+     IBM Plex and silently got Georgia and the system monospace — and the GIF
+     captions came out in whatever mono the viewer happened to have, so the
+     same work exported from two machines did not match. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500&amp;display=swap">
+<!-- The same three frames the scoped pages open on, so clicking a card lands on
+     an image the browser has already fetched. -->
+<link rel="preload" as="image" href="img/collections/reflection/reflection-02.svg" type="image/svg+xml">
+<link rel="preload" as="image" href="img/wunderkammer-works/wunderkammer-08.svg" type="image/svg+xml">
+<link rel="preload" as="image" href="img/bytegans/bytegan-15.svg" type="image/svg+xml">
+<link rel="stylesheet" href="share.css">
+</head>
+<!-- The hub: three cards, one per on-chain collection, each leading to that
+     collection's own share page. Nothing else — the tool itself lives there.
+
+     The cards turn through a few works from each collection. That is the only
+     thing shareables.js does, and the page does not need it: the markup carries
+     the first frame, and these SVGs animate by themselves inside an <img> (SMIL
+     runs, and so do nested GIFs — sovrn-pages/NOTES.md). With script off the
+     cards are still alive, just not turning.
+
+     Every link carries target="_blank". The Sites embed iframe is sandboxed
+     WITHOUT allow-top-navigation, so target="_top" silently does nothing and no
+     target at all gives "refused to connect". _blank is the only one that works.
+     Do not change it. -->
+<body>
+
+<header><div class="wrap">
+  <h1>Shareable GIFs</h1>
+  <p>Sovrn's fully on-chain collections, in a format that can be shared on socials</p>
+</div></header>
+
+<div class="wrap">
+  <p class="gtitle">Pick a collection</p>
+  <div class="three">
+
+    <a class="panelcard" data-c="reflection"
+       href="/shareable/share-reflection"
+       target="_blank" rel="noopener" aria-label="Shareable GIFs of Reflection">
+      <img src="img/collections/reflection/reflection-02.svg" alt="" decoding="async">
+      <figcaption>Reflection<span class="who">Pindar Van Arman</span></figcaption>
+    </a>
+
+    <a class="panelcard" data-c="wunderkammer"
+       href="/shareable/share-wunderkammer"
+       target="_blank" rel="noopener" aria-label="Shareable GIFs of Wunderkammer">
+      <img src="img/wunderkammer-works/wunderkammer-08.svg" alt="" decoding="async">
+      <figcaption>Wunderkammer<span class="who">Isa Kost</span></figcaption>
+    </a>
+
+    <a class="panelcard" data-c="bytegans"
+       href="/shareable/share-bytegans"
+       target="_blank" rel="noopener" aria-label="Shareable GIFs of byteGANs">
+      <img src="img/bytegans/bytegan-15.svg" alt="" decoding="async">
+      <figcaption>byteGANs<span class="who">Pindar Van Arman</span></figcaption>
+    </a>
+
+  </div>
+
+  <p class="gtitle" style="margin-top:22px">Where the work comes from</p>
+  <div class="about">
+    <p>These three collections keep their artwork inside the contract as an encoded
+       vector drawing with no dependencies.</p>
+    <p>This tool pulls the SVG data from the contracts and converts it to gifs that
+       play with the parameters specified in the encoding.</p>
+    <p>byteGANs are a compressionist approach to putting GANs on-chain and are the
+       first AI art collection that was put fully on-chain on Ethereum (in its
+       entirety).</p>
+    <p>Wunderkammer is a conceptual gesture about permanence and transience using its
+       on-chain presence as metaphor for the presence of death in life.</p>
+    <p>Reflection encodes and executes Pindar Van Arman’s reflective AI process
+       fully on-chain.</p>
+  </div>
+</div>
+
+<script src="shareables.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<base href="/">
+<!-- Every relative path in this file resolves from the site root, which is what
+     lets a page sit at any depth without rewriting its assets. In-page anchors
+     are the one thing <base> breaks, so an in-page anchor must be built
+     from location.pathname rather than written bare. -->
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<title>Noctilucent Mementi — Martin Lukas Ostachowski — sovrn.art</title>
+<!-- Card and search metadata. Google Sites emitted one og:image for the whole site —
+     the studio logo, on every page — and gave no way to change it. Serving these
+     pages directly is what makes per-page cards possible at all, so each one names
+     its own image, and cards will not render SVG, which is why the share pages point
+     at a raster rather than at the artwork they are about. -->
+<meta name="description" content="Over the last 5 years, MLO has come to be known as &quot;the cloud artist.&quot; He began tokenizing his art in June 2018, and has since become a formative figure in the cryptoart movement, making…">
+<link rel="canonical" href="https://www.sovrn.art/curated/mementi">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="sovrn.art">
+<meta property="og:title" content="Noctilucent Mementi — Martin Lukas Ostachowski">
+<meta property="og:description" content="Over the last 5 years, MLO has come to be known as &quot;the cloud artist.&quot; He began tokenizing his art in June 2018, and has since become a formative figure in the cryptoart movement, making…">
+<meta property="og:url" content="https://www.sovrn.art/curated/mementi">
+<meta property="og:image" content="https://www.sovrn.art/img/pages/mementi/lead.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>:root{--paper:#e9e9e5;--ink:#16181d;--slate:#5c6470;--rule:#c9c9c2;--hair:#d8d8d2;
+--accent:#0f6b66;--gap:clamp(48px,6vw,84px)}
+*{box-sizing:border-box;margin:0}
+::selection{background:var(--accent);color:var(--paper)}
+body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif}
+.wrap{max-width:1060px;margin:0 auto;padding:0 22px 60px}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.hero{position:relative;min-height:min(84vh,720px);display:flex;flex-direction:column;
+ justify-content:center;align-items:center;text-align:center;padding:60px 22px;
+ background:var(--ink) center/cover no-repeat;margin-bottom:var(--gap)}
+.hero::after{content:"";position:absolute;inset:0;background:rgba(10,14,20,.36)}
+.hero>*{position:relative;z-index:1}
+.hero h1{font:italic 300 clamp(34px,6vw,64px)/1.06 Fraunces,serif;letter-spacing:-.025em;color:#fff;
+ text-shadow:0 2px 30px rgba(0,0,0,.5)}
+.hero .by{margin-top:14px;font:400 clamp(16px,2.2vw,24px)/1.3 Fraunces,serif;color:#f2f2ee;
+ text-shadow:0 2px 22px rgba(0,0,0,.5)}
+.eyebrow{font:500 11px/1.5 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--slate)}
+a.fc{color:inherit;text-decoration:none;border-bottom:1px solid var(--accent)}
+a.fc:hover{color:var(--accent)}
+.meta{margin-top:16px;font:500 10.5px/1.9 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:var(--slate)}
+.prose{max-width:66ch}.prose p+p{margin-top:15px}.prose p{color:var(--slate)}
+.lead{font-size:18.5px;line-height:1.62;color:var(--ink)!important}
+h2{position:relative;font:italic 300 clamp(25px,3.3vw,36px)/1.12 Fraunces,serif;letter-spacing:-.02em;
+ margin:var(--gap) 0 26px;padding-bottom:16px;border-bottom:1px solid var(--rule)}
+h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;background:var(--accent)}
+figure{margin:0}
+.feature{margin-top:var(--gap)}
+.feature img{width:100%;height:auto;display:block;background:var(--ink)}
+.duo{display:grid;grid-template-columns:minmax(0,440px) 1fr;gap:clamp(20px,3.4vw,44px);align-items:center;margin-top:var(--gap)}
+@media(max-width:760px){.duo{grid-template-columns:1fr}}
+.duo img{width:100%;height:auto;display:block;background:var(--ink)}
+.tall{margin-top:var(--gap);display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.8vw,20px)}
+@media(max-width:700px){.tall{grid-template-columns:1fr}}
+.tall img{width:100%;height:auto;display:block;background:var(--ink)}
+/* the media and reading the original gathers under the collection */
+.embed{margin-top:26px;position:relative;padding-bottom:56.25%;height:0;background:var(--ink)}
+.embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.pod{margin-top:26px}
+.pod iframe{width:100%;height:180px;border:0;border-radius:12px}
+.res{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(24px,4vw,52px)}
+@media(max-width:720px){.res{grid-template-columns:1fr}}
+.res a{display:block;padding:15px 0;border-top:1px solid var(--hair);text-decoration:none;color:inherit;transition:transform .2s}
+.res a:hover{transform:translateX(4px)}
+.res .k{display:block;font:500 10.5px/1.5 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.res .n{display:block;font:italic 300 19px/1.25 Fraunces,serif}
+.res a:hover .n{color:var(--accent)}
+.cap{margin-top:10px;font:500 10.5px/1.6 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
+.social{margin-top:16px;display:flex;flex-wrap:wrap;gap:16px;
+ font:500 10.5px/1.6 "IBM Plex Mono",monospace;letter-spacing:.11em;text-transform:uppercase}
+.social a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:2px;transition:color .15s}
+.social a:hover{color:var(--accent)}
+.links{margin-top:var(--gap);padding-top:22px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:22px;
+ font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
+.links a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:4px}
+.links a:hover{color:var(--accent)}
+.foot{margin-top:26px;font:400 11.5px/1.7 "IBM Plex Mono",monospace;color:var(--slate);max-width:76ch}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}</style></head><body>
+<header class="hero" style="background-image:url(img/pages/mementi/hero.gif)">
+<h1>Noctilucent Mementi</h1><p class="by">by Martin Lukas Ostachowski</p></header>
+<div class="wrap">
+<p class="eyebrow"><a class="fc" href="/">sovrn.art</a> &middot; Curated collection</p>
+<p class="meta">Released 20 October 2023 &middot; Ethereum</p>
+<figure class="feature"><img src="img/pages/mementi/lead.jpg" alt="" loading="lazy"></figure>
+<div class="prose" style="margin-top:var(--gap)">
+<p class="lead">Noctilucent Mementi is a generative chronicle that encapsulates 5 years of Martin Lukas Ostachowski&#x27;s travels and work with clouds in cryptoart. Each artwork is a location-specific memento, forming a visual timeline of the artist&#x27;s development, milestones and travels between 2018 and 2023, spanning 4 continents and 11 countries. The term &#x27;noctilucent,&#x27; means &#x27;luminous in the dark&#x27; and references high, invisible clouds. &#x27;Mementi&#x27; represents the artist&#x27;s curated visual memories. In MLO&#x27;s words, &quot;Noctilucent clouds are invisible memories, glowing when revisited.&quot; For MLO, clouds serve as a medium for speaking about the way that we transform and preserve intangible presences, both through personal memory and through digital wallets. In this, his first serial collection, MLO celebrates 5 years of artistic evolution since the creation of his first cloud artwork in September 2018.</p>
+<p>Over the last 5 years, MLO has come to be known as &quot;the cloud artist.&quot; He began tokenizing his art in June 2018, and has since become a formative figure in the cryptoart movement, making fundamental contributions to the cultural understanding of the medium. His early works use geometric minimalism and artistic data visualization to investigate and educate about the potential meanings of blockchains and tokens. With the piece &quot;Cloud Seed Phrase Visualization&quot; (September 2018), he arrived at a mode of translating data into metaphor that has since become the spine of his practice. In his words, &quot;I find the analogy to clouds particularly intriguing, as we store only the rights to assets in our digital wallets while the actual digital assets remain permanently on the blockchain; the digital assets therefore remain intangible much like clouds in the sky.&quot;</p>
+<p>Clouds have personal weight for MLO as someone whose life has been defined by movement and transition. Born in Poland, raised in Germany, emigrated to Canada, travelling constantly, he has lived in more than 33 different places through the years. For him, clouds are both an emblem of transience and a constant companion. In MLO&#x27;s art, the distributed nodes that constitute a blockchain become a symbol of hope. This living cloud maintained by shared belief harbors the possibility of continuity for an individual identity through the fragile impermanence of physical locations.</p>
+</div>
+<h2>Interview and further reading</h2>
+<p class="cap">An interview with Sovrn &amp; MLO about Noctilucent Mementi</p>
+<div class="embed"><iframe src="https://www.youtube-nocookie.com/embed/qHIol6B6A4U" title="An interview with Sovrn and MLO about Noctilucent Mementi" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+<p class="cap" style="margin-top:34px">Discover the references, influences and underlying numerology of the collection</p>
+<div class="pod"><iframe src="https://open.spotify.com/embed/episode/062NCQeYRzaLf3GfElIanr" title="Podcast episode on Noctilucent Mementi" loading="lazy" allow="clipboard-write; encrypted-media; picture-in-picture"></iframe></div>
+<div class="res">
+<a href="https://mlo.art/news/blog-posts/new-collection-noctilucent-mementi/" target="_blank"><span class="k">References and numerology</span><span class="n">On the new collection</span></a>
+<a href="https://mlo.art/about/artist-statement/" target="_blank"><span class="k">Artist statement</span><span class="n">Network of Hope</span></a>
+<a href="https://mlo.art/about/artist-biography/" target="_blank"><span class="k">Biography by Eleonora Brizi</span><span class="n">The Art of Martin Lukas Ostachowski, the &ldquo;Clouds Artist&rdquo;</span></a>
+<a href="https://mlo.art/research/history-of-crypto-art/" target="_blank"><span class="k">Research</span><span class="n">History of Crypto Art timeline</span></a>
+</div>
+<h2>The artist</h2>
+<div class="duo"><figure><img src="img/pages/mementi/artist.jpg" alt="Martin Lukas Ostachowski" loading="lazy"></figure><div class="prose"><p>Martin Lukas Ostachowski is an artist based in Canada who explores geometric abstraction and minimalism using physical and digital languages through the use of technologies like blockchain. He has exhibited his works at DYOR in Kunstahalle Zurich, Icons of Crypto Art in Dubai Design District, Bitcoin Renaissance in Miami, Dear Block Chen at Solid Art in Taipei, CADAF Online Contemporary and Digital Art Fair in Paris, and The Past of the Future: A Retrospective of Historical NFTs in Barcelona, among other locations around the world.</p><p class="social"><a href="https://mlo.art/" target="_blank">mlo.art</a><a href="https://x.com/MLOdotArt" target="_blank">X</a><a href="https://www.instagram.com/mlodotart/" target="_blank">Instagram</a></p></div></div>
+<figure class="feature"><img src="img/pages/mementi/wide1.jpg" alt="" loading="lazy"></figure>
+<figure class="feature"><img src="img/pages/mementi/wide2.jpg" alt="" loading="lazy"></figure>
+<figure class="feature"><img src="img/pages/mementi/wide3.jpg" alt="" loading="lazy"></figure>
+<figure class="feature"><img src="img/pages/mementi/wide4.jpg" alt="" loading="lazy"></figure>
+<figure class="feature"><img src="img/pages/mementi/wide5.jpg" alt="" loading="lazy"></figure>
+<section class="tall"><img src="img/pages/mementi/tall1.jpg" alt="" loading="lazy"><img src="img/pages/mementi/tall2.jpg" alt="" loading="lazy"><img src="img/pages/mementi/tall3.jpg" alt="" loading="lazy"></section>
+<p class="links"><a href="https://www.raster.art/artwork/noctilucent-mementi-by-martin-lukas-ostachowski" target="_blank">View on Raster &#8599;</a></p>
+<p class="foot">Noctilucent Mementi, Martin Lukas Ostachowski, 2023. A generative chronicle of five years of travel and work with clouds. A curated collection on <a class="fc" href="/">sovrn.art</a>.</p>
+</div></body></html>

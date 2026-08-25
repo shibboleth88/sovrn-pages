@@ -1,90 +1,20 @@
-<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
-<title>Seasons of Mobility — bashobits</title>
-<style>:root{--paper:#e9e9e5;--ink:#16181d;--slate:#5c6470;--rule:#c9c9c2;--copper:#8a4f2a}*{box-sizing:border-box;margin:0}body{background:var(--paper);color:var(--ink);font:400 15px/1.5 "IBM Plex Sans",sans-serif;padding:26px 22px}.wrap{max-width:1040px;margin:0 auto}.eyebrow{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--slate)}a.fc{color:inherit;text-decoration:none;border-bottom:1px solid var(--copper)}a.fc:hover{color:var(--copper)}h1{font:200 clamp(30px,6vw,58px)/1.02 Fraunces,serif;margin:13px 0 2px;letter-spacing:-.015em}.by{font:italic 300 clamp(17px,2.6vw,23px)/1.2 Fraunces,serif;color:var(--slate);margin-bottom:10px}.run{font:500 12px/1.5 "IBM Plex Mono",monospace;letter-spacing:.06em;color:var(--copper);text-transform:uppercase;margin-bottom:16px}.lede{max-width:62ch;color:var(--slate);font-size:14.5px}.lede p+p{margin-top:12px}.strip{margin:26px 0 0;background:var(--ink);width:100%;border:0;padding:0;display:block;cursor:zoom-in;overflow:hidden}.strip img{width:100%;display:block}figcaption{font:400 11px/1.55 "IBM Plex Mono",monospace;color:var(--slate);margin-top:8px;max-width:78ch}.cols{display:grid;grid-template-columns:minmax(230px,1fr) 1.3fr;gap:34px;margin-top:30px;padding-top:18px;border-top:1px solid var(--rule)}@media(max-width:760px){.cols{grid-template-columns:1fr;gap:24px}}h2{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin:0 0 13px}dl{display:grid;grid-template-columns:auto 1fr;gap:6px 15px;font:400 12.5px/1.5 "IBM Plex Mono",monospace;align-content:start}dt{color:var(--slate);text-transform:uppercase;letter-spacing:.08em;font-size:10.5px;padding-top:1px}dd{margin:0;word-break:break-all}.prog{list-style:none;padding:0;margin:0}.prog li{padding:11px 0;border-bottom:1px solid var(--rule)}.prog li:first-child{border-top:1px solid var(--rule)}.prog .v{font-size:14px;font-weight:500}.prog .s{display:block;font:italic 300 16px/1.25 Fraunces,serif;color:var(--ink);margin:2px 0 3px}.prog .d{display:block;font:500 10.5px/1.4 "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--slate)}.sec{margin-top:32px;padding-top:18px;border-top:1px solid var(--rule)}.n2{max-width:66ch;color:var(--slate);font-size:13.5px;margin-bottom:16px}.year{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}@media(max-width:820px){.year{grid-template-columns:repeat(2,1fr);gap:24px}}@media(max-width:440px){.year{grid-template-columns:1fr}}.col h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--copper);margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid var(--rule)}.col .cell+.cell{margin-top:10px}.cell{border:0;padding:0;background:none;text-align:left;cursor:zoom-in;font:inherit;color:inherit;display:block}.cell .im{background:var(--ink);aspect-ratio:16/9;overflow:hidden;display:block}.cell img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .15s}.cell:hover img{opacity:.72}.cell:focus-visible{outline:2px solid var(--copper);outline-offset:2px}.cell .t{display:block;font:500 10.5px/1.4 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--copper);margin-top:8px}.bio{display:grid;grid-template-columns:150px 1fr;gap:26px;align-items:start}@media(max-width:620px){.bio{grid-template-columns:1fr;gap:16px}}.bio .pf{width:100%;max-width:150px;display:block;background:var(--ink);image-rendering:pixelated}.body{max-width:64ch;font-size:14.5px}.body p+p{margin-top:12px}.more{margin-top:18px;font:500 11.5px/2 "IBM Plex Mono",monospace;letter-spacing:.05em;text-transform:uppercase}.more a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--copper);padding-bottom:2px;margin-right:18px;display:inline-block}.more a:hover{color:var(--copper)}#lb{position:fixed;inset:0;background:#111319;display:none;align-items:center;justify-content:center;flex-direction:column;padding:38px 22px 22px;z-index:9}#lb.on{display:flex}#lb img{max-width:100%;max-height:calc(100vh - 140px);object-fit:contain}#lb .cap{color:var(--paper);text-align:center;margin-top:15px;max-width:64ch}#lb .cap i{font:italic 300 22px/1.2 Fraunces,serif;display:block;margin-bottom:5px}#lb .cap u{text-decoration:none;font:500 12px/1.6 "IBM Plex Mono",monospace;color:#9aa0aa;letter-spacing:.06em}#lbx{position:absolute;top:12px;right:16px;background:none;border:0;color:var(--paper);font:400 24px/1 "IBM Plex Sans",sans-serif;cursor:pointer;padding:4px 8px}#lbx:hover{color:var(--copper)}.foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--rule);font:400 11.5px/1.65 "IBM Plex Mono",monospace;color:var(--slate);max-width:78ch}@media(prefers-reduced-motion:reduce){*{transition:none!important}}</style></head><body><div class="wrap">
-<p class="eyebrow"><a class="fc" href="https://www.sovrn.art" target="_blank">sovrn.art</a> &middot; Curated collection</p>
-<h1>Seasons of Mobility</h1>
-<p class="by">by <a class="fc" href="https://bashobits.com/" target="_blank">bashobits</a></p>
-<p class="run">Released 15 April 2023 &middot; Ethereum</p>
-<div class="lede">
-<p>It is the year 1010AH (After Humanity). We are long gone. But life continues. The autonomous trains, buses, and cars created by us have become a new species that calls itself Mobility.</p>
-<p><i>Seasons of Mobility</i> was created in the aesthetic tradition of wabi-sabi, which identifies beauty in the imperfect, the impermanent, and the incomplete.</p>
-<p>The colours and scenes invoke the four seasons across a full year. Each piece reflects everyday life in a future that is both familiar and surreal.</p>
-</div>
-<figure><button class="strip" type="button" onclick="zoomHero()"><img id="hero" alt="Four works from Seasons of Mobility"></button><figcaption>Four works from <i>Seasons of Mobility</i>, bashobits, 2023</figcaption></figure>
-<div class="cols">
-<dl>
-<dt>Artist</dt><dd><a class="fc" href="https://bashobits.com/" target="_blank">bashobits</a></dd>
-<dt>Collection</dt><dd>Seasons of Mobility</dd>
-<dt>Released</dt><dd>15 April 2023</dd>
-<dt>Chain</dt><dd>Ethereum</dd>
-<dt>Contract</dt><dd>0xaf116c78180f6b5dc2cfc064a2e5ae2f99505d8f</dd>
-<dt>Marketplace</dt><dd><a class="fc" href="https://www.raster.art/artwork/2155303" target="_blank">Raster</a></dd>
-</dl>
-<div>
-<h2>Museum collection and exhibitions</h2>
-<ul class="prog">
-<li><span class="v"><a class="fc" href="https://www.ooekultur.at/location-detail/francisco-carolinum-linz" target="_blank">Francisco Carolinum, Linz</a></span><span class="s">Admiral Rush</span><span class="d">Permanent collection &middot; Token 5 &middot; <a class="fc" href="https://www.sovrn.art/collections/fransisco-carolinum" target="_blank">On sovrn</a></span></li>
-<li><span class="v"><a class="fc" href="https://screens.neort.io/art/park-in-park" target="_blank">NEORT &middot; Screens Contextualized</a></span><span class="s">Weather Writes</span><span class="d">February 2026 &middot; 58 screens, Shibuya, Tokyo</span></li>
-</ul>
-</div>
-</div>
-<div class="sec">
-<h2>A year in four seasons</h2>
-<p class="n2">Twelve works, three to a season, turning through a full year.</p>
-<div class="year" id="year"></div>
-</div>
-<div class="sec">
-<h2>On 58 screens in Shibuya</h2>
-<div class="body">
-<p>NEORT is a digital art platform for artists and collectors. This includes exhibitions in Tokyo to reimagine the digital signage scattered throughout the city not merely as advertising media, but as a new stage for cultural expression, showcasing artworks on these screens. Utilizing large-scale signage networks, NEORT offers artists from around the world an opportunity to challenge new possibilities of expression in urban spaces.</p>
-<p><i>Aura Afterglow</i>, a custom combination of three pieces from <i>Freedom of Mobility</i>, was selected for the February 2026 exhibition <i>Weather Writes</i>, part of <i>Screens Contextualized</i>, and displayed across 58 screens in Shibuya, Tokyo.</p>
-</div>
-<p class="more"><a href="https://screens.neort.io/art/park-in-park" target="_blank">NEORT Screens &#8599;</a></p>
-</div>
-<div class="sec">
-<h2>The wider Mobility world</h2>
-<div class="body">
-<p>Since the creation of <i>Seasons of Mobility</i>, bashobits has continued to expand the Mobility world, releasing <i>Freedom of Mobility</i>, <i>Memories of Mobility</i> and <i>Ghosts of Mobility</i> to holders of the original collection. He has also created the game <i>Lost Mobility: Sand Wave Drift</i> based on themes from the collection. For more details see <a class="fc" href="https://bashobits.com/" target="_blank">bashobits.com</a>.</p>
-</div>
-</div>
-<div class="sec">
-<h2>The artist</h2>
-<div class="bio">
-<img class="pf" id="pf" alt="bashobits" width="150" height="148">
-<div class="body">
-<p>Having been trained by a mix of humans, AI systems, and spirits, bashobits is an artist in motion, imperfectly.</p>
-<p>The focus on motion can be experienced directly in the art trilogy of Mobility: <i>Seasons of Mobility</i>, <i>Memories of Mobility</i>, and <i>Freedom of Mobility</i>.</p>
-<p>The theme of motion continues in the whimsical art collection <i>Berry Based</i>.</p>
-<p>Human collaborations include working with award-winning AI CryptoArtist Pindar Van Arman as part of the bitGAN Collabs.</p>
-<p>AI system collaborations include hallucinating through the latent space alongside the daring Disco Diffusion systems to explore chaos.</p>
-<p>Spirit influences start with the soulful poet Matsuo Bash&#333;, leading directly to the name bashobits. This reflects time spent writing poetry for many years since childhood and studying poetry formally through university.</p>
-<p>In addition to creating, bashobits collects specific AI CryptoArt once in a while.</p>
-</div>
-</div>
-<p class="more"><a href="https://www.raster.art/artwork/2155303" target="_blank">View the collection on Raster &#8599;</a><a href="https://bashobits.com/" target="_blank">bashobits.com &#8599;</a></p>
-</div>
-<p class="foot">bashobits, <i>Seasons of Mobility</i>, 2023. &copy; bashobits. <i>Admiral Rush</i> is held in the permanent collection of the Francisco Carolinum, Linz.</p>
-</div>
-<div id="lb" role="dialog" aria-label="Artwork"><button id="lbx" aria-label="Close">&times;</button><img id="lbi" alt=""><p class="cap" id="lbc"></p></div>
-<script>
-const B="img/seasons-of-mobility/";
-const S=[["spring","Spring"],["summer","Summer"],["autumn","Autumn"],["winter","Winter"]];
-const $=i=>document.getElementById(i),lb=$("lb");
-$("hero").src=B+"banner.png";
-$("pf").src=B+"bashobits.png";
-$("year").innerHTML=S.map(([k,label])=>'<div class="col"><h3>'+label+'</h3>'+
-[1,2,3].map(n=>'<button class="cell" type="button" onclick="zoom(\''+k+'\','+n+',\''+label+'\')">'+
-'<span class="im"><img src="'+B+k+'-'+n+'.png" alt="'+label+', work '+n+' of 3" loading="lazy"></span></button>').join("")+
-'</div>').join("");
-function open_(src,alt,t,sub){$("lbi").src=src;$("lbi").alt=alt;
-$("lbc").innerHTML='<i>'+t+'</i><u>'+sub+'</u>';lb.classList.add("on");$("lbx").focus();}
-function zoom(k,n,label){open_(B+k+"-"+n+".png",label+", work "+n+" of 3",label,
-"bashobits \u00b7 Seasons of Mobility \u00b7 2023 \u00b7 "+n+" of 3");}
-function zoomHero(){open_(B+"banner.png","Four works from Seasons of Mobility","Seasons of Mobility","bashobits \u00b7 2023 \u00b7 four works");}
-function unzoom(){lb.classList.remove("on");}
-$("lbx").onclick=unzoom;lb.onclick=e=>{if(e.target===lb)unzoom();};
-onkeydown=e=>{if(e.key=="Escape")unzoom();};
-</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Moved — sovrn.art</title>
+<!-- This page used to live here, and other sites embed and link these paths:
+     vanarman.com carries share-reflection.html in an iframe, and every link ever
+     posted points at whatever URL was current that day. GitHub Pages cannot emit
+     a 301, so this is the shape it supports — a canonical for search engines and
+     a refresh for people. One hop, fixed destination, never taken from a query
+     parameter: that is the difference between a redirect and an open redirect.
+     The query string is carried across, because share.html?c=reflection has to
+     land on the scoped page and not the combined one. -->
+<link rel="canonical" href="https://www.sovrn.art/curated/seasons-of-mobility">
+<meta http-equiv="refresh" content="0; url=/curated/seasons-of-mobility">
+<meta name="robots" content="noindex">
+<script>location.replace("/curated/seasons-of-mobility" + location.search + location.hash);</script>
+</head>
+<body><p>This page has moved to <a href="/curated/seasons-of-mobility">/curated/seasons-of-mobility</a>.</p></body>
+</html>
