@@ -15,7 +15,7 @@ frame around pages we author; it hosts almost none of the content. The survey:
 |---|---|---|
 | Full-page embeds of `sovrn-pages` HTML | **34** | nothing to migrate — they already exist |
 | Native Sites pages | **4** | `/about`, `/curated`, `/cents/cents-in-tachens-on-nfts`, `/cents/artist-obituary` |
-| Broken | **1** | `/curated/reflection/further-details` 404s and is linked from `reflection.html` |
+| Broken | **1** | ~~`/curated/reflection/further-details`~~ — resolved 25 Aug by dropping the link; the URL still 404s but nothing points at it |
 
 The four native pages are 322, 159, 405 and 74 words. Their images are
 Google-hosted signed URLs — those can be downloaded at their current size but
@@ -107,6 +107,23 @@ So:
 - Verify locally by serving the restructured tree **at a root**, since `<base href="/">`
   only behaves correctly there. `python3 -m http.server` from the tree root does it.
 - The site changes exactly once: at the cutover.
+
+## Leave stubs at the old flat paths
+
+The restructure moves `share.html` to `shareable/index.html` and so on, which
+changes the **`shibboleth88.github.io/sovrn-pages/...`** URLs. Those are a
+different namespace from sovrn.art's, and other people embed and link them —
+vanarman.com embeds the share tool, and any link posted anywhere points at
+whatever URL was current when it was posted.
+
+So leave a thin redirect at every old flat path: a few lines of HTML that send the
+browser to the new location, one per file. It costs nothing, it protects links we
+do not know about, and it means **nobody outside this repo has to change anything
+at cutover**. Without them, an embed of `share.html?c=reflection` goes blank the
+moment the file moves — and the owner of that page would have no idea why.
+
+Keep the query string when redirecting: `share.html?c=reflection` has to land on
+the scoped page, not the combined one.
 
 ## Cutover
 
