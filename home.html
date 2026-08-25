@@ -182,12 +182,19 @@ const C=[
 ["AI Spaceships","Anne Spalter",S+"ai-spaceships",H+"ai-spaceships.jpg","Climate change has made Earth uninhabitable and the remaining people build ships to leave. Some fail at launch and go down in flames; others warp to steampunk battleships, or to neon hyperspace."]];
 /* venue, what is held or shown, when, page */
 const MU=[
-["Francisco Carolinum, Linz","Sovrn Full Set","Permanent collection","https://www.sovrn.art/museums/fransisco-carolinum"],
-["UCCA, Beijing","Rutherford Chang: Hundreds and Thousands","17 Jan – 12 Apr 2026","https://www.sovrn.art/museums/ucca"],
-["Kindl Center for Contemporary Art, Berlin","POLY. A Fluid Show","17 Sep 2023 – 25 Feb 2024","https://www.sovrn.art/museums/kindl"],
-["Vitra Design Museum","Science Fiction Design","18 May 2024 – 10 May 2026","https://www.sovrn.art/museums/vitra"],
-["Museum of Crypto Art","Five Reflections","Permanent collection","https://www.sovrn.art/museums/moca"],
-["LACMA, Los Angeles","AI Imagined Portrait Painted by a Robot #2","Permanent collection","https://www.sovrn.art/museums/lacma"]];
+["Francisco Carolinum, Linz","Collection Francisco Carolinum — 3 Blockchains, one Collection","9 Sep 2026 – 7 Feb 2027","https://www.sovrn.art/museums/3-blockchains","3 Blockchains"],
+["NEORT, Shibuya","SCREENS CONTEXTUALIZED","9 – 22 Feb 2026","https://www.sovrn.art/museums/screens-contextualized","Screens Contextualized"],
+["UCCA, Beijing","Rutherford Chang: Hundreds and Thousands","17 Jan – 12 Apr 2026","https://www.sovrn.art/museums/ucca","UCCA, Beijing"],
+["Marfa, Texas","A sovrn Pop-Up Gallery","16 – 19 Oct 2025","https://www.sovrn.art/marfa-pop-up","Marfa Pop-Up"],
+["Basel Social Club, Basel","BANKABLE","15 – 21 Jun 2025","https://www.sovrn.art/museums/bankable","BANKABLE"],
+["Christie’s, New York","Augmented Intelligence","20 Feb – 5 Mar 2025","https://www.sovrn.art/museums/christies","Christie’s"],
+["Vitra Design Museum","Science Fiction Design","18 May 2024 – 10 May 2026","https://www.sovrn.art/museums/vitra","Vitra Design Museum"],
+["Kindl Center for Contemporary Art, Berlin","POLY. A Fluid Show","17 Sep 2023 – 25 Feb 2024","https://www.sovrn.art/museums/kindl","KINDL, Berlin"]];
+const MC=[
+["Francisco Carolinum, Linz","Sovrn Full Set","Permanent collection","https://www.sovrn.art/museums/fransisco-carolinum","Francisco Carolinum"],
+["Museum of Crypto Art","Five Reflections","Permanent collection","https://www.sovrn.art/museums/moca","Museum of Crypto Art"],
+["Arab Bank Switzerland","Sightseers 104","Art collection","https://www.sovrn.art/museums/arab-bank","Arab Bank Switzerland"],
+["LACMA, Los Angeles","AI Imagined Portrait Painted by a Robot #2","Permanent collection","https://www.sovrn.art/museums/lacma","LACMA"]];
 const MK=[["Raster","raster.jpg"],["Ord","ord.png"],["Satflow","satflow.png"]],
 SO=[["X","twitter.jpg","https://twitter.com/sovrnart"],
 ["Instagram","instagram.png","https://www.instagram.com/sovrn.art",1],
@@ -203,7 +210,8 @@ const NAV=(()=>{
     rows.map(r=>item(r[0],r[1])).join("")+'</ul></li>';
   /* venue only in the menu — the city stays on the ledger below */
   return group("Curated", C.map(c=>[c[0],c[2]]))
-    + group("Museums", MU.map(m=>[m[0].split(",")[0],m[3]]))
+    + group("Exhibitions", MU.map(m=>[m[4],m[3]]))
+    + group("In collections", MC.map(m=>[m[4],m[3]]))
     + item("Marketplaces","https://www.sovrn.art/marketplaces")
     + item("Shareable","https://www.sovrn.art/shareable")
     + item("About","https://www.sovrn.art/about");
@@ -471,7 +479,7 @@ document.getElementById("g").innerHTML=C.map((c,i)=>{
     pick.due=clock+(HOLD[pick.s]||DWELL)+Math.random()*8000;
   },TICK);
 })();
-document.getElementById("m").innerHTML=MU.map(m=>
+document.getElementById("m").innerHTML=MU.concat(MC).map(m=>
 '<li><a href="'+m[3]+'" target="_blank"><span class="mv">'+esc(m[0])+'</span><span class="ms">'+esc(m[1])+'</span><span class="md">'+esc(m[2])+'</span></a></li>').join("");
 document.getElementById("mk").innerHTML=MK.map(m=>
 '<a href="https://www.sovrn.art/marketplaces" target="_blank"><img src="'+encodeURI(H+m[1])+'" alt=""><span>'+m[0]+'</span></a>').join("");
