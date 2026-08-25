@@ -1,15 +1,35 @@
 # sovrn-pages — operating notes
 
-Hosted HTML embedded into the Google Sites site at sovrn.art. Served from GitHub
-Pages at `https://shibboleth88.github.io/sovrn-pages/`.
+**This repo *is* sovrn.art.** Since 25 August 2026 it is served directly at
+`https://www.sovrn.art` from GitHub Pages — Google Sites is gone. Editing a file
+here and pushing to `main` changes the live site a minute later; there is no
+staging step and no second system to keep in sync.
 
-Most of what you need is in [`NOTES.md`](NOTES.md) — how Sites embedding behaves,
-how to get content back out of it, how to reconstruct a page faithfully. This file
-covers the one thing that can break the live site from outside this repository.
+Read [`MIGRATION.md`](MIGRATION.md) before restructuring anything. It carries the
+URL contract, why the flat share shells are shaped the way they are, and the
+things the move cost real time to discover. [`NOTES.md`](NOTES.md) is still worth
+having — its Google Sites sections are now history, but everything about the
+artworks, the Reflection cascade and raster.art still applies.
+
+**Two rules survive the move:**
+
+1. **URLs do not change.** `tools/check-site.py --urls https://www.sovrn.art`
+   asserts all 47 resolve. Outside sites link these paths, and one of them is
+   iframed by vanarman.com. If you move a page, leave a stub — see the ones at
+   the old flat paths for the shape.
+2. **Run the checkers before pushing.** `main` is production.
+
+   ```bash
+   python3 tools/check-site.py --urls https://www.sovrn.art
+   python3 tools/check-site.py --assets https://www.sovrn.art
+   python3 tools/check-share-pages.py
+   ```
+
+This file covers what can break the live site from outside this repository.
 
 ## The share pages depend on a service in another repo — do not remove it
 
-`share.js:244` lists three Ethereum endpoints, tried in order:
+`share.js:247` lists three Ethereum endpoints, tried in order:
 
 ```
 https://ethereum-rpc.publicnode.com
@@ -17,9 +37,23 @@ https://eth.drpc.org
 https://sovrn-bot-production.up.railway.app/api/eth     <- the important one
 ```
 
-Four pages load it: `share.html`, `share-reflection.html`, `share-bytegans.html`,
-`share-wunderkammer.html`. They read `tokenURI` straight from the three on-chain
-contracts, so without a reachable RPC there is no artwork.
+Seven shells load it, in two families that differ only in which root they assume:
+
+| where | why it exists |
+|---|---|
+| `/share.html`, `/share-<slug>.html` | addressed from outside this repo and cannot move — **vanarman.com iframes `share-reflection.html`** |
+| `/shareable/share-<slug>/` | canonical for sovrn.art; the flat ones point `rel=canonical` here |
+
+They read `tokenURI` straight from the three on-chain contracts, so without a
+reachable RPC there is no artwork.
+
+**The flat shells carry no `<base>` and set `SHARE_ROOT = "./"` instead.** That is
+not stylistic. Van Arman's iframe still addresses
+`shibboleth88.github.io/sovrn-pages/share-reflection.html`, which now 301s to
+`www.sovrn.art/share-reflection.html` — but if it is ever loaded from a project
+page directly, `<base href="/">` would resolve every asset against the wrong root.
+`tools/check-share-pages.py` fails if a flat shell grows a `<base>` or loses
+`SHARE_ROOT`.
 
 **The third entry is not a redundant fallback. For a large group of visitors it is
 the only one that works.** Crypto RPC hostnames sit on the NoCoin/cryptomining
@@ -47,9 +81,12 @@ If the Railway service ever does go away, this repo needs the endpoint replaced
 before that happens, not after. Removing the line from `share.js` is not a fix —
 it is the breakage.
 
-Verified working 2026-08-25: an `eth_call` for `tokenURI(884)` on the Reflection
-contract returns the full work with `access-control-allow-origin` correctly set to
-the GitHub Pages origin.
+Verified working 2026-08-25, **after the migration and from the new origin**: an
+`eth_call` for `tokenURI` on the Reflection contract returns the full 338KB work,
+with the preflight answering `access-control-allow-origin: https://www.sovrn.art`.
+The proxy's allowlist already contained the apex and `www`, so the origin change
+needed nothing — but it is an allowlist, not `*`, so **a future origin change does
+need `ETH_PROXY_ORIGINS` updated in Railway first.**
 
 ## Reflection is ~144 contracts, not one
 

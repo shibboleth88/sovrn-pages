@@ -4,6 +4,15 @@ Things about this repo, the artworks and Google Sites that cost real time to
 find out. Written so the next person — or the next session — does not have to
 rediscover them.
 
+> **Google Sites is no longer in use.** On 25 August 2026 this repo became
+> sovrn.art itself, served from GitHub Pages — see [`MIGRATION.md`](MIGRATION.md).
+> The Sites sections below are kept as history: they explain why pages are shaped
+> the way they are, and how content was recovered out of Sites. Do not follow them
+> as current instructions — in particular, there is no longer an embed step, no
+> `?embed=` handling to respect, and links no longer need `target="_blank"` to
+> escape an iframe sandbox. Everything here about the artworks, the Reflection
+> cascade, raster.art and the share tooling still applies.
+
 ---
 
 ## Google Sites
