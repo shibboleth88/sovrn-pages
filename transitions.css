@@ -1,0 +1,31 @@
+/* Cross-document view transitions.
+ *
+ * Only possible since the site left Google Sites: these work same-origin, and
+ * every page was previously an iframe inside a Sites shell. Browsers without
+ * support simply navigate as before — there is no fallback to maintain.
+ *
+ * Opting in is CSS-only, and both the outgoing and incoming page must do it.
+ * Nested inside the media query so a visitor who asks for less motion gets an
+ * ordinary navigation rather than a shorter animation.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+
+  /* The page as a whole: a short cross-fade, deliberately quicker than the
+     paired element so the surrounding furniture settles first. */
+  ::view-transition-old(root) { animation-duration: .22s; }
+  ::view-transition-new(root) { animation-duration: .28s; }
+
+  /* The one element carried across a navigation — a collection's artwork moving
+     from card to page. transitions.js names it per navigation, because which
+     element it is depends on where you clicked and where you are going. */
+  ::view-transition-old(art),
+  ::view-transition-new(art) {
+    animation-duration: .42s;
+    animation-timing-function: cubic-bezier(.22, .61, .36, 1);
+  }
+  ::view-transition-group(art) {
+    animation-duration: .42s;
+    animation-timing-function: cubic-bezier(.22, .61, .36, 1);
+  }
+}
