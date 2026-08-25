@@ -3,8 +3,8 @@
 
     python3 tools/check-share-pages.py
 
-share.html and share-<slug>.html are thin shells over share.css and share.js. All
-four carry the same body markup, so the one way this arrangement can rot is
+share.html and shareable/share-<slug>/index.html are thin shells over share.css and
+share.js. All four carry the same body markup, so the one way this arrangement can rot is
 someone editing the markup in one shell and not the others. That is exactly the
 drift a reader would never notice: three pages keep working and the fourth
 quietly loses a button.
@@ -20,7 +20,19 @@ import os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SLUGS = ["reflection", "wunderkammer", "bytegans"]
-PAGES = ["share.html"] + [f"share-{s}.html" for s in SLUGS]
+
+# share.html stays at the root: the Sites embeds address it as share.html?c=<slug>,
+# and the flat share-<slug>.html paths are now redirect stubs pointing here.
+def scoped(slug):
+    return f"shareable/share-{slug}/index.html"
+
+PAGES = ["share.html"] + [scoped(s) for s in SLUGS]
+HUB = "shareable/index.html"
+
+# The old flat paths, and where each must send a visitor. vanarman.com iframes
+# share-reflection.html, so these are load-bearing for someone else's page.
+STUBS = {f"share-{s}.html": f"/shareable/share-{s}" for s in SLUGS}
+STUBS["shareables.html"] = "/shareable"
 
 
 def read(name):
@@ -60,7 +72,7 @@ def main():
     if scope_of(read("share.html")) is not None:
         problems.append("share.html declares a SHARE_SCOPE; it should serve all three")
     for slug in SLUGS:
-        name = f"share-{slug}.html"
+        name = scoped(slug)
         found = scope_of(read(name))
         if found != slug:
             problems.append(f"{name}: declares scope {found!r}, expected {slug!r}")
@@ -91,10 +103,19 @@ def main():
         want = f"{d}{stem}{n:02d}.svg"
         # shareables.html shows the same frame on its card, so a click lands on an
         # image already fetched. That claim is only true while they agree.
-        for name in ("share.html", f"share-{slug}.html", "shareables.html"):
+        for name in ("share.html", scoped(slug), HUB):
             if os.path.exists(os.path.join(ROOT, name)) and want not in read(name):
                 problems.append(
                     f"{name}: preloads a frame other than {want}, which share.js opens on")
+
+    # The stubs are what keep old inbound links and outside embeds working.
+    for name, target in STUBS.items():
+        if not os.path.exists(os.path.join(ROOT, name)):
+            problems.append(f"{name}: stub is missing; old links and embeds break")
+            continue
+        text = read(name)
+        if 'http-equiv="refresh"' not in text or target not in text:
+            problems.append(f"{name}: stub no longer redirects to {target}")
 
     for p in problems:
         print("  " + p)
