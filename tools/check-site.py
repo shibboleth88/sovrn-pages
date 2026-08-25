@@ -95,23 +95,33 @@ def check_urls(host):
         code, body = fetch(host.rstrip("/") + p + ("/" if "127.0.0.1" in host and p != "/" else ""), "GET")
         listing = b"Directory listing for" in body
         stub = b"This page has moved" in body
-        return p, code, listing, stub
+        target = None
+        if stub:
+            m = re.search(rb'url=([^"\']+)', body)
+            if m:
+                target = m.group(1).decode("utf-8", "replace").strip()
+        return p, code, listing, stub, target
     with ThreadPoolExecutor(max_workers=8) as pool:
-        for p, code, listing, stub in pool.map(one, PUBLIC):
+        for p, code, listing, stub, target in pool.map(one, PUBLIC):
             if code != 200:
                 bad.append((p, code))
                 print(f"    {code}  {p}")
             elif listing:
                 bad.append((p, "listing"))
                 print(f"    no index.html  {p}   (a directory listing, which Pages 404s)")
-            elif stub:
+            elif stub and (target or "").rstrip("/") == p.rstrip("/"):
                 # A stub at <name>.html shadows /<name>: Pages strips .html when
                 # resolving an extensionless request and prefers the file to the
                 # directory. The stub then points back at itself — a redirect loop,
                 # and both it and the real page answer 200, so status alone is blind
                 # to it. This is how /cents stopped opening.
+                #
+                # Pointing somewhere else is not that. Some URLs in the contract are
+                # meant to be stubs — /home is the Sites homepage alias and /curated/
+                # cents a second route onto /cents — so the test is whether the stub
+                # names itself, not whether it is a stub.
                 bad.append((p, "stub"))
-                print(f"    a redirect stub  {p}   (shadowing its own page — loop)")
+                print(f"    a redirect stub  {p}   (points at itself — loop)")
     # The misspelling is the live URL and correcting it 404s (NOTES.md).
     if not any(p == "/collections/fransisco-carolinum" for p in PUBLIC):
         bad.append(("fransisco-carolinum missing from the contract", 0))
