@@ -122,9 +122,11 @@
      what ticking it would do. */
   /* Mirrors the band captioned() burns into the GIF: same black ground, same
      mono face, same slate. It is a preview of the caption, not the caption. */
-  .prevcap{margin:0;background:#000;color:#9aa1ad;text-align:center;
-    font:italic 300 15px/1 Fraunces,Georgia,serif;
-    padding:9px 6px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* Height, line-height and font-size are set from share.js so the band matches
+     the one the encoder burns in, rather than approximating it here. */
+  .prevcap{margin:0;background:#000;color:#9aa1ad;text-align:center;box-sizing:border-box;
+    font:italic 300 15px/1 Fraunces,Georgia,serif;max-width:100%;
+    padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   /* The title option reads as one of the page's own chosen-option controls — the
      same pill the shapes and the collection chips use, filling with the accent
      when it is on — rather than as a stray checkbox, which is what made it easy

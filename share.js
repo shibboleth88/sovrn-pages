@@ -1367,8 +1367,15 @@ function syncPreviewCap() {
   var on = withTitles && sel && sel.title && sel.slug !== "compose";
   cap.hidden = !on;
   if (on) {
+    // Same numbers the encoder uses, so what is on screen is the band you get
+    // rather than an approximation of it.
+    var size = parseInt($("size").value, 10);
+    var bandH = capHeight(size);
     cap.textContent = sel.title;
-    cap.style.width = parseInt($("size").value, 10) + "px";
+    cap.style.width = size + "px";
+    cap.style.height = bandH + "px";
+    cap.style.lineHeight = bandH + "px";
+    cap.style.fontSize = capType(bandH) + "px";
   }
 }
 
@@ -1408,7 +1415,8 @@ var LAYOUTS = {
 // blocked; both are serifs, so the band keeps its proportions either way.
 var CAP_FONT = 'Fraunces, Georgia, "Times New Roman", serif';
 var CAP_FACE = 'italic 300';
-var CAP_MIN_PX = 11;               // a serif gives up sooner than mono does
+var CAP_MIN_PX = 13;               // a serif gives up sooner than mono does
+var CAP_RATIO = 0.56;              // type height as a share of the band
 
 // Canvas silently falls back when a face is not loaded yet, so the first export
 // would come out Georgia and later ones Fraunces — inconsistent in a way nobody
@@ -1417,14 +1425,16 @@ var capFontReady = (document.fonts && document.fonts.load)
   ? document.fonts.load(CAP_FACE + ' 32px Fraunces').catch(function () {})
   : Promise.resolve();
 
-// Taller than it was: mono held up at 9px, a serif does not. At 480 this takes the
-// band from 14px to 19px and the type from 9px to 11px.
-function capHeight(width) { return Math.max(18, Math.round(width * 0.040)); }
+// The band and the type in it. Sized up again: a title small enough to squint at
+// is not doing the job a wall label is for, and these are read at whatever size a
+// timeline hands them. At 480 the type is 13px, at 1440 it is 37px.
+function capHeight(width) { return Math.max(21, Math.round(width * 0.046)); }
+function capType(bandH) { return Math.max(CAP_MIN_PX, Math.round(bandH * CAP_RATIO)); }
 
 // Shrink to fit, and ellipsize only when even the smallest size will not do —
 // a Reflection title can run to fifty characters and must not overrun its work.
 function drawCap(ctx, text, x, y, w, h, align) {
-  var t = String(text || ""), px = Math.max(CAP_MIN_PX, Math.round(h * 0.52));
+  var t = String(text || ""), px = capType(h);
   while (px > CAP_MIN_PX) {
     ctx.font = CAP_FACE + " " + px + "px " + CAP_FONT;
     if (ctx.measureText(t).width <= w) break;
