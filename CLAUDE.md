@@ -27,6 +27,28 @@ artworks, the Reflection cascade and raster.art still applies.
 
 This file covers what can break the live site from outside this repository.
 
+## Images are served from this repo, deliberately
+
+Every image the site renders is under `img/`. Until 25 August 2026 the homepage
+tiles, museum photographs, KINDL and Vitra installation views and the Francisco
+Carolinum plates were loaded from six repos under a **different account**
+(`gorgonorgon`) over `raw.githubusercontent.com`. They were copied in — 71 files,
+11MB — and every reference now points at `/img/...`.
+
+This is the same argument as the artwork mirror, and it should not be undone: a
+same-origin file has exactly the page's availability, while any outside host can
+be blocked, rate-limited or deleted independently. That one also happened to be an
+account nobody here can administer, and it sent `max-age=300` against the site's
+own 600.
+
+**Do not reintroduce an external image host.** New images go in `img/`.
+
+One trap if you ever audit this: **the URLs are built by string concatenation in
+JS**, so grepping the HTML finds base constants rather than filenames and badly
+under-reports. Render the pages and read `document.images` instead — every page is
+same-origin now, so an iframe over the sitemap does it. That is how the seventh
+repo (`reflection-page`) was found after six had been listed.
+
 ## The share pages depend on a service in another repo — do not remove it
 
 `share.js:247` lists three Ethereum endpoints, tried in order:

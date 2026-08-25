@@ -58,11 +58,16 @@ python3 tools/check-share-pages.py                           # the share tool's 
 Run the first one *before* pushing too — it checks the live site, so a clean run
 before and after tells you whether you broke something or it was already broken.
 
-**3. Some images live in another account.** The homepage tiles, the socials row,
-the CENTS penny and the museum photos are served from repos under `gorgonorgon`
-(`images-for-homepage`, `sovrn-FC-images`, `kindl`, `vitra-for-website`, `UCCA`,
-`museum-photos`). You can't change those from here — ask Ezra. Everything under
-`img/` is fair game.
+**3. Keep images in this repo.** Everything the site shows lives under `img/` —
+add new pictures there and reference them as `/img/...`. Don't link an image from
+another GitHub repo, an S3 bucket or anywhere else: an outside host can be
+blocked, rate-limited or deleted without warning, and the page is then broken
+with nothing here to explain why. A file served from this repo has exactly the
+site's own availability — if it can't be reached, there's no page either.
+
+The site used to load its homepage tiles and museum photographs from repos under
+another account; they were brought in on 25 August 2026 and the site no longer
+depends on anything external for imagery.
 
 ## Two things that will look like bugs and aren't
 
