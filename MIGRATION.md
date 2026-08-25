@@ -163,10 +163,38 @@ Write the checker before the restructure, not after. It should:
 - run the share tool end to end — search, trait filter, open a work, render a GIF —
   with the RPC endpoints disabled, so it proves the mirror path.
 
-## Open questions
+## Settled
 
-- Are there Sites analytics in use that would need replacing?
-- Does anyone other than git edit these pages today?
-- Should `sovrn-onchain` fold into this repo to restore same-origin, or stay
-  separate and cross-origin? Separate is cheaper and works; same-origin is tidier
-  and costs ~94MB here.
+- **No Sites analytics are in use.** Nothing to replace.
+- **Only git edits these pages** — no one is authoring through the Sites editor, so
+  losing that editor costs nothing.
+
+## What to do with `sovrn-onchain`
+
+It is the artwork mirror the share tool reads: 2,218 works as static SVG, 93MB, of
+which Reflection alone is 85MB. It also now carries the CLI tools and data.
+
+Today both repos are served from `shibboleth88.github.io`, so they are the **same
+origin**, and that is the whole point of the mirror — the artwork has exactly the
+availability the page has. After migration `sovrn-pages` answers at
+`www.sovrn.art` while `sovrn-onchain` stays on `shibboleth88.github.io`, and they
+become different origins.
+
+Cross-origin works: Pages sends `access-control-allow-origin: *`, and the page
+builds a `data:` URI rather than assigning a remote `img.src`, so nothing taints
+and the GIF export is unaffected. And both being Pages, they largely fail together
+anyway.
+
+**The exception is the reason to prefer folding it in.** Some corporate and school
+networks block `github.io` specifically. Those visitors would load sovrn.art
+perfectly and watch every artwork fail — the same "page fine, artwork broken"
+signature this mirror was built to end, arriving by a different door.
+
+So: **move the artwork into this repo**, at `/onchain/`. It restores true
+same-origin, takes the tree from ~175MB to ~270MB against Pages' 1GB ceiling, and
+simplifies `share.js` — a root path instead of an absolute cross-origin URL to
+maintain. `sovrn-onchain` keeps its README, `tools/` and `data/` (176KB), so the
+provenance and the reproduce-it-yourself tooling survive as a citable thing.
+
+**This does not block the migration.** It is one line in `share.js` either way, and
+reversible in both directions, so it can be done first, last, or not at all.
