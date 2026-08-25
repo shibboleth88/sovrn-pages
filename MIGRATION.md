@@ -158,7 +158,29 @@ the destination from a query parameter.
 2. Add `CNAME` containing `www.sovrn.art`; point the `www` record at
    `shibboleth88.github.io`. The apex already redirects to `www` via Squarespace and
    can stay as it is.
-3. Wait for Pages to provision the certificate. HTTPS may fail briefly in between.
+3. Provision the certificate — **it does not always start on its own.** On the
+   `preview.sovrn.art` rehearsal every DNS precondition was already satisfied
+   (`dns_resolves` true, `is_cname_to_github_user_domain` true, `is_served_by_pages`
+   true, not proxied, no CAA error) and Pages still sat at `https_certificate: null`
+   with `https_eligible: null` — no cert requested, HTTPS simply refusing connections.
+   Clearing the custom domain and setting it again started it immediately: `authorized`
+   at once, `approved` and serving HTTPS within about a minute.
+
+   ```bash
+   gh api -X PUT repos/shibboleth88/sovrn-pages/pages -f cname=""
+   gh api -X PUT repos/shibboleth88/sovrn-pages/pages -f cname="www.sovrn.art"
+   gh api repos/shibboleth88/sovrn-pages/pages --jq '.https_certificate.state'
+   ```
+
+   Then enforce it, and confirm the `CNAME` file survived the round-trip (the API
+   rewrites it, and a later `rsync` that excludes `CNAME` will not restore it):
+
+   ```bash
+   gh api -X PUT repos/shibboleth88/sovrn-pages/pages -F https_enforced=true
+   ```
+
+   The point for timing: **sovrn.art is down for this whole step.** Don't budget the
+   optimistic case — plan on doing the re-set, not on waiting to see whether you need to.
 4. Walk the 39 URLs and confirm every one resolves.
 
 **Rollback is a DNS record.** Point `www` back at `ghs.googlehosted.com` and revert
@@ -188,7 +210,11 @@ Ordered by how much damage each can do.
    downloadable, but they are hand-rebuilt and could lose detail. *Mitigation: they
    are small; compare against the live pages before cutover.*
 6. **The certificate window.** Between the CNAME resolving and Pages issuing a
-   certificate, HTTPS can fail. *Mitigation: expect it, keep rollback to hand.*
+   certificate, HTTPS fails outright. Confirmed on the rehearsal, and worse than
+   "can" suggests: Pages never requested the certificate at all until the custom
+   domain was cleared and re-set, so waiting patiently would have waited forever.
+   *Mitigation: cutover step 3 does the re-set as a matter of course; keep rollback
+   to hand.*
 7. **Colliding with the other Claude instance.** A 42-file move conflicts with
    anything in flight. *Mitigation: do not start until the repo is quiet.*
 8. **Repo weight.** `img/` is 175MB and `.git` 201MB. Pages' soft ceiling is 1GB, so
