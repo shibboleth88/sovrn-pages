@@ -2,38 +2,44 @@
  *
  * Only possible since the site left Google Sites: these work same-origin, and
  * every page was previously an iframe inside a Sites shell. Browsers without
- * support simply navigate as before — there is no fallback to maintain.
+ * support navigate exactly as before — there is no fallback to maintain.
  *
- * Opting in is CSS-only, and both the outgoing and incoming page must do it.
- * Nested inside the media query so a visitor who asks for less motion gets an
- * ordinary navigation rather than a shorter animation.
+ * @view-transition must sit at the top level. It was originally nested inside a
+ * prefers-reduced-motion query, which parses without complaint and then does
+ * nothing at all: the opt-in never takes effect and every navigation is an
+ * ordinary one. Motion preference is honoured further down instead, by removing
+ * the animations rather than the transition.
  */
-@media (prefers-reduced-motion: no-preference) {
-  @view-transition { navigation: auto; }
+@view-transition { navigation: auto; }
 
-  /* The page as a whole: a short cross-fade, deliberately quicker than the
-     paired element so the surrounding furniture settles first. */
-  ::view-transition-old(root) { animation-duration: .22s; }
-  ::view-transition-new(root) { animation-duration: .28s; }
+/* The element a page hands across a navigation: its lead artwork, declared in
+   the markup. Declared rather than detected — picking "the largest image near
+   the top" at runtime chose a 20px bot icon on /cents and found nothing at all
+   on three pages whose lead is lazy-loaded. Exactly one per page: a
+   view-transition-name must be unique, and duplicates make the browser drop the
+   pairing silently rather than complain. Pages that build their artwork as a
+   grid in script deliberately declare none, and cross-fade instead. */
+.vt-lead { view-transition-name: art; }
 
-  /* The element a page hands across a navigation: its lead artwork, declared in
-     the markup. Declared rather than detected — picking "the biggest image near
-     the top" at runtime chose a 20px bot icon on /cents and found nothing at all
-     on three pages whose lead is lazy-loaded. Exactly one per page: a
-     view-transition-name must be unique or the transition silently does nothing.
-     Pages that build their artwork as a grid in script deliberately have none,
-     and cross-fade instead. */
-  .vt-lead { view-transition-name: art; }
+/* The page as a whole: a short cross-fade, deliberately quicker than the paired
+   element so the surrounding furniture settles first and the artwork leads. */
+::view-transition-old(root) { animation-duration: .22s; }
+::view-transition-new(root) { animation-duration: .28s; }
 
-  /* The homepage has no single lead — which card travels depends on which one
-     was clicked — so transitions.js names it per navigation instead. */
-  ::view-transition-old(art),
-  ::view-transition-new(art) {
-    animation-duration: .42s;
-    animation-timing-function: cubic-bezier(.22, .61, .36, 1);
-  }
-  ::view-transition-group(art) {
-    animation-duration: .42s;
-    animation-timing-function: cubic-bezier(.22, .61, .36, 1);
+/* The artwork travelling between card and page. */
+::view-transition-old(art),
+::view-transition-new(art),
+::view-transition-group(art) {
+  animation-duration: .42s;
+  animation-timing-function: cubic-bezier(.22, .61, .36, 1);
+}
+
+/* Asked for less motion: keep the transition, drop the movement. The swap is
+   then instant, which is steadier than the white flash of a plain navigation. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
