@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The public URLs, taken from the same list tools/check-site.py enforces, so the
+     sitemap and the contract cannot disagree. Redirect stubs, the 404 page and
+     anything not yet public are deliberately absent. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://www.sovrn.art/</loc></url>
+  <url><loc>https://www.sovrn.art/about</loc></url>
+  <url><loc>https://www.sovrn.art/cents</loc></url>
+  <url><loc>https://www.sovrn.art/cents/artist-obituary</loc></url>
+  <url><loc>https://www.sovrn.art/cents/cents-in-tachens-on-nfts</loc></url>
+  <url><loc>https://www.sovrn.art/cents/inquiries</loc></url>
+  <url><loc>https://www.sovrn.art/cents/makes-cents</loc></url>
+  <url><loc>https://www.sovrn.art/cents/project-description</loc></url>
+  <url><loc>https://www.sovrn.art/cents/trait-council</loc></url>
+  <url><loc>https://www.sovrn.art/collections</loc></url>
+  <url><loc>https://www.sovrn.art/collections/abs-collection</loc></url>
+  <url><loc>https://www.sovrn.art/collections/fransisco-carolinum</loc></url>
+  <url><loc>https://www.sovrn.art/collections/lacma</loc></url>
+  <url><loc>https://www.sovrn.art/collections/moca</loc></url>
+  <url><loc>https://www.sovrn.art/curated</loc></url>
+  <url><loc>https://www.sovrn.art/curated/ai-spaceships</loc></url>
+  <url><loc>https://www.sovrn.art/curated/bytegans</loc></url>
+  <url><loc>https://www.sovrn.art/curated/cope-vol-1</loc></url>
+  <url><loc>https://www.sovrn.art/curated/latent-couture</loc></url>
+  <url><loc>https://www.sovrn.art/curated/mementi</loc></url>
+  <url><loc>https://www.sovrn.art/curated/painting-with-fire</loc></url>
+  <url><loc>https://www.sovrn.art/curated/painting-with-fire/gan-timeline</loc></url>
+  <url><loc>https://www.sovrn.art/curated/perimeter-town</loc></url>
+  <url><loc>https://www.sovrn.art/curated/possibility-spaces</loc></url>
+  <url><loc>https://www.sovrn.art/curated/rabbit-takeover</loc></url>
+  <url><loc>https://www.sovrn.art/curated/reflection</loc></url>
+  <url><loc>https://www.sovrn.art/curated/seasons-of-mobility</loc></url>
+  <url><loc>https://www.sovrn.art/curated/sightseers</loc></url>
+  <url><loc>https://www.sovrn.art/curated/wunderkammer</loc></url>
+  <url><loc>https://www.sovrn.art/exhibitions</loc></url>
+  <url><loc>https://www.sovrn.art/exhibitions/bankable</loc></url>
+  <url><loc>https://www.sovrn.art/exhibitions/christies-augmented-intelligence</loc></url>
+  <url><loc>https://www.sovrn.art/exhibitions/fc-3-blockchains</loc></url>
+  <url><loc>https://www.sovrn.art/exhibitions/kindl</loc></url>
+  <url><loc>https://www.sovrn.art/exhibitions/marfa-popup</loc></url>
+  <url><loc>https://www.sovrn.art/exhibitions/screens-contextualized</loc></url>
+  <url><loc>https://www.sovrn.art/exhibitions/ucca</loc></url>
+  <url><loc>https://www.sovrn.art/exhibitions/vitra</loc></url>
+  <url><loc>https://www.sovrn.art/marketplaces</loc></url>
+  <url><loc>https://www.sovrn.art/museums</loc></url>
+  <url><loc>https://www.sovrn.art/shareable</loc></url>
+  <url><loc>https://www.sovrn.art/shareable/share-bytegans</loc></url>
+  <url><loc>https://www.sovrn.art/shareable/share-reflection</loc></url>
+  <url><loc>https://www.sovrn.art/shareable/share-wunderkammer</loc></url>
+</urlset>
