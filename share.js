@@ -1415,8 +1415,8 @@ var LAYOUTS = {
 // blocked; both are serifs, so the band keeps its proportions either way.
 var CAP_FONT = 'Fraunces, Georgia, "Times New Roman", serif';
 var CAP_FACE = 'italic 300';
-var CAP_MIN_PX = 13;               // a serif gives up sooner than mono does
-var CAP_RATIO = 0.56;              // type height as a share of the band
+var CAP_MIN_PX = 16;               // a serif gives up sooner than mono does
+var CAP_RATIO = 0.60;              // type height as a share of the band
 
 // Canvas silently falls back when a face is not loaded yet, so the first export
 // would come out Georgia and later ones Fraunces — inconsistent in a way nobody
@@ -1425,10 +1425,10 @@ var capFontReady = (document.fonts && document.fonts.load)
   ? document.fonts.load(CAP_FACE + ' 32px Fraunces').catch(function () {})
   : Promise.resolve();
 
-// The band and the type in it. Sized up again: a title small enough to squint at
-// is not doing the job a wall label is for, and these are read at whatever size a
-// timeline hands them. At 480 the type is 13px, at 1440 it is 37px.
-function capHeight(width) { return Math.max(21, Math.round(width * 0.046)); }
+// The band and the type in it. Sized for where these are actually read: a
+// timeline scales a 1080px image down to roughly half, so the type has to survive
+// that and still be legible. At 480 the type is 19px, at 1080 it is 42px.
+function capHeight(width) { return Math.max(28, Math.round(width * 0.065)); }
 function capType(bandH) { return Math.max(CAP_MIN_PX, Math.round(bandH * CAP_RATIO)); }
 
 // Shrink to fit, and ellipsize only when even the smallest size will not do —
@@ -1776,6 +1776,11 @@ $("mkgrid").onclick = function () {
               names: theSet.map(function (w) { return w.title; }),
               sets: theSet.map(function (w) { return w.slug; }) };
       singleOnly(false);
+      // The composite carries a caption under every work already. Whatever single
+      // work was open before Make was pressed had left its own band up, and
+      // nothing here took it down — so a finished tych sat under a stray title
+      // belonging to one of its parts.
+      syncPreviewCap();
       var img = $("prev");
       img.style.width = geo.W + "px";
       img.src = URL.createObjectURL(blob);
