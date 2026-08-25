@@ -8,6 +8,8 @@ Before it moved, on 25 August 2026, these files were embedded into a Google Site
 site. [`MIGRATION.md`](MIGRATION.md) records how the move was done, the 47-URL
 contract it had to preserve, and what it cost to find out.
 
+**Making a change to the site?** [`EDITING.md`](EDITING.md) is the short version.
+
 Start with [`CLAUDE.md`](CLAUDE.md) — the short version of what can break the live
 site. [`NOTES.md`](NOTES.md) is the long-form record: how the Reflection cascade is
 rebuilt from the minted files, how artwork is harvested from raster.art, how to
