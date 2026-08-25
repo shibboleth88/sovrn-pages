@@ -48,13 +48,18 @@ h1 em{font-style:italic}
 <h1>Works from Sovrn collections <em>on show</em></h1>
 <p class="intro">Pieces from Sovrn’s curated collections have been exhibited by museums, an auction house, a bank and a pop-up in a truck — in Austria, Switzerland, Germany, China, Japan and the United States. Each page below documents one exhibition and the work that appeared in it.</p>
 <div class="grid" id="g"></div>
-<p class="swap"><a href="https://www.sovrn.art/collections" target="_blank">In collections &#8599;</a><a href="https://www.sovrn.art" target="_blank">sovrn.art &#8599;</a></p>
+<p class="swap"><a href="/collections">In collections &#8599;</a><a href="/">sovrn.art &#8599;</a></p>
 <p class="foot">Listed newest first. Each page records what was shown, with dates, venue, curator and links to the institution and the artist.</p>
 </div>
 <script src="museums-data.js"></script>
 <script>
+/* A new tab only for somewhere else. Internal links used to need
+   target="_blank" because the Sites iframe blocked top navigation; served
+   directly, that just litters the browser with tabs. */
+const tgt=u=>/^https?:/i.test(u)?' target="_blank" rel="noopener"':"";
+
 const src=f=>f.includes("/")?encodeURI(f):B+encodeURIComponent(f);
-const cell=c=>'<a class="card" href="'+c[0]+'" target="_blank">'+
+const cell=c=>'<a class="card" href="'+c[0]+'"'+tgt(c[0])+'>'+
  '<span class="im'+(c[6]?' pad':'')+'"><img src="'+src(c[5])+'" alt="'+c[1]+'" loading="lazy"></span>'+
  '<span class="pl">'+c[1]+'</span>'+
  '<span class="ti">'+c[2]+(c[7]?'<span class="soon">Opening soon</span>':'')+'</span>'+

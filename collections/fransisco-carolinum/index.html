@@ -14,6 +14,11 @@
 <p class="foot">Full traits, metadata and provenance are held in the SOVRN archive.</p>
 <div id="lb" role="dialog" aria-label="Artwork"><button id="lbx" aria-label="Close">×</button><img id="lbi" alt=""><p class="cap" id="lbc"></p></div>
 </div><script>
+/* A new tab only for somewhere else. Internal links used to need
+   target="_blank" because the Sites iframe blocked top navigation; served
+   directly, that just litters the browser with tabs. */
+const tgt=u=>/^https?:/i.test(u)?' target="_blank" rel="noopener"':"";
+
 const R="https://raw.githubusercontent.com/gorgonorgon/sovrn-FC-images/95cb8a0b869bf0eb480ce9a18eaeaf515d7434f2/",O="https://www.raster.art/token/ethereum/";
 const W=[
 ["Anne Spalter","Outerspace Armada 15/501","AI Spaceships","June 2022","0xa8d7cb00c31b07630ef133b4962cea1f58c737ff","15","ai-spaceships",R+"ai_spaceships_fc.jpg"],
@@ -35,11 +40,11 @@ li.querySelector("button").onclick=()=>show(i);list.appendChild(li);});
 function show(i){const w=W[i];cur=i;
 [...list.children].forEach((li,j)=>j===i?li.setAttribute("aria-current","true"):li.removeAttribute("aria-current"));
 const plate=w[7]?'<img src="'+w[7]+'" alt="'+esc(w[1])+' by '+esc(w[0])+'" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{textContent:\'Image unavailable — view the work below\'}))">':'<span>On-chain artwork — view the work below</span>';
-const coll=w[6]?"https://www.sovrn.art/curated/"+w[6]:"https://www.sovrn.art/cents";
+const coll=w[6]?"/curated/"+w[6]:"/cents";
 const mkt=O+w[4]+"/"+w[5];
 det.innerHTML='<button class="plate" type="button" onclick="zoom()">'+plate+'</button><div><p class="n2">'+pad(i)+' / 11</p><h2>'+esc(w[0])+'</h2><p class="title">'+esc(w[1])+'</p>'+
 '<dl><dt>Collection</dt><dd>'+esc(w[2])+'</dd><dt>Released</dt><dd>'+w[3]+'</dd><dt>Chain</dt><dd>Ethereum</dd><dt>Contract</dt><dd>'+w[4]+'</dd>'+'<dt>Token</dt><dd>'+w[5]+'</dd></dl>'+
-'<p class="links"><a href="'+mkt+'" target="_blank">View on Raster ↗</a><a href="'+coll+'" target="_blank">Read the collection page ↗</a></p></div>';}
+'<p class="links"><a href="'+mkt+'"'+tgt(mkt)+'>View on Raster ↗</a><a href="'+coll+'"'+tgt(coll)+'>Read the collection page ↗</a></p></div>';}
 let cur=0;
 function zoom(){const w=W[cur];if(!w[7])return;
 $("lbi").src=w[7];$("lbi").alt=w[1]+" by "+w[0];

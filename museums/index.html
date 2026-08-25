@@ -49,13 +49,18 @@ h1 em{font-style:italic}
 <div class="grid g2" id="g1"></div>
 <div class="gh"><h2>In permanent collections</h2><span>Works held</span></div>
 <div class="grid g2" id="g2"></div>
-<p class="swap"><a href="https://www.sovrn.art/exhibitions" target="_blank">All exhibitions &#8599;</a><a href="https://www.sovrn.art/collections" target="_blank">All collections &#8599;</a></p>
+<p class="swap"><a href="/exhibitions">All exhibitions &#8599;</a><a href="/collections">All collections &#8599;</a></p>
 <p class="foot">Each page records the works held or shown, with provenance, chain data where applicable, and links to the institution and to the artist.</p>
 </div>
 <script src="museums-data.js"></script>
 <script>
+/* A new tab only for somewhere else. Internal links used to need
+   target="_blank" because the Sites iframe blocked top navigation; served
+   directly, that just litters the browser with tabs. */
+const tgt=u=>/^https?:/i.test(u)?' target="_blank" rel="noopener"':"";
+
 const src=f=>f.includes("/")?encodeURI(f):B+encodeURIComponent(f);
-const cell=c=>'<a class="card" href="'+c[0]+'" target="_blank">'+
+const cell=c=>'<a class="card" href="'+c[0]+'"'+tgt(c[0])+'>'+
  '<span class="im'+(c[6]?' pad':'')+'"><img src="'+src(c[5])+'" alt="'+c[1]+'" loading="lazy"></span>'+
  '<span class="pl">'+c[1]+'</span>'+
  '<span class="ti">'+c[2]+(c[7]?'<span class="soon">Opening soon</span>':'')+'</span>'+

@@ -137,7 +137,7 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transfo
 <nav class="nav"><div class="navin"><button id="mb" aria-expanded="false" aria-controls="mn" aria-label="Site navigation"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></div></nav>
 <div class="wrap">
 <header class="mast">
-<a class="logo" href="https://www.sovrn.art" target="_blank"><img src="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/sovrn_logo-removebg.png" alt="Sovrn Art" width="256" height="256"></a>
+<a class="logo" href="/"><img src="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/sovrn_logo-removebg.png" alt="Sovrn Art" width="256" height="256"></a>
 <p class="tag">an indie studio for sovereign artists</p>
 </header>
 <p class="about">Sovrn Art is an independent, artist-first platform by <a href="https://twitter.com/shibboleth88" target="_blank">Ezra Shibboleth</a> and <a href="https://www.vanarman.com" target="_blank">Pindar Van Arman</a>, with <a href="https://x.com/lorepunk" target="_blank">lorepunk</a> providing copy and ops support. We value rigorous artistic processes, meaningfully constructed serial collections, substantial narratives, and structures that uphold the principles of sovereignty and decentralization.</p>
@@ -151,7 +151,7 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transfo
 <div class="sec">
 <h2>In museums and exhibitions</h2>
 <ul class="mus" id="m"></ul>
-<div class="links more"><a href="https://www.sovrn.art/museums" target="_blank">All museums and exhibitions &#8599;</a></div>
+<div class="links more"><a href="/museums">All museums and exhibitions &#8599;</a></div>
 </div>
 
 <footer class="ft">
@@ -161,52 +161,57 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transfo
 <h3>Elsewhere</h3>
 <div class="ico" id="so"></div>
 <div class="links">
-<a href="https://www.sovrn.art/about" target="_blank">About &#8599;</a>
-<a href="https://www.sovrn.art/marketplaces" target="_blank">Marketplaces &#8599;</a>
+<a href="/about">About &#8599;</a>
+<a href="/marketplaces">Marketplaces &#8599;</a>
 </div>
 </footer>
 </div>
 <script src="curated-data.js"></script>
 <script>
+/* A new tab only for somewhere else. Internal links used to need
+   target="_blank" because the Sites iframe blocked top navigation; served
+   directly, that just litters the browser with tabs. */
+const tgt=u=>/^https?:/i.test(u)?' target="_blank" rel="noopener"':"";
+
 /* byteGANs is the on-chain SVG, unmodified: it declares width/height but no
    viewBox, so the card sets explicit dimensions and the browser scales it. */
 
 /* venue, what is held or shown, when, page */
 const MU=[
-["Francisco Carolinum, Linz","Collection Francisco Carolinum — 3 Blockchains, one Collection","9 Sep 2026 – 7 Feb 2027","https://www.sovrn.art/exhibitions/fc-3-blockchains","3 Blockchains"],
-["NEORT, Shibuya","SCREENS CONTEXTUALIZED","9 – 22 Feb 2026","https://www.sovrn.art/exhibitions/screens-contextualized","Screens Contextualized"],
-["UCCA, Beijing","Rutherford Chang: Hundreds and Thousands","17 Jan – 12 Apr 2026","https://www.sovrn.art/exhibitions/ucca","UCCA, Beijing"],
-["Marfa, Texas","A sovrn Pop-Up Gallery","16 – 19 Oct 2025","https://www.sovrn.art/exhibitions/marfa-popup","Marfa Pop-Up"],
-["Basel Social Club, Basel","BANKABLE","15 – 21 Jun 2025","https://www.sovrn.art/exhibitions/bankable","BANKABLE"],
-["Christie’s, New York","Augmented Intelligence","20 Feb – 5 Mar 2025","https://www.sovrn.art/exhibitions/christies-augmented-intelligence","Christie’s"],
-["Vitra Design Museum","Science Fiction Design","18 May 2024 – 10 May 2026","https://www.sovrn.art/exhibitions/vitra","Vitra Design Museum"],
-["Kindl Center for Contemporary Art, Berlin","POLY. A Fluid Show","17 Sep 2023 – 25 Feb 2024","https://www.sovrn.art/exhibitions/kindl","KINDL, Berlin"]];
+["Francisco Carolinum, Linz","Collection Francisco Carolinum — 3 Blockchains, one Collection","9 Sep 2026 – 7 Feb 2027","/exhibitions/fc-3-blockchains","3 Blockchains"],
+["NEORT, Shibuya","SCREENS CONTEXTUALIZED","9 – 22 Feb 2026","/exhibitions/screens-contextualized","Screens Contextualized"],
+["UCCA, Beijing","Rutherford Chang: Hundreds and Thousands","17 Jan – 12 Apr 2026","/exhibitions/ucca","UCCA, Beijing"],
+["Marfa, Texas","A sovrn Pop-Up Gallery","16 – 19 Oct 2025","/exhibitions/marfa-popup","Marfa Pop-Up"],
+["Basel Social Club, Basel","BANKABLE","15 – 21 Jun 2025","/exhibitions/bankable","BANKABLE"],
+["Christie’s, New York","Augmented Intelligence","20 Feb – 5 Mar 2025","/exhibitions/christies-augmented-intelligence","Christie’s"],
+["Vitra Design Museum","Science Fiction Design","18 May 2024 – 10 May 2026","/exhibitions/vitra","Vitra Design Museum"],
+["Kindl Center for Contemporary Art, Berlin","POLY. A Fluid Show","17 Sep 2023 – 25 Feb 2024","/exhibitions/kindl","KINDL, Berlin"]];
 const MC=[
-["Francisco Carolinum, Linz","Sovrn Full Set","Permanent collection","https://www.sovrn.art/collections/fransisco-carolinum","Francisco Carolinum"],
-["Museum of Crypto Art","Five Reflections","Permanent collection","https://www.sovrn.art/collections/moca","Museum of Crypto Art"],
-["Arab Bank Switzerland","Sightseers 104","Art collection","https://www.sovrn.art/collections/abs-collection","Arab Bank Switzerland"],
-["LACMA, Los Angeles","AI Imagined Portrait Painted by a Robot #2","Permanent collection","https://www.sovrn.art/collections/lacma","LACMA"]];
+["Francisco Carolinum, Linz","Sovrn Full Set","Permanent collection","/collections/fransisco-carolinum","Francisco Carolinum"],
+["Museum of Crypto Art","Five Reflections","Permanent collection","/collections/moca","Museum of Crypto Art"],
+["Arab Bank Switzerland","Sightseers 104","Art collection","/collections/abs-collection","Arab Bank Switzerland"],
+["LACMA, Los Angeles","AI Imagined Portrait Painted by a Robot #2","Permanent collection","/collections/lacma","LACMA"]];
 const MK=[["Raster","raster.jpg"],["Ord","ord.png"],["Satflow","satflow.png"]],
 SO=[["X","twitter.jpg","https://twitter.com/sovrnart"],
 ["Instagram","instagram.png","https://www.instagram.com/sovrn.art",1],
 ["CENTS Discord","cents-discord.png","https://discord.gg/USQwhGj8HC",1],
-["Van Arman Discord","van-arman-discord.png","https://discord.gg/eQXjJHx8FF",1]];
+["Van Arman Discord","van-arman-discord.png","https://discord.gg/48DDjNE79f",1]];
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 /* the menu is built from the same C and MU arrays the page renders, so the
    collection order can never drift from the grid below */
 const NAV=(()=>{
-  const item=(label,href)=>'<li><a href="'+href+'" target="_blank">'+esc(label)+'</a></li>';
+  const item=(label,href)=>'<li><a href="'+href+'"'+tgt(href)+'>'+esc(label)+'</a></li>';
   const group=(label,href,rows)=>'<li><div class="grp" aria-expanded="false">'+
-    '<a class="glabel" href="'+href+'" target="_blank">'+esc(label)+'</a>'+
+    '<a class="glabel" href="'+href+'"'+tgt(href)+'>'+esc(label)+'</a>'+
     '<button class="tog" type="button" aria-expanded="false" aria-label="Show '+esc(label)+'">+</button>'+
     '</div><ul class="sub">'+rows.map(r=>item(r[0],r[1])).join("")+'</ul></li>';
   /* venue only in the menu — the city stays on the ledger below */
-  return group("Curated","https://www.sovrn.art/curated", C.map(c=>[c[0],c[2]]))
-    + group("Exhibitions","https://www.sovrn.art/exhibitions", MU.map(m=>[m[4],m[3]]))
-    + group("In collections","https://www.sovrn.art/collections", MC.map(m=>[m[4],m[3]]))
-    + item("Marketplaces","https://www.sovrn.art/marketplaces")
-    + item("Shareable","https://www.sovrn.art/shareable")
-    + item("About","https://www.sovrn.art/about");
+  return group("Curated","/curated", C.map(c=>[c[0],c[2]]))
+    + group("Exhibitions","/exhibitions", MU.map(m=>[m[4],m[3]]))
+    + group("In collections","/collections", MC.map(m=>[m[4],m[3]]))
+    + item("Marketplaces","/marketplaces")
+    + item("Shareable","/shareable")
+    + item("About","/about");
 })();
 const mb=document.getElementById("mb"),mn=document.getElementById("mn");
 mn.innerHTML=NAV;
@@ -423,7 +428,7 @@ const works=s=>{const p=PL[s],A=Array.isArray(p);
 const slugOf=c=>c[2].split("/").pop();
 document.getElementById("g").innerHTML=C.map((c,i)=>{
   const s=slugOf(c),rot=PL[s]?' data-p="'+s+'" data-i="'+i+'"':'';
-  return '<a class="card" href="'+c[2]+'" target="_blank"'+rot+'>'+
+  return '<a class="card" href="'+c[2]+'"'+tgt(c[2])+rot+'>'+
   '<span class="im'+(s==="latent-couture"?" tp":"")+'" role="img" aria-label="'+esc(c[0])+'">'+
   '<img src="'+encodeURI(c[3])+'" alt="" width="500" height="500" loading="lazy">'+
   (PL[s]?'<img class="q" alt="" width="500" height="500" aria-hidden="true">':'')+
@@ -470,9 +475,9 @@ document.getElementById("g").innerHTML=C.map((c,i)=>{
   },TICK);
 })();
 document.getElementById("m").innerHTML=MU.concat(MC).map(m=>
-'<li><a href="'+m[3]+'" target="_blank"><span class="mv">'+esc(m[0])+'</span><span class="ms">'+esc(m[1])+'</span><span class="md">'+esc(m[2])+'</span></a></li>').join("");
+'<li><a href="'+m[3]+'"'+tgt(m[3])+'><span class="mv">'+esc(m[0])+'</span><span class="ms">'+esc(m[1])+'</span><span class="md">'+esc(m[2])+'</span></a></li>').join("");
 document.getElementById("mk").innerHTML=MK.map(m=>
-'<a href="https://www.sovrn.art/marketplaces" target="_blank"><img src="'+encodeURI(H+m[1])+'" alt=""><span>'+m[0]+'</span></a>').join("");
+'<a href="/marketplaces"><img src="'+encodeURI(H+m[1])+'" alt=""><span>'+m[0]+'</span></a>').join("");
 document.getElementById("so").innerHTML=SO.map(m=>
-'<a href="'+m[2]+'" target="_blank"><img src="'+encodeURI((m[3]?P:H)+m[1])+'" alt=""><span>'+m[0]+'</span></a>').join("");
+'<a href="'+m[2]+'"'+tgt(m[2])+'><img src="'+encodeURI((m[3]?P:H)+m[1])+'" alt=""><span>'+m[0]+'</span></a>').join("");
 </script></body></html>

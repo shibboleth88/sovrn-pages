@@ -32,6 +32,11 @@ h1{font:300 clamp(26px,4.4vw,40px)/1.05 Fraunces,serif;margin-bottom:9px;letter-
 <div class="grid" id="g"></div>
 </div>
 <script>
+/* A new tab only for somewhere else. Internal links used to need
+   target="_blank" because the Sites iframe blocked top navigation; served
+   directly, that just litters the browser with tabs. */
+const tgt=u=>/^https?:/i.test(u)?' target="_blank" rel="noopener"':"";
+
 const H="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/",
 P="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/abd8a9f041622904ed28ad947c47b9242d11c2f8/",
 F="https://raw.githubusercontent.com/gorgonorgon/sovrn-FC-images/main/",
@@ -56,7 +61,7 @@ const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 document.getElementById("g").innerHTML=C.map(c=>{
 const im='<span class="im"><img src="'+encodeURI(c[2])+'" alt="'+esc(c[0])+'" width="500" height="500" loading="lazy"></span>',
 one=c[3].length==1;
-return '<div class="card">'+(one?'<a class="lk" href="'+c[3][0][2]+'" target="_blank">'+im+'</a>':im)+'<span class="ti">'+esc(c[0])+'</span><span class="ar">'+esc(c[1])+'</span><span class="mk">'+
-c[3].map(m=>'<a href="'+m[2]+'" target="_blank"><img src="'+encodeURI(H+IC[m[1]])+'" alt=""><span>'+m[0]+'</span></a>').join("")+
+return '<div class="card">'+(one?'<a class="lk" href="'+c[3][0][2]+'"'+tgt(c[3][0][2])+'>'+im+'</a>':im)+'<span class="ti">'+esc(c[0])+'</span><span class="ar">'+esc(c[1])+'</span><span class="mk">'+
+c[3].map(m=>'<a href="'+m[2]+'"'+tgt(m[2])+'><img src="'+encodeURI(H+IC[m[1]])+'" alt=""><span>'+m[0]+'</span></a>').join("")+
 '</span></div>';}).join("");
 </script></body></html>

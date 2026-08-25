@@ -7,10 +7,10 @@
 const H="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/",
 F="https://raw.githubusercontent.com/gorgonorgon/sovrn-FC-images/main/",
 P="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/abd8a9f041622904ed28ad947c47b9242d11c2f8/",
-S="https://www.sovrn.art/curated/";
+S="/curated/";
 
 const C=[
-["CENTS","Rutherford Chang","https://www.sovrn.art/cents",H+"cent_homepage.jpg","The performance of value"],
+["CENTS","Rutherford Chang","/cents",H+"cent_homepage.jpg","The performance of value"],
 ["Emerging Faces","Pindar Van Arman","https://www.vanarman.com/emergence",H+"emerging-faces.jpg","The first robotic paintings autonomously created from neural networks (2017)."],
 ["Reflection","Pindar Van Arman",S+"reflection",F+"reflection_889_layers_smooth.svg","Van Arman’s Reflective AI process, executed fully on-chain"],
 ["Wunderkammer","Isa Kost",S+"wunderkammer",H+"wunderkammer_homepage.gif","An on-chain Cabinet of Wonders, to give eternal life to the dead presences that Isa Kost has carried through the years — every object a dead memory that has called out to be found."],
