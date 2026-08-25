@@ -642,9 +642,7 @@ function search(q) {
       if (seen[slug + ":" + (rec.first_token + i)]) continue;
       seen[slug + ":" + (rec.first_token + i)] = 1;
       total++;
-      if (rows.length < MAX_HITS) {
-        rows.push({ slug: slug, id: rec.first_token + i, title: rec.titles[i] });
-      }
+      rows.push({ slug: slug, id: rec.first_token + i, title: rec.titles[i] });
     }
   });
 
@@ -664,11 +662,9 @@ function search(q) {
           if (String(vals[a]).toLowerCase().indexOf(lower) < 0) continue;
           seen[key] = 1;
           total++;
-          if (rows.length < MAX_HITS) {
-            var n = parseInt(id, 10);
-            rows.push({ slug: slug, id: n, title: titled.titles[n - titled.first_token],
-                        why: rec.axes[a] + ": " + clipTrait(vals[a]) });
-          }
+          var n = parseInt(id, 10);
+          rows.push({ slug: slug, id: n, title: titled.titles[n - titled.first_token],
+                      why: rec.axes[a] + ": " + clipTrait(vals[a]) });
           return;
         }
       });
@@ -795,19 +791,17 @@ function applyFilters() {
     var ok = filterMode === "all" ? hits.length === picks.length : hits.length > 0;
     if (!ok) return;
     total++;
-    if (rows.length < MAX_HITS) {
-      var n = parseInt(id, 10);
-      rows.push({ slug: LOCK, id: n, title: titled.titles[n - titled.first_token],
-                  why: hits.map(function (i) {
-                    return rec.axes[i] + ": " + clipTrait(vals[i]);
-                  }).join(" · ") });
-    }
+    var n = parseInt(id, 10);
+    rows.push({ slug: LOCK, id: n, title: titled.titles[n - titled.first_token],
+                why: hits.map(function (i) {
+                  return rec.axes[i] + ": " + clipTrait(vals[i]);
+                }).join(" · ") });
   });
   renderRows(rows, total, filterMode === "all"
     ? "Narrow it with another trait." : "Switch to Match all to narrow it.");
 }
 
-function renderRows(rows, total, hint) {
+function renderRows(rows, total, hint, showAll) {
   var box = $("hits");
   box.textContent = "";
   lastRows = rows;
@@ -820,7 +814,11 @@ function renderRows(rows, total, hint) {
     return;
   }
 
-  rows.forEach(function (r, rowIndex) {
+  // Every match is in `rows`; the first page is drawn and the rest offered. The
+  // thumbnails load through an IntersectionObserver, so a list of nine hundred
+  // costs nine hundred buttons and only the images actually scrolled to.
+  var limit = showAll ? rows.length : Math.min(rows.length, MAX_HITS);
+  rows.slice(0, limit).forEach(function (r, rowIndex) {
     var b = document.createElement("button");
     b.type = "button";
 
@@ -850,12 +848,19 @@ function renderRows(rows, total, hint) {
     else { watchThumb(b, im, r, false); }
   });
 
-  if (total > rows.length) {
-    var more = document.createElement("p");
-    more.className = "more";
-    more.textContent = total.toLocaleString() + " works match — showing the first "
-      + rows.length + ". " + (hint || "");
+  if (rows.length > limit) {
+    var more = document.createElement("button");
+    more.type = "button";
+    more.className = "more showall";
+    more.textContent = "Show all " + rows.length.toLocaleString() + " \u2014 "
+      + (rows.length - limit).toLocaleString() + " more";
+    more.onclick = function () { renderRows(rows, total, hint, true); };
     box.appendChild(more);
+  } else if (showAll && rows.length > MAX_HITS) {
+    var all = document.createElement("p");
+    all.className = "more";
+    all.textContent = "All " + rows.length.toLocaleString() + " shown. " + (hint || "");
+    box.appendChild(all);
   }
 }
 
