@@ -236,6 +236,28 @@ Write the checker before the restructure, not after. It should:
 - **No Sites analytics are in use.** Nothing to replace.
 - **Only git edits these pages** — no one is authoring through the Sites editor, so
   losing that editor costs nothing.
+- **`/open` is retired and is meant to 404.** Sovrn Open was live on Sites and is
+  deliberately not carried over — decided at cutover, 25 August 2026. It is absent
+  from the URL contract on purpose, so a later pass that "finds a missing page"
+  should leave it alone. Its images were on Google Sites signed URLs and are gone
+  with the site; rebuilding it later means sourcing them again.
+
+### The hand-written inventory was wrong three times
+
+The 44 URLs were listed by hand rather than crawled, and diffing the contract
+against the live site before cutover found four it did not have:
+
+| URL | What it was | Resolution |
+|---|---|---|
+| `/cents/taschen` | live, and we had rebuilt it at an invented path | moved to the real URL |
+| `/home` | Sites serves the homepage at `/` **and** `/home`, and its own nav links `/home` | stub to `/` |
+| `/contact` | a native Sites page, so no file in this repo to notice it | rebuilt |
+| `/curated/cents` | a second path onto the CENTS page | stub to `/cents` |
+| `/open` | Sovrn Open | retired, see above |
+
+Sites publishes no sitemap and renders its nav in JavaScript, so nothing can be
+crawled out of it — the gap was only findable by probing candidate URLs against
+the live site. Worth repeating if the site is ever moved again.
 
 ## What to do with `sovrn-onchain`
 

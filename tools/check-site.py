@@ -37,7 +37,7 @@ UA = {"User-Agent": "sovrn-site-check/1.0"}
 PUBLIC = """
 / /about /marketplaces /shareable /museums /collections /curated /exhibitions
 /cents /cents/inquiries /cents/artist-obituary /cents/taschen
-/contact /home
+/contact /home /curated/cents
 /curated/ai-spaceships /curated/latent-couture /curated/mementi
 /curated/painting-with-fire /curated/painting-with-fire/gan-timeline
 /curated/perimeter-town /curated/possibility-spaces /curated/reflection
