@@ -36,7 +36,7 @@ UA = {"User-Agent": "sovrn-site-check/1.0"}
 # a statement of intent, not an observation, which is the point of it.
 PUBLIC = """
 / /about /marketplaces /shareable /museums /collections /curated /exhibitions
-/cents /cents/inquiries /cents/artist-obituary /cents/cents-in-tachens-on-nfts
+/cents /cents/inquiries /cents/artist-obituary /cents/taschen
 /curated/ai-spaceships /curated/latent-couture /curated/mementi
 /curated/painting-with-fire /curated/painting-with-fire/gan-timeline
 /curated/perimeter-town /curated/possibility-spaces /curated/reflection
