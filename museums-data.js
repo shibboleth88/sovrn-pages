@@ -29,15 +29,15 @@ const EX=[
 "Latent Couture as a wall-scale printed grid, with Mikey Woodbridge performing at the opening and the finissage.",
 "img/pages/overview/kindl.jpeg"]];
 const CO=[
-["https://www.sovrn.art/museums/fransisco-carolinum","Francisco Carolinum, Linz","Sovrn Full Set","Eleven works on Ethereum · 2022–2025",
+["https://www.sovrn.art/collections/fransisco-carolinum","Francisco Carolinum, Linz","Sovrn Full Set","Eleven works on Ethereum · 2022–2025",
 "A complete set, one work from every Sovrn collection on Ethereum, in the permanent collection of the museum for photography and media art of Upper Austria.",
 "img/pages/overview/fc-collection.jpg"],
-["https://www.sovrn.art/museums/moca","Museum of Crypto Art","Five Reflections","Five works · Pindar Van Arman",
+["https://www.sovrn.art/collections/moca","Museum of Crypto Art","Five Reflections","Five works · Pindar Van Arman",
 "Five works from Reflection, Van Arman’s fully on-chain execution of his reflective AI process, in MOCA’s permanent collection.",
 "img/pages/overview/moca.png",1],
 ["https://www.sovrn.art/collections/abs-collection","Arab Bank Switzerland","Sightseers 104","One work · Norman Harman",
 "One of the five hundred SIGHTSEERS, in the bank’s digital art collection alongside OPERATOR, Entangled Others and Anna Lucia.",
 "img/pages/overview/arab-bank.jpg"],
-["https://www.sovrn.art/museums/lacma","LACMA, Los Angeles","AI Imagined Portrait Painted by a Robot #2","One work · Pindar Van Arman",
+["https://www.sovrn.art/collections/lacma","LACMA, Los Angeles","AI Imagined Portrait Painted by a Robot #2","One work · Pindar Van Arman",
 "A 2018 robotic painting, donated by Cozomo de’ Medici among the first blockchain-minted works to enter an American art museum.",
 "img/pages/overview/lacma.jpeg"]];
