@@ -1,0 +1,38 @@
+# The gate that runs before anything is published.
+#
+# main deploys on push, so by the time a live check can fail, the site is already
+# serving the failure. Everything here is therefore offline: it asks whether *this
+# tree* would serve the contract, which is the only question that can be answered
+# before publishing.
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  offline:
+    name: URL contract and share shells
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Resolves every public URL against the working tree the way Pages does —
+      # file before directory — so a moved page, a redirect loop or a stub that
+      # shadows its own page fails here rather than on sovrn.art.
+      - name: URL contract resolves in the tree
+        run: python3 tools/check-site.py --files
+
+      # The four flat share shells and the three nested ones must stay identical
+      # apart from scope, and the flat ones must not regain <base href="/">:
+      # vanarman.com iframes one of them from a project-page URL.
+      - name: Share shells agree
+        run: python3 tools/check-share-pages.py

@@ -26,7 +26,7 @@ but after any restructure the homepage still wants opening in a browser to watch
 the mosaic and the cards actually arrive. A green run here is necessary and not
 sufficient.
 """
-import argparse, os, re, sys, urllib.parse, urllib.request
+import argparse, io, os, re, sys, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -194,17 +194,70 @@ def check_mirror():
     return []
 
 
+
+def check_files():
+    """Resolve the URL contract against the working tree, with no network.
+
+    This is the pre-merge gate: it answers "would this tree serve the contract?"
+    before anything is published, which the live checks cannot do by definition.
+
+    It resolves the way GitHub Pages does, and the order is the whole point.
+    For an extensionless request Pages strips/appends `.html` and **prefers the
+    file to the directory** — so with both `cents.html` and `cents/index.html`
+    present, `/cents` is served by the file. That is precisely how /cents once
+    became an infinite redirect: the file was a stub pointing back at /cents.
+    Resolving in any other order would agree with itself and miss it.
+    """
+    bad = []
+    for path in PUBLIC:
+        rel = path.strip("/")
+        if not rel:
+            cands = ["index.html"]
+        else:
+            cands = [rel + ".html", os.path.join(rel, "index.html")]
+
+        found = [c for c in cands if os.path.isfile(os.path.join(ROOT, c))]
+        if not found:
+            bad.append((path, "missing"))
+            print(f"    no file serves  {path}   (looked for {' then '.join(cands)})")
+            continue
+
+        served = found[0]                       # Pages takes the first match
+        body = io.open(os.path.join(ROOT, served), encoding="utf-8", errors="replace").read()
+
+        if "This page has moved" in body:
+            m = re.search(r'url=([^"\']+)', body)
+            target = (m.group(1).strip() if m else "")
+            if target.rstrip("/") == path.rstrip("/"):
+                bad.append((path, "loop"))
+                print(f"    redirect loop   {path}   ({served} points at itself)")
+                continue
+            if len(found) > 1:
+                bad.append((path, "shadow"))
+                print(f"    {served} shadows {found[1]} and redirects away — "
+                      f"{path} never reaches its page")
+                continue
+
+    print(f"  {len(PUBLIC) - len(bad)}/{len(PUBLIC)} resolve in the tree")
+    return bad
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--urls", nargs="?", const="https://www.sovrn.art",
                     help="check the public URL contract against this host")
     ap.add_argument("--assets", metavar="BASE_URL",
                     help="crawl a served tree and resolve every asset")
+    ap.add_argument("--files", action="store_true",
+                    help="resolve the URL contract against the working tree, no network")
     a = ap.parse_args()
-    if not a.urls and not a.assets:
-        ap.error("give --urls and/or --assets BASE_URL")
+    if not a.urls and not a.assets and not a.files:
+        ap.error("give --files, --urls and/or --assets BASE_URL")
 
     bad = []
+    if a.files:
+        print("\nURL contract against the tree")
+        bad += check_files()
     if a.urls:
         print("\nPublic URLs")
         bad += check_urls(a.urls)

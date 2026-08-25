@@ -1,0 +1,29 @@
+# After main deploys, confirm the published site actually serves the contract.
+#
+# This cannot gate a merge — it runs once the site is already live — but it is the
+# only check that sees what visitors see: real Pages resolution, real redirects,
+# real assets. It catches the class of fault the offline gate cannot, such as a
+# file present in the tree but never published, or an asset that only resolves
+# through a path assembled at runtime.
+name: live site
+
+on:
+  # fires when GitHub Pages finishes publishing from the branch
+  page_build:
+  workflow_dispatch:
+
+jobs:
+  live:
+    name: sovrn.art answers
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Public URLs answer
+        run: python3 tools/check-site.py --urls https://www.sovrn.art
+
+      - name: Every asset resolves
+        run: python3 tools/check-site.py --assets https://www.sovrn.art
