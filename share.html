@@ -50,6 +50,17 @@
   </div>
   <p class="chint" id="chint"></p>
 
+  <p class="note" id="note">Search by title or token ID — “skull”, “cogito”, “octoGAN”, or 883.</p>
+  <div class="gallery" id="gallery" hidden>
+    <p class="gtitle" id="gtitle">From the collections</p>
+    <div class="galrow">
+      <div class="three" id="three"></div>
+      <!-- Built by share.js from the collection's own trait axes, and only on a
+           scoped page, where there is one card to sit beside. -->
+      <div class="filters" id="filters" hidden></div>
+    </div>
+  </div>
+
   <div class="panel" hidden id="panel">
     <!-- Controls sit above the artwork: at 1080px the image is taller than the
          viewport, and having Download below it put the button off screen. -->
@@ -97,16 +108,6 @@
 
   <div class="hits" id="hits" role="listbox"></div>
 
-  <p class="note" id="note">Search by title or token ID — “skull”, “cogito”, “octoGAN”, or 883.</p>
-  <div class="gallery" id="gallery" hidden>
-    <p class="gtitle" id="gtitle">From the collections</p>
-    <div class="galrow">
-      <div class="three" id="three"></div>
-      <!-- Built by share.js from the collection's own trait axes, and only on a
-           scoped page, where there is one card to sit beside. -->
-      <div class="filters" id="filters" hidden></div>
-    </div>
-  </div>
 
   <!-- Filled by share.js from the page's scope. It lives here rather than in the
        four shells so their markup stays identical, which is what
