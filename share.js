@@ -282,6 +282,22 @@ fetch(BASE + "onchain-titles.json")
   .then(function (d) { data = d.collections; boot(); })
   .catch(function () { $("note").textContent = "Couldn't load the title index."; });
 
+// Traits are fetched alongside rather than before: 25KB gzipped is small, but the
+// page must not wait on it to become usable, and searching titles works without
+// it. Anything typed before it lands simply matches titles, and matches traits
+// from the moment it does.
+var traits = null;
+fetch(BASE + "onchain-traits.json")
+  .then(function (r) { return r.json(); })
+  .then(function (d) { traits = d.collections; })
+  .catch(function () { traits = null; });
+
+// A trait value goes in the row's tag, and Wunderkammer's poems run to four lines.
+function clipTrait(v) {
+  var t = String(v).replace(/\s+/g, " ").trim();
+  return t.length > 42 ? t.slice(0, 41) + "\u2026" : t;
+}
+
 function boot() {
   if (LOCK) lockTo(LOCK);
   var strip = $("sets");
@@ -478,10 +494,12 @@ document.addEventListener("visibilitychange", function () {
   if (document.hidden) stopRotating(); else startRotating();
 });
 
+// Each example is checked against the data: a hint that finds nothing is worse
+// than no hint. One title and one trait apiece, so both doors are visible.
 var EXAMPLES = {
-  reflection:   "\u201ccogito\u201d, \u201cmachine\u201d, or 883",
-  wunderkammer: "\u201cbeetle\u201d, \u201cseahorse\u201d, or 12",
-  bytegans:     "\u201coctoGAN\u201d, \u201cskull\u201d, or 469"
+  reflection:   "\u201ccogito\u201d, \u201cDescartes\u201d, \u201cTokyo\u201d, or 883",
+  wunderkammer: "\u201cbeetle\u201d, \u201cAlive\u201d, \u201cFire\u201d, or 12",
+  bytegans:     "\u201coctoGAN\u201d, \u201cquantum\u201d, or 469"
 };
 
 function mark() {
@@ -489,9 +507,9 @@ function mark() {
     b.setAttribute("aria-pressed", String(b._slug === scope));
   });
   $("note").textContent = scope
-    ? "Search " + LABELS[scope] + " by title or token ID \u2014 " + EXAMPLES[scope] + "."
-    : "Search every collection by title or token ID \u2014 "
-      + "\u201cskull\u201d, \u201ccogito\u201d, \u201coctoGAN\u201d, or 883.";
+    ? "Search " + LABELS[scope] + " by title, trait or token ID \u2014 " + EXAMPLES[scope] + "."
+    : "Search every collection by title, trait or token ID \u2014 "
+      + "\u201ccogito\u201d, \u201cDescartes\u201d, \u201cAlive\u201d, \u201coctoGAN\u201d, or 883.";
 }
 
 $("q").addEventListener("input", function () { search(this.value.trim()); });
@@ -595,7 +613,7 @@ function search(q) {
 
   var lower = q.toLowerCase();
   var slugs = scope ? [scope] : ORDER;
-  var rows = [], total = 0;
+  var rows = [], total = 0, seen = {};
   lastRows = rows;
 
   // A bare number is a token id. Each collection has its own range, and they do
@@ -607,6 +625,7 @@ function search(q) {
       var rec = data[slug], i = n - rec.first_token;
       if (i >= 0 && i < rec.titles.length) {
         rows.push({ slug: slug, id: n, title: rec.titles[i], why: "token " + n });
+        seen[slug + ":" + n] = 1;
         total++;
       }
     });
@@ -616,12 +635,41 @@ function search(q) {
     var rec = data[slug];
     for (var i = 0; i < rec.titles.length; i++) {
       if (rec.titles[i].toLowerCase().indexOf(lower) < 0) continue;
+      if (seen[slug + ":" + (rec.first_token + i)]) continue;
+      seen[slug + ":" + (rec.first_token + i)] = 1;
       total++;
       if (rows.length < MAX_HITS) {
         rows.push({ slug: slug, id: rec.first_token + i, title: rec.titles[i] });
       }
     }
   });
+
+  // Then by trait. A title match wins the row when a work matches both ways,
+  // because that is the more direct answer to what was typed. The tag says which
+  // trait brought a work in, or a search for "Descartes" returns nine Reflections
+  // with nothing on them explaining why.
+  if (traits) {
+    slugs.forEach(function (slug) {
+      var rec = traits[slug], titled = data[slug];
+      if (!rec || !titled) return;
+      Object.keys(rec.values).forEach(function (id) {
+        var key = slug + ":" + id;
+        if (seen[key]) return;
+        var vals = rec.values[id];
+        for (var a = 0; a < vals.length; a++) {
+          if (String(vals[a]).toLowerCase().indexOf(lower) < 0) continue;
+          seen[key] = 1;
+          total++;
+          if (rows.length < MAX_HITS) {
+            var n = parseInt(id, 10);
+            rows.push({ slug: slug, id: n, title: titled.titles[n - titled.first_token],
+                        why: rec.axes[a] + ": " + clipTrait(vals[a]) });
+          }
+          return;
+        }
+      });
+    });
+  }
 
   lastRows = rows;
   if (!rows.length) {
