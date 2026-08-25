@@ -289,7 +289,7 @@ fetch(BASE + "onchain-titles.json")
 var traits = null;
 fetch(BASE + "onchain-traits.json")
   .then(function (r) { return r.json(); })
-  .then(function (d) { traits = d.collections; })
+  .then(function (d) { traits = d.collections; buildFilters(); })
   .catch(function () { traits = null; });
 
 // A trait value goes in the row's tag, and Wunderkammer's poems run to four lines.
@@ -317,6 +317,7 @@ function boot() {
   scope = LOCK || "reflection";
   mark();
   syncTitleBoxes();
+  buildFilters();          // a no-op until the traits index has landed
   buildPanels();
   buildShapes();
   renderComposer();
@@ -601,6 +602,9 @@ function search(q) {
   // A new search means the previous work is no longer what is on screen.
   closePanel();
   if (!q) {
+    // Clearing the box does not clear the traits. If any are set, the page goes
+    // back to showing what they select rather than to showing nothing.
+    if (Object.keys(filterPick).length) { applyFilters(); return; }
     lastRows = [];
     $("note").hidden = false;
     $("gallery").hidden = false;
@@ -671,6 +675,141 @@ function search(q) {
     });
   }
 
+  renderRows(rows, total, "Keep typing to narrow it.");
+}
+
+// The results list, drawn from whatever produced the rows — the search box or the
+// trait filters. Both want the same list, so neither owns it.
+/* ------------------------------------------------------------ trait filters */
+
+// Only axes with a closed, short vocabulary make usable dropdowns. Wunderkammer's
+// poem is unique per object — 108 of 108 — so it stays searchable by text and out
+// of here, where it would be a list of every poem.
+var FILTER_MAX_VALUES = 30;
+var filterMode = "all";            // "all" = AND across axes, "any" = OR
+var filterPick = {};               // axis -> chosen value
+
+function axisVocab(rec) {
+  var out = [];
+  rec.axes.forEach(function (axis, i) {
+    var set = {};
+    Object.keys(rec.values).forEach(function (id) {
+      var v = rec.values[id][i];
+      if (v !== undefined && v !== null && v !== "") set[String(v)] = 1;
+    });
+    var vals = Object.keys(set).sort(function (a, b) { return a.localeCompare(b); });
+    if (vals.length <= FILTER_MAX_VALUES) out.push({ axis: axis, index: i, values: vals });
+  });
+  return out;
+}
+
+function buildFilters() {
+  var host = $("filters"), row = document.querySelector(".galrow");
+  if (!host) return;
+  var rec = LOCK && traits ? traits[LOCK] : null;
+  host.textContent = "";
+  filterPick = {};
+  host.hidden = !rec;
+  if (row) row.classList.toggle("scoped", !!rec);
+  if (!rec) return;
+
+  var head = document.createElement("div");
+  head.className = "fhead";
+  var lab = document.createElement("span");
+  lab.className = "flabel";
+  lab.textContent = "Filter by trait";
+  var mode = document.createElement("div");
+  mode.className = "fmode";
+  mode.setAttribute("role", "group");
+  mode.setAttribute("aria-label", "Combine trait filters");
+  [["all", "Match all"], ["any", "Match any"]].forEach(function (m) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = m[1];
+    b.setAttribute("aria-pressed", String(filterMode === m[0]));
+    b.onclick = function () {
+      filterMode = m[0];
+      [].forEach.call(mode.children, function (x) {
+        x.setAttribute("aria-pressed", String(x === b));
+      });
+      applyFilters();
+    };
+    mode.appendChild(b);
+  });
+  head.appendChild(lab); head.appendChild(mode);
+  host.appendChild(head);
+
+  var axes = document.createElement("div");
+  axes.className = "faxes";
+  axisVocab(rec).forEach(function (a) {
+    var wrap = document.createElement("label");
+    wrap.className = "faxis";
+    var name = document.createElement("span");
+    name.textContent = a.axis;
+    var sel = document.createElement("select");
+    var any = document.createElement("option");
+    any.value = ""; any.textContent = "any";
+    sel.appendChild(any);
+    a.values.forEach(function (v) {
+      var o = document.createElement("option");
+      o.value = v; o.textContent = v;
+      sel.appendChild(o);
+    });
+    sel.onchange = function () {
+      if (this.value) filterPick[a.index] = this.value;
+      else delete filterPick[a.index];
+      sel.classList.toggle("set", !!this.value);
+      applyFilters();
+    };
+    wrap.appendChild(name); wrap.appendChild(sel);
+    axes.appendChild(wrap);
+  });
+  host.appendChild(axes);
+
+  var clear = document.createElement("button");
+  clear.type = "button";
+  clear.className = "fclear";
+  clear.textContent = "Clear filters";
+  clear.onclick = function () {
+    filterPick = {};
+    [].forEach.call(host.querySelectorAll("select"), function (sel) {
+      sel.value = ""; sel.classList.remove("set");
+    });
+    applyFilters();
+  };
+  host.appendChild(clear);
+}
+
+function applyFilters() {
+  var rec = LOCK && traits ? traits[LOCK] : null;
+  var picks = Object.keys(filterPick);
+  // Nothing chosen: hand the page back to the search box, whatever is in it.
+  if (!rec || !picks.length) { search($("q").value.trim()); return; }
+
+  $("note").hidden = true;
+  closePanel();
+  var titled = data[LOCK], rows = [], total = 0;
+  Object.keys(rec.values).forEach(function (id) {
+    var vals = rec.values[id];
+    var hits = picks.filter(function (i) { return String(vals[i]) === filterPick[i]; });
+    var ok = filterMode === "all" ? hits.length === picks.length : hits.length > 0;
+    if (!ok) return;
+    total++;
+    if (rows.length < MAX_HITS) {
+      var n = parseInt(id, 10);
+      rows.push({ slug: LOCK, id: n, title: titled.titles[n - titled.first_token],
+                  why: hits.map(function (i) {
+                    return rec.axes[i] + ": " + clipTrait(vals[i]);
+                  }).join(" · ") });
+    }
+  });
+  renderRows(rows, total, filterMode === "all"
+    ? "Narrow it with another trait." : "Switch to Match all to narrow it.");
+}
+
+function renderRows(rows, total, hint) {
+  var box = $("hits");
+  box.textContent = "";
   lastRows = rows;
   if (!rows.length) {
     var none = document.createElement("button");
@@ -715,7 +854,7 @@ function search(q) {
     var more = document.createElement("p");
     more.className = "more";
     more.textContent = total.toLocaleString() + " works match — showing the first "
-      + rows.length + ". Keep typing to narrow it.";
+      + rows.length + ". " + (hint || "");
     box.appendChild(more);
   }
 }
