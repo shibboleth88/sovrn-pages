@@ -882,6 +882,43 @@ every sixth tile landed every cent in the same row; it rotated the slot by
 
 ---
 
+## cents-striker.html: blanking the cents
+
+The striker presses a dropped avatar into a photographed cent, so it needs
+plates with Lincoln taken off but everything else &mdash; rim, legends, date,
+patina &mdash; still the coin's own. `tools/strike-plates.py` makes them.
+
+**The corpus is aligned far better than it looks.** Every photograph in
+`img/cents` was shot the same way. Resample each coin to a common centre and
+radius and Lincoln lands in the same place on all of them: the average of all 65
+still reads as a sharp portrait, with LIBERTY and the date legible. That is what
+makes the whole thing tractable &mdash; one hand-traced silhouette serves the
+entire corpus, and no per-coin masking is needed. Grow the trace by about 17px
+before use, though; individual coins sit a few pixels off the mean, and an
+uncovered jawline is the one thing the eye catches.
+
+**Fill the hole from the outside in, or the bust comes back.** Iterating a blur
+inside the mask never converges away from what was already there &mdash; a
+strong relief like a mint-state 1971 keeps ghosting through no matter how many
+passes you run. Seed the hole with a push-pull estimate computed from the
+surrounding field *only*, then diffuse. After that the ghost is gone in one go.
+
+**Never sample texture from the legends.** The patina is patched back in from
+the coin's own field, and if the source patches are picked anywhere, the letters
+of LIBERTY and the date turn up scattered across the middle of the blank. Both
+guards are needed: geometric exclusion of the three legend zones, and a
+"quietness" test on local detail.
+
+**The mask must clear the date, and only just.** Lincoln's coat edge runs
+alongside the first digit. Grown far enough to cover the coat on every coin, the
+mask eats the `1` and the year reads `971`. The fix is both ways at once: pull
+the polygon in on that side and protect a box around the digits.
+
+Plates are written normalised to the geometry `cents-striker.html` assumes
+(1024 square, centre 511, radius 416.4), so the page needs no per-plate numbers.
+
+---
+
 ## Odds and ends still open
 
 - `museums-overview.html` says "Twelve works" for the Francisco Carolinum set;

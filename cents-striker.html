@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<title>Striker &mdash; CENTS</title>
+<style>:root{--paper:#ffffff;--ink:#16181d;--slate:#5c6470;--rule:#dcdcd6;--copper:#8a4f2a;--warm:#b8703f}
+*{box-sizing:border-box;margin:0}
+body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif;padding:30px 22px 44px}
+.wrap{max-width:860px;margin:0 auto}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
+.eyebrow{font:500 11px/1.5 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--slate)}
+a.fc{color:inherit;text-decoration:none;border-bottom:1px solid var(--copper);transition:color .15s}
+a.fc:hover{color:var(--copper)}
+h1{font:300 clamp(31px,5.4vw,50px)/1.06 Fraunces,serif;letter-spacing:-.015em;margin:16px 0 14px;max-width:17ch}
+h1 em{font-style:italic}
+h2{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--slate);margin:0}
+.lead{max-width:62ch;font-size:15.5px;color:var(--slate)}
+.lead strong{font-weight:400;color:var(--ink)}
+
+/* ---- bench ---- */
+.bench{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1fr);gap:30px;margin-top:38px;align-items:start}
+@media(max-width:720px){.bench{grid-template-columns:1fr;gap:34px}}
+.hdr{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding-bottom:8px;border-bottom:1px solid var(--rule);margin-bottom:14px}
+.meta{font:400 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
+
+.drop{position:relative;aspect-ratio:1;width:100%;border:1px dashed var(--rule);display:grid;place-items:center;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.drop:hover,.drop:focus-visible{border-color:var(--copper)}
+.drop.hot{border-color:var(--copper);border-style:solid}
+.drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hint{padding:24px;text-align:center;color:var(--slate);font-size:13.5px;line-height:1.55}
+.hint b{display:block;color:var(--ink);font-weight:400;font:italic 300 21px/1.2 Fraunces,serif;margin-bottom:7px}
+.hint span{display:block;margin-top:10px;font:500 9.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--slate)}
+input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+
+.controls{margin-top:20px;display:flex;flex-direction:column;gap:14px}
+.ctl{display:grid;grid-template-columns:1fr auto;gap:5px 10px;align-items:center}
+.ctl label,.ctl output{font:500 9.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--slate)}
+.ctl output{font-weight:400;letter-spacing:.06em}
+.ctl input[type=range]{grid-column:1/-1;width:100%;margin:0;height:18px;accent-color:var(--copper)}
+.check{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--slate);cursor:pointer}
+.check input{accent-color:var(--copper);width:15px;height:15px;margin:0}
+
+.stage{position:relative;width:100%;aspect-ratio:1;margin:0}
+.stage canvas{width:100%;height:100%;display:block;touch-action:pan-y;transition:transform .16s cubic-bezier(.2,.7,.3,1)}
+.stage.striking canvas{transform:scale(.972)}
+.spec{margin-top:2px;text-align:center;font:400 9.5px/1.6 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--slate)}
+.patinas{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin-top:16px}
+.pat{padding:0;border:0;background:none;border-radius:50%;line-height:0;cursor:pointer;
+ box-shadow:0 0 0 1px var(--rule);transition:box-shadow .15s,transform .15s}
+.pat img{width:40px;height:40px;border-radius:50%;display:block}
+.pat:hover{box-shadow:0 0 0 1px var(--copper);transform:translateY(-1px)}
+.pat[aria-checked=true]{box-shadow:0 0 0 2px var(--copper),0 0 0 4px var(--paper)}
+.tip{margin-top:14px;text-align:center;font-size:12.5px;color:var(--slate);min-height:2.4em}
+
+.actions{display:flex;gap:9px;margin-top:14px;flex-wrap:wrap}
+button{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;padding:13px 18px;cursor:pointer;border:1px solid var(--rule);background:transparent;color:var(--ink);transition:border-color .15s,color .15s,background .15s,opacity .15s}
+button:hover:not(:disabled){border-color:var(--copper);color:var(--copper)}
+button.primary{background:var(--copper);border-color:var(--copper);color:#fff}
+button.primary:hover:not(:disabled){background:var(--ink);border-color:var(--ink);color:#fff}
+button:disabled{opacity:.35;cursor:not-allowed}
+
+.sec{margin-top:44px;padding-top:22px;border-top:1px solid var(--rule)}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:16px}
+@media(max-width:720px){.cols{grid-template-columns:1fr;gap:18px}}
+.cols h3{font:italic 300 21px/1.15 Fraunces,serif;margin:0 0 7px}
+.cols p{font-size:13.5px;line-height:1.6;color:var(--slate)}
+.fine{margin-top:26px;font-size:12.5px;color:var(--slate);max-width:70ch}
+.fine strong{font-weight:400;color:var(--ink)}
+.more{margin-top:32px;font:500 11.5px/2 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase}
+.more a{display:inline-block;color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--copper);padding-bottom:3px;margin-right:20px}
+.more a:hover{color:var(--copper)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head>
+<body><div class="wrap">
+<p class="eyebrow"><a class="fc" href="https://www.sovrn.art/cents" target="_blank">CENTS</a> &middot; Striker</p>
+
+<h1>Strike your pfp into a <em>real</em> cent.</h1>
+<p class="lead">Drop in your avatar and it is pressed into the copper of a real Lincoln cent &mdash; the same coins CENTS is made of. <strong>The coin is a photograph. Only your portrait is computed.</strong> Eight cents to choose from, mint red through to heavy verdigris. Free, unlimited, and nothing leaves this page.</p>
+
+<div class="bench">
+  <section>
+    <div class="hdr"><h2>Your pfp</h2><span class="meta" id="srcMeta">&mdash;</span></div>
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose or drop an image to strike">
+      <div class="hint" id="hint">
+        <b>Drop an image</b>
+        click to choose one, or paste from your clipboard
+        <span>png &middot; jpg &middot; webp &middot; gif</span>
+      </div>
+      <img id="preview" alt="" hidden>
+    </div>
+    <input type="file" id="file" accept="image/*">
+    <div class="controls">
+      <div class="ctl"><label for="depth">Relief</label><output id="depthOut">1.00</output>
+        <input type="range" id="depth" min="0.25" max="2.2" step="0.05" value="1"></div>
+      <div class="ctl"><label for="soften">Softening</label><output id="softenOut">1.6</output>
+        <input type="range" id="soften" min="0.4" max="6" step="0.2" value="1.6"></div>
+      <label class="check"><input type="checkbox" id="cutout" checked> Cut the flat background away</label>
+    </div>
+  </section>
+
+  <section>
+    <div class="hdr"><h2>Specimen</h2><span class="meta" id="stateMeta">blank planchet</span></div>
+    <figure class="stage" id="stage">
+      <canvas id="coin" width="1024" height="1024" aria-label="The struck cent"></canvas>
+    </figure>
+    <p class="spec"><span id="spec">1971 &middot; orange</span> &middot; 19.05 mm &middot; 3.11 g &middot; 95% copper</p>
+    <div class="patinas" id="patinas" role="radiogroup" aria-label="Choose a cent"></div>
+    <p class="tip" id="tip">Move your cursor across the coin to move the light.</p>
+    <div class="actions">
+      <button class="primary" id="dl" disabled>Download png</button>
+      <button id="copy" disabled>Copy</button>
+      <button id="share" disabled>Share on X</button>
+    </div>
+  </section>
+</div>
+
+<div class="sec">
+  <h2>How the strike works</h2>
+  <div class="cols">
+    <div><h3>Blank</h3><p>Eight cents from the CENTS corpus, photographed, with Lincoln lifted off the field. The rim, the legends and the date are untouched &mdash; they are still each coin's own.</p></div>
+    <div><h3>Strike</h3><p>Your avatar becomes a height map. Surface normals are lit from wherever your cursor is, then multiplied into the copper underneath.</p></div>
+    <div><h3>Patina</h3><p>Because the shading modulates real pixels rather than replacing them, the coin's toning and scratches carry straight through your portrait.</p></div>
+  </div>
+  <p class="fine"><strong>Nothing is uploaded.</strong> The die lives in this page &mdash; your image is read by the browser, struck on your own machine, and forgotten when you close the tab.</p>
+</div>
+
+<p class="more"><a href="https://www.sovrn.art/cents" target="_blank">Back to CENTS &#8599;</a><a href="https://cents.vision/" target="_blank">cents.vision &#8599;</a><a href="https://discord.gg/USQwhGj8HC" target="_blank">CENTS Discord &#8599;</a></p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  // Eight real cents with Lincoln lifted off them by tools/strike-plates.py,
+  // ordered as a walk from mint red through to heavy verdigris.
+  var PLATES=[["1971-red",1971,"red"],["1944-gold",1944,"gold"],
+              ["1971-orange",1971,"orange"],["1912-chestnut",1912,"chestnut"],
+              ["1970-dark",1970,"dark"],["1976-silver",1976,"silver"],
+              ["1969-sage",1969,"sage"],["1970-verdigris",1970,"verdigris"]];
+  var PLATE_DIR="img/cents/plate-";
+  var current=2;
+  // Every plate is resampled to the same geometry, so these hold for all of them.
+  var N=1024, CX=511, CY=511, RAD=416.4;
+  var SIDE = Math.round(2*0.64*RAD);
+  var OX = Math.round(CX - SIDE/2);
+  var OY = Math.round(CY - 0.01*RAD - SIDE/2);
+  var WARM = [1.03,0.98,0.93];
+
+  var $ = function(i){ return document.getElementById(i); };
+  var cv=$("coin"), ctx=cv.getContext("2d",{willReadFrequently:true});
+  var stage=$("stage"), drop=$("drop"), fileIn=$("file"), hint=$("hint"), preview=$("preview");
+  var depthEl=$("depth"), softEl=$("soften"), cutEl=$("cutout");
+  var dlBtn=$("dl"), copyBtn=$("copy"), shareBtn=$("share"), tip=$("tip");
+
+  var plateFull=null, plateRegion=null, out=null;
+  var srcGray=null, srcMask=null, relief=null, dm=null, nx=null, ny=null, nz=null;
+  var light=[-0.55,-0.62,0.56], rest=light.slice(), raf=0;
+
+  /* ---------------------------------------------------------------- blur */
+  function boxBlur(src,w,h,r){
+    if(r<1) return src;
+    r=Math.round(r);
+    var tmp=new Float32Array(w*h), dst=new Float32Array(w*h), inv=1/(2*r+1), x,y,i,acc,o;
+    for(y=0;y<h;y++){
+      acc=0; o=y*w;
+      for(i=-r;i<=r;i++) acc+=src[o+Math.min(w-1,Math.max(0,i))];
+      for(x=0;x<w;x++){
+        tmp[o+x]=acc*inv;
+        acc+=src[o+Math.min(w-1,x+r+1)]-src[o+Math.min(w-1,Math.max(0,x-r))];
+      }
+    }
+    for(x=0;x<w;x++){
+      acc=0;
+      for(i=-r;i<=r;i++) acc+=tmp[Math.min(h-1,Math.max(0,i))*w+x];
+      for(y=0;y<h;y++){
+        dst[y*w+x]=acc*inv;
+        acc+=tmp[Math.min(h-1,y+r+1)*w+x]-tmp[Math.min(h-1,Math.max(0,y-r))*w+x];
+      }
+    }
+    return dst;
+  }
+  // three box passes approximate a gaussian closely enough, and cost nothing
+  function blur(src,w,h,sigma){
+    if(sigma<0.5) return src.slice();
+    var r=Math.max(1,Math.round(sigma*0.9));
+    return boxBlur(boxBlur(boxBlur(src,w,h,r),w,h,r),w,h,r);
+  }
+
+  /* --------------------------------------------------------------- plate */
+  function loadPlate(i,cb){
+    var img=new Image();
+    img.onload=function(){
+      var c=document.createElement("canvas"); c.width=N; c.height=N;
+      var g=c.getContext("2d"); g.drawImage(img,0,0,N,N);
+      var d=g.getImageData(0,0,N,N), p=d.data, i, l, a;
+      // key the white seamless away, so the coin sits on the page rather than in a box
+      for(i=0;i<p.length;i+=4){
+        l=(p[i]+p[i+1]+p[i+2])/3;
+        a=1-(l-234)/18;
+        p[i+3]=Math.round((a<0?0:a>1?1:a)*255);
+      }
+      plateFull=d;
+      plateRegion=new Uint8ClampedArray(SIDE*SIDE*4);
+      for(var y=0;y<SIDE;y++){
+        var s=((OY+y)*N+OX)*4;
+        plateRegion.set(p.subarray(s,s+SIDE*4), y*SIDE*4);
+      }
+      out=ctx.createImageData(SIDE,SIDE);
+      cb();
+    };
+    img.onerror=function(){ tip.textContent="That cent did not load."; };
+    img.src=PLATE_DIR+PLATES[i][0]+".jpg";
+  }
+
+  /* -------------------------------------------------------- the patina picker */
+  var patinas=$("patinas");
+  function label(p){ return p[1]+" "+p[2]; }
+  function choose(i){
+    if(i===current) return;
+    current=i;
+    for(var k=0;k<patinas.children.length;k++)
+      patinas.children[k].setAttribute("aria-checked",k===i?"true":"false");
+    $("spec").innerHTML=PLATES[i][1]+" &middot; "+PLATES[i][2];
+    loadPlate(i,shade);
+  }
+  PLATES.forEach(function(p,i){
+    var b=document.createElement("button");
+    b.type="button"; b.className="pat"; b.title=label(p);
+    b.setAttribute("role","radio");
+    b.setAttribute("aria-checked",i===current?"true":"false");
+    b.setAttribute("tabindex",i===current?"0":"-1");
+    b.innerHTML='<img src="'+PLATE_DIR+p[0]+'-sw.jpg" alt="'+label(p)+'" width="40" height="40">';
+    b.addEventListener("click",function(){ choose(i); });
+    b.addEventListener("keydown",function(e){
+      var d=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;
+      if(!d) return;
+      e.preventDefault();
+      var n=(i+d+PLATES.length)%PLATES.length;
+      patinas.children[i].setAttribute("tabindex","-1");
+      patinas.children[n].setAttribute("tabindex","0");
+      patinas.children[n].focus();
+      choose(n);
+    });
+    patinas.appendChild(b);
+  });
+
+  /* ------------------------------------------------- fitting the avatar */
+  function ingest(img){
+    var c=document.createElement("canvas"); c.width=SIDE; c.height=SIDE;
+    var g=c.getContext("2d",{willReadFrequently:true});
+    var s=Math.min(img.width,img.height);
+    g.drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,SIDE,SIDE);
+    var d=g.getImageData(0,0,SIDE,SIDE).data, n=SIDE*SIDE;
+    srcGray=new Float32Array(n); srcMask=new Float32Array(n);
+    for(var i=0,j=0;i<n;i++,j+=4){
+      srcGray[i]=(0.299*d[j]+0.587*d[j+1]+0.114*d[j+2])/255;
+      srcMask[i]=d[j+3]/255;
+    }
+    if(cutEl.checked) keyBackground(d);
+    $("srcMeta").textContent = img.width+"×"+img.height;
+  }
+
+  // Flood the flat surround inward from the border. A photograph has no flat
+  // surround to find, so the corner test bails out and the whole square is struck.
+  function keyBackground(d){
+    var n=SIDE*SIDE, corners=[0,(SIDE-1)*4,(SIDE-1)*SIDE*4,(n-1)*4];
+    var avg=[0,0,0], k, o, spread=0;
+    for(k=0;k<4;k++){ o=corners[k]; avg[0]+=d[o]; avg[1]+=d[o+1]; avg[2]+=d[o+2]; }
+    avg[0]/=4; avg[1]/=4; avg[2]/=4;
+    for(k=0;k<4;k++){ o=corners[k];
+      spread=Math.max(spread,Math.abs(d[o]-avg[0]),Math.abs(d[o+1]-avg[1]),Math.abs(d[o+2]-avg[2])); }
+    if(spread>14) return;
+    var seen=new Uint8Array(n), stack=new Int32Array(n), sp=0;
+    var like=function(i){ var q=i*4;
+      return Math.abs(d[q]-avg[0])<28 && Math.abs(d[q+1]-avg[1])<28 && Math.abs(d[q+2]-avg[2])<28; };
+    var push=function(i){ if(!seen[i]&&like(i)){ seen[i]=1; stack[sp++]=i; } };
+    for(var x=0;x<SIDE;x++){ push(x); push((SIDE-1)*SIDE+x); push(x*SIDE); push(x*SIDE+SIDE-1); }
+    while(sp>0){
+      var i=stack[--sp], px=i%SIDE, py=(i/SIDE)|0;
+      if(px>0) push(i-1);
+      if(px<SIDE-1) push(i+1);
+      if(py>0) push(i-SIDE);
+      if(py<SIDE-1) push(i+SIDE);
+    }
+    var cleared=0;
+    for(i=0;i<n;i++) if(seen[i]){ srcMask[i]=0; cleared++; }
+    // a nearly-uniform image keys itself away entirely; keep it instead
+    if(cleared>n*0.94) for(i=0;i<n;i++) srcMask[i]=d[i*4+3]/255;
+  }
+
+  /* ------------------------------------------------- height -> normals */
+  function buildRelief(){
+    if(!srcGray) return;
+    var n=SIDE*SIDE, hist=new Uint32Array(256), count=0, i, v;
+    for(i=0;i<n;i++) if(srcMask[i]>0.5){ hist[Math.min(255,srcGray[i]*255|0)]++; count++; }
+    var lo=0, hi=255, acc=0;
+    if(count){
+      for(v=0;v<256;v++){ acc+=hist[v]; if(acc>=count*0.02){ lo=v; break; } }
+      acc=0;
+      for(v=0;v<256;v++){ acc+=hist[v]; if(acc>=count*0.98){ hi=v; break; } }
+    }
+    var loF=lo/255, span=Math.max((hi-lo)/255,0.02);
+    var h=new Float32Array(n), t;
+    for(i=0;i<n;i++){
+      t=(srcGray[i]-loF)/span;
+      t=t<0?0:t>1?1:t;
+      h[i]=t*t*(3-2*t);                       // a die compresses the tonal range
+    }
+    var hs=blur(h,SIDE,SIDE,parseFloat(softEl.value));
+
+    dm=new Float32Array(n);
+    var half=SIDE/2, x, y, r, e;
+    for(y=0;y<SIDE;y++) for(x=0;x<SIDE;x++){
+      r=Math.sqrt((x-half)*(x-half)+(y-half)*(y-half))/half;
+      e=(1-r)/0.05; e=e<0?0:e>1?1:e;
+      dm[y*SIDE+x]=srcMask[y*SIDE+x]*e;       // the subject, clipped to the field
+    }
+    dm=blur(dm,SIDE,SIDE,2.2);
+
+    relief=new Float32Array(n);
+    for(i=0;i<n;i++) relief[i]=dm[i]*(0.40+0.60*hs[i]);
+    relief=blur(relief,SIDE,SIDE,1.2);
+    buildNormals();
+  }
+
+  function buildNormals(){
+    var n=SIDE*SIDE, k=95*parseFloat(depthEl.value);
+    nx=new Float32Array(n); ny=new Float32Array(n); nz=new Float32Array(n);
+    for(var y=0;y<SIDE;y++){
+      var yp=y>0?y-1:0, yn=y<SIDE-1?y+1:SIDE-1;
+      for(var x=0;x<SIDE;x++){
+        var i=y*SIDE+x, xp=x>0?x-1:0, xn=x<SIDE-1?x+1:SIDE-1;
+        var ax=-(relief[y*SIDE+xn]-relief[y*SIDE+xp])*0.5*k;
+        var ay=-(relief[yn*SIDE+x]-relief[yp*SIDE+x])*0.5*k;
+        var len=Math.sqrt(ax*ax+ay*ay+1);
+        nx[i]=ax/len; ny[i]=ay/len; nz[i]=1/len;
+      }
+    }
+  }
+
+  /* ------------------------------------------------------------ shading */
+  function shade(){
+    ctx.putImageData(plateFull,0,0);
+    if(!relief) return;
+    var o=out.data, b=plateRegion, n=SIDE*SIDE;
+    var lx=light[0], ly=light[1], lz=light[2];
+    for(var i=0,j=0;i<n;i++,j+=4){
+      var a=dm[i];
+      if(a<=0.002){ o[j]=b[j]; o[j+1]=b[j+1]; o[j+2]=b[j+2]; o[j+3]=b[j+3]; continue; }
+      var d=nx[i]*lx+ny[i]*ly+nz[i]*lz;
+      if(d<0) d=0;
+      var d2=d*d, d4=d2*d2, d8=d4*d4, d16=d8*d8;
+      var spec=d16*d8*d2*58, tone=0.60+0.86*d, lift=1+0.10*(relief[i]-0.5);
+      for(var c=0;c<3;c++){
+        var base=b[j+c];
+        o[j+c]=base+((base*tone+spec)*lift*WARM[c]-base)*a;
+      }
+      o[j+3]=b[j+3];
+    }
+    ctx.putImageData(out,OX,OY);
+  }
+  function requestShade(){
+    if(raf) return;
+    raf=requestAnimationFrame(function(){ raf=0; shade(); });
+  }
+
+  /* ------------------------------------------- the light follows the cursor */
+  cv.addEventListener("pointermove",function(e){
+    var r=cv.getBoundingClientRect();
+    var ux=((e.clientX-r.left)/r.width-0.5)*2, uy=((e.clientY-r.top)/r.height-0.5)*2;
+    var m=Math.sqrt(ux*ux+uy*uy)||1, s=Math.min(m,1)/m;
+    var lx=ux*s*0.82, ly=uy*s*0.82, lz=0.6, len=Math.sqrt(lx*lx+ly*ly+lz*lz);
+    light=[lx/len,ly/len,lz/len];
+    requestShade();
+  });
+  cv.addEventListener("pointerleave",function(){ light=rest.slice(); requestShade(); });
+
+  /* -------------------------------------------------------------- input */
+  function accept(f){
+    if(!f || f.type.indexOf("image/")!==0) return;
+    var url=URL.createObjectURL(f), img=new Image();
+    img.onload=function(){
+      preview.src=url; preview.hidden=false; hint.style.display="none";
+      ingest(img); buildRelief();
+      $("stateMeta").textContent="struck";
+      dlBtn.disabled=copyBtn.disabled=shareBtn.disabled=false;
+      stage.classList.add("striking");
+      setTimeout(function(){ stage.classList.remove("striking"); },150);
+      shade();
+    };
+    img.onerror=function(){ $("stateMeta").textContent="unreadable file"; };
+    img.src=url;
+  }
+  drop.addEventListener("click",function(){ fileIn.click(); });
+  drop.addEventListener("keydown",function(e){
+    if(e.key==="Enter"||e.key===" "){ e.preventDefault(); fileIn.click(); }
+  });
+  fileIn.addEventListener("change",function(){ accept(fileIn.files[0]); });
+  ["dragenter","dragover"].forEach(function(t){
+    drop.addEventListener(t,function(e){ e.preventDefault(); drop.classList.add("hot"); });
+  });
+  ["dragleave","drop"].forEach(function(t){
+    drop.addEventListener(t,function(e){ e.preventDefault(); drop.classList.remove("hot"); });
+  });
+  drop.addEventListener("drop",function(e){
+    if(e.dataTransfer.files[0]) accept(e.dataTransfer.files[0]);
+  });
+  window.addEventListener("paste",function(e){
+    var items=(e.clipboardData&&e.clipboardData.items)||[];
+    for(var i=0;i<items.length;i++)
+      if(items[i].type.indexOf("image")===0){ accept(items[i].getAsFile()); break; }
+  });
+
+  depthEl.addEventListener("input",function(){
+    $("depthOut").textContent=parseFloat(depthEl.value).toFixed(2);
+    if(relief){ buildNormals(); requestShade(); }
+  });
+  softEl.addEventListener("input",function(){
+    $("softenOut").textContent=parseFloat(softEl.value).toFixed(1);
+    if(srcGray){ buildRelief(); requestShade(); }
+  });
+  cutEl.addEventListener("change",function(){
+    if(!preview.src) return;
+    var i=new Image();
+    i.onload=function(){ ingest(i); buildRelief(); shade(); };
+    i.src=preview.src;
+  });
+
+  /* ------------------------------------------------------------- output */
+  function toBlob(){ return new Promise(function(r){ cv.toBlob(r,"image/png"); }); }
+  // Sites' embed iframe carries allow-downloads, so an anchor is enough.
+  dlBtn.addEventListener("click",function(){
+    toBlob().then(function(blob){
+      var url=URL.createObjectURL(blob), a=document.createElement("a");
+      a.href=url; a.download="cent-"+PLATES[current][0]+"-pfp.png"; a.rel="noopener";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); },30000);
+    });
+  });
+  function copyImage(){
+    return toBlob().then(function(blob){
+      return navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);
+    });
+  }
+  copyBtn.addEventListener("click",function(){
+    copyImage().then(function(){
+      copyBtn.textContent="Copied";
+      setTimeout(function(){ copyBtn.textContent="Copy"; },1600);
+    },function(){
+      tip.textContent="Your browser would not take the image — use Download png instead.";
+    });
+  });
+  shareBtn.addEventListener("click",function(){
+    copyImage().then(function(){
+      tip.textContent="Coin copied — paste it into the post.";
+    },function(){
+      tip.textContent="Download the png first, then attach it to the post.";
+    });
+    window.open("https://twitter.com/intent/tweet?text="+
+      encodeURIComponent("my pfp, struck into a 1969 cent. $CENTS"),"_blank","noopener");
+  });
+
+  loadPlate(current,function(){ ctx.putImageData(plateFull,0,0); });
+})();
+</script>
+</body></html>
