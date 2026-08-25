@@ -51,17 +51,24 @@
     for (var i = 0; i < named.length; i++) named[i].style.viewTransitionName = "";
   }
 
+  /* A page that declares .vt-lead has already named its element in CSS. Naming a
+     second one here would put two elements under the same name, which makes the
+     browser drop the pairing altogether — so leave those pages alone. */
+  function declared() { return !!document.querySelector(".vt-lead"); }
+
   addEventListener("pageswap", function (e) {
-    if (!e.viewTransition) return;
+    if (!e.viewTransition || declared()) return;
     var to = (e.activation && e.activation.entry) ? pathOf(e.activation.entry.url) : "";
     give(cardImageFor(to) || leadImage());
   });
 
   addEventListener("pagereveal", function (e) {
     if (!e.viewTransition) return;
-    var from = (window.navigation && navigation.activation && navigation.activation.from)
-      ? pathOf(navigation.activation.from.url) : "";
-    give(cardImageFor(from) || leadImage());
+    if (!declared()) {
+      var from = (window.navigation && navigation.activation && navigation.activation.from)
+        ? pathOf(navigation.activation.from.url) : "";
+      give(cardImageFor(from) || leadImage());
+    }
     e.viewTransition.finished.then(clear, clear);
   });
 })();

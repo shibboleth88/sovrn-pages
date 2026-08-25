@@ -16,9 +16,17 @@
   ::view-transition-old(root) { animation-duration: .22s; }
   ::view-transition-new(root) { animation-duration: .28s; }
 
-  /* The one element carried across a navigation — a collection's artwork moving
-     from card to page. transitions.js names it per navigation, because which
-     element it is depends on where you clicked and where you are going. */
+  /* The element a page hands across a navigation: its lead artwork, declared in
+     the markup. Declared rather than detected — picking "the biggest image near
+     the top" at runtime chose a 20px bot icon on /cents and found nothing at all
+     on three pages whose lead is lazy-loaded. Exactly one per page: a
+     view-transition-name must be unique or the transition silently does nothing.
+     Pages that build their artwork as a grid in script deliberately have none,
+     and cross-fade instead. */
+  .vt-lead { view-transition-name: art; }
+
+  /* The homepage has no single lead — which card travels depends on which one
+     was clicked — so transitions.js names it per navigation instead. */
   ::view-transition-old(art),
   ::view-transition-new(art) {
     animation-duration: .42s;
