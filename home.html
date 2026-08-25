@@ -41,6 +41,12 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 #mn .grp:hover{color:var(--slate);background:none}
 #mn .grp .tog{flex:none;font-size:13px;line-height:1;color:var(--accent);cursor:pointer;padding:2px 4px;transition:transform .2s}
 #mn .grp[aria-expanded=true] .tog{transform:rotate(45deg)}
+/* the label links to the overview; only the +/- toggles the sublist */
+#mn .grp .glabel{flex:1;display:block;width:auto;padding:0;background:none;
+ color:var(--slate);text-decoration:none;font:inherit;letter-spacing:inherit;text-transform:inherit}
+#mn .grp .glabel:hover{color:var(--accent);background:none}
+#mn .grp .tog{background:none;border:0;font:500 13px/1 "IBM Plex Mono",monospace}
+#mn .grp .tog:focus-visible,#mn .grp .glabel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 #mn .sub{list-style:none;margin:0 0 0 18px;padding:0;display:none;border-left:2px solid var(--rule)}
 #mn .grp[aria-expanded=true]+.sub{display:block}
 #mn .sub a{padding:7px 16px;font:400 11px/1.4 "IBM Plex Mono",monospace;letter-spacing:.07em;text-transform:none;color:var(--slate)}
@@ -205,13 +211,14 @@ const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
    collection order can never drift from the grid below */
 const NAV=(()=>{
   const item=(label,href)=>'<li><a href="'+href+'" target="_blank">'+esc(label)+'</a></li>';
-  const group=(label,rows)=>'<li><div class="grp" role="button" tabindex="0" aria-expanded="false">'+
-    esc(label)+'<span class="tog" aria-hidden="true">+</span></div><ul class="sub">'+
-    rows.map(r=>item(r[0],r[1])).join("")+'</ul></li>';
+  const group=(label,href,rows)=>'<li><div class="grp" aria-expanded="false">'+
+    '<a class="glabel" href="'+href+'" target="_blank">'+esc(label)+'</a>'+
+    '<button class="tog" type="button" aria-expanded="false" aria-label="Show '+esc(label)+'">+</button>'+
+    '</div><ul class="sub">'+rows.map(r=>item(r[0],r[1])).join("")+'</ul></li>';
   /* venue only in the menu — the city stays on the ledger below */
-  return group("Curated", C.map(c=>[c[0],c[2]]))
-    + group("Exhibitions", MU.map(m=>[m[4],m[3]]))
-    + group("In collections", MC.map(m=>[m[4],m[3]]))
+  return group("Curated","https://www.sovrn.art/curated", C.map(c=>[c[0],c[2]]))
+    + group("Exhibitions","https://www.sovrn.art/exhibitions", MU.map(m=>[m[4],m[3]]))
+    + group("In collections","https://www.sovrn.art/collections", MC.map(m=>[m[4],m[3]]))
     + item("Marketplaces","https://www.sovrn.art/marketplaces")
     + item("Shareable","https://www.sovrn.art/shareable")
     + item("About","https://www.sovrn.art/about");
@@ -219,17 +226,15 @@ const NAV=(()=>{
 const mb=document.getElementById("mb"),mn=document.getElementById("mn");
 mn.innerHTML=NAV;
 const setMenu=o=>{mb.setAttribute("aria-expanded",o);mn.hidden=!o;
-  if(!o)mn.querySelectorAll(".grp").forEach(g=>{g.setAttribute("aria-expanded","false");g.querySelector(".tog").textContent="+";});};
+  if(!o)mn.querySelectorAll(".grp").forEach(g=>{g.setAttribute("aria-expanded","false");
+    const t=g.querySelector(".tog");t.textContent="+";t.setAttribute("aria-expanded","false");});};
 mb.onclick=()=>setMenu(mb.getAttribute("aria-expanded")!=="true");
 const toggle=g=>{const open=g.getAttribute("aria-expanded")==="true";
-  g.setAttribute("aria-expanded",!open);g.querySelector(".tog").textContent=open?"+":"\u2212";};
+  g.setAttribute("aria-expanded",!open);
+  const t=g.querySelector(".tog");t.textContent=open?"+":"\u2212";t.setAttribute("aria-expanded",String(!open));};
 mn.addEventListener("click",e=>{
-  const g=e.target.closest(".grp"); if(g){toggle(g);return;}
-  if(e.target.closest("a"))setMenu(false);
-});
-mn.addEventListener("keydown",e=>{
-  const g=e.target.closest(".grp");
-  if(g&&(e.key==="Enter"||e.key===" ")){e.preventDefault();toggle(g);}
+  if(e.target.closest("a")){setMenu(false);return;}      /* a link always navigates */
+  const t=e.target.closest(".tog"); if(t){toggle(t.closest(".grp"));}
 });
 document.addEventListener("click",e=>{if(!e.target.closest(".nav"))setMenu(false);});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false);});
