@@ -2,7 +2,7 @@
    One list, three pages: add a show here and all three pick it up.
    Row: [url, place, title, meta, blurb, image, pad?, upcoming?]
    image: a bare filename resolves against B; anything with a slash is used as-is. */
-const B="https://raw.githubusercontent.com/gorgonorgon/museum-photos/main/";
+const B="/img/museums/";
 const EX=[
 ["/exhibitions/fc-3-blockchains","Francisco Carolinum, Linz","Collection Francisco Carolinum — 3 Blockchains, one Collection","9 Sep 2026 – 7 Feb 2027",
 "The museum’s blockchain collection shown across Ethereum, Tezos and Bitcoin, curated by Julia Staudach. Eight of the Sovrn set’s ten artists are on the roster.",

@@ -4,9 +4,9 @@
    up disagreeing about which fifteen. Order is the site's own and is deliberate.
 
    Each row: [title, artist, url, image, blurb]. */
-const H="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/main/",
-F="https://raw.githubusercontent.com/gorgonorgon/sovrn-FC-images/main/",
-P="https://raw.githubusercontent.com/gorgonorgon/images-for-homepage/abd8a9f041622904ed28ad947c47b9242d11c2f8/",
+const H="/img/homepage/",
+F="/img/fc/",
+P="/img/homepage/",
 S="/curated/";
 
 const C=[
