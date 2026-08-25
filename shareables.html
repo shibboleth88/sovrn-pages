@@ -2,86 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shareable GIFs — sovrn.art</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- The faces the page names. Without this the CSS asked for Fraunces and
-     IBM Plex and silently got Georgia and the system monospace — and the GIF
-     captions came out in whatever mono the viewer happened to have, so the
-     same work exported from two machines did not match. -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500&amp;display=swap">
-<!-- The same three frames the scoped pages open on, so clicking a card lands on
-     an image the browser has already fetched. -->
-<link rel="preload" as="image" href="img/collections/reflection/reflection-02.svg" type="image/svg+xml">
-<link rel="preload" as="image" href="img/wunderkammer-works/wunderkammer-08.svg" type="image/svg+xml">
-<link rel="preload" as="image" href="img/bytegans/bytegan-15.svg" type="image/svg+xml">
-<link rel="stylesheet" href="share.css">
+<title>Moved — sovrn.art</title>
+<!-- This page used to live here, and other sites embed and link these paths:
+     vanarman.com carries share-reflection.html in an iframe, and every link ever
+     posted points at whatever URL was current that day. GitHub Pages cannot emit
+     a 301, so this is the shape it supports — a canonical for search engines and
+     a refresh for people. One hop, fixed destination, never taken from a query
+     parameter: that is the difference between a redirect and an open redirect.
+     The query string is carried across, because share.html?c=reflection has to
+     land on the scoped page and not the combined one. -->
+<link rel="canonical" href="https://www.sovrn.art/shareable">
+<meta http-equiv="refresh" content="0; url=/shareable">
+<meta name="robots" content="noindex">
+<script>location.replace("/shareable" + location.search + location.hash);</script>
 </head>
-<!-- The hub: three cards, one per on-chain collection, each leading to that
-     collection's own share page. Nothing else — the tool itself lives there.
-
-     The cards turn through a few works from each collection. That is the only
-     thing shareables.js does, and the page does not need it: the markup carries
-     the first frame, and these SVGs animate by themselves inside an <img> (SMIL
-     runs, and so do nested GIFs — sovrn-pages/NOTES.md). With script off the
-     cards are still alive, just not turning.
-
-     Every link carries target="_blank". The Sites embed iframe is sandboxed
-     WITHOUT allow-top-navigation, so target="_top" silently does nothing and no
-     target at all gives "refused to connect". _blank is the only one that works.
-     Do not change it. -->
-<body>
-
-<header><div class="wrap">
-  <h1>Shareable GIFs</h1>
-  <p>Sovrn's fully on-chain collections, in a format that can be shared on socials</p>
-</div></header>
-
-<div class="wrap">
-  <p class="gtitle">Pick a collection</p>
-  <div class="three">
-
-    <a class="panelcard" data-c="reflection"
-       href="https://www.sovrn.art/shareable/share-reflection"
-       target="_blank" rel="noopener" aria-label="Shareable GIFs of Reflection">
-      <img src="img/collections/reflection/reflection-02.svg" alt="" decoding="async">
-      <figcaption>Reflection<span class="who">Pindar Van Arman</span></figcaption>
-    </a>
-
-    <a class="panelcard" data-c="wunderkammer"
-       href="https://www.sovrn.art/shareable/share-wunderkammer"
-       target="_blank" rel="noopener" aria-label="Shareable GIFs of Wunderkammer">
-      <img src="img/wunderkammer-works/wunderkammer-08.svg" alt="" decoding="async">
-      <figcaption>Wunderkammer<span class="who">Isa Kost</span></figcaption>
-    </a>
-
-    <a class="panelcard" data-c="bytegans"
-       href="https://www.sovrn.art/shareable/share-bytegans"
-       target="_blank" rel="noopener" aria-label="Shareable GIFs of byteGANs">
-      <img src="img/bytegans/bytegan-15.svg" alt="" decoding="async">
-      <figcaption>byteGANs<span class="who">Pindar Van Arman</span></figcaption>
-    </a>
-
-  </div>
-
-  <p class="gtitle" style="margin-top:22px">Where the work comes from</p>
-  <div class="about">
-    <p>These three collections keep their artwork inside the contract as an encoded
-       vector drawing with no dependencies.</p>
-    <p>This tool pulls the SVG data from the contracts and converts it to gifs that
-       play with the parameters specified in the encoding.</p>
-    <p>byteGANs are a compressionist approach to putting GANs on-chain and are the
-       first AI art collection that was put fully on-chain on Ethereum (in its
-       entirety).</p>
-    <p>Wunderkammer is a conceptual gesture about permanence and transience using its
-       on-chain presence as metaphor for the presence of death in life.</p>
-    <p>Reflection encodes and executes Pindar Van Arman’s reflective AI process
-       fully on-chain.</p>
-  </div>
-</div>
-
-<script src="shareables.js"></script>
-
-</body>
+<body><p>This page has moved to <a href="/shareable">/shareable</a>.</p></body>
 </html>

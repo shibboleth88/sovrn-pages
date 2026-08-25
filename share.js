@@ -229,7 +229,9 @@ var GIF = (function () {
 // data: URI does not taint the canvas, so every work here can be rasterised and
 // re-encoded. Sovrn's other collections keep their images on IPFS, which taints
 // the canvas and makes the export throw.
-var BASE = location.pathname.replace(/[^/]*$/, "");
+// Served from the site root now, so data files and image pools are addressed from
+// there rather than from whatever directory the page happens to sit in.
+var BASE = "/";
 // Ethereum endpoints, tried in order. The first two are public RPCs. The third is
 // Sovrn's own read-only proxy, and it is why this list exists at all: crypto RPC
 // hostnames sit on the "NoCoin"/cryptomining filter lists that uBlock Origin,
@@ -1085,7 +1087,7 @@ function rpcCall(to, callData) {
 //
 // The chain stays as the fallback, so a work missing from the mirror still resolves,
 // and nothing here is load-bearing on the harvest being complete.
-var ART = new URL("../sovrn-onchain/", location.href).href;
+var ART = "/onchain/";
 
 function svgToDataUri(text) {
   // The rest of the page expects a data: URI — same as tokenURI hands back — so the

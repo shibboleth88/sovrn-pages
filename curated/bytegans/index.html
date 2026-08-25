@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<base href="/">
+<!-- Every relative path in this file resolves from the site root, which is what
+     lets a page sit at any depth without rewriting its assets. In-page anchors
+     are the one thing <base> breaks, so an in-page anchor must be built
+     from location.pathname rather than written bare. -->
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<title>byteGANs — Pindar Van Arman — sovrn.art</title>
+<style>:root{--paper:#e9e9e5;--ink:#16181d;--slate:#5c6470;--rule:#c9c9c2;--hair:#d8d8d2;
+--accent:#0f6b66;--gap:clamp(46px,6vw,78px)}
+*{box-sizing:border-box;margin:0}
+::selection{background:var(--accent);color:var(--paper)}
+body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:0 22px 60px}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* the original opens on a full-bleed artwork with the title laid over it */
+.hero{position:relative;min-height:min(88vh,760px);display:flex;flex-direction:column;
+ justify-content:center;align-items:center;text-align:center;padding:60px 22px;
+ background:var(--ink) center/cover no-repeat;image-rendering:pixelated;margin-bottom:var(--gap)}
+.hero::after{content:"";position:absolute;inset:0;background:rgba(10,12,15,.34)}
+.hero > *{position:relative;z-index:1}
+.hero h1{font:500 clamp(30px,5vw,54px)/1.15 "IBM Plex Mono",monospace;letter-spacing:.02em;color:#fff;
+ text-shadow:0 2px 26px rgba(0,0,0,.55)}
+.hero .by{margin-top:16px;font:400 clamp(16px,2.3vw,25px)/1.3 "IBM Plex Mono",monospace;color:#fff;
+ text-shadow:0 2px 20px rgba(0,0,0,.55)}
+.eyebrow{font:500 11px/1.5 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--slate)}
+a.fc{color:inherit;text-decoration:none;border-bottom:1px solid var(--accent)}
+a.fc:hover{color:var(--accent)}
+.meta{font:500 10.5px/1.9 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:var(--slate)}
+.prose{max-width:66ch}.prose p+p{margin-top:14px}.prose p{color:var(--slate)}
+.lead{font-size:18px;color:var(--ink)!important}
+h2{position:relative;font:italic 300 clamp(25px,3.3vw,36px)/1.12 Fraunces,serif;letter-spacing:-.02em;
+ margin:var(--gap) 0 26px;padding-bottom:16px;border-bottom:1px solid var(--rule)}
+h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;background:var(--accent)}
+/* image beside text, the way the original pairs each intelligence with its work */
+.duo{display:grid;grid-template-columns:minmax(0,360px) 1fr;gap:clamp(20px,3.4vw,44px);
+ align-items:center;margin-top:var(--gap)}
+@media(max-width:720px){.duo{grid-template-columns:1fr}}
+.duo img{width:100%;height:auto;display:block;background:var(--ink)}
+.duo.pix img{image-rendering:pixelated}
+.feature{margin-top:var(--gap)}
+.feature img{width:100%;height:auto;display:block;background:var(--ink)}
+.social{margin-top:16px;display:flex;flex-wrap:wrap;gap:16px;
+ font:500 10.5px/1.6 "IBM Plex Mono",monospace;letter-spacing:.11em;text-transform:uppercase}
+.social a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:2px;transition:color .15s}
+.social a:hover{color:var(--accent)}
+.links{margin-top:var(--gap);padding-top:22px;border-top:1px solid var(--rule);
+ display:flex;flex-wrap:wrap;gap:22px;font:500 11px/1 "IBM Plex Mono",monospace;
+ letter-spacing:.1em;text-transform:uppercase}
+.links a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:4px}
+.links a:hover{color:var(--accent)}
+.foot{margin-top:26px;font:400 11.5px/1.7 "IBM Plex Mono",monospace;color:var(--slate);max-width:76ch}
+/* a closing band: the whole set of them, still dancing, edge to edge */
+.band{margin-top:clamp(10px,2vw,26px);background:var(--ink)}
+.tiles{display:grid;grid-template-columns:repeat(12,1fr);line-height:0}
+.tiles img{width:100%;height:auto;display:block;image-rendering:pixelated}
+@media(max-width:1080px){.tiles{grid-template-columns:repeat(8,1fr)}}
+@media(max-width:640px){.tiles{grid-template-columns:repeat(6,1fr)}}
+.btnrow{margin-top:30px}
+.btn{display:inline-block;padding:15px 28px;background:var(--accent);color:var(--paper);
+ text-decoration:none;font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;
+ text-transform:uppercase;transition:background .16s,transform .16s}
+.btn:hover{background:var(--ink);transform:translateY(-1px)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}</style></head><body>
+<header class="hero" style="background-image:url(img/pages/bytegans/hero.gif)">
+<h1>byteGANs</h1><p class="by">by Pindar Van Arman</p></header>
+<div class="wrap">
+<p class="eyebrow"><a class="fc" href="https://www.sovrn.art" target="_blank">sovrn.art</a> &middot; Curated collection</p>
+<p class="meta" style="margin-top:14px">a kilobyte on the blockchain<br>100% on-chain AI art by Pindar Van Arman<br>released 20 February 2023</p>
+<div class="prose" style="margin-top:26px">
+<p class="lead">In their ever expanding quest for who knows what, the bitGANs have made another interesting move.</p><p>They have inscribed themselves directly on to the blockchain.</p><p>Why? We are not sure, but by recording their dance on the public ledger, they have ensured that it will go on forever, exactly as it was intended.</p><p>While this action is mysterious, three major types of byteGANs have revealed themselves, with a small subset of rarer types.</p></div>
+<p class="btnrow"><a class="btn" href="https://www.sovrn.art/shareable/share-bytegans" target="_blank">Make a shareable GIF &#8599;</a></p>
+<h2>The Three Intelligences</h2>
+<div class="duo pix"><figure><img src="img/pages/bytegans/skull.gif" alt="" loading="lazy"></figure><div class="prose"><p>The skullGANs represent Evolutionary Intelligence. Their existence is a battle being fought within the human mind, where higher order brain functions are at constant odds with reptilian instincts. Does free will even exist, or is everything just a complex biochemical reaction.</p></div></div>
+<div class="duo pix"><figure><img src="img/pages/bytegans/cyber.gif" alt="" loading="lazy"></figure><div class="prose"><p>The cyberGANs represent Artificial Intelligence. Intelligence created in a relative short period of time, full of promise, but also completely lacking wisdom. While AI may be able to solve all of the worlds problems, it also has the potential to destroy it in the process.</p></div></div>
+<div class="duo pix"><figure><img src="img/pages/bytegans/octo.gif" alt="" loading="lazy"></figure><div class="prose"><p>The octoGANs are closely related to podGANs and like the podGANs, they represent a new kind of thinking, Decentralized Intelligence. Similar to how an octopus coordinates nine different brains to solve complex tasks, these beings combine inputs from decentralized sources for the common good.</p></div></div>
+<h2>The artist</h2>
+<div class="duo"><figure><img src="img/pages/bytegans/artist.jpg" alt="Pindar Van Arman with a painting robot" loading="lazy"></figure><div class="prose"><p>Pindar Van Arman is an AI generative artist who has been collaborating with artificially intelligent painting robots since 2006.</p><p>His art has been exhibited internationally and is featured in the critically acclaimed documentary Machine, The Art of Intelligence, the NVIDIA AI Art Gallery, and in the the LACMA permanent collection.</p><p class="social"><a href="https://www.vanarman.com" target="_blank">vanarman.com</a><a href="https://bitgans.com/" target="_blank">bitgans.com</a><a href="https://x.com/vanarman" target="_blank">X</a><a href="https://www.instagram.com/pindar.vanarman/" target="_blank">Instagram</a></p></div></div>
+<figure class="feature"><img src="img/pages/bytegans/panels.jpg" alt="Three byteGANs as physical panels" loading="lazy"></figure>
+<p class="links"><a href="https://www.raster.art/artwork/bytegans-by-pindar-van-arman" target="_blank">View on Raster &#8599;</a><a href="https://superrare.com/vanarman" target="_blank">byteGANs on SuperRare &#8599;</a><a href="https://twitter.com/vanarmanartist" target="_blank">Pindar Van Arman on X &#8599;</a></p>
+<p class="foot">byteGANs, Pindar Van Arman, 2023. A kilobyte apiece, fully on-chain. A curated collection on <a class="fc" href="https://www.sovrn.art" target="_blank">sovrn.art</a>.</p>
+</div>
+<section class="band" role="img" aria-label="Twenty-four byteGANs, each an eleven-pixel-square animation, tiled edge to edge">
+<div class="tiles" id="tiles"><img src="img/bytegans/bytegan-01.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-02.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-03.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-04.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-05.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-06.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-07.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-08.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-09.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-10.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-11.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-12.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-13.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-14.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-15.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-16.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-17.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-18.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-19.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-20.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-21.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-22.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-23.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-24.svg" alt="" width="500" height="500" loading="lazy"></div>
+</section>
+<script>
+(function(){var t=document.getElementById("tiles");if(!t)return;
+var a=[].slice.call(t.children);
+while(a.length){var j=Math.floor(Math.random()*a.length);t.appendChild(a[j]);a.splice(j,1);}
+})();
+</script>
+</body></html>

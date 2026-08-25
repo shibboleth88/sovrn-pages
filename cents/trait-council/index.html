@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<base href="/"><!-- Relative paths resolve from the site root, so a page can sit at any depth
+     without its assets being rewritten. <base> also rewrites in-page anchors,
+     so an in-page anchor must be built from location.pathname. --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<title>Trait Council &mdash; CENTS</title>
+<style>:root{--paper:#ffffff;--ink:#16181d;--slate:#5c6470;--rule:#dcdcd6;--hair:#ebebe6;--copper:#8a4f2a;--wash:#faf7f4}
+*{box-sizing:border-box;margin:0}
+::selection{background:var(--copper);color:var(--paper)}
+body{background:var(--paper);color:var(--ink);font:400 15px/1.62 "IBM Plex Sans",sans-serif;padding:30px 22px 56px}
+.wrap{max-width:880px;margin:0 auto}
+a:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
+.eyebrow{font:500 11px/1.5 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--slate)}
+a.fc{color:inherit;text-decoration:none;border-bottom:1px solid var(--copper);transition:color .15s}
+a.fc:hover{color:var(--copper)}
+h1{margin-top:20px;font:200 clamp(32px,5.4vw,54px)/1.04 Fraunces,serif;letter-spacing:-.02em}
+.intro{margin-top:18px;max-width:62ch;color:var(--slate);font-size:15.5px}
+/* the two tools, given the prominence they earn */
+.tools{margin-top:34px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.tools{grid-template-columns:1fr}}
+.tool{display:flex;flex-direction:column;padding:24px;text-decoration:none;color:inherit;
+ border:1px solid var(--rule);background:var(--paper);transition:border-color .16s,transform .16s,background .16s}
+.tool:hover{border-color:var(--copper);transform:translateY(-2px)}
+.tool.key{background:var(--copper);border-color:var(--copper);color:var(--paper)}
+.tool.key:hover{background:var(--ink);border-color:var(--ink)}
+.tool .k{font:500 10px/1 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--slate)}
+.tool.key .k{color:rgba(255,255,255,.72)}
+.tool .n{margin-top:12px;font:italic 300 clamp(22px,2.6vw,29px)/1.15 Fraunces,serif;letter-spacing:-.015em}
+.tool .d{margin-top:9px;font-size:13.5px;color:var(--slate)}
+.tool.key .d{color:rgba(255,255,255,.86)}
+.tool .go{margin-top:16px;font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;color:var(--copper)}
+.tool.key .go{color:var(--paper)}
+.note{margin-top:16px;font-size:13.5px;color:var(--slate)}
+h2{margin:56px 0 6px;font:200 clamp(25px,3.4vw,36px)/1.14 Fraunces,serif;letter-spacing:-.02em;
+ padding-bottom:14px;border-bottom:1px solid var(--rule);position:relative}
+h2::after{content:"";position:absolute;left:0;bottom:-1px;width:44px;height:2px;background:var(--copper)}
+.byline{margin-top:12px;font:500 10.5px/1.6 "IBM Plex Mono",monospace;letter-spacing:.11em;text-transform:uppercase;color:var(--slate)}
+.byline a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--copper)}
+.byline a:hover{color:var(--copper)}
+.vid{margin-top:26px;position:relative;padding-top:56.25%;background:#000}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+figure{margin-top:30px}
+figure img{width:100%;height:auto;display:block;border:1px solid var(--hair)}
+figcaption{margin-top:10px;font:500 10.5px/1.5 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
+.members{margin-top:20px;display:flex;flex-wrap:wrap;gap:10px;padding:0;list-style:none}
+.members li{padding:9px 15px;background:var(--wash);border:1px solid var(--hair);
+ font:500 11.5px/1 "IBM Plex Mono",monospace;letter-spacing:.06em}
+.body{max-width:66ch}
+.body p{margin-top:14px;color:var(--slate)}
+.body p b,.body li b{font-weight:500;color:var(--ink)}
+.body h3{margin-top:30px;font:500 12px/1.5 "IBM Plex Mono",monospace;letter-spacing:.13em;
+ text-transform:uppercase;color:var(--copper)}
+.body ul{margin:12px 0 0 20px;padding:0;list-style:square;color:var(--copper)}
+.body li{margin:9px 0;color:var(--slate)}
+.body li::marker{color:var(--copper)}
+.lead2{font-size:16.5px;color:var(--ink)!important}
+.more{margin-top:44px;padding-top:20px;border-top:1px solid var(--rule);
+ font:500 11.5px/2 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase}
+.more a{display:inline-block;color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--copper);
+ padding-bottom:3px;margin-right:20px}
+.more a:hover{color:var(--copper)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body><div class="wrap">
+<p class="eyebrow"><a class="fc" href="https://www.sovrn.art/cents" target="_blank">CENTS</a> &middot; Trait Council</p>
+<h1>Trait Council</h1>
+<p class="intro">The cataloging of emergent traits in the CENTS collection is a community-led initiative carried out over the course of 2 years through multiple reviews of the full 10k set, numerous voting rounds, and in-depth discussions threshold cases.</p>
+
+<div class="tools">
+<a class="tool key" href="https://cents.vision/traits-atlas.html" target="_blank">
+<span class="k">Trait Atlas</span><span class="n">Every trait, explained</span>
+<span class="d">Comprehensive information about each trait &mdash; what it is, how it forms, and how it was catalogued.</span>
+<span class="go">Open the Trait Atlas &#8599;</span></a>
+<a class="tool" href="http://cents.vision" target="_blank">
+<span class="k">Trait Explorer</span><span class="n">cents.vision</span>
+<span class="d">Search and filter the full 10,000 &mdash; by trait, mint year, and combination.</span>
+<span class="go">Open cents.vision &#8599;</span></a>
+</div>
+<p class="note">For trait questions, tag @council in the CENTS <a class="fc" href="https://discord.gg/eQXjJHx8FF" target="_blank">discord</a>.</p>
+
+<h2>Trait Explorer explainer</h2>
+<p class="byline">Video by <a href="https://x.com/DocT___" target="_blank">DocT</a></p>
+<div class="vid"><iframe src="https://www.youtube.com/embed/-tEV_uk4DcA" title="CENTS Trait Explorer explainer by DocT" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe></div>
+<figure><img src="img/pages/trait-council/trait-chart.jpg" alt="A chart of nineteen CENTS traits, each with an example coin: Verdigris, Obsidian, Desert, Red, Orange, Gold and Corroded patinas; Abraded and Faceless wear; Lustrous reflectivity; Striated texture; Vandalized alteration; Assassin, Ghost and Wheat motifs; Fingerprint, Contaminated and White Drips and Streaks residue; and iridesCENT" loading="lazy">
+<figcaption>Emergent traits, with their categories</figcaption></figure>
+
+<h2>Core members of the Trait Council</h2>
+<ul class="members"><li>JWphase</li><li>Martin Lehnen (daidatep)</li><li>ScrappyT</li><li>cryptocam</li><li>Plutonium Fitzgerald</li><li>Trace</li><li>vinkuvakikkeli</li><li>Shibboleth</li></ul>
+
+<h2>Thoughts about the unique nature of CENTS traits and their significance</h2>
+<p class="byline">by <a href="https://x.com/daidatep" target="_blank">Martin Lehnen</a> &middot; <a href="https://medium.com/@ml_54234/thoughts-about-the-unique-nature-of-cents-traits-and-their-significance-308dc70ee3d4" target="_blank">read on Medium &#8599;</a></p>
+<div class="body">
+<p class="lead2">The CENTS community is redefining traits by intertwining the organic wear of each coin with its historical and aesthetic uniqueness, creating a tapestry of individuality rarely seen in digital collections. Unlike algorithmic randomization, CENTS traits emerge from <b>real-world narratives,</b> making each piece a singular, irreplicable artifact of time &ndash; or as @shibboleth named it: <b>&bdquo;time-based generative art&rdquo;.</b></p>
+<h3>1. Traits Rooted in Reality</h3><ul><li>Unlike generative 10K collections with algorithmically assigned traits, CENTS traits are derived from <b>real-world physicality</b>.</li><li>Each CENT is a high-resolution photograph of a genuine coin, and its traits are <b>natural phenomena</b> like wear, patina, and imperfections&mdash;<b>etched by time</b>, not code.</li></ul><h3>2. Surface as a Trait</h3><ul><li>The <b>surface uniqueness</b> of each CENT is unparalleled. Scratches, contaminations, patinas, and aging patterns create a distinctive <b>fingerprint</b>, ensuring no two CENTS are alike.</li><li>These traits offer a <b>visual and textural narrative</b>, turning each CENT into a time capsule.</li></ul><h3>3. Mint Year Significance</h3><ul><li>CENTS includes <b>mint years</b> as a trait, drawing parallels to traditional coin collecting.</li><li>&bdquo;Meme-Years&rdquo; like 1969, <b>1971</b> or coins from significant historical years become highly coveted, adding a layer of <b>historical storytelling</b> to the project.</li></ul><h3>4. Scarcity in Layered Traits</h3><p>The rarity isn&rsquo;t just about visual traits but the <b>intersection of traits</b>:</p><ul><li>A CENT with a unique patina might also have a rare mint year or a blockchain-native trait (Hitman/ JPEG)</li><li>This layering of rarity adds depth and complexity, moving beyond the approach typical of generative NFTs.</li></ul><h3>5. Narrative-Driven Categories</h3><p>Each CENT is categorized based on its historical or aesthetic significance, such as:</p><ul><li><b>Wheat Backs (1910&ndash;1958):</b> A nod to a bygone design era.</li><li><b>Abraded:</b> Unique due to external force.</li><li><b>Verdigris:</b> Prized for their vivid, organic patina.</li></ul><h3>6. Philosophy in the Traits</h3><p>CENTS traits evoke <b>questions</b> about value &ndash; and it does look like the CENTS community is developing a different view to traditional numismatics:</p><ul><li>Does a heavily worn CENT lose or gain value?</li><li>Is a vibrant patina or a bold fingerprint a sign of beauty or decay?</li><li>How does rarity intersect with subjective perception of worth?</li></ul><h3>7. Collector Engagement with Traits</h3><p>Traits encourage collectors to look closely and interpret, even to name their CENTS:</p><ul><li>Some collectors focus on <b>mint years</b>, aligning with numismatics.</li><li>Most Collectors value <b>visual traits</b>, like vibrant patinas, fingerprints or bold scratches, emphasizing aesthetics.</li><li>This freedom of interpretation makes the project deeply personal.</li></ul><h3>8. Traits as a Reflection of Time</h3><p>CENTS traits are inherently about <b>time&rsquo;s passage</b>:</p><ul><li>They capture what <b>decades of circulation and exposure</b> have left behind.</li><li>Each CENT tells a story of transformation through wear and erosion.</li></ul><h3>9. No Generative Uniformity</h3><ul><li>There is no generative uniformity in CENTS like in traditional collections that rely on <b>template-based sameness with randomized traits.</b> CENTS is different &ndash; each one is individually sourced and entirely unique, yet it still is generative as it relies on a <b>real-world, template-based likeness.</b> &bdquo;Likeness&rdquo; instead of &bdquo;sameness&rdquo; feels more accurate, as even the template itself has changed slightly over time, adding subtle layers of uniqueness &ndash; to quote @shibboleth again: <b>&bdquo;temporal generative art&rdquo;!</b></li></ul></div>
+
+<h2>CENTS &ndash; Reflections on Mint Years and their Long-Term Significance</h2>
+<p class="byline">by <a href="https://x.com/daidatep" target="_blank">Martin Lehnen</a></p>
+<div class="body">
+<p class="lead2">Looking closely at the minting years in the CENTS collection, I explore five distinct perspectives that shape their meaning and significance.</p>
+<h3>1. The Rare Years:</h3><p>The very first thing I did on minting day was create an Excel sheet to uncover which <b>years and mint marks</b> were rare in the collection and which were not. The numbers highlight a fascinating pyramid of scarcity within the CENTS collection:</p><ul><li>The three years from the 1980s &ndash; <b>1980, 1981, and 1982</b> &ndash; each contribute around 8-9% to the 10K, meaning nearly one in every four CENTS (25.79%) comes from this three years.</li><li><b>Half the collection</b> (50.2%) comes from <b>before 1976</b>, marking a significant concentration of CENTS in the first seven years.</li><li>Excluding just <b>one more year</b>&mdash;1975, which alone accounts for 750 CENTS &ndash; this drops to <b>42.7</b>%, showing how quickly the numbers shrink when we step back even slightly in time.</li><li>Looking at the 1960s: <b>pre-1970 CENTS</b> &ndash; the figure falls sharply to <b>21.26%</b>, emphasizing the growing scarcity of older coins.</li><li>Moving into true scarcity, only 2.91% of CENTS are pre-1960.</li><li>Next step &ndash; excluding 1959: <b>Wheat CENTS</b> account for just <b>2.08%</b> of the collection.</li></ul><p>The <b>design change</b> in 1959 marked the end of the iconic Wheat Reverse (1909&ndash;1958), giving way to the familiar Lincoln Memorial design. This transition adds a layer of symbolic weight to Wheat Pennies: they represent an era and a connection to the early 20th century. Owning at least one Wheat CENT has become an emblem of prestige within the CENTS community.</p><ul><li>The rarity intensifies dramatically with pre-1950 &ndash; the oldest CENTS at just <b>0.96%</b>!</li><li>Historical treasures: <b>pre-1940</b> at an astonishingly low <b>0.26%</b> &ndash; their scarcity making them the ultimate collector&rsquo;s gems.</li></ul><p>This data reveals how quickly scarcity accelerates the further back in time you go &ndash; turning those CENTS into historical treasures and highly coveted rarities within the collection.</p><p>The rarest minting years in the CENTS collection are the &bdquo;1/1 years&rdquo; &ndash; mint years with exactly one representation in the entire 10K collection. These CENTS are extraordinary anomalies with absolute scarcity:</p><p><b>1954, 1949, 1939, 1935, 1934, 1930, 1929, 1928, 1926, 1919, 1912,</b> and <b>1911</b> stand as singular relics.</p><h3>2. The Meme Years:</h3><p>For the current crypto community, <b>1969</b> stand out as <b>the</b> &bdquo;meme&rdquo; year, fueled by internet culture and its playful irreverence. The number has become iconic in digital spaces, often stripped of any deeper historical meaning and instead serving as a shorthand for shared jokes and cultural tropes. This underscores how memes evolve over time and are shaped by the humor and shared experiences of specific generations.</p><p>Looking back a couple of decades, an older generation would likely consider 1968 as their &bdquo;meme&rdquo; year&mdash;symbolizing the height of the student movement, the sexual revolution, and the cultural upheaval that defined their formative years. Interestingly, <b>1968</b> also connects to Rutherford Chang&rsquo;s earlier project &bdquo;We Buy White Albums&rdquo;, which exclusively focused on first-edition pressings of The Beatles&rsquo; White Album, all released in <b>1968</b>. This highlights how specific years can hold layered meanings across art, culture, and history. Memes are grounded in the context of specific historical significance and collective consciousness. Meme-character is fluid, reflecting the ever-changing nature of culture.</p><h3>3. The Years of Personal Significance:</h3><p>For many collectors, years with personal meaning &ndash; such as their birth year or the birth years of loved ones &ndash; hold a uniquely sentimental value. CENTS bought for that reason create strong emotional bonds, tying the collection to individual lives. However, from a broader historical perspective, such years are unlikely to retain their significance over the long run, too. As generations pass, these personal attachments will fade, making them less relevant to future collectors.</p><h3>4. The Historically Significant Years:</h3><p>From the perspective of a historian, looking back to the 20th century from today, the years <b>1945</b> and <b>1969</b> carry weight for their undeniable impact on global history.</p><p><b>1945</b> stands for the end of WWII, the victory over Nazi-Germany, ushering in a new geopolitical order.</p><p><b>1969</b> remains monumental for the moon landing, a milestone that embodied humanity&rsquo;s capacity for innovation and exploration. These years transcend generational memes and serve as enduring symbols of collective achievement and historical turning points.</p><p>Remark: There lies a certain Irony in a connection between 1945 and 1969 &ndash; that is deeply intertwined in the messy pragmatism of geopolitics and human ambition:</p><p>Without the conclusion of World War II in 1945 &ndash; and specifically, the calculated recruitment of Nazi scientists like Wernher von Braun through &bdquo;Operation Paperclip&rdquo; &ndash; the technological leap that led to the moon landing in 1969 might have been delayed or even derailed. Von Braun, the architect of the V2 rocket that terrorized Europe during the war, became the celebrated visionary behind NASA&rsquo;s Saturn V rocket. The moon landing, as much as it was a beacon of hope and unity, carried within it a shadow of the darkest chapter of the century.</p><h3>5. The Conceptual Years:</h3><p><b>1944</b> marked the creation of the Bretton Woods system, laying the foundation for the modern monetary order. This year resonates deeply within CENTS, linking cultural memory to its central commentary on value and time.</p><p><b>1971</b>, however, is even more aligned with the conceptual framework of the CENTS project. It was the year the United States abandoned the gold standard, severing the connection between currency and tangible value, and redefining money as a purely abstract construct. This seismic shift in global economic history directly challenges our notions of value, permanence, and trust &ndash; concepts at the heart of CENTS.</p><p>More than just a date, 1971 is bridging historical significance with the philosophical weight that underpins the collection.</p></div>
+
+<p class="more"><a href="https://cents.vision/traits-atlas.html" target="_blank">Trait Atlas &#8599;</a><a href="http://cents.vision" target="_blank">cents.vision &#8599;</a><a href="https://www.sovrn.art/cents" target="_blank">Back to CENTS &#8599;</a></p>
+</div></body></html>

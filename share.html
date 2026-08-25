@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<base href="/">
+<!-- Every relative path in this file resolves from the site root, which is what
+     lets a page sit at any depth without rewriting its assets. In-page anchors
+     are the one thing <base> breaks, so an in-page anchor must be built
+     from location.pathname rather than written bare. -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Shareable GIFs of on-chain SVGs — sovrn.art</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">

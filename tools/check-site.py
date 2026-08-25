@@ -47,7 +47,15 @@ PUBLIC = """
 /exhibitions/fc-3-blockchains /exhibitions/kindl /exhibitions/marfa-popup
 /exhibitions/screens-contextualized /exhibitions/ucca /exhibitions/vitra
 /shareable/share-reflection /shareable/share-wunderkammer /shareable/share-bytegans
+/curated/bytegans /curated/cope-vol-1 /curated/rabbit-takeover
+/cents/project-description /cents/makes-cents /cents/trait-council
 """.split()
+
+# Those last six were missing from the first draft of this list, because it was
+# derived by grepping the repo for sovrn.art URLs and nothing in the repo links to
+# them — they are reached only from Sites pages, which are outside it. That is
+# exactly the failure this list exists to prevent, so: the contract is what the
+# site serves, not what the repo happens to mention.
 
 # Paths share.js and shareables.js build at runtime, which no HTML parse will see.
 RUNTIME = ["onchain-titles.json", "onchain-traits.json",
@@ -73,16 +81,27 @@ def fetch(url, method="GET"):
 
 
 def check_urls(host):
+    """Every public URL must answer with a real page.
+
+    A directory with no index.html is the trap here. `python -m http.server`
+    answers it with a generated listing and a cheerful 200, while GitHub Pages
+    returns 404 — so a tree can pass locally and be broken in production. The
+    listing is recognisable and is treated as the failure it is.
+    """
     print(f"  {len(PUBLIC)} public URLs on {host}")
     bad = []
     def one(p):
-        code, _ = fetch(host.rstrip("/") + p, "GET")
-        return p, code
+        code, body = fetch(host.rstrip("/") + p + ("/" if "127.0.0.1" in host and p != "/" else ""), "GET")
+        listing = b"Directory listing for" in body
+        return p, code, listing
     with ThreadPoolExecutor(max_workers=8) as pool:
-        for p, code in pool.map(one, PUBLIC):
+        for p, code, listing in pool.map(one, PUBLIC):
             if code != 200:
                 bad.append((p, code))
                 print(f"    {code}  {p}")
+            elif listing:
+                bad.append((p, "listing"))
+                print(f"    no index.html  {p}   (a directory listing, which Pages 404s)")
     # The misspelling is the live URL and correcting it 404s (NOTES.md).
     if not any(p == "/collections/fransisco-carolinum" for p in PUBLIC):
         bad.append(("fransisco-carolinum missing from the contract", 0))

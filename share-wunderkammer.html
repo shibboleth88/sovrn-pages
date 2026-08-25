@@ -2,123 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shareable GIFs of Wunderkammer — sovrn.art</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- The faces the page names. Without this the CSS asked for Fraunces and
-     IBM Plex and silently got Georgia and the system monospace — and the GIF
-     captions came out in whatever mono the viewer happened to have, so the
-     same work exported from two machines did not match. -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500&amp;display=swap">
-<!-- Warm the panel image so it arrives with the page. -->
-<link rel="preload" as="image" href="img/wunderkammer-works/wunderkammer-08.svg" type="image/svg+xml">
-<link rel="stylesheet" href="share.css">
+<title>Moved — sovrn.art</title>
+<!-- This page used to live here, and other sites embed and link these paths:
+     vanarman.com carries share-reflection.html in an iframe, and every link ever
+     posted points at whatever URL was current that day. GitHub Pages cannot emit
+     a 301, so this is the shape it supports — a canonical for search engines and
+     a refresh for people. One hop, fixed destination, never taken from a query
+     parameter: that is the difference between a redirect and an open redirect.
+     The query string is carried across, because share.html?c=reflection has to
+     land on the scoped page and not the combined one. -->
+<link rel="canonical" href="https://www.sovrn.art/shareable/share-wunderkammer">
+<meta http-equiv="refresh" content="0; url=/shareable/share-wunderkammer">
+<meta name="robots" content="noindex">
+<script>location.replace("/shareable/share-wunderkammer" + location.search + location.hash);</script>
 </head>
-<!-- Scoped to Wunderkammer. Everything but the scope lives in share.js and share.css, shared with the other three pages. -->
-<body>
-<header><div class="wrap">
-  <h1>Shareable GIFs of on-chain SVGs</h1>
-  <p>get animated versions of Sovrn's on-chain collections in a format that can be
-     shared on socials</p>
-</div></header>
-
-<div class="wrap">
-  <div class="composer" id="composer">
-    <p class="clabel">Compose — pick a shape, then search and click to fill it</p>
-    <div class="shapes" id="shapes" role="group" aria-label="Composition"></div>
-    <div class="slots" id="slots" hidden></div>
-  </div>
-  <div class="find">
-    <input id="q" type="search" autocomplete="off" spellcheck="false"
-           placeholder="Search by title, trait or token ID…" aria-label="Search by title, trait or token ID">
-  </div>
-  <div class="sets" id="sets" role="group" aria-label="Limit to a collection"></div>
-  <div class="crow" id="crow" hidden>
-    <label>size
-      <select id="csize">
-        <option value="720">720px</option>
-        <option value="1080">1080px</option>
-        <option value="1440" selected>1440px</option>
-      </select>
-    </label>
-    <label class="titlepill" title="Prints each work's title in a band under it, like a wall label"><input type="checkbox" id="ctitles"> Add titles</label>
-    <button class="go" id="mkgrid" disabled>Make it</button>
-    <button class="go ghost" id="clearset">Clear</button>
-  </div>
-  <p class="chint" id="chint"></p>
-
-  <p class="note" id="note">Search by title or token ID — “skull”, “cogito”, “octoGAN”, or 883.</p>
-  <!-- Above the card, not inside the panel. A Reflection render is seventy-two
-       frames and the better part of a minute; with the card and the trait
-       filters between the top of the page and the panel, the only sign that
-       anything was happening could sit below the fold, and the page looked
-       stuck. It belongs where it will be seen. -->
-  <div class="prog" id="prog" hidden>
-    <div class="track"><div class="bar" id="bar"></div></div>
-    <p class="plabel" id="plabel">
-      <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span id="ptext">Reading the contract</span>
-    </p>
-  </div>
-
-  <div class="gallery" id="gallery" hidden>
-    <p class="gtitle" id="gtitle">From the collections</p>
-    <div class="galrow">
-      <div class="three" id="three"></div>
-      <!-- Built by share.js from the collection's own trait axes, and only on a
-           scoped page, where there is one card to sit beside. -->
-      <div class="filters" id="filters" hidden></div>
-    </div>
-  </div>
-
-  <div class="panel" hidden id="panel">
-    <!-- Controls sit above the artwork: at 1080px the image is taller than the
-         viewport, and having Download below it put the button off screen. -->
-    <div class="controls">
-      <h2 id="pt">—</h2>
-      <p class="meta" id="pm"></p>
-      <div class="row">
-        <label id="ssize">size
-          <select id="size">
-            <option value="480">480px</option>
-            <option value="720" selected>720px</option>
-            <option value="1080">1080px</option>
-          </select>
-        </label>
-        <button class="go" id="dl">Download GIF</button>
-        <button class="go ghost" id="add">Add to set</button>
-        <button class="go ghost" id="src">Original SVG</button>
-      </div>
-      <p class="warn" id="warn"></p>
-    </div>
-    <!-- The title option sits at the top of the artwork rather than below it: at
-         1080px the image is taller than the viewport, so anything under it falls
-         off the bottom and is never seen. Above, it is next to Download, where
-         the choice actually gets made. -->
-    <div class="titleopt" id="stitlebox">
-      <label class="titlepill"><input type="checkbox" id="stitles"> Add the title to the GIF</label>
-      <span class="thint">printed in a band under the work, like a wall label</span>
-    </div>
-    <!-- The band under the artwork mirrors what captioned() burns into the GIF,
-         so ticking the box shows the result immediately instead of only after a
-         render. Same ground, font and colour as drawCap. -->
-    <div class="preview">
-      <img id="prev" alt="">
-      <p class="prevcap" id="prevcap" hidden></p>
-    </div>
-    <p class="shrunk" id="shrunk" hidden></p>
-  </div>
-
-  <div class="hits" id="hits" role="listbox"></div>
-
-
-  <!-- Filled by share.js from the page's scope. It lives here rather than in the
-       four shells so their markup stays identical, which is what
-       tools/check-share-pages.py holds them to. -->
-  <div class="about" id="pageabout" hidden></div>
-</div>
-<script>var SHARE_SCOPE = "wunderkammer";</script>
-<script src="share.js"></script>
-</body>
+<body><p>This page has moved to <a href="/shareable/share-wunderkammer">/shareable/share-wunderkammer</a>.</p></body>
 </html>
