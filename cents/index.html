@@ -215,11 +215,17 @@ function initWall() {
     obs.observe(sentinel);
   }
 
-  var ticking = false;
+  /* Throttled on a timestamp rather than a flag cleared inside requestAnimationFrame.
+     rAF is paused in a background tab, so a reader who scrolls, switches away and
+     comes back would have left that flag stuck true and the wall frozen for the
+     rest of the visit. A clock cannot be starved. */
+  var lastCheck = 0;
   function onScroll() {
-    if (ticking || shown >= CN) return;
-    ticking = true;
-    requestAnimationFrame(function () { ticking = false; check(); });
+    if (shown >= CN) return;
+    var now = Date.now();
+    if (now - lastCheck < 120) return;
+    lastCheck = now;
+    check();
   }
   addEventListener("scroll", onScroll, { passive: true });
   addEventListener("resize", onScroll, { passive: true });
