@@ -24,7 +24,7 @@ page to add text to.
 
 CENTS is a work by Rutherford Chang: 10,000 copper pennies removed from
 circulation, documented one by one, and inscribed as ordinals on 10,000 satoshis,
-the smallest units of Bitcoin. The coins themselves were smelted into a 69-pound
+the smallest units of Bitcoin. The coins themselves were smelted into a 68.56-pound
 copper block, inscribed in turn as the entirety of Bitcoin block #839969 and
 offered at Christie's in June 2024. The performance of value.
 
