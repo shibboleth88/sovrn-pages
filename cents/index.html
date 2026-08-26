@@ -31,30 +31,19 @@
 .ends a{color:var(--mute);text-decoration:none;border-bottom:1px solid var(--cu);
  padding-bottom:3px;transition:color .15s,border-color .15s}
 .ends a:hover{color:var(--cut);border-color:var(--cut)}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ln a:hover{transform:none}}
-/* The wall. The work is 10,000 nearly identical objects that turn out to be all
-   different, and the page never showed one — so it shows 400, spread across the
-   whole collection. These are the inscribed images themselves, mirrored locally.
-   The coin fills about 74% of its white frame, so the tile clips to a circle and
-   the image is scaled by 1/0.74 to fill it: copper discs, no white corners. */
-/* Full width, because ten thousand of anything is the point and a 1060px column
-   cannot make that point. Small tiles for the same reason: at this size the grid
-   reads as a mass first and as ten thousand separate objects second, which is the
-   tension the work is about. */
-.wall{margin:20px 0 0;display:grid;gap:3px;padding:0 3px;
- grid-template-columns:repeat(auto-fill,minmax(38px,1fr))}
-.wrap.tail2{padding-top:20px}
-#wsent{height:1px}
-.wallcount{margin:8px 0 0;font:500 10.5px/1.6 "IBM Plex Mono",monospace;
- letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
-.wall button{padding:0;border:0;background:none;cursor:zoom-in;border-radius:50%;
- overflow:hidden;aspect-ratio:1;position:relative;display:block;
- transition:transform .18s,box-shadow .18s}
-.wall img{width:135%;height:135%;margin:-17.5%;display:block;object-fit:cover}
-.wall button:hover{transform:scale(1.9);box-shadow:0 0 0 2px var(--cut);z-index:2}
-.wall button:focus-visible{outline:2px solid var(--cut);outline-offset:3px;z-index:2}
-.wallhead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.wallnote{font:400 12px/1.6 "IBM Plex Mono",monospace;color:var(--mute);margin:8px 0 0;max-width:70ch}
-.wallnote a{color:var(--cut)}
+/* The coins as a field rather than a grid of ten thousand files. The grid was one
+   request per coin, and GitHub Pages rate-limits per IP long before ten thousand
+   of anything — visitors got "Rate limit exceeded" instead of a page. Bytes were
+   never the problem; request count was. This is one image.
+
+   Full width, and bled off both edges so it reads as a fragment of something much
+   larger, which is the honest impression: it is a few hundred of ten thousand. */
+.field{margin:20px 0 0;width:100%;overflow:hidden;line-height:0}
+.field img{width:100%;height:auto;display:block;min-width:900px;
+ object-fit:cover;opacity:.92}
+@media(max-width:640px){.field img{min-width:640px}}
+.wrap.tail2{padding-top:22px}
+.wallcount{display:none}
 
 /* The installation views go edge to edge — there is no iframe to sit inside now.
    The gallery sits outside .wrap rather than breaking out of it, so it is full
@@ -66,34 +55,13 @@
 .gal{width:100%;margin:0;grid-template-columns:repeat(4,1fr);gap:6px}
 .wrap.tail{padding-top:18px}
 
-/* Close looking is the subject, so a coin can be opened. */
-#lb{position:fixed;inset:0;background:#0b0b0b;display:none;align-items:center;
- justify-content:center;flex-direction:column;padding:44px 22px 26px;z-index:9}
-#lb.on{display:flex}
-#lb img{max-width:min(78vw,540px);max-height:calc(100vh - 210px);object-fit:contain;
- background:#fff;border-radius:50%}
-#lb .lcap{color:var(--paper);text-align:center;margin-top:18px;max-width:62ch}
-#lb .lcap b{display:block;font:300 26px/1.2 Fraunces,serif;font-weight:400}
-#lb .lcap u{display:block;margin-top:6px;text-decoration:none;
- font:500 11px/1.7 "IBM Plex Mono",monospace;color:var(--mute);letter-spacing:.1em;text-transform:uppercase}
-#lb .lgo{margin-top:16px;display:flex;gap:18px;flex-wrap:wrap;justify-content:center;
- font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
-#lb .lgo a{color:var(--cut);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:4px}
-#lb .lgo a:hover{border-color:var(--cut)}
-#lbx{position:absolute;top:12px;right:16px;background:none;border:0;color:var(--paper);
- font:400 26px/1 "IBM Plex Sans",sans-serif;cursor:pointer;padding:4px 10px}
-#lbx:hover{color:var(--cut)}
-/* Narrower tiles on a phone: at 38px a 375px screen fits nine per row, which is
-   1,100 rows for the collection. Smaller keeps the field readable as a field. */
-@media(max-width:640px){.wall{grid-template-columns:repeat(auto-fill,minmax(30px,1fr));gap:2px}
- .gal{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.gal{grid-template-columns:repeat(2,1fr)}}
 </style><link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/transitions.css">
 <script src="/transitions.js"></script>
-<script src="/cents-wall-data.js"></script>
-</head><body><nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></nav><div class="wrap"><div class="hero"><span class="coin"><img class="vt-lead" src="/img/homepage/cent_homepage.jpg" alt="A 1979 copper penny from CENTS" loading="lazy"><a class="cta" href="https://cents.vision/" target="_blank">cents.vision <em>collection explorer</em></a></span><div><h1>CENTS</h1><p class="by">Rutherford Chang</p></div></div><h2 id="thecoins">The coins</h2><div class="wallhead"><p class="wallnote">All ten thousand. Every cent was photographed before it was destroyed, and each one is inscribed on its own satoshi. Open any of them &mdash; then see them with their traits at <a href="https://cents.vision/" target="_blank" rel="noopener">cents.vision</a>.</p><p class="wallcount" id="wc"></p></div></div><div class="wall" id="w"></div><div id="wsent" aria-hidden="true"></div><div class="wrap tail2"><h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2></div><div class="gal" id="g"></div><div class="wrap tail"><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p><p class="inq" id="inq"><a href="/cents/inquiries">Project inquiries</a></p>
+</head><body><nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></nav><div class="wrap"><div class="hero"><span class="coin"><img class="vt-lead" src="/img/homepage/cent_homepage.jpg" alt="A 1979 copper penny from CENTS" loading="lazy"><a class="cta" href="https://cents.vision/" target="_blank">cents.vision <em>collection explorer</em></a></span><div><h1>CENTS</h1><p class="by">Rutherford Chang</p></div></div><h2 id="thecoins">The coins</h2><div class="wallhead"><p class="wallnote">Ten thousand pre-1982 copper cents, each photographed before it was destroyed and each inscribed on its own satoshi. A few hundred of them are below. See them all, with their traits, at <a href="https://cents.vision/" target="_blank" rel="noopener">cents.vision</a>.</p></div></div><div class="field" role="img" aria-label="A field of several hundred of the ten thousand cents"><img src="img/cents-field/band.webp" alt="" loading="lazy" width="2583" height="347"></div><div class="wrap tail2"><h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2></div><div class="gal" id="g"></div><div class="wrap tail"><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p><p class="inq" id="inq"><a href="/cents/inquiries">Project inquiries</a></p>
 <p class="ends"><a href="https://cents.vision/" target="_blank">cents.vision &#8599;</a><a href="http://rutherfordchang.com/" target="_blank">rutherfordchang.com &#8599;</a></p></div>
 <script>
 const H="/img/homepage/",
@@ -160,147 +128,4 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false);});
    Buttons rather than links: a coin is not a destination on this site — the depth
    belongs to cents.vision, which the lightbox hands off to. Images stay lazy, so
    400 tiles cost only what scrolls into view. */
-function initWall() {
-  var wall = $("w"), lb = $("lb"), lbi = $("lbi"), lbc = $("lbc"), lbg = $("lbg");
-  if (!wall || !lb || typeof CN === "undefined") return;
-
-  /* Ten thousand tiles is more DOM than any browser should be handed at once, so
-     the grid grows a thousand at a time as the bottom comes into view. Images stay
-     lazy on top of that, so a visitor pays only for the coins they actually reach. */
-  var CHUNK = 1000, shown = 0;
-  var count = $("wc");
-
-  function yearOf(n) { return CY.slice((n - 1) * 4, n * 4); }
-
-  function more() {
-    var upto = Math.min(shown + CHUNK, CN), html = "";
-    for (var n = shown + 1; n <= upto; n++) {
-      html += '<button type="button" data-n="' + n + '" aria-label="Cent #' + n +
-        ', ' + yearOf(n) + '"><img src="img/cents-wall/' + n +
-        '.webp" alt="" loading="lazy" decoding="async" width="96" height="96"></button>';
-    }
-    wall.insertAdjacentHTML("beforeend", html);
-    shown = upto;
-    count.textContent = shown === CN
-      ? CN.toLocaleString() + " cents"
-      : shown.toLocaleString() + " of " + CN.toLocaleString() + " shown — keep scrolling";
-    if (shown >= CN && obs) obs.disconnect();
-  }
-
-  /* Watch a sentinel after the grid, not the grid itself. A 10,000-tile grid is
-     always intersecting, so observing it fires the callback once at setup and
-     never again — the wall loaded its first thousand and then sat there.
-
-     And do not rely on the observer alone. It is well supported, but it can be
-     absent, throttled, or simply not run: in the browser this was tested in it
-     never fired at all, not even for a fixed element in the middle of the
-     viewport, which would have left the wall permanently at its first thousand
-     with no way forward. A scroll listener asking the same question is a few
-     lines and cannot be starved the same way. Both call more(); whichever gets
-     there first wins, and the second finds nothing left to do. */
-  var sentinel = $("wsent"), obs = null;
-  more();
-
-  function nearEnd() {
-    if (shown >= CN) return false;
-    var r = (sentinel || wall).getBoundingClientRect();
-    return r.top < (window.innerHeight || 800) + 1500;
-  }
-  function check() { if (nearEnd()) more(); }
-
-  if (window.IntersectionObserver && sentinel) {
-    obs = new IntersectionObserver(function (es) {
-      if (es[0].isIntersecting) more();
-    }, { rootMargin: "1500px" });
-    obs.observe(sentinel);
-  }
-
-  /* Throttled on a timestamp rather than a flag cleared inside requestAnimationFrame.
-     rAF is paused in a background tab, so a reader who scrolls, switches away and
-     comes back would have left that flag stuck true and the wall frozen for the
-     rest of the visit. A clock cannot be starved. */
-  var lastCheck = 0;
-  function onScroll() {
-    if (shown >= CN) return;
-    var now = Date.now();
-    if (now - lastCheck < 120) return;
-    lastCheck = now;
-    check();
-  }
-  addEventListener("scroll", onScroll, { passive: true });
-  addEventListener("resize", onScroll, { passive: true });
-  check();                              // in case the grid already ends on screen
-
-  /* The inscription ids are 66 characters each and only matter once a coin is
-     open, so 655KB of them is fetched the first time rather than shipped with the
-     page. */
-  var ids = null, idsPending = null;
-  function loadIds() {
-    if (ids) return Promise.resolve(ids);
-    if (!idsPending) {
-      idsPending = fetch("cents-ids.txt").then(function (r) { return r.text(); })
-        .then(function (t) { ids = t.trim().split("\n"); return ids; })
-        .catch(function () { return null; });
-    }
-    return idsPending;
-  }
-
-  var last = null, openN = 0;
-  function open(n) {
-    openN = n;
-    var y = yearOf(n);
-    /* Same-origin thumbnail first so something is on screen immediately, then the
-       inscription's own image over the top of it once that arrives. The full
-       images are not mirrored here — 10,000 of them is 157MB, which a repo that
-       serves a website should not carry for a picture shown one at a time — and
-       raw.githubusercontent.com is a source host rather than a CDN, so the
-       canonical explorer is the better place to ask. If it never answers, the
-       thumbnail simply stays. */
-    lbi.src = "img/cents-wall/" + n + ".webp";
-    lbi.alt = "Cent #" + n + ", minted " + y;
-    lbc.innerHTML = "<b>Cent #" + n + "</b><u>" + y + " &middot; inscribed on a single satoshi</u>";
-    lbg.innerHTML = '<a href="https://cents.vision/" target="_blank" rel="noopener">Traits at cents.vision &#8599;</a>';
-    lb.classList.add("on");
-    $("lbx").focus();
-    var want = n;
-    loadIds().then(function (list) {
-      if (!list || !list[n - 1] || !lb.classList.contains("on") || want !== openN) return;
-      var id = list[n - 1];
-      lbg.innerHTML =
-        '<a href="https://ordinals.com/inscription/' + id + '" target="_blank" rel="noopener">On ordinals.com &#8599;</a>' +
-        '<a href="https://cents.vision/" target="_blank" rel="noopener">Traits at cents.vision &#8599;</a>';
-      // Upgrade the picture to the inscription itself, quietly.
-      var full = new Image();
-      full.onload = function () { if (openN === want && lb.classList.contains("on")) lbi.src = full.src; };
-      full.src = "https://ordinals.com/content/" + id;
-    });
-  }
-  function close() {
-    openN = 0;
-    lb.classList.remove("on");
-    lbi.removeAttribute("src");
-    if (last) last.focus();
-  }
-
-  wall.addEventListener("click", function (ev) {
-    var b = ev.target.closest("button");
-    if (!b) return;
-    last = b;
-    open(parseInt(b.dataset.n, 10));
-  });
-  $("lbx").onclick = close;
-  lb.addEventListener("click", function (ev) { if (ev.target === lb) close(); });
-  addEventListener("keydown", function (ev) {
-    if (ev.key === "Escape" && lb.classList.contains("on")) close();
-  });
-}
-
-/* The dialog is markup at the end of <body>, after this script, so wiring it up
-   immediately found null and threw — which left the lightbox dead while the wall
-   itself looked fine. Wait for the parse. */
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initWall);
-} else {
-  initWall();
-}
-</script><div id="lb" role="dialog" aria-modal="true" aria-label="Cent"><button id="lbx" aria-label="Close">&times;</button><img id="lbi" alt=""><div class="lcap" id="lbc"></div><p class="lgo" id="lbg"></p></div></body></html>
+</script></body></html>
