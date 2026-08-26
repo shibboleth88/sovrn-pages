@@ -1753,6 +1753,7 @@ function buildShapes() {
     b.onclick = function () {
       shape = n;
       if (shape > 1 && theSet.length > shape) theSet.length = shape;  // keep the first few
+      offerSizes();          // a quadtych can afford less than a diptych
       renderComposer();
     };
     host.appendChild(b);
@@ -1886,36 +1887,59 @@ function syncAddButton() {
 
 $("add").onclick = function () { if (sel && sel.uri) addToSet(sel); };
 $("clearset").onclick = function () { theSet = []; renderComposer(); };
-/* A phone cannot build the largest composites, and failing at the last step is
-   the worst way to find out. Streaming the encoder took the composite itself down
-   to two frames, but each work still keeps its own animation at cell size, and a
-   1440px quadtych is ~148MB of that before anything is encoded. iOS does not throw
-   for this — it reloads the tab, which reads as the page refreshing itself just as
-   the GIF completes.
+/* Offer only the sizes a device can actually finish.
 
-   Coarse pointer and a small screen is the test: it catches phones and small
-   tablets without punishing a desktop that happens to have a touchscreen. */
-function composeCeiling() {
+   What a composite costs is dominated by the per-work source frames — every work
+   keeps its own animation at cell size — so it depends on the shape as much as on
+   the output width. A diptych at 1080 is comfortable on a phone; a quadtych at the
+   same width is nearly twice the memory and is not. A single per-device ceiling
+   therefore either bans sizes that would have worked or allows ones that will not.
+
+   Getting it wrong is expensive: iOS does not throw when a page asks for too much,
+   it reloads the tab, so the failure arrives as the page refreshing itself the
+   moment the GIF completes, taking the download with it.
+
+   The budget is frame bytes, not pixels, and deliberately conservative — the
+   encoder, the canvases and the page itself all want room beyond this. */
+function frameBudget() {
   var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
-  var shortSide = Math.min(screen.width || 9999, screen.height || 9999);
   if (!coarse) return Infinity;
-  if (shortSide <= 480) return 720;
-  if (shortSide <= 820) return 1080;
+  var shortSide = Math.min(screen.width || 9999, screen.height || 9999);
+  if (shortSide <= 480) return 60 * 1024 * 1024;    // phone
+  if (shortSide <= 820) return 120 * 1024 * 1024;   // small tablet
   return Infinity;
 }
 
-(function capComposeSize() {
+// Peak frame bytes for a layout at a width: every work's own frames, plus the two
+// composite frames the streaming encoder keeps.
+function composeCost(lay, width) {
+  var g = geometry(lay, width, withTitles);
+  var works = lay.cols * lay.rows;
+  return works * g.cell * g.cell * 4 * COMPOSE_FRAMES + 2 * g.W * g.H * 4;
+}
+
+var CSIZES = [720, 1080, 1440];
+
+function offerSizes() {
   var sel = $("csize");
   if (!sel) return;
-  var ceil = composeCeiling();
-  if (ceil === Infinity) return;
-  var kept = null;
-  [].slice.call(sel.options).forEach(function (o) {
-    if (parseInt(o.value, 10) > ceil) o.remove(); else kept = o;
+  var lay = LAYOUTS[shape] || LAYOUTS[2];
+  var budget = frameBudget();
+  var want = parseInt(sel.value, 10) || 1440;
+  var fits = CSIZES.filter(function (w) { return composeCost(lay, w) <= budget; });
+  if (!fits.length) fits = [CSIZES[0]];          // always leave one buildable option
+  sel.textContent = "";
+  fits.forEach(function (w) {
+    var o = document.createElement("option");
+    o.value = String(w);
+    o.textContent = w + "px";
+    sel.appendChild(o);
   });
-  if (kept) kept.selected = true;
-})();
+  // Keep what was chosen if it still fits, otherwise take the largest that does.
+  sel.value = String(fits.indexOf(want) >= 0 ? want : fits[fits.length - 1]);
+}
 
+offerSizes();
 $("csize").onchange = function () { renderComposer(); };
 
 // The same preference either way, so the box is always to hand — beside Make
