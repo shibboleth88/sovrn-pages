@@ -189,18 +189,41 @@ function initWall() {
 
   /* Watch a sentinel after the grid, not the grid itself. A 10,000-tile grid is
      always intersecting, so observing it fires the callback once at setup and
-     never again — the wall loaded its first thousand and then sat there. The
-     sentinel moves down each time the grid grows, so it re-enters and re-fires. */
+     never again — the wall loaded its first thousand and then sat there.
+
+     And do not rely on the observer alone. It is well supported, but it can be
+     absent, throttled, or simply not run: in the browser this was tested in it
+     never fired at all, not even for a fixed element in the middle of the
+     viewport, which would have left the wall permanently at its first thousand
+     with no way forward. A scroll listener asking the same question is a few
+     lines and cannot be starved the same way. Both call more(); whichever gets
+     there first wins, and the second finds nothing left to do. */
   var sentinel = $("wsent"), obs = null;
   more();
+
+  function nearEnd() {
+    if (shown >= CN) return false;
+    var r = (sentinel || wall).getBoundingClientRect();
+    return r.top < (window.innerHeight || 800) + 1500;
+  }
+  function check() { if (nearEnd()) more(); }
+
   if (window.IntersectionObserver && sentinel) {
     obs = new IntersectionObserver(function (es) {
       if (es[0].isIntersecting) more();
     }, { rootMargin: "1500px" });
     obs.observe(sentinel);
-  } else {
-    while (shown < CN) more();          // no observer: render it all
   }
+
+  var ticking = false;
+  function onScroll() {
+    if (ticking || shown >= CN) return;
+    ticking = true;
+    requestAnimationFrame(function () { ticking = false; check(); });
+  }
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll, { passive: true });
+  check();                              // in case the grid already ends on screen
 
   /* The inscription ids are 66 characters each and only matter once a coin is
      open, so 655KB of them is fetched the first time rather than shipped with the
