@@ -148,9 +148,9 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false);});
    Buttons rather than links: a coin is not a destination on this site — the depth
    belongs to cents.vision, which the lightbox hands off to. Images stay lazy, so
    400 tiles cost only what scrolls into view. */
-(function () {
+function initWall() {
   var wall = $("w"), lb = $("lb"), lbi = $("lbi"), lbc = $("lbc"), lbg = $("lbg");
-  if (!wall || typeof CW === "undefined") return;
+  if (!wall || !lb || typeof CW === "undefined") return;
 
   wall.innerHTML = CW.map(function (c) {
     return '<button type="button" data-n="' + c[0] + '" aria-label="Cent #' + c[0] +
@@ -190,5 +190,14 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false);});
   addEventListener("keydown", function (ev) {
     if (ev.key === "Escape" && lb.classList.contains("on")) close();
   });
-})();
+}
+
+/* The dialog is markup at the end of <body>, after this script, so wiring it up
+   immediately found null and threw — which left the lightbox dead while the wall
+   itself looked fine. Wait for the parse. */
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initWall);
+} else {
+  initWall();
+}
 </script><div id="lb" role="dialog" aria-modal="true" aria-label="Cent"><button id="lbx" aria-label="Close">&times;</button><img id="lbi" alt=""><div class="lcap" id="lbc"></div><p class="lgo" id="lbg"></p></div></body></html>
