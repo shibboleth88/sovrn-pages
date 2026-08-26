@@ -43,6 +43,7 @@
 .wall{margin:20px 0 0;display:grid;gap:3px;padding:0 3px;
  grid-template-columns:repeat(auto-fill,minmax(38px,1fr))}
 .wrap.tail2{padding-top:20px}
+#wsent{height:1px}
 .wallcount{margin:8px 0 0;font:500 10.5px/1.6 "IBM Plex Mono",monospace;
  letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
 .wall button{padding:0;border:0;background:none;cursor:zoom-in;border-radius:50%;
@@ -92,7 +93,7 @@
 <link rel="stylesheet" href="/transitions.css">
 <script src="/transitions.js"></script>
 <script src="/cents-wall-data.js"></script>
-</head><body><nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></nav><div class="wrap"><div class="hero"><span class="coin"><img class="vt-lead" src="/img/homepage/cent_homepage.jpg" alt="A 1979 copper penny from CENTS" loading="lazy"><a class="cta" href="https://cents.vision/" target="_blank">cents.vision <em>collection explorer</em></a></span><div><h1>CENTS</h1><p class="by">Rutherford Chang</p></div></div><h2 id="thecoins">The coins</h2><div class="wallhead"><p class="wallnote">All ten thousand. Every cent was photographed before it was destroyed, and each one is inscribed on its own satoshi. Open any of them &mdash; then see them with their traits at <a href="https://cents.vision/" target="_blank" rel="noopener">cents.vision</a>.</p><p class="wallcount" id="wc"></p></div></div><div class="wall" id="w"></div><div class="wrap tail2"><h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2></div><div class="gal" id="g"></div><div class="wrap tail"><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p><p class="inq" id="inq"><a href="/cents/inquiries">Project inquiries</a></p>
+</head><body><nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></nav><div class="wrap"><div class="hero"><span class="coin"><img class="vt-lead" src="/img/homepage/cent_homepage.jpg" alt="A 1979 copper penny from CENTS" loading="lazy"><a class="cta" href="https://cents.vision/" target="_blank">cents.vision <em>collection explorer</em></a></span><div><h1>CENTS</h1><p class="by">Rutherford Chang</p></div></div><h2 id="thecoins">The coins</h2><div class="wallhead"><p class="wallnote">All ten thousand. Every cent was photographed before it was destroyed, and each one is inscribed on its own satoshi. Open any of them &mdash; then see them with their traits at <a href="https://cents.vision/" target="_blank" rel="noopener">cents.vision</a>.</p><p class="wallcount" id="wc"></p></div></div><div class="wall" id="w"></div><div id="wsent" aria-hidden="true"></div><div class="wrap tail2"><h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2></div><div class="gal" id="g"></div><div class="wrap tail"><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p><p class="inq" id="inq"><a href="/cents/inquiries">Project inquiries</a></p>
 <p class="ends"><a href="https://cents.vision/" target="_blank">cents.vision &#8599;</a><a href="http://rutherfordchang.com/" target="_blank">rutherfordchang.com &#8599;</a></p></div>
 <script>
 const H="/img/homepage/",
@@ -186,15 +187,20 @@ function initWall() {
     if (shown >= CN && obs) obs.disconnect();
   }
 
-  var obs = null;
-  if (window.IntersectionObserver) {
+  /* Watch a sentinel after the grid, not the grid itself. A 10,000-tile grid is
+     always intersecting, so observing it fires the callback once at setup and
+     never again — the wall loaded its first thousand and then sat there. The
+     sentinel moves down each time the grid grows, so it re-enters and re-fires. */
+  var sentinel = $("wsent"), obs = null;
+  more();
+  if (window.IntersectionObserver && sentinel) {
     obs = new IntersectionObserver(function (es) {
       if (es[0].isIntersecting) more();
-    }, { rootMargin: "1200px" });
+    }, { rootMargin: "1500px" });
+    obs.observe(sentinel);
+  } else {
+    while (shown < CN) more();          // no observer: render it all
   }
-  more();
-  if (obs) obs.observe(wall);           // the grid's own end approaching is the cue
-  else { while (shown < CN) more(); }   // no observer: just render it all
 
   /* The inscription ids are 66 characters each and only matter once a coin is
      open, so 655KB of them is fetched the first time rather than shipped with the
