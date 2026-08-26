@@ -44,6 +44,10 @@ h2{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;text-transfor
 /* the block, centred: the monument the text describes */
 .cube{margin:6px auto 22px;max-width:320px}
 .cube img{width:100%;display:block}
+/* The inscription is a glTF model, not a picture of one — ordinals.com serves it and
+   renders it in an auto-rotating viewer, and its preview sets no frame-ancestors. */
+.cube iframe{width:100%;aspect-ratio:1;display:block;border:1px solid var(--rule);background:#fff}
+.cube figcaption{margin-top:8px;font:400 10.5px/1.55 "IBM Plex Mono",monospace;color:var(--slate);text-align:center}
 .blk{max-width:60ch;margin:0 auto;text-align:center}
 .blk h3{font:200 clamp(26px,4vw,42px)/1.05 Fraunces,serif;letter-spacing:-.015em;margin:0 0 4px}
 .blk .sub{font:italic 300 20px/1.2 Fraunces,serif;color:var(--copper);margin-bottom:18px}
@@ -95,7 +99,7 @@ h2{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;text-transfor
 </div>
 <div class="sec">
 <h2>Block 839969</h2>
-<figure class="cube"><img src="img/cents-project/block-839969.gif" alt="The copper block into which the 10,000 cents were smelted, turning" loading="lazy"></figure>
+<figure class="cube"><iframe src="https://ordinals.com/preview/bd77f96589139cb5f26196d75744a7ce04aaa0f554cd646455b381dfb39930e9i0" title="CENTS Block 839969, the inscribed three-dimensional model, rendered by ordinals.com" loading="lazy" referrerpolicy="no-referrer"></iframe><figcaption>The inscription itself, rendered live by ordinals.com. Drag to turn it.</figcaption></figure>
 <div class="blk">
 <h3><a class="fc" href="/cents/block-839969">CENTS Block 839969</a></h3>
 <p class="sub">an inscription of the copper block</p>
