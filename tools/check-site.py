@@ -242,6 +242,50 @@ def check_files():
     return bad
 
 
+
+def check_local_assets():
+    """Every image a page builds from a base constant must exist on disk.
+
+    The pages overwhelmingly write their image paths as `const R = "/img/fc/"`
+    and then `R + "reflection_fc.jpg"`, which no HTML parse resolves and no
+    crawl of the live site sees unless that particular image happens to be in
+    the DOM at the moment it is crawled. That is not a hypothetical: the
+    Francisco Carolinum page shows one work at a time, so a crawl found one
+    image, reported no broken images, and ten missing files went unnoticed.
+
+    Resolving the concatenation offline is the only honest check, and it is
+    cheap because the idiom is consistent.
+    """
+    import glob
+    bad = []
+    files = []
+    for pat in ("*.html", "*.js", "*/*.html", "*/*.js", "*/*/*.html", "*/*/*/*.html"):
+        files += glob.glob(os.path.join(ROOT, pat))
+
+    base_re = re.compile(r'(?:const|var|let)?\s*(\w+)\s*=\s*"(/?img/[^"]*/)"')
+    use_re = re.compile(r'\b(\w+)\s*\+\s*"([^"]+\.(?:jpg|jpeg|png|gif|svg|webp|mp4))"', re.I)
+
+    for f in sorted(set(files)):
+        if os.sep + "onchain" + os.sep in f or os.sep + "img" + os.sep in f:
+            continue
+        text = io.open(f, encoding="utf-8", errors="replace").read()
+        bases = dict(base_re.findall(text))
+        if not bases:
+            continue
+        for name, tail in use_re.findall(text):
+            base = bases.get(name)
+            if not base:
+                continue
+            rel = (base + tail).lstrip("/")
+            rel = urllib.parse.unquote(rel)
+            if not os.path.isfile(os.path.join(ROOT, rel)):
+                bad.append((os.path.relpath(f, ROOT), rel))
+                print(f"    missing  {rel}   (built in {os.path.relpath(f, ROOT)})")
+
+    print(f"  {len(bad)} missing of the images pages assemble from a base path")
+    return bad
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--urls", nargs="?", const="https://www.sovrn.art",
@@ -258,6 +302,8 @@ def main():
     if a.files:
         print("\nURL contract against the tree")
         bad += check_files()
+        print("\nImages assembled from a base path")
+        bad += check_local_assets()
     if a.urls:
         print("\nPublic URLs")
         bad += check_urls(a.urls)

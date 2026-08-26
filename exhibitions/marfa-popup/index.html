@@ -79,6 +79,19 @@ figcaption{margin-top:10px;font:500 10.5px/1.5 "IBM Plex Mono",monospace;letter-
 .rast a:hover{color:var(--accent);border-color:var(--accent)}
 .foot{margin-top:26px;font:400 11.5px/1.7 "IBM Plex Mono",monospace;color:var(--slate);max-width:78ch}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Ostachowski's own account of the weekend. It was one of three small links in
+   a row of uppercase mono, which is the wrong weight for the only first-hand
+   write-up of the event — and it sits directly under his postcards. */
+.acct{margin-top:26px;border:1px solid var(--accent);border-left-width:3px;padding:20px 22px;
+ display:flex;gap:20px;align-items:baseline;justify-content:space-between;flex-wrap:wrap}
+.acct .t{font:italic 300 21px/1.25 Fraunces,serif;margin:0 0 5px}
+.acct .d{font:400 13px/1.55 "IBM Plex Sans",sans-serif;color:var(--slate);max-width:52ch;margin:0}
+.acct a{flex:0 0 auto;font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;
+ text-transform:uppercase;color:var(--accent);text-decoration:none;
+ border:1px solid var(--accent);padding:11px 16px;transition:background .15s,color .15s}
+.acct a:hover{background:var(--accent);color:var(--paper)}
+@media(max-width:620px){.acct{flex-direction:column;align-items:stretch}.acct a{text-align:center}}
 </style><link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -127,7 +140,15 @@ figcaption{margin-top:10px;font:500 10.5px/1.5 "IBM Plex Mono",monospace;letter-
 </div>
 <figure class="feature"><img src="img/pages/marfa/postcards-noctilucent.jpg" alt="Noctilucent Marfa postcards, the word MARFA formed from clouds" loading="lazy">
 <figcaption>Noctilucent Marfa postcards by Martin Lukas Ostachowski, mailed from Marfa&rsquo;s post office to two provinces, seven states and eight countries</figcaption></figure>
-<p class="links"><a href="https://mlo.art/news/exhibitions-events/noctilucent-marfa/" target="_blank">Ostachowski&rsquo;s account &#8599;</a><a href="https://www.artblocks.io/articles/art-blocks-marfa-weekend-2025" target="_blank">Art Blocks Marfa Weekend &#8599;</a><a href="/">sovrn.art &#8599;</a></p>
+<div class="acct">
+<div>
+<p class="t">Ostachowski&rsquo;s account of the weekend</p>
+<p class="d">Martin Lukas Ostachowski wrote up <i>Noctilucent Marfa</i> — the postcards above,
+where they were mailed from and where they went — on his own site.</p>
+</div>
+<a href="https://mlo.art/news/exhibitions-events/noctilucent-marfa/" target="_blank" rel="noopener">Read it at mlo.art &#8599;</a>
+</div>
+<p class="links"><a href="https://www.artblocks.io/articles/art-blocks-marfa-weekend-2025" target="_blank">Art Blocks Marfa Weekend &#8599;</a><a href="/">sovrn.art &#8599;</a></p>
 <p class="rast"><a href="https://www.raster.art/artwork/anne-spalter-ai-spaceships-by-anne-spalter" target="_blank">AI Spaceships &#8599;</a><a href="https://www.raster.art/artwork/painting-with-fire-a-history-in-gans-by-bard-ionson" target="_blank">Painting with Fire: a History in GANs &#8599;</a><a href="https://www.raster.art/artwork/2155303" target="_blank">Seasons of Mobility &#8599;</a><a href="https://www.raster.art/artwork/2087164" target="_blank">Wunderkammer &#8599;</a><a href="https://www.raster.art/artwork/possibility-spaces-by-look-highward" target="_blank">Possibility Spaces &#8599;</a><a href="https://www.raster.art/artwork/noctilucent-mementi-by-martin-lukas-ostachowski" target="_blank">Noctilucent Mementi &#8599;</a><a href="https://www.raster.art/artwork/latent-couture-by-mikey-woodbridge" target="_blank">Latent Couture &#8599;</a><a href="https://www.raster.art/artwork/sightseers-perimeter-town-by-norman-harman" target="_blank">Sightseers: Perimeter Town &#8599;</a><a href="https://www.raster.art/artwork/1668009" target="_blank">Reflection &#8599;</a></p>
 <p class="foot">A sovrn Pop-Up Gallery, Marfa, Texas, 16&ndash;19 October 2025. Nine curated collections shown from the cloudpainter truck during Art Blocks Marfa Weekend. Noctilucent Marfa postcards &copy; Martin Lukas Ostachowski. A curated programme of <a class="fc" href="/">sovrn.art</a>.</p>
 </div>
