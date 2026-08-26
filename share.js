@@ -4,15 +4,18 @@
  * every frame so colours cannot shimmer frame to frame.
  * ------------------------------------------------------------------------- */
 var GIF = (function () {
-  function palette(frames, maxColours) {
+  function palette(count_, get, maxColours) {
     var px = [];
     // A fixed sample budget across ALL frames, not per frame. Sampling per frame
     // meant 72 frames fed ~1.8M points into median cut, and the repeated sorting
     // there — not the encoding — was the bulk of the time.
+    //
+    // Takes a producer rather than an array: the palette only ever needs a sample,
+    // so there is no reason for every frame to be resident while it is built.
     var BUDGET = 24000;
-    var perFrame = Math.max(1, Math.floor(BUDGET / frames.length));
-    for (var f = 0; f < frames.length; f++) {
-      var d = frames[f].data, count = d.length / 4;
+    var perFrame = Math.max(1, Math.floor(BUDGET / count_));
+    for (var f = 0; f < count_; f++) {
+      var d = get(f).data, count = d.length / 4;
       var stride = Math.max(1, Math.floor(count / perFrame));
       for (var i = 0; i < count; i += stride) {
         var o = i * 4;
@@ -116,10 +119,20 @@ var GIF = (function () {
    * (disposal "do not dispose"). Writing every frame in full is what made the
    * Reflection cascade too heavy to give enough frames to look smooth.
    */
-  function encode(frames, delaysMs, maxColours) {
-    var w = frames[0].width, h = frames[0].height;
+  /* encodeStream(count, get, delaysMs, maxColours)
+   *
+   * `get(i)` returns frame i as ImageData. It is called twice per frame — once to
+   * sample the palette, once to encode — and the result is not retained, so peak
+   * memory is two frames rather than all of them. A 1440px quadtych held 30 frames
+   * of 1440x1440x4 bytes: 237MB, which is well past what a phone will allow, and
+   * iOS answered by reloading the tab just as the GIF finished. That is the bug
+   * this exists to fix; encode() below is the same thing over an array.
+   */
+  function encodeStream(count_, get, delaysMs, maxColours) {
+    var first = get(0), w = first.width, h = first.height;
+    first = null;
     // One palette entry is spent on transparency.
-    var pal = palette(frames, (maxColours || 256) - 1);
+    var pal = palette(count_, get, (maxColours || 256) - 1);
     var transparent = pal.length;
     var bits = Math.max(2, Math.ceil(Math.log2(Math.max(2, pal.length + 1))));
     var palSize = 1 << bits, memo = newMemo();
@@ -159,8 +172,8 @@ var GIF = (function () {
     out.push(3, 1, 0, 0, 0);
 
     var prev = null, prev32 = null;
-    for (var f = 0; f < frames.length; f++) {
-      var cur = frames[f].data;
+    for (var f = 0; f < count_; f++) {
+      var cur = get(f).data;
       // Compare whole pixels as 32-bit words rather than three byte tests.
       var cur32 = new Uint32Array(cur.buffer, cur.byteOffset, w * h);
       var x0 = 0, y0 = 0, fw = w, fh = h;
@@ -219,7 +232,13 @@ var GIF = (function () {
     return new Blob([buf.subarray(0, len)], { type: "image/gif" });
   }
 
-  return { encode: encode };
+  // The array form, unchanged for callers that already hold every frame.
+  function encode(frames, delaysMs, maxColours) {
+    return encodeStream(frames.length, function (i) { return frames[i]; },
+                        delaysMs, maxColours);
+  }
+
+  return { encode: encode, encodeStream: encodeStream };
 })();
 
 /* ------------------------------------------------------------------------- */
@@ -1867,6 +1886,36 @@ function syncAddButton() {
 
 $("add").onclick = function () { if (sel && sel.uri) addToSet(sel); };
 $("clearset").onclick = function () { theSet = []; renderComposer(); };
+/* A phone cannot build the largest composites, and failing at the last step is
+   the worst way to find out. Streaming the encoder took the composite itself down
+   to two frames, but each work still keeps its own animation at cell size, and a
+   1440px quadtych is ~148MB of that before anything is encoded. iOS does not throw
+   for this — it reloads the tab, which reads as the page refreshing itself just as
+   the GIF completes.
+
+   Coarse pointer and a small screen is the test: it catches phones and small
+   tablets without punishing a desktop that happens to have a touchscreen. */
+function composeCeiling() {
+  var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+  var shortSide = Math.min(screen.width || 9999, screen.height || 9999);
+  if (!coarse) return Infinity;
+  if (shortSide <= 480) return 720;
+  if (shortSide <= 820) return 1080;
+  return Infinity;
+}
+
+(function capComposeSize() {
+  var sel = $("csize");
+  if (!sel) return;
+  var ceil = composeCeiling();
+  if (ceil === Infinity) return;
+  var kept = null;
+  [].slice.call(sel.options).forEach(function (o) {
+    if (parseInt(o.value, 10) > ceil) o.remove(); else kept = o;
+  });
+  if (kept) kept.selected = true;
+})();
+
 $("csize").onchange = function () { renderComposer(); };
 
 // The same preference either way, so the box is always to hand — beside Make
@@ -1958,7 +2007,7 @@ $("mkgrid").onclick = function () {
     if (mine !== token) return;
     showProgress("Composing and encoding", RENDER_SHARE, 1);
     return Promise.all([yieldToPaint(), capFontReady]).then(function () {
-      var frames = [], delays = [];
+      var delays = [];
       var c = document.createElement("canvas");
       c.width = geo.W; c.height = geo.H;
       var ctx = c.getContext("2d", { willReadFrequently: true });
@@ -1969,7 +2018,13 @@ $("mkgrid").onclick = function () {
         ? fitCapSize(ctx, theSet.map(function (w) { return w.title; }), geo.cell, geo.capH)
         : 0;
 
-      for (var i = 0; i < COMPOSE_FRAMES; i++) {
+      // Drawn on demand rather than collected. The encoder asks for each frame
+      // twice — once to sample the palette, once to encode — and keeps only the
+      // previous one, so peak memory is two frames instead of thirty. Holding all
+      // thirty is what broke this on phones: a 1440px quadtych is 237MB of
+      // ImageData, and iOS reloads the tab rather than allow it, which looked
+      // like the page refreshing itself the moment the GIF finished.
+      function composeFrame(i) {
         ctx.fillStyle = GROUND;
         ctx.fillRect(0, 0, geo.W, geo.H);
         for (var k = 0; k < results.length; k++) {
@@ -1987,11 +2042,11 @@ $("mkgrid").onclick = function () {
                     null, capPx);
           }
         }
-        frames.push(ctx.getImageData(0, 0, geo.W, geo.H));
-        delays.push(150);
+        return ctx.getImageData(0, 0, geo.W, geo.H);
       }
+      for (var i = 0; i < COMPOSE_FRAMES; i++) delays.push(150);
 
-      var blob = GIF.encode(frames, delays, 256);
+      var blob = GIF.encodeStream(COMPOSE_FRAMES, composeFrame, delays, 256);
       built = { blob: blob, size: geo.W, key: lay.name };
       sel = { slug: "compose", id: 0, title: lay.name,
               names: theSet.map(function (w) { return w.title; }),
