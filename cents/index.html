@@ -39,9 +39,13 @@
    Full width, and bled off both edges so it reads as a fragment of something much
    larger, which is the honest impression: it is a few hundred of ten thousand. */
 .field{margin:20px 0 0;width:100%;overflow:hidden;line-height:0}
-.field img{width:100%;height:auto;display:block;min-width:900px;
- object-fit:cover;opacity:.92}
-@media(max-width:640px){.field img{min-width:640px}}
+/* Cropped, not scaled. Letting a 2583px band shrink to fit the viewport put the
+   coins at about 20px, which reads as texture rather than as pennies. Fixing the
+   height near the source's own 347px keeps them close to native and crops the
+   band horizontally instead — and since which part of a field of coins you see
+   does not matter, cropping costs nothing. */
+.field img{display:block;width:100%;height:clamp(190px,26vw,347px);
+ object-fit:cover;object-position:center;opacity:.94}
 .wrap.tail2{padding-top:22px}
 .wallcount{display:none}
 
