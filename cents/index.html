@@ -245,24 +245,38 @@ function initWall() {
     return idsPending;
   }
 
-  var last = null;
+  var last = null, openN = 0;
   function open(n) {
+    openN = n;
     var y = yearOf(n);
-    // The lightbox shows the inscription's own 300px image, not the wall's thumbnail.
-    lbi.src = "https://raw.githubusercontent.com/shibboleth88/sovrn-onchain/main/cents/" + n + ".webp";
+    /* Same-origin thumbnail first so something is on screen immediately, then the
+       inscription's own image over the top of it once that arrives. The full
+       images are not mirrored here — 10,000 of them is 157MB, which a repo that
+       serves a website should not carry for a picture shown one at a time — and
+       raw.githubusercontent.com is a source host rather than a CDN, so the
+       canonical explorer is the better place to ask. If it never answers, the
+       thumbnail simply stays. */
+    lbi.src = "img/cents-wall/" + n + ".webp";
     lbi.alt = "Cent #" + n + ", minted " + y;
     lbc.innerHTML = "<b>Cent #" + n + "</b><u>" + y + " &middot; inscribed on a single satoshi</u>";
     lbg.innerHTML = '<a href="https://cents.vision/" target="_blank" rel="noopener">Traits at cents.vision &#8599;</a>';
     lb.classList.add("on");
     $("lbx").focus();
+    var want = n;
     loadIds().then(function (list) {
-      if (!list || !list[n - 1] || !lb.classList.contains("on")) return;
+      if (!list || !list[n - 1] || !lb.classList.contains("on") || want !== openN) return;
+      var id = list[n - 1];
       lbg.innerHTML =
-        '<a href="https://ordinals.com/inscription/' + list[n - 1] + '" target="_blank" rel="noopener">On ordinals.com &#8599;</a>' +
+        '<a href="https://ordinals.com/inscription/' + id + '" target="_blank" rel="noopener">On ordinals.com &#8599;</a>' +
         '<a href="https://cents.vision/" target="_blank" rel="noopener">Traits at cents.vision &#8599;</a>';
+      // Upgrade the picture to the inscription itself, quietly.
+      var full = new Image();
+      full.onload = function () { if (openN === want && lb.classList.contains("on")) lbi.src = full.src; };
+      full.src = "https://ordinals.com/content/" + id;
     });
   }
   function close() {
+    openN = 0;
     lb.classList.remove("on");
     lbi.removeAttribute("src");
     if (last) last.focus();
