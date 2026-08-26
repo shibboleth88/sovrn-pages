@@ -36,13 +36,20 @@
    whole collection. These are the inscribed images themselves, mirrored locally.
    The coin fills about 74% of its white frame, so the tile clips to a circle and
    the image is scaled by 1/0.74 to fill it: copper discs, no white corners. */
-.wall{margin:22px 0 6px;display:grid;gap:7px;
- grid-template-columns:repeat(auto-fill,minmax(58px,1fr))}
+/* Full width, because ten thousand of anything is the point and a 1060px column
+   cannot make that point. Small tiles for the same reason: at this size the grid
+   reads as a mass first and as ten thousand separate objects second, which is the
+   tension the work is about. */
+.wall{margin:20px 0 0;display:grid;gap:3px;padding:0 3px;
+ grid-template-columns:repeat(auto-fill,minmax(38px,1fr))}
+.wrap.tail2{padding-top:20px}
+.wallcount{margin:8px 0 0;font:500 10.5px/1.6 "IBM Plex Mono",monospace;
+ letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
 .wall button{padding:0;border:0;background:none;cursor:zoom-in;border-radius:50%;
  overflow:hidden;aspect-ratio:1;position:relative;display:block;
  transition:transform .18s,box-shadow .18s}
 .wall img{width:135%;height:135%;margin:-17.5%;display:block;object-fit:cover}
-.wall button:hover{transform:scale(1.12);box-shadow:0 0 0 2px var(--cut);z-index:2}
+.wall button:hover{transform:scale(1.9);box-shadow:0 0 0 2px var(--cut);z-index:2}
 .wall button:focus-visible{outline:2px solid var(--cut);outline-offset:3px;z-index:2}
 .wallhead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .wallnote{font:400 12px/1.6 "IBM Plex Mono",monospace;color:var(--mute);margin:8px 0 0;max-width:70ch}
@@ -75,7 +82,9 @@
 #lbx{position:absolute;top:12px;right:16px;background:none;border:0;color:var(--paper);
  font:400 26px/1 "IBM Plex Sans",sans-serif;cursor:pointer;padding:4px 10px}
 #lbx:hover{color:var(--cut)}
-@media(max-width:640px){.wall{grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:5px}
+/* Narrower tiles on a phone: at 38px a 375px screen fits nine per row, which is
+   1,100 rows for the collection. Smaller keeps the field readable as a field. */
+@media(max-width:640px){.wall{grid-template-columns:repeat(auto-fill,minmax(30px,1fr));gap:2px}
  .gal{grid-template-columns:repeat(2,1fr)}}
 </style><link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png">
@@ -83,7 +92,7 @@
 <link rel="stylesheet" href="/transitions.css">
 <script src="/transitions.js"></script>
 <script src="/cents-wall-data.js"></script>
-</head><body><nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></nav><div class="wrap"><div class="hero"><span class="coin"><img class="vt-lead" src="/img/homepage/cent_homepage.jpg" alt="A 1979 copper penny from CENTS" loading="lazy"><a class="cta" href="https://cents.vision/" target="_blank">cents.vision <em>collection explorer</em></a></span><div><h1>CENTS</h1><p class="by">Rutherford Chang</p></div></div><h2 id="thecoins">The coins</h2><div class="wallhead"><p class="wallnote">Four hundred of the ten thousand, spread across the collection. Every cent was photographed before it was destroyed; each one is inscribed on its own satoshi. Open any of them &mdash; then see all ten thousand, with their traits, at <a href="https://cents.vision/" target="_blank" rel="noopener">cents.vision</a>.</p></div><div class="wall" id="w"></div><h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2></div><div class="gal" id="g"></div><div class="wrap tail"><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p><p class="inq" id="inq"><a href="/cents/inquiries">Project inquiries</a></p>
+</head><body><nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></nav><div class="wrap"><div class="hero"><span class="coin"><img class="vt-lead" src="/img/homepage/cent_homepage.jpg" alt="A 1979 copper penny from CENTS" loading="lazy"><a class="cta" href="https://cents.vision/" target="_blank">cents.vision <em>collection explorer</em></a></span><div><h1>CENTS</h1><p class="by">Rutherford Chang</p></div></div><h2 id="thecoins">The coins</h2><div class="wallhead"><p class="wallnote">All ten thousand. Every cent was photographed before it was destroyed, and each one is inscribed on its own satoshi. Open any of them &mdash; then see them with their traits at <a href="https://cents.vision/" target="_blank" rel="noopener">cents.vision</a>.</p><p class="wallcount" id="wc"></p></div></div><div class="wall" id="w"></div><div class="wrap tail2"><h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2></div><div class="gal" id="g"></div><div class="wrap tail"><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p><p class="inq" id="inq"><a href="/cents/inquiries">Project inquiries</a></p>
 <p class="ends"><a href="https://cents.vision/" target="_blank">cents.vision &#8599;</a><a href="http://rutherfordchang.com/" target="_blank">rutherfordchang.com &#8599;</a></p></div>
 <script>
 const H="/img/homepage/",
@@ -152,28 +161,71 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false);});
    400 tiles cost only what scrolls into view. */
 function initWall() {
   var wall = $("w"), lb = $("lb"), lbi = $("lbi"), lbc = $("lbc"), lbg = $("lbg");
-  if (!wall || !lb || typeof CW === "undefined") return;
+  if (!wall || !lb || typeof CN === "undefined") return;
 
-  wall.innerHTML = CW.map(function (c) {
-    return '<button type="button" data-n="' + c[0] + '" aria-label="Cent #' + c[0] +
-      (c[2] ? ", " + c[2] : "") + '">' +
-      '<img src="img/cents-inscribed/' + c[0] + '.webp" alt="" loading="lazy" ' +
-      'width="300" height="300"></button>';
-  }).join("");
+  /* Ten thousand tiles is more DOM than any browser should be handed at once, so
+     the grid grows a thousand at a time as the bottom comes into view. Images stay
+     lazy on top of that, so a visitor pays only for the coins they actually reach. */
+  var CHUNK = 1000, shown = 0;
+  var count = $("wc");
+
+  function yearOf(n) { return CY.slice((n - 1) * 4, n * 4); }
+
+  function more() {
+    var upto = Math.min(shown + CHUNK, CN), html = "";
+    for (var n = shown + 1; n <= upto; n++) {
+      html += '<button type="button" data-n="' + n + '" aria-label="Cent #' + n +
+        ', ' + yearOf(n) + '"><img src="img/cents-wall/' + n +
+        '.webp" alt="" loading="lazy" decoding="async" width="96" height="96"></button>';
+    }
+    wall.insertAdjacentHTML("beforeend", html);
+    shown = upto;
+    count.textContent = shown === CN
+      ? CN.toLocaleString() + " cents"
+      : shown.toLocaleString() + " of " + CN.toLocaleString() + " shown — keep scrolling";
+    if (shown >= CN && obs) obs.disconnect();
+  }
+
+  var obs = null;
+  if (window.IntersectionObserver) {
+    obs = new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) more();
+    }, { rootMargin: "1200px" });
+  }
+  more();
+  if (obs) obs.observe(wall);           // the grid's own end approaching is the cue
+  else { while (shown < CN) more(); }   // no observer: just render it all
+
+  /* The inscription ids are 66 characters each and only matter once a coin is
+     open, so 655KB of them is fetched the first time rather than shipped with the
+     page. */
+  var ids = null, idsPending = null;
+  function loadIds() {
+    if (ids) return Promise.resolve(ids);
+    if (!idsPending) {
+      idsPending = fetch("cents-ids.txt").then(function (r) { return r.text(); })
+        .then(function (t) { ids = t.trim().split("\n"); return ids; })
+        .catch(function () { return null; });
+    }
+    return idsPending;
+  }
 
   var last = null;
   function open(n) {
-    var c = CW.filter(function (x) { return x[0] === n; })[0];
-    if (!c) return;
-    lbi.src = "img/cents-inscribed/" + c[0] + ".webp";
-    lbi.alt = "Cent #" + c[0] + (c[2] ? ", minted " + c[2] : "");
-    lbc.innerHTML = "<b>Cent #" + c[0] + "</b><u>" + (c[2] ? c[2] + " &middot; " : "") +
-      "inscribed on a single satoshi</u>";
-    lbg.innerHTML =
-      '<a href="https://ordinals.com/inscription/' + c[1] + '" target="_blank" rel="noopener">On ordinals.com &#8599;</a>' +
-      '<a href="https://cents.vision/" target="_blank" rel="noopener">Traits at cents.vision &#8599;</a>';
+    var y = yearOf(n);
+    // The lightbox shows the inscription's own 300px image, not the wall's thumbnail.
+    lbi.src = "https://raw.githubusercontent.com/shibboleth88/sovrn-onchain/main/cents/" + n + ".webp";
+    lbi.alt = "Cent #" + n + ", minted " + y;
+    lbc.innerHTML = "<b>Cent #" + n + "</b><u>" + y + " &middot; inscribed on a single satoshi</u>";
+    lbg.innerHTML = '<a href="https://cents.vision/" target="_blank" rel="noopener">Traits at cents.vision &#8599;</a>';
     lb.classList.add("on");
     $("lbx").focus();
+    loadIds().then(function (list) {
+      if (!list || !list[n - 1] || !lb.classList.contains("on")) return;
+      lbg.innerHTML =
+        '<a href="https://ordinals.com/inscription/' + list[n - 1] + '" target="_blank" rel="noopener">On ordinals.com &#8599;</a>' +
+        '<a href="https://cents.vision/" target="_blank" rel="noopener">Traits at cents.vision &#8599;</a>';
+    });
   }
   function close() {
     lb.classList.remove("on");
