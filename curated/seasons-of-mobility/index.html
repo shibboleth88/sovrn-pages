@@ -72,7 +72,7 @@
 <div class="sec">
 <h2>A year in four seasons</h2>
 <p class="n2">Twelve works, three to a season, turning through a full year.</p>
-<div class="year" id="year"></div>
+<div class="year" id="year"><div class="col"><h3>Spring</h3><button class="cell" type="button" onclick="zoom('spring',1,'Spring')"><span class="im"><img class="vt-lead" src="img/seasons-of-mobility/spring-1.png" alt="Spring, work 1 of 3" loading="eager" fetchpriority="high"></span></button><button class="cell" type="button" onclick="zoom('spring',2,'Spring')"><span class="im"><img src="img/seasons-of-mobility/spring-2.png" alt="Spring, work 2 of 3" loading="lazy"></span></button><button class="cell" type="button" onclick="zoom('spring',3,'Spring')"><span class="im"><img src="img/seasons-of-mobility/spring-3.png" alt="Spring, work 3 of 3" loading="lazy"></span></button></div><div class="col"><h3>Summer</h3><button class="cell" type="button" onclick="zoom('summer',1,'Summer')"><span class="im"><img src="img/seasons-of-mobility/summer-1.png" alt="Summer, work 1 of 3" loading="lazy"></span></button><button class="cell" type="button" onclick="zoom('summer',2,'Summer')"><span class="im"><img src="img/seasons-of-mobility/summer-2.png" alt="Summer, work 2 of 3" loading="lazy"></span></button><button class="cell" type="button" onclick="zoom('summer',3,'Summer')"><span class="im"><img src="img/seasons-of-mobility/summer-3.png" alt="Summer, work 3 of 3" loading="lazy"></span></button></div><div class="col"><h3>Autumn</h3><button class="cell" type="button" onclick="zoom('autumn',1,'Autumn')"><span class="im"><img src="img/seasons-of-mobility/autumn-1.png" alt="Autumn, work 1 of 3" loading="lazy"></span></button><button class="cell" type="button" onclick="zoom('autumn',2,'Autumn')"><span class="im"><img src="img/seasons-of-mobility/autumn-2.png" alt="Autumn, work 2 of 3" loading="lazy"></span></button><button class="cell" type="button" onclick="zoom('autumn',3,'Autumn')"><span class="im"><img src="img/seasons-of-mobility/autumn-3.png" alt="Autumn, work 3 of 3" loading="lazy"></span></button></div><div class="col"><h3>Winter</h3><button class="cell" type="button" onclick="zoom('winter',1,'Winter')"><span class="im"><img src="img/seasons-of-mobility/winter-1.png" alt="Winter, work 1 of 3" loading="lazy"></span></button><button class="cell" type="button" onclick="zoom('winter',2,'Winter')"><span class="im"><img src="img/seasons-of-mobility/winter-2.png" alt="Winter, work 2 of 3" loading="lazy"></span></button><button class="cell" type="button" onclick="zoom('winter',3,'Winter')"><span class="im"><img src="img/seasons-of-mobility/winter-3.png" alt="Winter, work 3 of 3" loading="lazy"></span></button></div></div>
 </div>
 <div class="sec">
 <h2>On 58 screens in Shibuya</h2>
@@ -109,13 +109,8 @@
 <div id="lb" role="dialog" aria-label="Artwork"><button id="lbx" aria-label="Close">&times;</button><img id="lbi" alt=""><p class="cap" id="lbc"></p></div>
 <script>
 const B="img/seasons-of-mobility/";
-const S=[["spring","Spring"],["summer","Summer"],["autumn","Autumn"],["winter","Winter"]];
 const $=i=>document.getElementById(i),lb=$("lb");
 $("pf").src=B+"bashobits.png";
-$("year").innerHTML=S.map(([k,label])=>'<div class="col"><h3>'+label+'</h3>'+
-[1,2,3].map(n=>'<button class="cell" type="button" onclick="zoom(\''+k+'\','+n+',\''+label+'\')">'+
-'<span class="im"><img src="'+B+k+'-'+n+'.png" alt="'+label+', work '+n+' of 3" loading="lazy"></span></button>').join("")+
-'</div>').join("");
 function open_(src,alt,t,sub){$("lbi").src=src;$("lbi").alt=alt;
 $("lbc").innerHTML='<i>'+t+'</i><u>'+sub+'</u>';lb.classList.add("on");$("lbx").focus();}
 function zoom(k,n,label){open_(B+k+"-"+n+".png",label+", work "+n+" of 3",label,
