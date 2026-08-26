@@ -111,7 +111,7 @@
 const B="img/seasons-of-mobility/";
 const S=[["spring","Spring"],["summer","Summer"],["autumn","Autumn"],["winter","Winter"]];
 const $=i=>document.getElementById(i),lb=$("lb");
-$("hero").src=B+"banner.png";
+$("hero").src=B+"banner.webp";
 $("pf").src=B+"bashobits.png";
 $("year").innerHTML=S.map(([k,label])=>'<div class="col"><h3>'+label+'</h3>'+
 [1,2,3].map(n=>'<button class="cell" type="button" onclick="zoom(\''+k+'\','+n+',\''+label+'\')">'+
@@ -121,7 +121,7 @@ function open_(src,alt,t,sub){$("lbi").src=src;$("lbi").alt=alt;
 $("lbc").innerHTML='<i>'+t+'</i><u>'+sub+'</u>';lb.classList.add("on");$("lbx").focus();}
 function zoom(k,n,label){open_(B+k+"-"+n+".png",label+", work "+n+" of 3",label,
 "bashobits \u00b7 Seasons of Mobility \u00b7 2023 \u00b7 "+n+" of 3");}
-function zoomHero(){open_(B+"banner.png","Four works from Seasons of Mobility","Seasons of Mobility","bashobits \u00b7 2023 \u00b7 four works");}
+function zoomHero(){open_(B+"banner.webp","Four works from Seasons of Mobility","Seasons of Mobility","bashobits \u00b7 2023 \u00b7 four works");}
 function unzoom(){lb.classList.remove("on");}
 $("lbx").onclick=unzoom;lb.onclick=e=>{if(e.target===lb)unzoom();};
 onkeydown=e=>{if(e.key=="Escape")unzoom();};
