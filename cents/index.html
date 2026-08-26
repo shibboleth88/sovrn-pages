@@ -28,12 +28,55 @@
  font:500 11px/1.6 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase}
 .ends a{color:var(--mute);text-decoration:none;border-bottom:1px solid var(--cu);
  padding-bottom:3px;transition:color .15s,border-color .15s}
-.ends a:hover{color:var(--cut);border-color:var(--cut)}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ln a:hover{transform:none}}</style><link rel="icon" href="/favicon.ico" sizes="any">
+.ends a:hover{color:var(--cut);border-color:var(--cut)}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ln a:hover{transform:none}}
+/* The wall. The work is 10,000 nearly identical objects that turn out to be all
+   different, and the page never showed one — so it shows 400, spread across the
+   whole collection. These are the inscribed images themselves, mirrored locally.
+   The coin fills about 74% of its white frame, so the tile clips to a circle and
+   the image is scaled by 1/0.74 to fill it: copper discs, no white corners. */
+.wall{margin:22px 0 6px;display:grid;gap:7px;
+ grid-template-columns:repeat(auto-fill,minmax(58px,1fr))}
+.wall button{padding:0;border:0;background:none;cursor:zoom-in;border-radius:50%;
+ overflow:hidden;aspect-ratio:1;position:relative;display:block;
+ transition:transform .18s,box-shadow .18s}
+.wall img{width:135%;height:135%;margin:-17.5%;display:block;object-fit:cover}
+.wall button:hover{transform:scale(1.12);box-shadow:0 0 0 2px var(--cut);z-index:2}
+.wall button:focus-visible{outline:2px solid var(--cut);outline-offset:3px;z-index:2}
+.wallhead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.wallnote{font:400 12px/1.6 "IBM Plex Mono",monospace;color:var(--mute);margin:8px 0 0;max-width:70ch}
+.wallnote a{color:var(--cut)}
+
+/* The installation views go edge to edge — there is no iframe to sit inside now. */
+.gal{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);width:100vw;
+ grid-template-columns:repeat(4,1fr);gap:6px}
+body{overflow-x:hidden}
+
+/* Close looking is the subject, so a coin can be opened. */
+#lb{position:fixed;inset:0;background:#0b0b0b;display:none;align-items:center;
+ justify-content:center;flex-direction:column;padding:44px 22px 26px;z-index:9}
+#lb.on{display:flex}
+#lb img{max-width:min(78vw,540px);max-height:calc(100vh - 210px);object-fit:contain;
+ background:#fff;border-radius:50%}
+#lb .lcap{color:var(--paper);text-align:center;margin-top:18px;max-width:62ch}
+#lb .lcap b{display:block;font:300 26px/1.2 Fraunces,serif;font-weight:400}
+#lb .lcap u{display:block;margin-top:6px;text-decoration:none;
+ font:500 11px/1.7 "IBM Plex Mono",monospace;color:var(--mute);letter-spacing:.1em;text-transform:uppercase}
+#lb .lgo{margin-top:16px;display:flex;gap:18px;flex-wrap:wrap;justify-content:center;
+ font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
+#lb .lgo a{color:var(--cut);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:4px}
+#lb .lgo a:hover{border-color:var(--cut)}
+#lbx{position:absolute;top:12px;right:16px;background:none;border:0;color:var(--paper);
+ font:400 26px/1 "IBM Plex Sans",sans-serif;cursor:pointer;padding:4px 10px}
+#lbx:hover{color:var(--cut)}
+@media(max-width:640px){.wall{grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:5px}
+ .gal{grid-template-columns:repeat(2,1fr)}}
+</style><link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/transitions.css">
 <script src="/transitions.js"></script>
-</head><body><nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></nav><div class="wrap"><div class="hero"><span class="coin"><img class="vt-lead" src="/img/homepage/cent_homepage.jpg" alt="A 1979 copper penny from CENTS" loading="lazy"><a class="cta" href="https://cents.vision/" target="_blank">cents.vision <em>collection explorer</em></a></span><div><h1>CENTS</h1><p class="by">Rutherford Chang</p></div></div><h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2><div class="gal" id="g"></div><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p><p class="inq" id="inq"><a href="/cents/inquiries">Project inquiries</a></p>
+<script src="/cents-wall-data.js"></script>
+</head><body><nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></nav><div class="wrap"><div class="hero"><span class="coin"><img class="vt-lead" src="/img/homepage/cent_homepage.jpg" alt="A 1979 copper penny from CENTS" loading="lazy"><a class="cta" href="https://cents.vision/" target="_blank">cents.vision <em>collection explorer</em></a></span><div><h1>CENTS</h1><p class="by">Rutherford Chang</p></div></div><h2 id="thecoins">The coins</h2><div class="wallhead"><p class="wallnote">Four hundred of the ten thousand, spread across the collection. Every cent was photographed before it was destroyed; each one is inscribed on its own satoshi. Open any of them &mdash; then see all ten thousand, with their traits, at <a href="https://cents.vision/" target="_blank" rel="noopener">cents.vision</a>.</p></div><div class="wall" id="w"></div><h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2><div class="gal" id="g"></div><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p><p class="inq" id="inq"><a href="/cents/inquiries">Project inquiries</a></p>
 <p class="ends"><a href="https://cents.vision/" target="_blank">cents.vision &#8599;</a><a href="http://rutherfordchang.com/" target="_blank">rutherfordchang.com &#8599;</a></p></div>
 <script>
 const H="/img/homepage/",
@@ -94,4 +137,53 @@ mn.onclick=e=>{
 };
 document.addEventListener("click",e=>{if(!e.target.closest(".nav"))setMenu(false);});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false);});
-</script></body></html>
+
+/* The wall of cents, and opening one.
+
+   Buttons rather than links: a coin is not a destination on this site — the depth
+   belongs to cents.vision, which the lightbox hands off to. Images stay lazy, so
+   400 tiles cost only what scrolls into view. */
+(function () {
+  var wall = $("w"), lb = $("lb"), lbi = $("lbi"), lbc = $("lbc"), lbg = $("lbg");
+  if (!wall || typeof CW === "undefined") return;
+
+  wall.innerHTML = CW.map(function (c) {
+    return '<button type="button" data-n="' + c[0] + '" aria-label="Cent #' + c[0] +
+      (c[2] ? ", " + c[2] : "") + '">' +
+      '<img src="img/cents-inscribed/' + c[0] + '.webp" alt="" loading="lazy" ' +
+      'width="300" height="300"></button>';
+  }).join("");
+
+  var last = null;
+  function open(n) {
+    var c = CW.filter(function (x) { return x[0] === n; })[0];
+    if (!c) return;
+    lbi.src = "img/cents-inscribed/" + c[0] + ".webp";
+    lbi.alt = "Cent #" + c[0] + (c[2] ? ", minted " + c[2] : "");
+    lbc.innerHTML = "<b>Cent #" + c[0] + "</b><u>" + (c[2] ? c[2] + " &middot; " : "") +
+      "inscribed on a single satoshi</u>";
+    lbg.innerHTML =
+      '<a href="https://ordinals.com/inscription/' + c[1] + '" target="_blank" rel="noopener">On ordinals.com &#8599;</a>' +
+      '<a href="https://cents.vision/" target="_blank" rel="noopener">Traits at cents.vision &#8599;</a>';
+    lb.classList.add("on");
+    $("lbx").focus();
+  }
+  function close() {
+    lb.classList.remove("on");
+    lbi.removeAttribute("src");
+    if (last) last.focus();
+  }
+
+  wall.addEventListener("click", function (ev) {
+    var b = ev.target.closest("button");
+    if (!b) return;
+    last = b;
+    open(parseInt(b.dataset.n, 10));
+  });
+  $("lbx").onclick = close;
+  lb.addEventListener("click", function (ev) { if (ev.target === lb) close(); });
+  addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape" && lb.classList.contains("on")) close();
+  });
+})();
+</script><div id="lb" role="dialog" aria-modal="true" aria-label="Cent"><button id="lbx" aria-label="Close">&times;</button><img id="lbi" alt=""><div class="lcap" id="lbc"></div><p class="lgo" id="lbg"></p></div></body></html>
