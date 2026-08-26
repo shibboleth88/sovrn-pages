@@ -45,6 +45,22 @@ figcaption{margin-top:7px;font:400 11px/1.6 "IBM Plex Mono",monospace;color:var(
 .foot{margin-top:38px;padding-top:16px;border-top:1px solid var(--rule);
       font:400 11.5px/1.7 "IBM Plex Mono",monospace;color:var(--slate)}
 .foot a{color:var(--copper)}
+.book{margin-top:34px;padding-top:22px;border-top:1px solid var(--rule)}
+.book h2{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;text-transform:uppercase;
+         color:var(--slate);margin:0 0 14px}
+.book p{max-width:62ch;margin:0 0 13px}
+.spec{font:400 12px/1.7 "IBM Plex Mono",monospace;color:var(--slate)}
+.press{margin:20px 0 0;padding:0;list-style:none;display:grid;
+       grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.press li{border-left:2px solid var(--rule);padding-left:14px}
+.press q{display:block;font:italic 300 16px/1.42 Fraunces,serif;color:var(--ink);quotes:none}
+.press cite{display:block;margin-top:8px;font:500 10.5px/1 "IBM Plex Mono",monospace;
+            letter-spacing:.14em;text-transform:uppercase;color:var(--slate);font-style:normal}
+.where{margin-top:24px;display:flex;flex-wrap:wrap;gap:22px;
+       font:500 11px/1.6 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase}
+.where a{color:var(--slate);text-decoration:none;border-bottom:1px solid var(--rule);
+         padding-bottom:3px;transition:color .15s,border-color .15s}
+.where a:hover{color:var(--copper);border-color:var(--copper)}
 @media(max-width:780px){.cols{grid-template-columns:1fr;gap:22px}}
 </style>
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -109,9 +125,30 @@ figcaption{margin-top:7px;font:400 11px/1.6 "IBM Plex Mono",monospace;color:var(
     </div>
   </div>
 
+<section class="book">
+<h2>About the book</h2>
+<p><em>On NFTs</em> is the first major art-historical survey of the field, reaching across
+algorithmic art, avatars and AI. This unlimited edition adds eleven artists to the original,
+bringing it to 111 artists and ten academic essays — Philip Tinari&rsquo;s text on
+<i>CENTS</i> among them.</p>
+<p class="spec">Hardcover &middot; 19.6 &times; 25.5 cm &middot; 656 pages &middot; 2.18 kg</p>
+<ul class="press">
+<li><q>[This] near 700 page artist-led book is filled with striking and alternative images
+that could only take place in the virtual world of cryptoart.</q><cite>It&rsquo;s Nice That</cite></li>
+<li><q>A deep and illuminating survey of the technology from its infancy to the current
+day.</q><cite>Dazed</cite></li>
+<li><q>It builds bridges between art history and current trends. Rembrandt meets
+CryptoPunks.</q><cite>Rolling Stone</cite></li>
+</ul>
+<p class="where">
+<a href="https://www.taschen.com/en/collection/on-nfts/" target="_blank" rel="noopener">The book at Taschen &#8599;</a>
+<a href="https://www.robertalice.com/" target="_blank" rel="noopener">Robert Alice, editor &#8599;</a>
+<a href="https://philtinari.com" target="_blank" rel="noopener">Philip Tinari &#8599;</a>
+</p>
+</section>
   <p class="foot">
     <em>On NFTs</em>, edited by Robert Alice, published by Taschen —
-    <a href="https://www.taschen.com/en/books/art/08154/on-nfts/" target="_blank" rel="noopener">taschen.com</a>.<br>
+    <a href="https://www.taschen.com/en/collection/on-nfts/" target="_blank" rel="noopener">taschen.com</a>.<br>
     Text © Philip Tinari. Two scanning errors in the source are corrected here:
     “We Buy Wbite Albums” and “reflects poeticallv”.<br>
     <a href="/cents">Back to CENTS</a>
