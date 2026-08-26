@@ -11,7 +11,7 @@ const EX=[
 "Two Mobility works by bashobits across Shibuya’s public signage, including Aura Afterglow at Miyashita Park for the Weather Writes open call.",
 "img/pages/overview/screens.jpg"],
 ["/exhibitions/ucca","UCCA, Beijing","Rutherford Chang: Hundreds and Thousands","17 Jan – 12 Apr 2026",
-"CENTS shown in the first institutional survey of Chang’s work, co-curated by Philip Tinari and Aki Sasamoto with the artist’s estate.",
+"CENTS shown in the first institutional survey of Chang’s work, co-curated by Philip Tinari, Aki Sasamoto and Danielle Chang with the artist’s estate.",
 "img/pages/overview/ucca.webp"],
 ["/exhibitions/marfa-popup","Sovrn, Marfa, Texas","A sovrn Pop-Up Gallery","16 – 19 Oct 2025",
 "Nine curated collections shown from the cloudpainter truck during Art Blocks Marfa Weekend, with prints signed on the spot by the robot.",
