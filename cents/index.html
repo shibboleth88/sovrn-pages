@@ -46,10 +46,14 @@
 .wallnote{font:400 12px/1.6 "IBM Plex Mono",monospace;color:var(--mute);margin:8px 0 0;max-width:70ch}
 .wallnote a{color:var(--cut)}
 
-/* The installation views go edge to edge — there is no iframe to sit inside now. */
+/* The installation views go edge to edge — there is no iframe to sit inside now.
+   100vw includes the vertical scrollbar, so the bleed overhangs by its width and
+   has to be clipped. That clip belongs on <html>, NOT on body: setting overflow-x
+   on body forces its overflow-y from visible to auto, which makes body a scroll
+   container and stops the page scrolling at all. It shipped that way once. */
 .gal{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);width:100vw;
  grid-template-columns:repeat(4,1fr);gap:6px}
-body{overflow-x:hidden}
+html{overflow-x:hidden}
 
 /* Close looking is the subject, so a coin can be opened. */
 #lb{position:fixed;inset:0;background:#0b0b0b;display:none;align-items:center;
