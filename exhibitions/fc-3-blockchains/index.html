@@ -161,7 +161,9 @@ h2{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform
   var rail = document.getElementById("rail");
   rail.innerHTML = W.map(function (w) {
     return '<figure><a href="/curated/' + w[6] + '">' +
-      '<img src="' + encodeURI(w[7]) + '" alt="' + w[1].replace(/"/g, "&quot;") +
+      /* w[7] is stored already-encoded — one filename carries a space — so it goes
+         through as-is. encodeURI here turned %20 into %2520. */
+      '<img src="' + w[7] + '" alt="' + w[1].replace(/"/g, "&quot;") +
       ' by ' + w[0].replace(/"/g, "&quot;") + '" loading="lazy">' +
       '<figcaption><span class="w">' + w[1] + '</span>' +
       '<span class="who">' + w[0] + '</span>' +
