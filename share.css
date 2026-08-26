@@ -231,3 +231,13 @@
     .dots i{animation:none;opacity:.7}
     .bar{transition:none}
   }
+
+/* Home. The share pages are reached from links people post, so they need the way
+   back as much as anything else on the site. These shells carry no inline style —
+   a checker enforces that, because the four flat ones and the three nested ones
+   have to stay identical — so the rule lives here. */
+.homemark{display:inline-block;line-height:0;margin:0 0 14px;
+ border-radius:50%;outline-offset:3px;transition:opacity .15s,transform .15s;opacity:.82}
+.homemark:hover,.homemark:focus-visible{opacity:1;transform:scale(1.06)}
+.homemark img{width:30px;height:30px;display:block;border-radius:50%}
+@media(prefers-reduced-motion:reduce){.homemark{transition:none}}

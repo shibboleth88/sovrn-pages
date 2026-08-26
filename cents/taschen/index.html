@@ -64,6 +64,20 @@ figcaption{margin-top:7px;font:400 11px/1.6 "IBM Plex Mono",monospace;color:var(
          padding-bottom:3px;transition:color .15s,border-color .15s}
 .where a:hover{color:var(--copper);border-color:var(--copper)}
 @media(max-width:780px){.cols{grid-template-columns:1fr;gap:22px}}
+
+/* Home. Every page that is not the homepage carries this, because a link shared
+   into a chat lands on a subpage and there was no way back from twenty-seven of
+   them — and where a way existed it was a word in a footer, which is not where
+   anyone looks.
+
+   The mark is the logo, top left, at the head of the content rather than floating
+   over it: these pages start with a hero image, a banner, an eyebrow or a nav, and
+   an overlay that suits one of those covers the others. In flow it never collides. */
+.homemark{display:inline-block;line-height:0;margin:0 0 14px;
+ border-radius:50%;outline-offset:3px;transition:opacity .15s,transform .15s;opacity:.82}
+.homemark:hover,.homemark:focus-visible{opacity:1;transform:scale(1.06)}
+.homemark img{width:30px;height:30px;display:block;border-radius:50%}
+@media(prefers-reduced-motion:reduce){.homemark{transition:none}}
 </style>
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png">
@@ -72,7 +86,7 @@ figcaption{margin-top:7px;font:400 11px/1.6 "IBM Plex Mono",monospace;color:var(
 <script src="/transitions.js"></script>
 </head>
 <body>
-<div class="wrap">
+<div class="wrap"><a class="homemark" href="/" aria-label="sovrn.art — home" title="sovrn.art"><img src="/img/share/sovrn-mark.webp" alt="" width="30" height="30"></a>
   <p class="eyebrow">CENTS · in print</p>
   <h1>CENTS in Taschen’s <em>On NFTs</em></h1>
   <p class="intro">Philip Tinari, Director of the UCCA Center for Contemporary Art,
