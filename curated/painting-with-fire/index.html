@@ -38,6 +38,12 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
  background:#120a06 center/cover no-repeat;margin-bottom:var(--gap)}
 .hero::after{content:"";position:absolute;inset:0;background:rgba(12,7,4,.36)}
 .hero>*{position:relative;z-index:1}
+/* The banner is an MP4 behind the header, not a background-image: as a 44-frame
+   GIF it was 6.2MB, by far the heaviest thing the site served. The still above
+   is the frame the loop opens on, so it is both the poster and what a visitor
+   who asked for less motion is left with. */
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+@media(prefers-reduced-motion:reduce){.hero video{display:none}}
 .hero h1{font:italic 300 clamp(30px,5vw,56px)/1.06 Fraunces,serif;letter-spacing:-.025em;color:#fff;
  text-shadow:0 2px 30px rgba(0,0,0,.6)}
 .hero .by{margin-top:14px;font:400 clamp(15px,2.1vw,23px)/1.3 Fraunces,serif;color:#f4f1ec;
@@ -111,7 +117,8 @@ blockquote cite{display:block;margin-top:12px;font:500 10.5px/1 "IBM Plex Mono",
 <link rel="stylesheet" href="/transitions.css">
 <script src="/transitions.js"></script>
 </head><body><a class="homemark" href="/" aria-label="sovrn.art — home" title="sovrn.art"><img src="/img/share/sovrn-mark.webp" alt="" width="30" height="30"></a>
-<header class="hero vt-lead" style="background-image:url(img/pages/painting-with-fire/hero.gif)">
+<header class="hero vt-lead" style="background-image:url(img/pages/painting-with-fire/hero.jpg)">
+<video src="img/pages/painting-with-fire/hero.mp4" poster="img/pages/painting-with-fire/hero.jpg" autoplay muted loop playsinline aria-hidden="true"></video>
 <h1>Painting With Fire:<br>a History in GANs</h1><p class="by">by B&#229;rd Ionson</p>
 </header>
 <div class="wrap">

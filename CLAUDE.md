@@ -130,6 +130,73 @@ these are the artwork and a still frame is not the artwork. And **alpha is
 preserved** — flattening the logo and the icons to RGB gives a white box on a
 white card, which looks fine in a thumbnail and wrong on the page.
 
+That GIF rule is right about the artwork and was wrong about the banners, which
+is the next section.
+
+## The three moving banners are MP4, and one of them was the wrong collection
+
+`build-images.py` skips animated GIFs on the principle that a still frame is not
+the artwork. True of a byteGAN; **not** true of a banner, which is promotional
+key art — a slideshow of stills with hard cuts and no movement inside a hold. So
+the banners sat outside the responsive-images work entirely, and they were the
+heaviest thing the site served: **18.3MB across three pages, now 1.0MB.**
+
+`tools/build-banner.py` does the conversion and carries the reasoning. The short
+version is that most of the win is not the codec. The GIF encoder wrote every
+frame with its own palette and dither, so two frames of the same still differ by
+a few levels everywhere — a GIF artefact, not anything the artist made, and it
+denies H.264 the almost-free P-frames a static hold should give it. Collapsing
+each hold to its median restores the still being quantised and roughly halves the
+file again on top of the format change.
+
+| | before | after |
+|---|---|---|
+| `sightseers/hero` | 6,229,097 | 430,802 |
+| `perimeter-town/hero` | 6,229,097 | 335,704 |
+| `painting-with-fire/hero` | 5,821,513 | 269,009 |
+
+Each is now `<video autoplay muted loop playsinline>` inside the `header`, with
+`.hero video{position:absolute;inset:0;object-fit:cover;z-index:0}`. The header
+keeps a `background-image` pointing at the poster, so one file does three jobs:
+first paint, the fallback if the video never arrives, and what
+`prefers-reduced-motion` leaves on screen once the rule hides the video. The
+poster is **the frame the loop opens on**, so playback starts without a jump.
+
+### SIGHTSEERS had no banner of its own
+
+Those first two rows were the same 6.2MB file, byte for byte — lettered
+SIGHTSEERS / PERIMETER TOWN / A NORMAN HARMAN AI COLLABORATION, made 30 May 2023,
+four days before the Perimeter Town release and eight months after SIGHTSEERS. It
+is Perimeter Town's key art, on both pages. The original sovrn.art had the same
+error, so it arrived here honestly: `sites-bg.mjs` read each page's computed
+background off the live site, per slug, and both pages handed it that file. It is
+the same failure as the Raster links two collections carried from a neighbour.
+
+`--sightseers` composes the replacement, and two things about it are deliberate.
+
+**The type is lifted, not re-set.** No font here matches the artist's exactly, so
+rather than guess the face, take the pixels: the lettering is the only thing that
+holds still across all 44 frames, which makes a min-projection an almost perfect
+alpha matte. SIGHTSEERS and the credit line were already the strings this page
+wants; only PERIMETER TOWN is dropped. That makes the two pages siblings rather
+than approximately alike — and it is why `perimeter-town/hero.gif` stays in the
+tree though no page points at it any more. **It is the source of the lettering.**
+
+**Every frame has to be a work this collection can claim.** The banner exists
+because a page was showing another collection's key art, so getting that wrong
+inside it would be worse than leaving it alone. `sightseers tableau.jpg` is the
+obvious source — four works, 3795x2493, named for the collection — and it is
+excluded, because its bottom-left quadrant is Perimeter Town's own `02.jpg`.
+Check any new source against `img/pages/perimeter-town/` before using it.
+
+Four of the eight works sit outside this repo, under `~/Pictures`; `--sightseers`
+names the missing ones and stops rather than quietly composing a shorter loop.
+
+`check-site.py` now sees banners at all. `ATTR` matched `src` and `href`, and a
+banner is a `url()` in a style attribute, so **no check on this site had ever
+looked at a hero image** — which is how a page could show the wrong collection
+through every green run. `CSSURL` covers them now, and `poster` joins `ATTR`.
+
 ## Every collection page hands across one of its own works
 
 `transitions.css` names one element per page (`.vt-lead`) and the navigation
@@ -142,9 +209,12 @@ There are two arrangements, because these pages are not built alike.
 
 **Eight pages open with a banner, and the banner is what travels.** The `header`
 itself carries `vt-lead`, so the card opens out into it. Note *why* the header is
-named rather than an image: the banner is a CSS `background-image`, which can
-never carry a `view-transition-name` because it is not an element — naming the
-box takes the background with it. `::view-transition-old/new(art)` are set to
+named rather than an image: five of the eight banners are a CSS
+`background-image`, which can never carry a `view-transition-name` because it is
+not an element — naming the box takes the background with it. The other three are
+now a `<video>` and could carry the name themselves, and deliberately do not:
+naming the header keeps all eight arranged the same way, and the poster the video
+sits over is the header's background regardless. `::view-transition-old/new(art)` are set to
 `object-fit: cover`, since a square work left to `fill` visibly squashes itself
 into a wide banner for the length of the animation.
 

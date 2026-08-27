@@ -66,7 +66,12 @@ RUNTIME = ["onchain-titles.json", "onchain-traits.json",
            "share.css", "share.js", "shareables.js"]
 
 SKIP = re.compile(r"^(#|mailto:|tel:|data:|javascript:)", re.I)
-ATTR = re.compile(r'(?:src|href)="([^"]+)"')
+ATTR = re.compile(r'(?:src|href|poster)="([^"]+)"')
+# Banners are a url() in a style attribute, not a src, so a src/href sweep never
+# saw them: eight collection pages could point their header at a missing file, or
+# at another collection's, and every check here would still pass. It is not a
+# hypothetical -- /curated/sightseers shipped Perimeter Town's banner.
+CSSURL = re.compile(r'url\(\s*["\']?([^"\')]+)["\']?\s*\)')
 BASE = re.compile(r'<base[^>]+href="([^"]+)"', re.I)
 
 
@@ -153,7 +158,7 @@ def check_assets(base_url):
         pages.append(page)
         m = BASE.search(text)
         base_for_page = urllib.parse.urljoin(page, m.group(1)) if m else page
-        for raw in ATTR.findall(text):
+        for raw in ATTR.findall(text) + CSSURL.findall(text):
             if SKIP.match(raw) or "://" in raw or raw.startswith("//"):
                 continue
             if "'" in raw or "+" in raw:        # assembled in script; not resolvable here
@@ -286,6 +291,51 @@ def check_local_assets():
     return bad
 
 
+def check_banners():
+    """Every url() a page names must be a file in the tree.
+
+    This is the offline half of the CSSURL sweep, and it is the half that runs in
+    CI. It exists because a banner is the one image on this site that nothing
+    checked: not a `src`, not in a `<picture>`, not assembled from a base path.
+    /curated/sightseers spent its whole life pointing at Perimeter Town's key art
+    and every run here was green, because no check had ever resolved a hero.
+
+    A wrong file is still beyond this -- only a person can see that a banner
+    belongs to another collection -- but a missing one is not, and the two fail
+    the same way to a visitor: a header with no artwork in it.
+    """
+    import glob
+    bad = []
+    files = []
+    for pat in ("*.html", "*/*.html", "*/*/*.html", "*/*/*/*.html"):
+        files += glob.glob(os.path.join(ROOT, pat))
+
+    seen = 0
+    for f in sorted(set(files)):
+        if os.sep + "onchain" + os.sep in f:
+            continue
+        text = io.open(f, encoding="utf-8", errors="replace").read()
+        based = bool(BASE.search(text))
+        for raw in CSSURL.findall(text):
+            if SKIP.match(raw) or "://" in raw or raw.startswith("//"):
+                continue
+            # <base href="/"> makes a bare path root-relative; without one it is
+            # relative to the page. Getting this backwards is the whole risk in
+            # a tree of directories, so resolve it the way the browser does.
+            if raw.startswith("/") or based:
+                rel = raw.lstrip("/")
+            else:
+                rel = os.path.relpath(
+                    os.path.normpath(os.path.join(os.path.dirname(f), raw)), ROOT)
+            seen += 1
+            if not os.path.isfile(os.path.join(ROOT, urllib.parse.unquote(rel))):
+                bad.append((os.path.relpath(f, ROOT), raw))
+                print(f"    missing  {raw}   (named by {os.path.relpath(f, ROOT)})")
+
+    print(f"  {seen - len(bad)}/{seen} url() targets resolve in the tree")
+    return bad
+
+
 def check_srcsets():
     """Every file a <picture> offers must be on disk, and so must every -x.webp
     the two JS families construct.
@@ -376,6 +426,8 @@ def main():
         bad += check_files()
         print("\nImages assembled from a base path")
         bad += check_local_assets()
+        print("\nBanners and other url() targets")
+        bad += check_banners()
         print("\nResponsive derivatives")
         bad += check_srcsets()
     if a.urls:

@@ -39,8 +39,36 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .mg img.o{opacity:0}
 /* a cell left bare reads as the ink beneath; a rare one takes the accent */
 .mg span{background:var(--accent)}
-.banner2{margin:0 0 var(--gap)}
-@media(max-width:640px){.banner2{margin-bottom:30px}}
+.banner2{margin:0}
+/* The seed, and what you can do with it. Set quiet: it is an aside about the
+   band, not a feature of the page. */
+.mos{display:flex;flex-wrap:wrap;align-items:baseline;gap:16px;margin:12px 0 var(--gap);
+  font:400 11px/1.5 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--slate)}
+.mosb{font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--ink);
+  background:none;border:0;border-bottom:1px solid var(--rule);padding:0 0 2px;cursor:pointer;
+  transition:color .18s,border-color .18s}
+.mosb:hover{color:var(--accent);border-color:var(--accent)}
+.mos[data-pinned="1"] #mosk{display:none}
+@media(max-width:640px){.mos{margin-bottom:30px}}
+
+/* Scroll-linked drift: the two bands ease in opposite directions as the page
+   moves. This is only possible now the page owns its own scroll — inside the
+   Sites iframe the scroll position belonged to the parent document.
+   The timeline is declared on .banner and referenced by name from .mg, rather
+   than the grid simply asking for view(). .banner is overflow:hidden, which
+   makes it a scroll container, so a view() on a child would resolve against it
+   and sit at the same progress forever. Named from the parent, it resolves
+   against the page, which is the thing actually scrolling. */
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    .banner{view-timeline-name:--band}
+    @keyframes driftl{from{transform:translateX(var(--dr))}to{transform:translateX(calc(var(--dr) * -1))}}
+    @keyframes driftr{from{transform:translateX(calc(var(--dr) * -1))}to{transform:translateX(var(--dr))}}
+    .banner .mg{--dr:34px;animation:driftl linear both;animation-timeline:--band;
+      animation-range:cover 0% cover 100%}
+    .banner2 .mg{animation-name:driftr}
+  }
+}
 /* ---------- site navigation ---------- */
 .nav{position:sticky;top:10px;z-index:30;max-width:1060px;margin:14px auto 0;padding:0 22px;display:flex;justify-content:flex-end}
 .navin{position:relative}
@@ -160,6 +188,7 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transfo
 </header>
 <p class="about">Sovrn Art is an independent, artist-first platform by <a href="https://twitter.com/shibboleth88" target="_blank">Ezra Shibboleth</a> and <a href="https://www.vanarman.com" target="_blank">Pindar Van Arman</a>, with <a href="https://x.com/lorepunk" target="_blank">lorepunk</a> providing copy and ops support. We value rigorous artistic processes, meaningfully constructed serial collections, substantial narratives, and structures that uphold the principles of sovereignty and decentralization.</p>
 <div class="banner banner2" aria-hidden="true"><div class="mg" id="ban2"></div></div>
+<p class="mos"><span id="mosn" aria-live="polite"></span><button type="button" class="mosb" id="mosk">Keep this one</button><button type="button" class="mosb" id="mosr">Reshuffle</button></p>
 
 <div class="sec">
 <h2 class="big">Sovrn Curated</h2>
@@ -277,9 +306,18 @@ const W=p=>WEBP?p.replace(/^\/?img\/(.*)\.(jpg|png)$/,'/img/derived/$1-x.webp'):
 const T=(i,lg)=>W('img/banner'+(lg?'-lg':'')+'/b'+String(i).padStart(3,"0")+'.jpg'),
 rng=(a,b)=>Array.from({length:b-a+1},(_,k)=>a+k),
 SMALLONLY=new Set([7,39,59,82,90,102,108,125,143,145,149]),
-MQ=matchMedia("(max-width:640px)"),
-SEED=(()=>{const q=new URLSearchParams(location.search).get("mosaic");
-  return q?(+q>>>0):(Date.now()>>>0);})();
+MQ=matchMedia("(max-width:640px)");
+/* Two columns more than the frame needs, so the drift below has somewhere to
+   travel: the surplus is split between the two edges as bleed, and the band
+   never pulls an empty edge into view. */
+const DRIFT_COLS=2;
+/* The seed composes the band, and it comes from the clock, so no two visits
+   see the same one. ?mosaic=<n> could always reproduce a composition, but
+   nothing ever put the number anywhere you could copy it, and inside the Sites
+   iframe the address bar was not ours to write to. Both of those changed. */
+let SEED=(()=>{const q=new URLSearchParams(location.search).get("mosaic");
+  return q?(+q>>>0):(Date.now()>>>0);})(),
+    PINNED=new URLSearchParams(location.search).has("mosaic");
 /* mulberry32: small, fast, and the same seed always draws the same band */
 const prng=s=>()=>{s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);
   t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
@@ -296,7 +334,7 @@ function mosaic(id,art,cts,p){
         rows=MQ.matches?2:3, cell=MQ.matches?46:54,
         /* enough columns to fill the frame and no more, so the whole band is
            on screen; turnover cycles the rest of the pool through it */
-        cols=Math.max(6,Math.ceil((el.parentElement.clientWidth+2)/(cell+2))),
+        cols=Math.max(6,Math.ceil((el.parentElement.clientWidth+2)/(cell+2)))+DRIFT_COLS,
         R=prng(SEED+p.salt), q={};
   /* Two slow waves drift across the band, one in lightness and one in warmth.
      Tiles are chosen to follow them, so the mosaic gathers into dark and light
@@ -407,9 +445,36 @@ MQ.addEventListener("change",drawBands);
 let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{
   const cell=MQ.matches?46:54;
   const stale=["ban","ban2"].some(i=>{const el=document.getElementById(i);
-    return el&&el._cols!==Math.max(6,Math.ceil((el.parentElement.clientWidth+2)/(cell+2)));});
+    return el&&el._cols!==Math.max(6,Math.ceil((el.parentElement.clientWidth+2)/(cell+2)))+DRIFT_COLS;});
   if(stale)drawBands();},200);});
-/* Turnover, and the only thing that moves: the bands hold still. One cell
+
+/* Keeping a composition.
+ *
+ * The band is seeded from the clock, so one you liked is gone the moment you
+ * reload. ?mosaic=<n> has always been able to reproduce one; what was missing
+ * was any way to find out which number you were looking at, and — while the
+ * site was a Google Sites embed — any address of ours to put it in.
+ *
+ * replaceState rather than pushState: pinning a mosaic is not a place anyone
+ * should have to press Back out of. Reshuffling drops the parameter again, so
+ * the address never claims to reproduce a band it no longer shows. */
+(function(){
+  const mos=document.querySelector(".mos"); if(!mos)return;
+  const num=document.getElementById("mosn"),
+        keep=document.getElementById("mosk"),
+        again=document.getElementById("mosr");
+  const write=q=>{const u=new URL(location.href);
+    q?u.searchParams.set("mosaic",SEED):u.searchParams.delete("mosaic");
+    history.replaceState(null,"",u);};
+  const show=()=>{
+    num.textContent="Mosaic "+SEED+(PINNED?" \u00b7 this address reproduces it":"");
+    mos.dataset.pinned=PINNED?"1":"0";};
+  keep.addEventListener("click",()=>{PINNED=true;write(true);show();});
+  again.addEventListener("click",()=>{
+    SEED=(Date.now()>>>0);PINNED=false;write(false);drawBands();show();});
+  show();
+})();
+/* Turnover. Apart from the scroll-linked drift, this is what moves. One cell
    somewhere in the mosaic dissolves into another work about every second and
    a half -- only in a band that is on screen, only cells actually
    in the window, and never while the tab is hidden. Faster than the fade, so a
