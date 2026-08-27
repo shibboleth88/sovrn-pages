@@ -255,19 +255,23 @@ var GIF = (function () {
 // because vanarman.com iframes one of them from
 // shibboleth88.github.io/sovrn-pages/ — a project page, where "/" is not our root.
 var BASE = typeof SHARE_ROOT !== "undefined" ? SHARE_ROOT : "/";
-// Ethereum endpoints, tried in order. The first two are public RPCs. The third is
-// Sovrn's own read-only proxy, and it is why this list exists at all: crypto RPC
-// hostnames sit on the "NoCoin"/cryptomining filter lists that uBlock Origin,
-// AdGuard, Brave Shields and DNS filters ship, so a visitor running any of those
-// got "Failed to fetch" on every single work — the request never left the browser
-// — while the page itself loaded fine, because the title index is same-origin.
-// The proxy host is not a crypto domain, so those lists do not touch it. It serves
-// only tokenURI on these three contracts, and caches (tokenURI is immutable).
-var RPCS = [
-  "https://ethereum-rpc.publicnode.com",
-  "https://eth.drpc.org",
-  "https://sovrn-bot-production.up.railway.app/api/eth"
-];
+  // Ethereum endpoints, tried in order, and only ever reached if the mirror below
+  // misses. Both are public RPCs belonging to no one here.
+  //
+  // There used to be a third: Sovrn's own read-only proxy on a non-crypto hostname,
+  // because crypto RPC hostnames sit on the "NoCoin"/cryptomining filter lists that
+  // uBlock Origin, AdGuard, Brave Shields and DNS filters ship, so a visitor running
+  // any of those got "Failed to fetch" on every work while the page itself loaded
+  // fine, the title index being same-origin. That proxy was retired in August 2026
+  // with the chatbot that housed it, and what made it removable is the mirror below:
+  // it holds all 2,218 works of the three collections same-origin, so a filtered
+  // visitor never reaches this list at all. If artwork ever fails for ad-blocked
+  // visitors again, that is the diagnosis, and shibboleth88/sovrn-eth is the service
+  // to redeploy.
+  var RPCS = [
+    "https://ethereum-rpc.publicnode.com",
+    "https://eth.drpc.org"
+  ];
 // Sticky: a results list can fire forty lookups, and once one endpoint has
 // answered there is no sense making all forty rediscover the dead ones.
 var rpcAt = 0;
@@ -1109,7 +1113,8 @@ function rpcCall(to, callData) {
 // call, because hex doubles every byte and the ABI pads it.
 //
 // The chain stays as the fallback, so a work missing from the mirror still resolves,
-// and nothing here is load-bearing on the harvest being complete.
+// and nothing here is load-bearing on the harvest being complete. It is not, in
+  // practice, reachable: the mirror holds exactly the 2,218 works the index lists.
 var ART = BASE + "onchain/";
 
 function svgToDataUri(text) {
