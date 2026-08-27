@@ -82,9 +82,16 @@ def main():
             out, last = [], 0
             for m in IMG.finditer(s):
                 tag, attrs = m.group(0), m.group(1)
+                # Already wrapped? Look for the nearest <picture> and the
+                # nearest </picture> before this tag: if the opener is the later
+                # of the two, we are inside one. A fixed lookbehind was tried
+                # first and is wrong — a <source> carrying three candidates runs
+                # well past 200 characters, so the opening tag falls outside the
+                # window and the image gets wrapped a second time.
+                head = s[:m.start()]
+                if head.rfind("<picture") > head.rfind("</picture"):
+                    skipped += 1; continue
                 before = s[max(0, m.start() - 200):m.start()]
-                if "<picture" in before and "</picture" not in before:
-                    skipped += 1; continue                      # already wrapped
                 if ID.search(attrs):
                     unwrapped += 1; reasons.setdefault("has id (JS-driven)", []).append(f); continue
                 if 'class="im"' in before[-120:]:
