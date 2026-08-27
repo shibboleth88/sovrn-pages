@@ -69,7 +69,7 @@ const coll=w[6]?"/curated/"+w[6]:"/cents";
 const mkt=O+w[4]+"/"+w[5];
 det.innerHTML='<button class="plate" type="button" onclick="zoom()">'+plate+'</button><div><p class="n2">'+pad(i)+' / 11</p><h2>'+esc(w[0])+'</h2><p class="title">'+esc(w[1])+'</p>'+
 '<dl><dt>Collection</dt><dd>'+esc(w[2])+'</dd><dt>Released</dt><dd>'+w[3]+'</dd><dt>Chain</dt><dd>Ethereum</dd><dt>Contract</dt><dd>'+w[4]+'</dd>'+'<dt>Token</dt><dd>'+w[5]+'</dd></dl>'+
-'<p class="links"><a href="'+mkt+'"'+tgt(mkt)+'>View on Raster ↗</a><a href="'+coll+'"'+tgt(coll)+'>Read the collection page ↗</a></p></div>';}
+'<p class="links"><a href="'+mkt+'"'+tgt(mkt)+'>View on Raster</a><a href="'+coll+'"'+tgt(coll)+'>Read the collection page</a></p></div>';}
 let cur=0;
 function zoom(){const w=W[cur];if(!w[7])return;
 $("lbi").src=w[7];$("lbi").alt=w[1]+" by "+w[0];

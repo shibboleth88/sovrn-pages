@@ -50,7 +50,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 #mb[aria-expanded=true] span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
 #mb[aria-expanded=true] span:nth-child(2){opacity:0}
 #mb[aria-expanded=true] span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
-#mn{position:absolute;right:0;top:calc(100% + 9px);list-style:none;margin:0;padding:8px 0;background:var(--paper);border:1px solid var(--rule);min-width:236px;max-height:78vh;overflow-y:auto;box-shadow:0 10px 30px rgba(22,24,29,.09)}
+#mn{position:absolute;right:0;top:calc(100% + 9px);list-style:none;margin:0;padding:8px 0;background:var(--paper);border:1px solid var(--rule);min-width:236px;max-height:78vh;overflow-y:auto;border:1px solid var(--rule)}
 #mn a,#mn .grp{display:block;width:100%;text-align:left;padding:9px 18px;text-decoration:none;color:var(--ink);font:500 11px/1.35 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;background:none;border:0;cursor:pointer;transition:color .15s,background .15s}
 #mn a:hover,#mn .grp:hover{color:var(--accent);background:var(--surface-2)}
 #mn .grp{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:default;color:var(--slate)}
@@ -169,7 +169,7 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transfo
 <div class="sec">
 <h2>In museums and exhibitions</h2>
 <ul class="mus" id="m"></ul>
-<div class="links more"><a href="/museums">All museums and exhibitions &#8599;</a></div>
+<div class="links more"><a href="/museums">All museums and exhibitions</a></div>
 </div>
 
 <footer class="ft">
@@ -179,8 +179,8 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transfo
 <h3>Elsewhere</h3>
 <div class="ico" id="so"></div>
 <div class="links">
-<a href="/about">About &#8599;</a>
-<a href="/marketplaces">Marketplaces &#8599;</a>
+<a href="/about">About</a>
+<a href="/marketplaces">Marketplaces</a>
 </div>
 </footer>
 </div>
@@ -452,7 +452,7 @@ document.getElementById("g").innerHTML=C.map((c,i)=>{
   '<span class="im'+(s==="latent-couture"?" tp":"")+'" role="img" aria-label="'+esc(c[0])+'">'+
   '<img src="'+encodeURI(c[3])+'" alt="" width="500" height="500" loading="lazy">'+
   (PL[s]?'<img class="q" alt="" width="500" height="500" aria-hidden="true">':'')+
-  '</span><span class="ti">'+esc(c[0])+'<span class="go">&#8599;</span></span>'+
+  '</span><span class="ti">'+esc(c[0])+'</span>'+
   '<span class="de">'+esc(c[4])+'</span>'+
   '<span class="ar">'+esc(c[1])+'</span></a>';
 }).join("");
