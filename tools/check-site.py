@@ -40,7 +40,7 @@ PUBLIC = """
 /contact /home /curated/cents
 /curated/ai-spaceships /curated/latent-couture /curated/mementi
 /curated/painting-with-fire /curated/painting-with-fire/gan-timeline
-/curated/perimeter-town /curated/possibility-spaces /curated/reflection
+/curated/perimeter-town /curated/possibility-spaces /curated/reflection /curated/reflection/on-chain
 /curated/seasons-of-mobility /curated/sightseers /curated/wunderkammer
 /collections/abs-collection /collections/fransisco-carolinum /collections/lacma
 /collections/moca
