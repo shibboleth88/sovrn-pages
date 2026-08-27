@@ -49,16 +49,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 /* A fixed dark ground, not var(--ink): the token inverts in dark mode, and at
    this size that turned every 2px gap between tiles into a pale grid. */
 .mg{background:#0d0f14}
-/* The seed, and what you can do with it. Set quiet: it is an aside about the
-   band, not a feature of the page. */
-.mos{display:flex;flex-wrap:wrap;align-items:baseline;gap:16px;margin:12px 0 var(--gap);
-  font:400 11px/1.5 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--slate)}
-.mosb{font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--ink);
-  background:none;border:0;border-bottom:1px solid var(--rule);padding:0 0 2px;cursor:pointer;
-  transition:color .18s,border-color .18s}
-.mosb:hover{color:var(--accent);border-color:var(--accent)}
-.mos[data-pinned="1"] #mosk{display:none}
-@media(max-width:640px){.mos{margin-bottom:30px}}
 
 /* ---------- site navigation ---------- */
 /* Fixed rather than sticky now: sticky would start below a full-height hero,
@@ -189,7 +179,6 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transfo
 </div>
 </div>
 <div class="wrap">
-<p class="mos"><span id="mosn" aria-live="polite"></span><button type="button" class="mosb" id="mosk">Keep this one</button><button type="button" class="mosb" id="mosr">Reshuffle</button></p>
 <p class="about">Sovrn Art is an independent, artist-first platform by <a href="https://twitter.com/shibboleth88" target="_blank">Ezra Shibboleth</a> and <a href="https://www.vanarman.com" target="_blank">Pindar Van Arman</a>, with <a href="https://x.com/lorepunk" target="_blank">lorepunk</a> providing copy and ops support. We value rigorous artistic processes, meaningfully constructed serial collections, substantial narratives, and structures that uphold the principles of sovereignty and decentralization.</p>
 
 
@@ -310,13 +299,11 @@ const T=(i,lg)=>W('img/banner'+(lg?'-lg':'')+'/b'+String(i).padStart(3,"0")+'.jp
 rng=(a,b)=>Array.from({length:b-a+1},(_,k)=>a+k),
 SMALLONLY=new Set([7,39,59,82,90,102,108,125,143,145,149]),
 MQ=matchMedia("(max-width:640px)");
-/* The seed composes the band, and it comes from the clock, so no two visits
-   see the same one. ?mosaic=<n> could always reproduce a composition, but
-   nothing ever put the number anywhere you could copy it, and inside the Sites
-   iframe the address bar was not ours to write to. Both of those changed. */
+/* The seed composes the band, and it comes from the clock, so no two visits see
+   the same one. ?mosaic=<n> pins it, which is the only way to compare two runs
+   or to reproduce something you saw. */
 let SEED=(()=>{const q=new URLSearchParams(location.search).get("mosaic");
-  return q?(+q>>>0):(Date.now()>>>0);})(),
-    PINNED=new URLSearchParams(location.search).has("mosaic");
+  return q?(+q>>>0):(Date.now()>>>0);})();
 /* mulberry32: small, fast, and the same seed always draws the same band */
 const prng=s=>()=>{s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);
   t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
@@ -447,9 +434,17 @@ const drawBands=()=>{
      punctuation in a strip and as a repeating motif across a wall — so one in
      eleven; and the block probabilities, since a 2x2 that dominated three rows
      is a detail across thirteen. Blocks stop at 3x3 because the large tiles are
-     320px, and a 3x3 already asks for 332 on a 2x display. */
+     320px, and a 3x3 already asks for 332 on a 2x display.
+
+     bare is 0, which is the third thing that did not survive the change of
+     scale. A rest is a cell the packing marks empty on purpose, and it only
+     takes the accent colour about a fifth of the time — the rest of the time
+     nothing is placed and the dark ground shows through. One or two of those in
+     a 166px ribbon read as breathing space. Seven scattered through a wall of
+     artwork read as tiles that failed to load, which is the one thing a page
+     made of other people's work must never look like. */
   mosaic("ban", rng(1,186), rng(187,223),
-         {salt:0,p3:.15,p2:.30,rect:.30,bare:.055,cent:11});
+         {salt:0,p3:.15,p2:.30,rect:.30,bare:0,cent:11});
 };
 drawBands();
 MQ.addEventListener("change",drawBands);
@@ -462,32 +457,6 @@ let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{
              || el._rows!==rows);});
   if(stale)drawBands();},200);});
 
-/* Keeping a composition.
- *
- * The band is seeded from the clock, so one you liked is gone the moment you
- * reload. ?mosaic=<n> has always been able to reproduce one; what was missing
- * was any way to find out which number you were looking at, and — while the
- * site was a Google Sites embed — any address of ours to put it in.
- *
- * replaceState rather than pushState: pinning a mosaic is not a place anyone
- * should have to press Back out of. Reshuffling drops the parameter again, so
- * the address never claims to reproduce a band it no longer shows. */
-(function(){
-  const mos=document.querySelector(".mos"); if(!mos)return;
-  const num=document.getElementById("mosn"),
-        keep=document.getElementById("mosk"),
-        again=document.getElementById("mosr");
-  const write=q=>{const u=new URL(location.href);
-    q?u.searchParams.set("mosaic",SEED):u.searchParams.delete("mosaic");
-    history.replaceState(null,"",u);};
-  const show=()=>{
-    num.textContent="Mosaic "+SEED+(PINNED?" \u00b7 this address reproduces it":"");
-    mos.dataset.pinned=PINNED?"1":"0";};
-  keep.addEventListener("click",()=>{PINNED=true;write(true);show();});
-  again.addEventListener("click",()=>{
-    SEED=(Date.now()>>>0);PINNED=false;write(false);drawBands();show();});
-  show();
-})();
 /* Turnover. Apart from the scroll-linked drift, this is what moves. One cell
    somewhere in the mosaic dissolves into another work about every second and
    a half -- only in a band that is on screen, only cells actually
