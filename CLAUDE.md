@@ -49,6 +49,87 @@ under-reports. Render the pages and read `document.images` instead — every pag
 same-origin now, so an iframe over the sitemap does it. That is how the seventh
 repo (`reflection-page`) was found after six had been listed.
 
+## Responsive images: `img/derived/` is generated, `img/` is the source
+
+Every raster the site serves has AVIF and WebP copies under `img/derived/`, and
+the pages ask for those. The originals under `img/` never move and are still what
+a `<picture>` falls back to, so nothing that points at them can break.
+
+Measured on the homepage, which is the worst case: **3,142KB of raster down to
+1,380KB.** Where that came from is worth knowing, because it was not where it
+looked:
+
+| | before | after |
+|---|---|---|
+| the logo | 521KB | 28KB |
+| seven footer icons | 262KB | 11KB |
+| twelve collection cards | 1,367KB | 608KB |
+| the mosaic tiles | 896KB | 638KB |
+
+The logo and the icons were nearly a quarter of the page on their own: 256–500px
+files in a **26px** slot. The mosaic, which looks like the extravagance, was
+already tiled at 160 and 320px and had the least to give. Measure before
+optimising here; the eye is wrong about which of these is heavy.
+
+### Three mechanisms, because one does not fit
+
+`<picture>` is the good answer and it works for 118 of the tags. It cannot be
+used everywhere, and the reason is specific: **inside a `<picture>`, the
+`<source>` elements win a later assignment to `img.src`.** Anything the page
+re-points — the mosaic as it turns over, the cards as they cycle, every lightbox
+— would freeze on whatever the sources first resolved to. So:
+
+1. **`<picture>` with `srcset`**, written by `tools/responsive-images.py` into
+   the HTML. It skips any `<img>` carrying an `id`, because on this site that is
+   exactly the set the scripts re-point, and the homepage crossfade pairs.
+2. **One capability test and a path rewrite**, for the two families whose `src`
+   does get reassigned. `index.html` tests once for WebP and `W()` maps
+   `img/foo/bar.jpg` to `img/derived/foo/bar-x.webp`. The `-x` name exists so the
+   page can build the path without knowing the source's dimensions.
+3. **A `<picture>` built in script**, for the footer icons, which are assembled
+   from data arrays and so are invisible to (1). They sit in the same 26px slot
+   at every width, so three rungs and one `sizes` cover every screen.
+
+### `sizes` is measured, not guessed
+
+`tools/image-sizes.json` holds the CSS width each image occupies at a desktop and
+a mobile viewport, read off the live pages. `sizes` is what decides which rung
+the browser takes, and getting it wrong fails **silently** in both directions —
+the largest file to a phone, or a soft one to a desktop. Neither logs anything.
+Re-measure after a layout change: load the sitemap into an iframe and record
+`getBoundingClientRect().width` per image at 1280 and at 390.
+
+The rung widths come from those slots — desktop at 1x and 2x, mobile at 2x and
+3x. **3x is a phone**, and a phone lays the page out at the mobile slot, so
+pairing the desktop slot with 3x builds a 3000px copy of a picture that is never
+wider than 1040. That mistake alone was 27MB.
+
+### The order matters
+
+```bash
+python3 tools/build-images.py           # derivatives for everything measured
+python3 tools/responsive-images.py      # wrap what can be wrapped
+python3 tools/build-images.py --prune   # drop what no page can ask for
+python3 tools/build-images.py --check   # referenced files present and current
+```
+
+The build has to run first because the rewriter can only offer a rung that
+already exists, and `--prune` has to run last because until the rewriting is done
+there is no way to tell a derivative nothing wants from one nothing has claimed
+*yet*. Skipping the prune leaves ~25MB for galleries that build their `<img>` in
+script: those are measured, so derivatives get written, and no page ever requests
+one. `img/derived/` should sit around 42MB.
+
+`check-site.py --files` verifies every srcset target and every `-x.webp`, and CI
+runs it. It cannot see a *stale* derivative whose source was edited underneath
+it — `build-images.py --check` does that, and it needs Pillow, which is why it is
+not in CI.
+
+Two things are deliberately left alone. **Animated GIFs**, because several of
+these are the artwork and a still frame is not the artwork. And **alpha is
+preserved** — flattening the logo and the icons to RGB gives a white box on a
+white card, which looks fine in a thumbnail and wrong on the page.
+
 ## Writing for the site
 
 The reference for prose voice is the **Concept text on `/curated/reflection`**. Read it

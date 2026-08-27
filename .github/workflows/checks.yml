@@ -27,8 +27,13 @@ jobs:
 
       # Resolves every public URL against the working tree the way Pages does —
       # file before directory — so a moved page, a redirect loop or a stub that
-      # shadows its own page fails here rather than on sovrn.art.
-      - name: URL contract resolves in the tree
+      # shadows its own page fails here rather than on sovrn.art. Also checks
+      # every responsive derivative a page can ask for: a missing srcset entry
+      # is invisible — the browser quietly takes another candidate and the page
+      # looks right while shipping the file it was meant to replace — and a
+      # missing -x.webp, which the mosaic and the cards build a path to rather
+      # than offering as one candidate of several, is a broken image outright.
+      - name: URL contract and responsive derivatives resolve in the tree
         run: python3 tools/check-site.py --files
 
       # The four flat share shells and the three nested ones must stay identical

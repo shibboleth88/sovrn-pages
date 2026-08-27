@@ -286,6 +286,78 @@ def check_local_assets():
     return bad
 
 
+def check_srcsets():
+    """Every file a <picture> offers must be on disk, and so must every -x.webp
+    the two JS families construct.
+
+    A missing srcset entry is the quietest failure on the site: the browser
+    simply picks another candidate, or falls through to the <img>, and the page
+    looks correct while shipping the original file it was meant to replace. The
+    JS families are worse — there is no fallback there, so a missing -x.webp is
+    a broken image for every visitor whose browser takes WebP.
+    """
+    import glob
+    bad = []
+    files = []
+    for pat in ("*.html", "*.js", "*/*.html", "*/*.js", "*/*/*.html", "*/*/*/*.html"):
+        files += glob.glob(os.path.join(ROOT, pat))
+    seen = set()
+    for f in sorted(set(files)):
+        if os.sep + "onchain" + os.sep in f or os.sep + "img" + os.sep in f:
+            continue
+        text = io.open(f, encoding="utf-8", errors="replace").read()
+        for ss in re.findall(r'srcset="([^"]+)"', text):
+            # index.html builds one srcset in script, so the literal text here is
+            # a fragment of JS rather than a path. A candidate carrying a quote or
+            # a + is being concatenated at runtime and cannot be resolved offline.
+            if re.search(r"""["'+]""", ss): continue
+            for cand in ss.split(","):
+                u = cand.strip().split()[0]
+                if u.startswith("/"): u = u[1:]
+                if u in seen: continue
+                seen.add(u)
+                if not os.path.isfile(os.path.join(ROOT, u)):
+                    bad.append("missing srcset target %s (%s)" % (u, os.path.relpath(f, ROOT)))
+    # The footer icons: index.html builds their <picture> in script, so the
+    # loop above deliberately skips that srcset and it would otherwise go
+    # unchecked — a missing rung there is a broken image, not a quiet fallback.
+    # The rung list is read from the page so the two cannot drift.
+    sizes_path = os.path.join(ROOT, "tools", "image-sizes.json")
+    idx = os.path.join(ROOT, "index.html")
+    if os.path.isfile(sizes_path) and os.path.isfile(idx):
+        import json
+        table = json.load(io.open(sizes_path))
+        m = re.search(r'\[([\d,\s]+)\]\.map\(w=>d\+"-"\+w', io.open(idx, encoding="utf-8").read())
+        rungs = [int(x) for x in re.findall(r"\d+", m.group(1))] if m else []
+        icons = [k for k, v in table.items()
+                 if k.startswith("img/homepage/") and v.get("d") == 26]
+        for k in icons:
+            for w in rungs:
+                for ext in ("avif", "webp"):
+                    f = "img/derived/%s-%d.%s" % (os.path.splitext(k)[0][4:], w, ext)
+                    seen.add(f)
+                    if not os.path.isfile(os.path.join(ROOT, f)):
+                        bad.append("missing icon rung %s" % f)
+        if icons and not rungs:
+            bad.append("could not read the icon rung list out of index.html")
+
+    # the families the pages build a path into rather than writing one
+    for fam in ("img/banner", "img/banner-lg", "img/collections"):
+        for dp, _, fs in os.walk(os.path.join(ROOT, fam)):
+            for fn in fs:
+                if not fn.lower().endswith((".jpg", ".jpeg", ".png")): continue
+                src = os.path.relpath(os.path.join(dp, fn), ROOT)
+                stem = os.path.splitext(src)[0][4:]
+                d = os.path.join(ROOT, "img", "derived", stem + "-x.webp")
+                if not os.path.isfile(d):
+                    bad.append("missing %s for %s" % (os.path.relpath(d, ROOT), src))
+    print("  srcset targets checked: %d" % len(seen))
+    for b in bad[:10]: print("  FAIL " + b)
+    if len(bad) > 10: print("  ... and %d more" % (len(bad) - 10))
+    if not bad: print("  all present")
+    return bad
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--urls", nargs="?", const="https://www.sovrn.art",
@@ -304,6 +376,8 @@ def main():
         bad += check_files()
         print("\nImages assembled from a base path")
         bad += check_local_assets()
+        print("\nResponsive derivatives")
+        bad += check_srcsets()
     if a.urls:
         print("\nPublic URLs")
         bad += check_urls(a.urls)

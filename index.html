@@ -155,7 +155,7 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transfo
 <nav class="nav"><div class="navin"><button id="mb" aria-expanded="false" aria-controls="mn" aria-label="Site navigation"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></div></nav>
 <div class="wrap">
 <header class="mast">
-<a class="logo" href="/"><img src="/img/homepage/sovrn_logo-removebg.png" alt="Sovrn Art" width="256" height="256"></a>
+<a class="logo" href="/"><picture><source type="image/avif" srcset="/img/derived/homepage/sovrn_logo-removebg-176.avif 176w, /img/derived/homepage/sovrn_logo-removebg-256.avif 256w, /img/derived/homepage/sovrn_logo-removebg-400.avif 400w" sizes="(max-width: 700px) 132px, 176px"><source type="image/webp" srcset="/img/derived/homepage/sovrn_logo-removebg-176.webp 176w, /img/derived/homepage/sovrn_logo-removebg-256.webp 256w, /img/derived/homepage/sovrn_logo-removebg-400.webp 400w" sizes="(max-width: 700px) 132px, 176px"><img src="/img/homepage/sovrn_logo-removebg.png" alt="Sovrn Art" width="256" height="256"></picture></a>
 <p class="tag">an indie studio for sovereign artists</p>
 </header>
 <p class="about">Sovrn Art is an independent, artist-first platform by <a href="https://twitter.com/shibboleth88" target="_blank">Ezra Shibboleth</a> and <a href="https://www.vanarman.com" target="_blank">Pindar Van Arman</a>, with <a href="https://x.com/lorepunk" target="_blank">lorepunk</a> providing copy and ops support. We value rigorous artistic processes, meaningfully constructed serial collections, substantial narratives, and structures that uphold the principles of sovereignty and decentralization.</p>
@@ -262,7 +262,19 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false);});
 
    The seed comes from the clock, so no two visits compose the same band.
    ?mosaic=<n> pins it, which is the only way to compare two runs. */
-const T=(i,lg)=>'img/banner'+(lg?'-lg':'')+'/b'+String(i).padStart(3,"0")+'.jpg',
+/* The tiles go out as WebP where the browser can take them, which is most of
+   the band's weight for none of its appearance. This is a capability test rather
+   than a <picture> per tile because turnover below reassigns img.src, and inside
+   a <picture> the sources win that assignment -- every tile would freeze on its
+   first pick. The canvas test asks whether the browser can *encode* WebP, a
+   shade stricter than whether it can decode one; a browser that decodes but
+   cannot encode keeps the JPEG, which is the safe direction to be wrong in. */
+const WEBP=(()=>{try{const c=document.createElement("canvas");c.width=c.height=1;
+  return c.toDataURL("image/webp").slice(0,15)==="data:image/webp";}catch(e){return false;}})();
+/* img/foo/bar.jpg -> img/derived/foo/bar-x.webp, the same picture at the same
+   size in a lighter format. Anything without a derivative keeps its own path. */
+const W=p=>WEBP?p.replace(/^\/?img\/(.*)\.(jpg|png)$/,'/img/derived/$1-x.webp'):p;
+const T=(i,lg)=>W('img/banner'+(lg?'-lg':'')+'/b'+String(i).padStart(3,"0")+'.jpg'),
 rng=(a,b)=>Array.from({length:b-a+1},(_,k)=>a+k),
 SMALLONLY=new Set([7,39,59,82,90,102,108,125,143,145,149]),
 MQ=matchMedia("(max-width:640px)"),
@@ -443,14 +455,16 @@ bytegans:[24,"bytegans","bytegan","svg"]};
    [count, folder, filename prefix, extension] for the sets that live elsewhere */
 const works=s=>{const p=PL[s],A=Array.isArray(p);
   const n=A?p[0]:p,d=A?p[1]:"collections/"+s,x=A?p[2]:s,e=A?p[3]:"jpg";
-  return Array.from({length:n},(_,j)=>
-    "img/"+d+"/"+x+"-"+String(j+1).padStart(2,"0")+"."+e);};
+  return Array.from({length:n},(_,j)=>{
+    const u="img/"+d+"/"+x+"-"+String(j+1).padStart(2,"0")+"."+e;
+    /* the on-chain sets are SVG and already small; W leaves those alone */
+    return e==="svg"?u:W(u);});};
 const slugOf=c=>c[2].split("/").pop();
 document.getElementById("g").innerHTML=C.map((c,i)=>{
   const s=slugOf(c),rot=PL[s]?' data-p="'+s+'" data-i="'+i+'"':'';
   return '<a class="card" href="'+c[2]+'"'+tgt(c[2])+rot+'>'+
   '<span class="im'+(s==="latent-couture"?" tp":"")+'" role="img" aria-label="'+esc(c[0])+'">'+
-  '<img src="'+encodeURI(c[3])+'" alt="" width="500" height="500" loading="lazy">'+
+  '<img src="'+encodeURI(W(c[3]))+'" alt="" width="500" height="500" loading="lazy">'+
   (PL[s]?'<img class="q" alt="" width="500" height="500" aria-hidden="true">':'')+
   '</span><span class="ti">'+esc(c[0])+'</span>'+
   '<span class="de">'+esc(c[4])+'</span>'+
@@ -496,8 +510,19 @@ document.getElementById("g").innerHTML=C.map((c,i)=>{
 })();
 document.getElementById("m").innerHTML=MU.concat(MC).map(m=>
 '<li><a href="'+m[3]+'"'+tgt(m[3])+'><span class="mv">'+esc(m[0])+'</span><span class="ms">'+esc(m[1])+'</span><span class="md">'+esc(m[2])+'</span></a></li>').join("");
+/* Every marketplace and social icon sits in the same 26px slot at every width,
+   so three rungs carry it from 1x to 3x and one sizes value is the truth rather
+   than a hedge. Built here rather than by tools/responsive-images.py: that
+   rewrites <img> tags written out in the HTML, and these are assembled from the
+   arrays above, which is why they were the last full-size files on the page. */
+const ICON=u=>{const d=u.replace(/^\/img\/(.*)\.(?:jpg|png)$/,"/img/derived/$1");
+  if(d===u)return '<img src="'+u+'" alt="">';
+  const ss=e=>[32,48,80].map(w=>d+"-"+w+"."+e+" "+w+"w").join(", ");
+  return '<picture><source type="image/avif" srcset="'+ss("avif")+'" sizes="26px">'+
+    '<source type="image/webp" srcset="'+ss("webp")+'" sizes="26px">'+
+    '<img src="'+u+'" alt=""></picture>';};
 document.getElementById("mk").innerHTML=MK.map(m=>
-'<a href="'+m[2]+'"'+tgt(m[2])+'><img src="'+encodeURI(H+m[1])+'" alt=""><span>'+m[0]+'</span></a>').join("");
+'<a href="'+m[2]+'"'+tgt(m[2])+'>'+ICON(encodeURI(H+m[1]))+'<span>'+m[0]+'</span></a>').join("");
 document.getElementById("so").innerHTML=SO.map(m=>
-'<a href="'+m[2]+'"'+tgt(m[2])+'><img src="'+encodeURI((m[3]?P:H)+m[1])+'" alt=""><span>'+m[0]+'</span></a>').join("");
+'<a href="'+m[2]+'"'+tgt(m[2])+'>'+ICON(encodeURI((m[3]?P:H)+m[1]))+'<span>'+m[0]+'</span></a>').join("");
 </script></body></html>

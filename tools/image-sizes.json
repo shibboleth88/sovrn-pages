@@ -1,0 +1,1282 @@
+{
+"img/cents-project/grid-1.png": {
+"d": 1000,
+"m": 331
+},
+"img/cents-project/grid-2.jpg": {
+"d": 1000,
+"m": 331
+},
+"img/cents-project/grid-3.png": {
+"d": 1000,
+"m": 331
+},
+"img/cents-project/penny-1979.jpg": {
+"d": 340,
+"m": 331
+},
+"img/cents/centsbot.png": {
+"d": 20,
+"m": 20
+},
+"img/fc/ai_portrait_LACMA.jpg": {
+"d": 317,
+"m": 244
+},
+"img/fc/ai_spaceships_fc.jpg": {
+"d": 290,
+"m": 289
+},
+"img/fc/cope_fc.jpg": {
+"d": 290,
+"m": 289
+},
+"img/fc/fire_fc.jpg": {
+"d": 290,
+"m": 289
+},
+"img/fc/latent_couture_fc.jpg": {
+"d": 290,
+"m": 289
+},
+"img/fc/mobility_fc.jpg": {
+"d": 290,
+"m": 289
+},
+"img/fc/noctilucent_fc.jpg": {
+"d": 290,
+"m": 289
+},
+"img/fc/possibility_spaces_fc.jpg": {
+"d": 290,
+"m": 289
+},
+"img/fc/reflection_fc.jpg": {
+"d": 290,
+"m": 289
+},
+"img/fc/sightseers_fc.jpg": {
+"d": 290,
+"m": 289
+},
+"img/homepage/ai-spaceships.jpg": {
+"d": 336,
+"m": 331
+},
+"img/homepage/cent_homepage.jpg": {
+"d": 336,
+"m": 331
+},
+"img/homepage/cents-discord.png": {
+"d": 26,
+"m": 26
+},
+"img/homepage/cope-vol-1.jpg": {
+"d": 336,
+"m": 331
+},
+"img/homepage/emerging-faces.jpg": {
+"d": 336,
+"m": 331
+},
+"img/homepage/fire_homepage.jpg": {
+"d": 336,
+"m": 331
+},
+"img/homepage/instagram.png": {
+"d": 26,
+"m": 26
+},
+"img/homepage/latent_couture_homepage.jpg": {
+"d": 336,
+"m": 331
+},
+"img/homepage/mementi_homepage.jpg": {
+"d": 336,
+"m": 331
+},
+"img/homepage/ord.png": {
+"d": 26,
+"m": 26
+},
+"img/homepage/perimeter_town_homepage.jpg": {
+"d": 336,
+"m": 331
+},
+"img/homepage/possibility_spaces_homepage.jpg": {
+"d": 336,
+"m": 331
+},
+"img/homepage/rabbit_takeover_homepage.jpg": {
+"d": 336,
+"m": 331
+},
+"img/homepage/raster.jpg": {
+"d": 26,
+"m": 26
+},
+"img/homepage/satflow.png": {
+"d": 26,
+"m": 26
+},
+"img/homepage/seasons-of-mobility.jpg": {
+"d": 336,
+"m": 331
+},
+"img/homepage/sightseers_homepage.jpg": {
+"d": 336,
+"m": 331
+},
+"img/homepage/sovrn_logo-removebg.png": {
+"d": 176,
+"m": 132
+},
+"img/homepage/twitter.jpg": {
+"d": 26,
+"m": 26
+},
+"img/homepage/van-arman-discord.png": {
+"d": 26,
+"m": 26
+},
+"img/pages/abs/sightseers-104.jpg": {
+"d": 392,
+"m": 303
+},
+"img/pages/ai-spaceships/01.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/ai-spaceships/02.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/ai-spaceships/03.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/ai-spaceships/04.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/ai-spaceships/05.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/ai-spaceships/06.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/ai-spaceships/07.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/ai-spaceships/hero.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/bankable/bsc-exterior.jpg": {
+"d": 513,
+"m": 331
+},
+"img/pages/bankable/bsc-interior.jpg": {
+"d": 513,
+"m": 331
+},
+"img/pages/bankable/cents-backs.jpg": {
+"d": 513,
+"m": 331
+},
+"img/pages/bankable/cents-fronts.jpg": {
+"d": 513,
+"m": 331
+},
+"img/pages/bankable/poster.jpg": {
+"d": 1040,
+"m": 331
+},
+"img/pages/bytegans/artist.jpg": {
+"d": 360,
+"m": 331
+},
+"img/pages/bytegans/panels.jpg": {
+"d": 956,
+"m": 331
+},
+"img/pages/christies/emerging-faces-nine.jpg": {
+"d": 620,
+"m": 331
+},
+"img/pages/cope-vol-1/01.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/cope-vol-1/02.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/cope-vol-1/03.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/cope-vol-1/04.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/cope-vol-1/05.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/cope-vol-1/06.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/cope-vol-1/07.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/cope-vol-1/hero.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/fc-3-blockchains/francisco-carolinum.jpg": {
+"d": 512,
+"m": 158
+},
+"img/pages/fc-3-blockchains/poster.jpg": {
+"d": 512,
+"m": 158
+},
+"img/pages/marfa/ai-spaceships.jpg": {
+"d": 303,
+"m": 331
+},
+"img/pages/marfa/camper.jpg": {
+"d": 956,
+"m": 331
+},
+"img/pages/marfa/crowd.jpg": {
+"d": 463,
+"m": 331
+},
+"img/pages/marfa/latent-couture.jpg": {
+"d": 303,
+"m": 331
+},
+"img/pages/marfa/mementi.jpg": {
+"d": 303,
+"m": 331
+},
+"img/pages/marfa/night.jpg": {
+"d": 303,
+"m": 331
+},
+"img/pages/marfa/painting-with-fire.jpg": {
+"d": 303,
+"m": 331
+},
+"img/pages/marfa/perimeter-town.jpg": {
+"d": 303,
+"m": 331
+},
+"img/pages/marfa/plotter.jpg": {
+"d": 956,
+"m": 331
+},
+"img/pages/marfa/possibility-spaces.jpg": {
+"d": 303,
+"m": 331
+},
+"img/pages/marfa/postcards-marfa.jpg": {
+"d": 463,
+"m": 331
+},
+"img/pages/marfa/postcards-noctilucent.jpg": {
+"d": 956,
+"m": 331
+},
+"img/pages/marfa/prints.jpg": {
+"d": 463,
+"m": 331
+},
+"img/pages/marfa/reflection.jpg": {
+"d": 303,
+"m": 331
+},
+"img/pages/marfa/seasons-of-mobility.jpg": {
+"d": 303,
+"m": 331
+},
+"img/pages/marfa/truck.jpg": {
+"d": 463,
+"m": 331
+},
+"img/pages/marfa/wunderkammer.jpg": {
+"d": 303,
+"m": 331
+},
+"img/pages/mementi/artist.jpg": {
+"d": 440,
+"m": 331
+},
+"img/pages/mementi/lead.jpg": {
+"d": 1016,
+"m": 331
+},
+"img/pages/mementi/tall1.jpg": {
+"d": 325,
+"m": 331
+},
+"img/pages/mementi/tall2.jpg": {
+"d": 325,
+"m": 331
+},
+"img/pages/mementi/tall3.jpg": {
+"d": 325,
+"m": 331
+},
+"img/pages/mementi/wide1.jpg": {
+"d": 1016,
+"m": 331
+},
+"img/pages/mementi/wide2.jpg": {
+"d": 1016,
+"m": 331
+},
+"img/pages/mementi/wide3.jpg": {
+"d": 1016,
+"m": 331
+},
+"img/pages/mementi/wide4.jpg": {
+"d": 1016,
+"m": 331
+},
+"img/pages/mementi/wide5.jpg": {
+"d": 1016,
+"m": 331
+},
+"img/pages/obituary/obituary-01.png": {
+"d": 880,
+"m": 346
+},
+"img/pages/obituary/obituary-02.png": {
+"d": 880,
+"m": 346
+},
+"img/pages/obituary/obituary-03.png": {
+"d": 880,
+"m": 346
+},
+"img/pages/obituary/obituary-04.png": {
+"d": 880,
+"m": 346
+},
+"img/pages/obituary/obituary-05.png": {
+"d": 880,
+"m": 346
+},
+"img/pages/obituary/obituary-06.png": {
+"d": 880,
+"m": 346
+},
+"img/pages/obituary/obituary-07.png": {
+"d": 880,
+"m": 346
+},
+"img/pages/obituary/obituary-08.png": {
+"d": 880,
+"m": 346
+},
+"img/pages/obituary/obituary-09.png": {
+"d": 880,
+"m": 346
+},
+"img/pages/obituary/obituary-10.png": {
+"d": 880,
+"m": 346
+},
+"img/pages/obituary/obituary-11.png": {
+"d": 880,
+"m": 346
+},
+"img/pages/overview/arab-bank.jpg": {
+"d": 332,
+"m": 331
+},
+"img/pages/overview/bankable.jpg": {
+"d": 332,
+"m": 331
+},
+"img/pages/overview/christies.jpg": {
+"d": 332,
+"m": 331
+},
+"img/pages/overview/fc-3-blockchains.jpg": {
+"d": 332,
+"m": 331
+},
+"img/pages/overview/fc-collection.jpg": {
+"d": 332,
+"m": 331
+},
+"img/pages/overview/kindl.jpeg": {
+"d": 332,
+"m": 331
+},
+"img/pages/overview/lacma.jpeg": {
+"d": 332,
+"m": 331
+},
+"img/pages/overview/marfa.jpg": {
+"d": 332,
+"m": 331
+},
+"img/pages/overview/moca.png": {
+"d": 332,
+"m": 331
+},
+"img/pages/overview/screens.jpg": {
+"d": 332,
+"m": 331
+},
+"img/pages/painting-with-fire/i03.jpg": {
+"d": 365,
+"m": 331
+},
+"img/pages/painting-with-fire/i09.jpg": {
+"d": 365,
+"m": 331
+},
+"img/pages/painting-with-fire/i17.jpg": {
+"d": 365,
+"m": 331
+},
+"img/pages/painting-with-fire/i18.jpg": {
+"d": 365,
+"m": 331
+},
+"img/pages/painting-with-fire/i21.jpg": {
+"d": 365,
+"m": 331
+},
+"img/pages/painting-with-fire/i23.jpg": {
+"d": 365,
+"m": 331
+},
+"img/pages/painting-with-fire/i25.jpg": {
+"d": 365,
+"m": 331
+},
+"img/pages/painting-with-fire/i29.jpg": {
+"d": 365,
+"m": 331
+},
+"img/pages/painting-with-fire/i31.jpg": {
+"d": 365,
+"m": 331
+},
+"img/pages/perimeter-town/01.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/perimeter-town/02.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/perimeter-town/03.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/perimeter-town/04.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/perimeter-town/05.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/perimeter-town/06.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/perimeter-town/07.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/perimeter-town/08.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/perimeter-town/09.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/perimeter-town/10.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/perimeter-town/11.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/perimeter-town/12.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/perimeter-town/13.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/perimeter-town/14.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/possibility-spaces/05.jpg": {
+"d": 1136,
+"m": 331
+},
+"img/pages/possibility-spaces/09.jpg": {
+"d": 1136,
+"m": 331
+},
+"img/pages/possibility-spaces/13.jpg": {
+"d": 1136,
+"m": 331
+},
+"img/pages/possibility-spaces/17.jpg": {
+"d": 1136,
+"m": 331
+},
+"img/pages/possibility-spaces/21.jpg": {
+"d": 1136,
+"m": 331
+},
+"img/pages/possibility-spaces/25.jpg": {
+"d": 1136,
+"m": 331
+},
+"img/pages/possibility-spaces/hero.jpg": {
+"d": 1136,
+"m": 331
+},
+"img/pages/rabbit-takeover/01.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/rabbit-takeover/02.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/rabbit-takeover/03.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/rabbit-takeover/04.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/rabbit-takeover/05.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/rabbit-takeover/06.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/rabbit-takeover/07.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/rabbit-takeover/hero.jpg": {
+"d": 380,
+"m": 331
+},
+"img/pages/screens-contextualized/location-a-1.jpg": {
+"d": 339,
+"m": 331
+},
+"img/pages/screens-contextualized/location-a-2.jpg": {
+"d": 339,
+"m": 331
+},
+"img/pages/screens-contextualized/location-a-4.jpg": {
+"d": 339,
+"m": 331
+},
+"img/pages/sightseers/01.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/sightseers/02.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/sightseers/03.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/sightseers/04.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/sightseers/05.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/sightseers/06.jpg": {
+"d": 558,
+"m": 331
+},
+"img/pages/taschen/on-nfts-cover.jpg": {
+"d": 430,
+"m": 331
+},
+"img/pages/taschen/on-nfts-spread.jpg": {
+"d": 430,
+"m": 331
+},
+"img/pages/trait-council/trait-chart.jpg": {
+"d": 880,
+"m": 331
+},
+"img/reflection-page/pva_pfp.jpg": {
+"d": 20,
+"m": 20
+},
+"img/reflection-page/reflection_violet.jpg": {
+"d": 230,
+"m": 230
+},
+"img/reflection-page/robot_painting.jpg": {
+"d": 394,
+"m": 331
+},
+"img/reflection-page/vanarman_easel.jpg": {
+"d": 394,
+"m": 331
+},
+"img/seasons-of-mobility/bashobits.png": {
+"d": 150,
+"m": 150
+},
+"img/ucca/cents_block_smiling.jpg": {
+"d": 312,
+"m": 331
+},
+"img/ucca/cents_book_detail.jpg": {
+"d": 312,
+"m": 331
+},
+"img/ucca/cents_cube_screens.jpg": {
+"d": 1040,
+"m": 375
+},
+"img/ucca/cents_installation.jpg": {
+"d": 312,
+"m": 331
+},
+"img/ucca/cents_opening.jpg": {
+"d": 252,
+"m": 331
+},
+"img/ucca/cents_screens_book.jpg": {
+"d": 252,
+"m": 331
+},
+"img/ucca/cents_tinari_sasamoto.jpg": {
+"d": 252,
+"m": 331
+},
+"img/ucca/exh_class_of_2008.jpg": {
+"d": 252,
+"m": 331
+},
+"img/ucca/exh_nbc_nightly_news.jpg": {
+"d": 252,
+"m": 331
+},
+"img/ucca/exh_title_wall.jpg": {
+"d": 252,
+"m": 331
+},
+"img/ucca/exh_white_albums.jpg": {
+"d": 252,
+"m": 331
+},
+"img/vitra/i_admire_them.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_attest_it.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_bias_it.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_buy_you.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_confirm_you.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_corrupt_you.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_dissolve_you.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_earn_her.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_face_you.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_flood_it.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_floor_you.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_hear_them.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_jinx_him.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_mine_her.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_open_her.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_other_her.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_pearl_her.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_project_her.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_solidify_them.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_thread_them.jpg": {
+"d": 197,
+"m": 331
+},
+"img/vitra/i_wield_them.jpg": {
+"d": 197,
+"m": 331
+},
+"img/wunderkammer/cabinet.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/historic-cabinets.jpg": {
+"d": 540,
+"m": 331
+},
+"img/wunderkammer/isakost.jpg": {
+"d": 130,
+"m": 130
+},
+"img/wunderkammer/sp/AngelFish.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/AtlasBeetle.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/AtlasVertabra.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/BegoniaEscargot.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/BigBellySeahorse.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/BlueDragonFlood.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/BlueTongue.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/CaladiumPinkCloud.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/CaperFlower.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/CatSkull.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/CerambyxBeetleLoved.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/ChineseMoneyPlant.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/ClownTriggerFish.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/CockeyedSquid.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/ColumbineStrength.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/CometMoth.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/Cornflower.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/CrepuscularBurnetMoth.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/CrimsonSpeckledMoth.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/EmperorScorpion.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/FemaleReproductiveSystem.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/FireBug.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/FlamingoSkull.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/FlamingoTongueSnail.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/FlowerBeetle.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/FlowerFish.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/FlyingGecko.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/FoxSkull.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/FragileStar.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/GardeniaBlood.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/GhostCrab.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/GiantForestScorpion.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/GinkoLeaf.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/GoldenBeetle.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/GoldenTailedGecko.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/GoliathBeetle.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/Grasshopper.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/GreenTreePython.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/GuardianCrabAnguish.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/HandBones.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/HarlequinBeetle.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/HeartConstellations.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/HornedPoppy.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/HumanSkull.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/ImperialSeaUrchin.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/ImpulsiveBrain.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/JewelFishWish.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/JuneBeetle.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/Juno.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/KnobbyStar.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/LeafInsect.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/LeafTailedGecko.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/LeafySeadragonEye.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/LettuceCoral.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/LilyOfTheIncas.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/LionFishRoar.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/LizardSkull.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/LongnoseFilefish.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/MantisShrimp.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/MauveStinger.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/MexicanCrocodileSkull.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/MexicanTigerMoth.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/MonarchButterfly.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/MonsteraLeaf.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/MoonMoth.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/MoonfishLove.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/NelsonMilkSnake.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/Pansy.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/PeachBlossomMoth.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/PeacockMoth.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/PelvicBoneMoon.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/PicassoTriggerFish.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/PoisonDartFrog.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/PolkaDotBegonia.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/RabbitSkull.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/RaptorSkullVitality.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/RedCoral.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/RedFootedShell.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/RubberFig.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/RyukinGoldfish.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SacredBreasts.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SacredEar.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SacredEyes.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SacredFoot.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SacredHeart.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SacredLeftHand.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SacredLungs.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SacredProfile.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SacredThroat.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SalamanderBubbles.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SeaFanCoral.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SkeletonTarantula.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SnapdragonDrops.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SowbreadLeaf.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SpiderLily.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SquatLobster.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SquirrelSkull.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/StagBeetleCircus.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/StarryNightButterfly.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/StripedLizard.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SublimeTortoiseBeetle.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SunSpider.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SwordFernLeaf.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/SwordfishSkull.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/TreeFrog.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/Triton.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/VibratingLungs.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/sp/ZebraJumpingSpider.png": {
+"d": 1040,
+"m": 331
+},
+"img/wunderkammer/work-01.jpg": {
+"d": 250,
+"m": 331
+},
+"img/wunderkammer/work-02.jpg": {
+"d": 250,
+"m": 331
+},
+"img/wunderkammer/work-03.jpg": {
+"d": 250,
+"m": 331
+},
+"img/wunderkammer/work-04.jpg": {
+"d": 250,
+"m": 331
+},
+"img/wunderkammer/work-05.jpg": {
+"d": 250,
+"m": 331
+},
+"img/wunderkammer/work-06.jpg": {
+"d": 250,
+"m": 331
+},
+"img/wunderkammer/work-07.jpg": {
+"d": 250,
+"m": 331
+},
+"img/wunderkammer/work-08.jpg": {
+"d": 250,
+"m": 331
+},
+"img/wunderkammer/work-09.jpg": {
+"d": 250,
+"m": 331
+},
+"img/wunderkammer/work-10.jpg": {
+"d": 250,
+"m": 331
+},
+"img/wunderkammer/work-11.jpg": {
+"d": 250,
+"m": 331
+},
+"img/wunderkammer/work-12.jpg": {
+"d": 250,
+"m": 331
+}
+}
