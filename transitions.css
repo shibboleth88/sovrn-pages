@@ -44,42 +44,48 @@
   }
 }
 
-/* The piece a collection hands across, and where it sits.
+/* What each collection hands across.
  *
- * The rule above says which element travels; this says that every collection
- * page actually has one, near the top, and that it is a work from the
- * collection. Most of these pages opened with a banner — a full-bleed image set
- * as a CSS background, which cannot carry a name because it is not an element —
- * and their first real artwork sat 700 to 1500px down the page. The navigation
- * worked, and flew the artwork off the bottom of the screen to reach it.
+ * The rule above says which element travels; this is about making sure every
+ * collection page has one, near the top, and that it is the collection's own
+ * work rather than whatever image happened to come first. It was not: on most of
+ * these pages the first artwork sat 700 to 1500px down, so the navigation worked
+ * and flew the artwork off the bottom of the screen to reach it.
  *
- * So the banner stays and the plate sits on it: a single work, under the title,
- * inside the hero. Pages with no banner get the same plate under their title
- * block. It is deliberately the same file the homepage card shows, which makes
- * the pairing a true morph of one picture rather than a cross-fade between two,
- * and means the image is already in cache on arrival.
+ * Two arrangements, because these pages are not built alike:
  *
- * Not cropped to the card's square. A centre crop on Latent Couture takes the
- * headpieces off, and the same objection applies across the set — the morph
- * survives a change of aspect ratio, the artwork does not survive the crop. */
+ * 1. Eight pages open with a banner, and the banner is what travels — the
+ *    header itself carries the name, so the card opens out into it. A banner is
+ *    a CSS background rather than an element, which is why the *header* is named
+ *    and not the image: naming the box takes the background with it.
+ *
+ * 2. The rest have no banner to grow into, so they show a plate instead:
+ *    figure.vt-plate, one work from the collection, under the title block and
+ *    set in the reading column, since those pages are set left.
+ *
+ * The plate is deliberately the same file the homepage card shows, which makes
+ * that pairing a morph of one picture rather than a cross-fade between two, and
+ * means the image is already in cache on arrival. It is not cropped to the
+ * card's square: a centre crop on Latent Couture takes the headpieces off, and
+ * the morph survives a change of aspect ratio where the artwork would not
+ * survive the crop.
+ *
+ * Whichever arrangement a page uses, it must name exactly one element. Two
+ * elements under one name make the browser drop the pairing silently. */
 .vt-plate { margin: clamp(20px, 3.2vh, 32px) auto 0; width: clamp(140px, 20vh, 220px); }
 .vt-plate picture,
 .vt-plate img { display: block; width: 100%; height: auto; }
 .vt-plate img { border-radius: 2px; }
-
-/* On a banner the frame has to read against whatever is behind it; on paper it
-   is the ordinary hairline the rest of the site uses. */
 .hero .vt-plate img { border: 1px solid rgba(255, 255, 255, .34); }
+
 /* On a page with no banner the plate sits in the reading column rather than
    centred: these pages are set left, and a centred plate floats away from the
    text with nothing to hold it. */
 .wrap > .vt-plate { margin-left: 0; margin-bottom: clamp(20px, 3.2vh, 32px); }
 .wrap > .vt-plate img { border: 1px solid var(--rule); }
 
-/* Two of these banners carry their own typography — SIGHTSEERS and Perimeter
-   Town set their titles inside the image, which is why those pages hide the h1
-   (class="vh") rather than print it twice. Centring a plate on them lands it
-   squarely on the lettering, so on those it sits at the foot of the banner
-   instead. The auto margin does it: the hero is a centred column, so an auto
-   top margin on the last child takes up the slack above it. */
-.hero.plain .vt-plate { margin-top: auto; margin-bottom: clamp(14px, 2.4vh, 26px); }
+/* A card and a banner are nothing like the same shape, so the two snapshots are
+   told to cover rather than stretch. Left to fill, a square work visibly squashes
+   itself into a wide banner for the length of the animation. */
+::view-transition-old(art),
+::view-transition-new(art) { object-fit: cover; }

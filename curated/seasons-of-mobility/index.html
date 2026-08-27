@@ -37,8 +37,6 @@
 .homemark:hover,.homemark:focus-visible{opacity:1;transform:scale(1.06)}
 .homemark img{width:30px;height:30px;display:block;border-radius:50%}
 @media(prefers-reduced-motion:reduce){.homemark{transition:none}}
-.strip{margin:26px 0 0;background:var(--ink);width:100%;border:0;padding:0;display:block;cursor:zoom-in;overflow:hidden}
-.strip img{width:100%;display:block}
 </style><link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -56,7 +54,7 @@
 <p>The colours and scenes invoke the four seasons across a full year. Each piece reflects everyday life in a future that is both familiar and surreal.</p>
 </div>
 
-<figure><button class="strip" type="button" onclick="zoomHero()"><img id="hero" src="img/seasons-of-mobility/banner.webp" alt="Four works from Seasons of Mobility, one from each season" loading="eager" fetchpriority="high" width="1280" height="192"></button><figcaption>Four works from <i>Seasons of Mobility</i>, one from each season, bashobits, 2023</figcaption></figure><div class="cols">
+<div class="cols">
 <dl>
 <dt>Artist</dt><dd><a class="fc" href="https://bashobits.com/" target="_blank">bashobits</a></dd>
 <dt>Collection</dt><dd>Seasons of Mobility</dd>
@@ -115,7 +113,6 @@
 const B="img/seasons-of-mobility/";
 const $=i=>document.getElementById(i),lb=$("lb");
 $("pf").src=B+"bashobits.png";
-function zoomHero(){open_(B+"banner.webp","Four works from Seasons of Mobility","Seasons of Mobility","bashobits \u00b7 2023 \u00b7 one work from each season");}
 function open_(src,alt,t,sub){$("lbi").src=src;$("lbi").alt=alt;
 $("lbc").innerHTML='<i>'+t+'</i><u>'+sub+'</u>';lb.classList.add("on");$("lbx").focus();}
 function zoom(k,n,label){open_(B+k+"-"+n+".png",label+", work "+n+" of 3",label,
