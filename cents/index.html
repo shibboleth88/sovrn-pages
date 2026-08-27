@@ -51,13 +51,19 @@
 .botw-head img{border-radius:50%;display:block}
 .botw-head strong{display:block;font:500 14px/1.2 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase}
 .botw-head small{display:block;margin-top:3px;color:var(--mute);font-size:12.5px;line-height:1.4}
-/* The disclosure stays visible rather than hiding behind the button: the point
-   of loading on request is that the visitor knows what they are agreeing to. */
-.botw-note{margin:0 0 14px;color:var(--mute);font-size:12.5px;line-height:1.6}
+/* The disclosure folds away, but stays in front of the button rather than behind
+   it, so it is available before you agree to anything rather than after. */
+.botw-note{margin:0 0 14px}
+.botw-note summary{cursor:pointer;color:var(--mute);font:500 11px/1 "IBM Plex Mono",monospace;
+  letter-spacing:.11em;text-transform:uppercase;padding:2px 0;transition:color .15s}
+.botw-note summary:hover{color:var(--paper)}
+.botw-note p{margin:10px 0 0;color:var(--mute);font-size:12.5px;line-height:1.6}
 .botw-act{margin:0}
 /* [hidden] is only display:none in the UA sheet, and .cta sets display:inline-flex,
-   which beats it — so hiding the open button did nothing at all until this. */
-.botw-act [hidden]{display:none}
+   which beats it — so hiding the open button did nothing at all until this.
+   Scoped to the whole widget, since the disclosure is now a <details> and gets
+   hidden the same way. */
+.botw [hidden]{display:none}
 .botw-shut{background:none;border:1px solid var(--rule);color:var(--mute);cursor:pointer;
   font:500 11.5px/1 "IBM Plex Mono",monospace;letter-spacing:.11em;text-transform:uppercase;
   padding:13px 14px;transition:color .15s,border-color .15s}
@@ -108,7 +114,7 @@
 <a class="cta" href="https://cents.vision/" target="_blank">cents.vision <em>collection explorer</em></a>
 <div class="botw" id="botw">
 <div class="botw-head"><img src="img/cents/centsbot.png" alt="" width="36" height="36"><span><strong>CENTS Bot</strong><small>Chat with the CENTS bot to learn about the project</small></span></div>
-<p class="botw-note" id="botw-note">An external chat widget, loaded only when you ask for it. Your messages go to the bot server and to Anthropic, PBC (USA) to answer them. No cookies, tracking, analytics, accounts or chat history. Your IP may be processed briefly for rate limiting and is deleted within 24 hours. Please do not enter personal or sensitive information, wallet details, seed phrases, passwords or private keys.</p>
+<details class="botw-note" id="botw-note"><summary>Bot disclosure</summary><p>An external chat widget, loaded only when you ask for it. Your messages go to the bot server and to Anthropic, PBC (USA) to answer them. No cookies, tracking, analytics, accounts or chat history. Your IP may be processed briefly for rate limiting and is deleted within 24 hours. Please do not enter personal or sensitive information, wallet details, seed phrases, passwords or private keys.</p></details>
 <p class="botw-act"><button class="cta" id="botw-load" type="button">Open CENTS Bot</button><button class="botw-shut" id="botw-shut" type="button" hidden>Close the bot</button></p>
 <div class="botw-frame" id="botw-frame" hidden></div>
 </div>
