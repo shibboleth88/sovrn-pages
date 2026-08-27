@@ -49,6 +49,42 @@ under-reports. Render the pages and read `document.images` instead — every pag
 same-origin now, so an iframe over the sitemap does it. That is how the seventh
 repo (`reflection-page`) was found after six had been listed.
 
+## Writing for the site
+
+The reference for prose voice is the **Concept text on `/curated/reflection`**. Read it
+before writing anything substantial and match it. What it does, concretely:
+
+- Third person, present tense, declarative. **No second person and no imperatives** — not in
+  the body and not in headings. Headings are plain noun phrases: *Concept*, *On-chain*,
+  *Resolution*, *Verification*.
+- **Single quotes** for coined terms, with the stop inside: `'Reflective AI.'`
+- **Spaced en dashes** for a parenthetical break, never em dashes.
+- **No Oxford comma**: *splashes, drips and blending*.
+- *Reflective AI* capitalised. Collection names set plain in this register, not italic.
+- Figures spelled out in prose, left as numerals in tables and code.
+
+### Strip the constructions that read as machine-written
+
+Prose for this site gets a pass for these before it ships. They are not stylistic
+preferences; they are the specific habits that make text read as generated, and they arrive
+without being noticed:
+
+- **The balanced antithesis**, above all `X rather than Y` and `not X, but Y`. One in a page
+  is prose. Five is a signature. This is the single most reliable tell.
+- Formulas that announce an insight: `This is where …`, `is the evidence that`,
+  `is the signature of`, `what emerges is`, `serves as`, `stands as`.
+- Ornamental qualifiers: `in consequence`, `in the strong sense of the word`,
+  `which is a matter of record`, `while appearing to succeed`.
+- The vocabulary: delve, tapestry, realm, testament, underscore, showcase, seamless, robust,
+  pivotal, crucial, harness, unlock, multifaceted.
+- Sentence-initial *Moreover*, *Furthermore*, *Indeed*, *Notably*.
+- **Uniform rhythm.** Vary sentence length deliberately, and never leave two consecutive
+  sentences opening on the same word. A short sentence after a long one does the work that
+  an em dash is usually reached for.
+
+Counting beats intuition here — grep the draft for `rather than` and for repeated sentence
+openings, because both are invisible while writing and obvious when read.
+
 ## The share pages depend on a service in another repo — do not remove it
 
 `share.js:247` lists three Ethereum endpoints, tried in order:
