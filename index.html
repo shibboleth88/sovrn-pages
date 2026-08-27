@@ -22,12 +22,9 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/tokens.css">
 <style>
-:root{
-  --paper:#e9e9e5;--ink:#16181d;--slate:#5c6470;
-  --rule:#c9c9c2;--hair:#d8d8d2;--accent:#0f6b66;--accent-d:#0b514d;
-  --gap:clamp(46px,6vw,72px);
-}
+
 *{box-sizing:border-box;margin:0}
 ::selection{background:var(--accent);color:var(--paper)}
 body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif;padding:26px 22px 56px;-webkit-text-size-adjust:100%}
@@ -55,7 +52,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 #mb[aria-expanded=true] span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
 #mn{position:absolute;right:0;top:calc(100% + 9px);list-style:none;margin:0;padding:8px 0;background:var(--paper);border:1px solid var(--rule);min-width:236px;max-height:78vh;overflow-y:auto;box-shadow:0 10px 30px rgba(22,24,29,.09)}
 #mn a,#mn .grp{display:block;width:100%;text-align:left;padding:9px 18px;text-decoration:none;color:var(--ink);font:500 11px/1.35 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;background:none;border:0;cursor:pointer;transition:color .15s,background .15s}
-#mn a:hover,#mn .grp:hover{color:var(--accent);background:#e2e2dc}
+#mn a:hover,#mn .grp:hover{color:var(--accent);background:var(--surface-2)}
 #mn .grp{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:default;color:var(--slate)}
 #mn .grp:hover{color:var(--slate);background:none}
 #mn .grp .tog{flex:none;font-size:13px;line-height:1;color:var(--accent);cursor:pointer;padding:2px 4px;transition:transform .2s}
@@ -69,7 +66,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 #mn .sub{list-style:none;margin:0 0 0 18px;padding:0;display:none;border-left:2px solid var(--rule)}
 #mn .grp[aria-expanded=true]+.sub{display:block}
 #mn .sub a{padding:7px 16px;font:400 11px/1.4 "IBM Plex Mono",monospace;letter-spacing:.07em;text-transform:none;color:var(--slate)}
-#mn .sub a:hover{color:var(--accent);background:#e2e2dc}
+#mn .sub a:hover{color:var(--accent);background:var(--surface-2)}
 @media(max-width:640px){.nav{margin-top:10px;padding:0 14px}#mn{min-width:206px}}
 /* ---------- masthead ---------- */
 .mast{text-align:center;margin:10px 0 clamp(26px,3.4vw,38px)}
@@ -126,7 +123,7 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transfo
 .lbl{max-width:62ch;font:400 12.5px/1.7 "IBM Plex Mono",monospace;color:var(--slate);margin-bottom:14px}
 .ico{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:32px}
 .ico a{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);border:1px solid var(--rule);padding:8px 14px 8px 9px;transition:border-color .15s,color .15s,background .15s}
-.ico a:hover{border-color:var(--accent);color:var(--accent);background:#e3e5e2}
+.ico a:hover{border-color:var(--accent);color:var(--accent);background:var(--surface-2)}
 .ico img{width:26px;height:26px;object-fit:contain;display:block}
 .ico span{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase}
 /* footer link rows — deliberately NOT .nav, which is the sticky header above */

@@ -1,0 +1,89 @@
+/* The site's palette, type scale and spacing, in one place.
+ *
+ * These values were already the design system — the same nine tokens, with the
+ * same values, copy-pasted into a :root block in forty-odd pages. --slate,
+ * --copper and --accent were byte-identical everywhere; --paper, --rule and
+ * --gap had drifted into two or five variants, which is what copy-paste does
+ * given time. This file is the single source, and the pages link it.
+ *
+ * CENTS and Reflection are deliberately outside it. Both carry their own darker
+ * palettes as part of how those collections present themselves, and flattening
+ * them into the site default would take something away.
+ */
+
+:root{
+  /* light — the default */
+  --ink:#16181d;      /* body text, and the ground where a page runs dark */
+  --paper:#e9e9e5;    /* the page */
+  --slate:#5c6470;    /* secondary text */
+  --rule:#c9c9c2;     /* a divider you are meant to notice */
+  --hair:#d8d8d2;     /* one you are not */
+  --copper:#8a4f2a;   /* the CENTS side of the programme */
+  --accent:#0f6b66;   /* the curated side */
+  --accent-d:#0b514d;
+  --surface:#f3f1ec;  /* a panel lifted off the page */
+  --surface-2:#e2e2dc;
+
+  /* type. clamped, so the scale holds from a phone to a wide desktop */
+  --t-xs:11px;
+  --t-sm:12.5px;
+  --t-base:15px;
+  --t-lg:clamp(16px,2.2vw,19px);
+  --t-xl:clamp(21px,3vw,27px);
+  --t-2xl:clamp(25px,4.2vw,40px);
+  --t-3xl:clamp(28px,5.2vw,52px);
+
+  --gap:clamp(46px,5.8vw,80px);   /* the space between major sections */
+}
+
+/* Perceptual colour where it is supported. The dark palette below is derived by
+   moving lightness in OKLCH and leaving hue and chroma alone, which keeps the
+   copper coppery and the teal teal instead of letting them go muddy the way a
+   hand-picked dark set usually does. */
+@supports (color: oklch(50% 0.1 180)){
+  :root{
+    --ink:oklch(20.9% 0.010 268.2);
+    --paper:oklch(93.3% 0.005 106.5);
+    --slate:oklch(50.1% 0.022 258.4);
+    --rule:oklch(83.4% 0.010 106.6);
+    --hair:oklch(88.1% 0.008 106.6);
+    --copper:oklch(48.9% 0.094 51.0);
+    --accent:oklch(47.8% 0.079 189.0);
+    --accent-d:oklch(39.4% 0.064 188.9);
+    --surface:oklch(95.3% 0.008 90);
+    --surface-2:oklch(89.4% 0.008 100);
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:oklch(92.0% 0.006 106.5);   /* text and page swap roles */
+      --paper:oklch(17.5% 0.010 268.2);
+      --slate:oklch(68.0% 0.020 258.4); /* lifted, or secondary text vanishes */
+      --rule:oklch(32.0% 0.010 268.0);
+      --hair:oklch(26.0% 0.008 268.0);
+      --copper:oklch(70.0% 0.098 51.0); /* same hue, enough lightness to read */
+      --accent:oklch(72.0% 0.086 189.0);
+      --accent-d:oklch(62.0% 0.072 189.0);
+      --surface:oklch(22.5% 0.010 268.0);
+      --surface-2:oklch(27.0% 0.010 268.0);
+    }
+  }
+}
+
+/* Without OKLCH there is still a dark mode, in hex. */
+@supports not (color: oklch(50% 0.1 180)){
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#e8e6e1;--paper:#17191e;--slate:#9aa1ad;--rule:#3a3f47;--hair:#2c3037;
+      --copper:#d59468;--accent:#5cc4bc;--accent-d:#3f9d96;
+      --surface:#20232a;--surface-2:#282c34;
+    }
+  }
+}
+
+/* Photographs and artwork keep their own light. Dimming them to match a dark
+   page would be editing the work, so the only concession is a slightly softer
+   white for large images. */
+@media (prefers-color-scheme: dark){
+  img,video{color-scheme:dark}
+}
