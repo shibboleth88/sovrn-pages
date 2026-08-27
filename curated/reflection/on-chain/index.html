@@ -63,17 +63,16 @@ pre .c{color:var(--mute)}
 <a class="homemark" href="/" aria-label="sovrn.art — home" title="sovrn.art"><img src="/img/share/sovrn-mark.webp" alt="" width="30" height="30"></a>
 <p class="eyebrow"><a href="/curated/reflection">Reflection</a> &middot; on-chain</p>
 <h1>The whole process, at full resolution</h1>
-<p class="stand">Two achievements distinguish Reflection on the blockchain, and they work
-against one another: the Reflective AI process is placed on-chain in full rather than as a
-picture of its result, and it is held there at a fidelity the chain was not designed to
-carry.</p>
+<p class="stand">Van Arman put the Reflective AI process on the blockchain in full, and
+he kept it there at a fidelity Ethereum was never built to carry. The two ambitions pull
+against each other, and most of what follows comes of resolving them.</p>
 
 <div class="sec">
 <h2>The process itself</h2>
 <p>A painting robot works in passes. It lays a ground, makes a mark, photographs what the
 mark did and answers it, and the loop between those steps is what Van Arman calls
-'Reflective AI.' Work made this way ordinarily survives as a photograph of the finished
-canvas – the process takes place, and then it is gone.</p>
+'Reflective AI.' Ordinarily that loop leaves nothing behind. The canvas is photographed when
+it is finished, and everything that happened on the way to it is gone.</p>
 <p>In Reflection the passes are themselves the artwork. Each piece names its own, in
 sequence, within the file:</p>
 <pre><span class="c">9</span>  background        <span class="c">15</span> circles
@@ -82,15 +81,15 @@ sequence, within the file:</p>
 <span class="c">12</span> skull             <span class="c">18</span> darken
 <span class="c">13</span> background binary <span class="c">19</span> highlight
                      <span class="c">20</span> skull flourish</pre>
-<p>There are twenty-one numbered passes in all, the drawing ones above and the remainder
-establishing colour and clipping. Seven of them fade in across an eight-second loop, at two
-seconds, then at 3.2, 3.6, 4.0, 4.4, 5.2 and six seconds, so that each piece rebuilds itself
-in the order the robot built it. Nothing here replays a recording of the work. The sequence
-is the file, and the file is held in the contract.</p>
-<p class="note">Seven fades is not a diminished file. The artist's exhibition renders for the
-Francisco Carolinum carry twenty to twenty-six, added to the content layers with the minted
-seven left untouched, and only six of those renders exist. A minted piece carrying seven is
-the work as it was composed.</p>
+<p>Twenty-one passes are numbered in all, the drawing ones above and the remainder
+establishing colour and clipping. Seven fade in across an eight-second loop, at two seconds,
+then at 3.2, 3.6, 4.0, 4.4, 5.2 and six. Each piece therefore rebuilds itself in the order
+the robot built it. No recording is being played back. The sequence is the file, and the
+file is what the contract holds.</p>
+<p class="note">Seven fades is not a diminished file. The artist's exhibition renders for
+the Francisco Carolinum carry twenty to twenty-six, added to the content layers with the
+minted seven left untouched, and only six of those renders exist. A minted piece carrying
+seven is the work as it was composed.</p>
 </div>
 
 <div class="sec">
@@ -106,9 +105,9 @@ gallery wall as on a telephone.</p>
 <dt>Embedded raster images</dt><dd><b>0</b></dd>
 <dt>The artwork file</dt><dd>92 KB</dd>
 </dl></div>
-<p>This is where the two achievements meet their difficulty. Ethereum limits the code of any
-single contract to 24,576 bytes, a rule of consensus rather than convention, and one
-Reflection is close to four times that. The work cannot be held in a contract.</p>
+<p>The difficulty follows from that. Ethereum limits any single contract to 24,576 bytes of
+code, and the limit is enforced by consensus. One Reflection comes to nearly four times it.
+A piece this size cannot be held in a contract at all.</p>
 </div>
 
 <div class="sec">
@@ -123,37 +122,35 @@ twelve pieces distributed through the collection, returns the same structure eac
 <dt>Contracts in the collection</dt><dd><b>~136</b></dd>
 </dl></div>
 <p>Thirteen contracts form the engine and are shared by all nine hundred and ninety-nine.
-The remaining eighteen hold that particular painting, drawn from a common bank. The whole
-apparatus exists for a single reason: it is what the detail costs once no contract may
+The remaining eighteen hold that particular painting, drawn from a common bank. All of
+this apparatus exists for a single reason: it is what the detail costs once no contract may
 exceed twenty-four kilobytes.</p>
-<p class="note">The figure for the collection is a floor rather than a count. Thirty-nine of
-the pooled contracts appeared only once across twelve samples, which is the signature of a
-population still being discovered, and a wider run of twenty pieces placed the total nearer
-144. The order of magnitude is what matters – a bank of contracts, and not a contract.</p>
+<p class="note">The figure for the collection is a floor, not a count. Thirty-nine of the
+pooled contracts appeared only once across twelve samples, which happens when a population
+has not yet been fully sampled, and a wider run of twenty pieces put the total nearer 144.
+What can be said with confidence is the order of magnitude.</p>
 </div>
 
 <div class="sec">
 <h2>Composed on mint</h2>
-<p>The bytecode read during a call comes to between 152 and 181 kilobytes, and the file
-returned is about ninety-two. That those quantities sit so close together is the evidence
-that nothing is being generated at the moment of asking. The process ran once, at mint, and
-what it produced was written across the bank, to be read back and reassembled on every
-call.</p>
-<p>The works are immutable in consequence, and in the strong sense of the word. There is no
-seed to run again, no model to reload and no version that might drift. The
+<p>Bytecode read during a call comes to between 152 and 181 kilobytes, and the file
+returned is about ninety-two. Those quantities are close because nothing is being made at
+the moment of asking. Van Arman's process ran once, at mint, and what it produced was
+written across the bank, to be reassembled on every call.</p>
+<p>That is what makes the works immutable. There is no seed to run again, no model to
+reload and no version that might drift. The
 <a class="fc" href="https://github.com/shibboleth88/sovrn-onchain" target="_blank" rel="noopener">mirrored copies</a>
-this site serves are byte-identical to what the chain returns, which is a matter of record
-rather than assurance.</p>
+this site serves are byte-identical to what the chain returns, and anyone can check it.</p>
 </div>
 
 <div class="sec">
-<h2>Tracing rather than reading</h2>
-<p>The obvious way to find the remaining contracts is to read the entry contract's bytecode
-and look for addresses within it, and that method fails while appearing to succeed. The
-bytecode runs to 7.3 kilobytes and holds sixteen twenty-byte values that could be addresses,
-of which none is a contract the call actually reads. The real addresses are kept in storage
-arrays written after deployment, and were never in the code to be found. Only a trace of a
-live call answers the question.</p>
+<h2>Why the bytecode does not answer</h2>
+<p>The obvious way to find the remaining contracts is to read the entry contract's
+bytecode and look for addresses in it. That method fails, and it looks convincing while it
+does. The bytecode runs to 7.3 kilobytes and holds sixteen twenty-byte values that could be
+addresses. None of the sixteen is a contract the call reads. The real addresses sit in
+storage arrays written after deployment, so they were never in the code to find, and only a
+trace of a live call will show them.</p>
 <pre><span class="c"># the contracts one call reads — requires an endpoint allowing debug_traceCall</span>
 curl -s -X POST https://eth.merkle.io \
   -H 'Content-Type: application/json' \
@@ -167,9 +164,9 @@ without one are touched in passing and hold nothing.</p>
 
 <div class="sec">
 <h2>Verification</h2>
-<p>A call to tokenURI returns a data URI of base64 JSON, whose image field is a second data
-URI of base64 SVG. That is the artwork, retrieved without a gateway and without reference to
-anything outside Ethereum.</p>
+<p>A call to tokenURI returns a data URI of base64 JSON, whose image field is a second
+data URI of base64 SVG. That is the artwork. No gateway is involved, and nothing outside
+Ethereum has to still exist.</p>
 <pre><span class="c"># tokenURI(uint256) is 0xc87b56dd, followed by the token id in thirty-two bytes</span>
 curl -s -X POST https://ethereum-rpc.publicnode.com \
   -H 'Content-Type: application/json' -H 'User-Agent: Mozilla/5.0' \
