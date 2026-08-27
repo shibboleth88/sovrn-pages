@@ -212,7 +212,13 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false);});
       f.loading = "eager";
       f.referrerPolicy = "strict-origin-when-cross-origin";
       f.allow = "clipboard-write";
-      f.src = "https://centsbot.up.railway.app/";
+      /* ?embed=1 gives the compact header. Without it the bot frames its full
+         standalone page, which repeats the title and the tagline this card has
+         already printed directly above the frame, and spends most of the panel
+         on suggestion chips instead of the conversation. cents.vision frames the
+         standalone page too — neither site was passing this — so the compact CSS
+         had never once been triggered anywhere. */
+      f.src = "https://centsbot.up.railway.app/?embed=1";
       wrap.appendChild(f);
     }
     wrap.hidden = false; note.hidden = true;
