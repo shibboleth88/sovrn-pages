@@ -39,6 +39,28 @@
    Full width, and bled off both edges so it reads as a fragment of something much
    larger, which is the honest impression: it is a few hundred of ten thousand. */
 .field{margin:20px 0 0;width:100%;overflow:hidden;line-height:0}
+/* The handoff: the two ways into the depth this page deliberately does not hold.
+   Directly under the band and above everything else, because orienting and
+   handing off is what the page is for. */
+.handoff{display:grid;grid-template-columns:minmax(200px,1fr) minmax(0,2fr);gap:clamp(18px,3vw,34px);
+  align-items:start;margin:0 0 clamp(34px,4.5vw,52px)}
+@media(max-width:760px){.handoff{grid-template-columns:1fr}}
+.handoff>.cta{justify-self:start}
+.botw{border:1px solid var(--rule);background:var(--dim);padding:clamp(16px,2vw,22px)}
+.botw-head{display:flex;align-items:center;gap:12px;margin:0 0 12px}
+.botw-head img{border-radius:50%;display:block}
+.botw-head strong{display:block;font:500 14px/1.2 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase}
+.botw-head small{display:block;margin-top:3px;color:var(--mute);font-size:12.5px;line-height:1.4}
+/* The disclosure stays visible rather than hiding behind the button: the point
+   of loading on request is that the visitor knows what they are agreeing to. */
+.botw-note{margin:0 0 14px;color:var(--mute);font-size:12.5px;line-height:1.6}
+.botw-act{margin:0}
+.botw-shut{background:none;border:1px solid var(--rule);color:var(--mute);cursor:pointer;
+  font:500 11.5px/1 "IBM Plex Mono",monospace;letter-spacing:.11em;text-transform:uppercase;
+  padding:13px 14px;transition:color .15s,border-color .15s}
+.botw-shut:hover{color:var(--paper);border-color:var(--lift)}
+.botw-frame{margin-top:16px;height:min(66vh,600px)}
+.botw-frame iframe{width:100%;height:100%;border:1px solid var(--rule);display:block;background:var(--ink)}
 /* Cropped, not scaled. Letting a 2583px band shrink to fit the viewport put the
    coins at about 20px, which reads as texture rather than as pennies. Fixing the
    height near the source's own 347px keeps them close to native and crops the
@@ -78,7 +100,17 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/transitions.css">
 <script src="/transitions.js"></script>
-</head><body><a class="homemark" href="/" aria-label="sovrn.art — home" title="sovrn.art"><img src="/img/share/sovrn-mark.webp" alt="" width="30" height="30"></a><nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></nav><div class="wrap"><div class="hero"><span class="coin"><picture><source type="image/avif" srcset="/img/derived/homepage/cent_homepage-336.avif 336w, /img/derived/homepage/cent_homepage-672.avif 672w, /img/derived/homepage/cent_homepage-860.avif 860w" sizes="336px"><source type="image/webp" srcset="/img/derived/homepage/cent_homepage-336.webp 336w, /img/derived/homepage/cent_homepage-672.webp 672w, /img/derived/homepage/cent_homepage-860.webp 860w" sizes="336px"><img class="vt-lead" src="/img/homepage/cent_homepage.jpg" alt="A 1979 copper penny from CENTS" loading="lazy"></picture><a class="cta" href="https://cents.vision/" target="_blank">cents.vision <em>collection explorer</em></a></span><div><h1>CENTS</h1><p class="by">Rutherford Chang</p></div></div></div><div class="field" role="img" aria-label="Several hundred of the ten thousand cents, each photographed before it was destroyed"><img src="img/cents-field/band.webp" alt="" loading="lazy" width="2583" height="347"></div><div class="wrap tail2"><h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2></div><div class="gal" id="g"></div><div class="wrap tail"><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p><p class="inq" id="inq"><a href="/cents/inquiries">Project inquiries</a></p>
+</head><body><a class="homemark" href="/" aria-label="sovrn.art — home" title="sovrn.art"><img src="/img/share/sovrn-mark.webp" alt="" width="30" height="30"></a><nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></nav><div class="wrap"><div class="hero"><span class="coin"><picture><source type="image/avif" srcset="/img/derived/homepage/cent_homepage-336.avif 336w, /img/derived/homepage/cent_homepage-672.avif 672w, /img/derived/homepage/cent_homepage-860.avif 860w" sizes="336px"><source type="image/webp" srcset="/img/derived/homepage/cent_homepage-336.webp 336w, /img/derived/homepage/cent_homepage-672.webp 672w, /img/derived/homepage/cent_homepage-860.webp 860w" sizes="336px"><img class="vt-lead" src="/img/homepage/cent_homepage.jpg" alt="A 1979 copper penny from CENTS" loading="lazy"></picture></span><div><h1>CENTS</h1><p class="by">Rutherford Chang</p></div></div></div><div class="field" role="img" aria-label="Several hundred of the ten thousand cents, each photographed before it was destroyed"><img src="img/cents-field/band.webp" alt="" loading="lazy" width="2583" height="347"></div><div class="wrap tail2">
+<div class="handoff">
+<a class="cta" href="https://cents.vision/" target="_blank">cents.vision <em>collection explorer</em></a>
+<div class="botw" id="botw">
+<div class="botw-head"><img src="img/cents/centsbot.png" alt="" width="36" height="36"><span><strong>CENTS Bot</strong><small>All ten thousand cents, the Trait Atlas, listings and the sales ledger</small></span></div>
+<p class="botw-note" id="botw-note">An external chat widget, loaded only when you ask for it. Your messages go to the bot server and to Anthropic, PBC (USA) to answer them. No cookies, tracking, analytics, accounts or chat history. Your IP may be processed briefly for rate limiting and is deleted within 24 hours. Please do not enter personal or sensitive information, wallet details, seed phrases, passwords or private keys.</p>
+<p class="botw-act"><button class="cta" id="botw-load" type="button">Open CENTS Bot</button><button class="botw-shut" id="botw-shut" type="button" hidden>Close the bot</button></p>
+<div class="botw-frame" id="botw-frame" hidden></div>
+</div>
+</div>
+<h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2></div><div class="gal" id="g"></div><div class="wrap tail"><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p><p class="inq" id="inq"><a href="/cents/inquiries">Project inquiries</a></p>
 <p class="ends"><a href="https://cents.vision/" target="_blank">cents.vision</a><a href="http://rutherfordchang.com/" target="_blank">rutherfordchang.com</a></p></div>
 <script>
 const H="/img/homepage/",
@@ -145,4 +177,44 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false);});
    Buttons rather than links: a coin is not a destination on this site — the depth
    belongs to cents.vision, which the lightbox hands off to. Images stay lazy, so
    400 tiles cost only what scrolls into view. */
+
+/* CENTS Bot, loaded on request.
+ *
+ * The same click-to-load pattern cents.vision uses, and for the same reason: no
+ * connection to the bot is made until the visitor asks for one, so reading this
+ * page contacts nobody. Closing removes the iframe rather than hiding it, so the
+ * connection ends with it.
+ *
+ * The bot permits framing from sovrn.art explicitly — its frame-ancestors lists
+ * this origin alongside cents.vision. If the panel ever comes up empty, that is
+ * the first thing to check: a blocked frame still fires onload, so it fails
+ * looking like an empty box rather than like an error. */
+(function () {
+  var open = document.getElementById("botw-load"),
+      shut = document.getElementById("botw-shut"),
+      wrap = document.getElementById("botw-frame"),
+      note = document.getElementById("botw-note");
+  if (!open || !shut || !wrap || !note) return;
+
+  open.addEventListener("click", function () {
+    if (!wrap.querySelector("iframe")) {
+      var f = document.createElement("iframe");
+      f.title = "CENTS Bot chat";
+      f.loading = "eager";
+      f.referrerPolicy = "strict-origin-when-cross-origin";
+      f.allow = "clipboard-write";
+      f.src = "https://centsbot.up.railway.app/";
+      wrap.appendChild(f);
+    }
+    wrap.hidden = false; note.hidden = true;
+    open.hidden = true;  shut.hidden = false;
+  });
+
+  shut.addEventListener("click", function () {
+    var f = wrap.querySelector("iframe");
+    if (f) f.remove();
+    wrap.hidden = true;  note.hidden = false;
+    open.hidden = false; shut.hidden = true;
+  });
+})();
 </script></body></html>
