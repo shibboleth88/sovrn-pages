@@ -55,6 +55,9 @@
    of loading on request is that the visitor knows what they are agreeing to. */
 .botw-note{margin:0 0 14px;color:var(--mute);font-size:12.5px;line-height:1.6}
 .botw-act{margin:0}
+/* [hidden] is only display:none in the UA sheet, and .cta sets display:inline-flex,
+   which beats it — so hiding the open button did nothing at all until this. */
+.botw-act [hidden]{display:none}
 .botw-shut{background:none;border:1px solid var(--rule);color:var(--mute);cursor:pointer;
   font:500 11.5px/1 "IBM Plex Mono",monospace;letter-spacing:.11em;text-transform:uppercase;
   padding:13px 14px;transition:color .15s,border-color .15s}
