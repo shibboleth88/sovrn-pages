@@ -130,6 +130,39 @@ these are the artwork and a still frame is not the artwork. And **alpha is
 preserved** — flattening the logo and the icons to RGB gives a white box on a
 white card, which looks fine in a thumbnail and wrong on the page.
 
+## Every collection page opens with one of its own works
+
+`transitions.css` names one element per page (`.vt-lead`) and the navigation
+hands that element across. For that to look like anything, the named element has
+to be **near the top and be a work from the collection**. It was not: on most of
+these pages the first artwork sat 700 to 1500px down, so the navigation worked
+and flew the artwork off the bottom of the screen to reach it.
+
+Nine of these pages open with a banner that is a **CSS background image**, which
+can never carry the name — a background is not an element. So the banner stays
+and a plate sits on it: `figure.vt-plate`, one work, under the title, inside the
+hero. Pages with no banner get the same plate under their title block, set in the
+reading column rather than centred.
+
+Three things about it that are deliberate and worth not undoing:
+
+- **The plate is the same file the homepage card shows.** That makes the pairing
+  a morph of one picture rather than a cross-fade between two, and the image is
+  already in cache when the page opens. `curated-data.js` is the source of that
+  mapping; if a card's image changes, change the plate with it.
+- **It is not cropped to the card's square.** A centre crop on Latent Couture
+  takes the headpieces off. The morph survives a change of aspect ratio; the
+  artwork does not survive the crop.
+- **SIGHTSEERS and Perimeter Town set their titles inside the banner image** and
+  hide their `h1` (`class="vh"`) so it is not printed twice. Centring a plate
+  there lands it on the lettering, so `.hero.plain` puts it at the foot instead.
+
+A page must name **exactly one** element. Two elements under one name make the
+browser drop the pairing silently rather than complain, so adding a plate means
+removing `vt-lead` from wherever it was.
+
+Reflection and CENTS already opened with a work and were left alone.
+
 ## Writing for the site
 
 The reference for prose voice is the **Concept text on `/curated/reflection`**. Read it
