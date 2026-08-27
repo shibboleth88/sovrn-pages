@@ -5,13 +5,13 @@
      so an in-page anchor must be built from location.pathname. --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
-<title>How Reflection is on-chain — sovrn.art</title>
-<meta name="description" content="Reflection is not one contract. Rendering a single work reads 31 of them, and the collection is at least 136 — measured by tracing real calls.">
+<title>The process, on-chain — Reflection — sovrn.art</title>
+<meta name="description" content="Van Arman put the whole reflective AI process on chain, at a resolution the chain was not built to hold. Both claims, measured.">
 <link rel="canonical" href="https://www.sovrn.art/curated/reflection/on-chain">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="sovrn.art">
-<meta property="og:title" content="How Reflection is on-chain">
-<meta property="og:description" content="Reflection is not one contract. Rendering a single work reads 31 of them, and the collection is at least 136 — measured by tracing real calls.">
+<meta property="og:title" content="The process, on-chain">
+<meta property="og:description" content="Van Arman put the whole reflective AI process on chain, at a resolution the chain was not built to hold. Both claims, measured.">
 <meta property="og:url" content="https://www.sovrn.art/curated/reflection/on-chain">
 <meta property="og:image" content="https://www.sovrn.art/img/share/sovrn-card.jpg">
 <meta property="og:image:width" content="1200">
@@ -62,66 +62,89 @@ pre .c{color:var(--mute)}
 <body><div class="wrap">
 <a class="homemark" href="/" aria-label="sovrn.art — home" title="sovrn.art"><img src="/img/share/sovrn-mark.webp" alt="" width="30" height="30"></a>
 <p class="eyebrow"><a href="/curated/reflection">Reflection</a> &middot; how it is on-chain</p>
-<h1>Reflection is not one contract</h1>
-<p class="stand">Rendering a single work reads thirty-one of them. The collection is at least
-a hundred and thirty-six, and that is a floor.</p>
+<h1>The whole process, at full resolution</h1>
+<p class="stand">Two things are unusual about <em>Reflection</em>, and they pull against each
+other. Van Arman put his entire reflective AI process on chain rather than a picture of its
+result &mdash; and he did it at a fidelity the chain was never designed to hold.</p>
 
 <div class="sec">
-<h2>What on-chain means here</h2>
-<p>Most work described as on-chain keeps a pointer on the chain and the picture somewhere
-else &mdash; IPFS, Arweave, a server. <i>Reflection</i> keeps the picture. Calling
-<code>tokenURI(id)</code> returns a <code>data:application/json;base64</code> URI whose
-<code>image</code> field is a <code>data:image/svg+xml;base64</code> URI. That is the artwork.
-No gateway is involved, and nothing outside Ethereum has to still exist.</p>
-<div class="fig"><dl>
-<dt>Contract</dt><dd>0x5137cf&hellip;4f85412</dd>
-<dt>Name, symbol</dt><dd>Reflection, REF</dd>
-<dt><code>totalSupply()</code></dt><dd><b>999</b></dd>
-<dt>Response to one <code>tokenURI</code></dt><dd>165 KB</dd>
-<dt>The SVG inside it</dt><dd>92 KB</dd>
-</dl></div>
+<h2>The process, not a picture of it</h2>
+<p>A painting robot works in passes: lay a ground, make a mark, look at what the mark did,
+answer it. Van Arman calls that loop his reflective AI process. Most work made this way
+arrives as a photograph of the finished canvas &mdash; the process happens, and then it is
+gone.</p>
+<p>Here the passes are the artwork. Each work names its own, in order, inside the file:</p>
+<pre><span class="c">9</span>  background        <span class="c">15</span> circles
+<span class="c">10</span> bytegan 20x20     <span class="c">16</span> touchups
+<span class="c">11</span> ganStrokes        <span class="c">17</span> lighten
+<span class="c">12</span> skull             <span class="c">18</span> darken
+<span class="c">13</span> background binary <span class="c">19</span> highlight
+                     <span class="c">20</span> skull flourish</pre>
+<p>Twenty-one numbered passes in all, the drawing ones above and the rest setting up colour
+and clipping. Seven of them fade in over an eight-second loop, at 2.0s, 3.2s, 3.6s, 4.0s,
+4.4s, 5.2s and 6.0s, so the work rebuilds itself in the order the robot built it. Nothing
+replays a recording: the sequence is the file, and the file is in the contract.</p>
+<p class="note">Seven fades is not a stripped file. The artist's exhibition renders for the
+Francisco Carolinum carry twenty to twenty-six, added on the content layers with the minted
+seven untouched, and only six of those exist. <b>A minted work with seven is the work.</b></p>
 </div>
 
 <div class="sec">
-<h2>The shape of it</h2>
-<p>The address above is the ERC-721 you mint from and call. It is not the architecture.
-Tracing what an actual <code>tokenURI</code> call reads &mdash; twelve works spread across
-the collection &mdash; gives the same answer every time.</p>
+<h2>Resolution the chain was not built for</h2>
+<p>The second achievement is that this is not a small picture. One work is
+<b>92 KB of pure vector</b> &mdash; about 900 drawing elements, of which 873 are paths, and
+<b>not a single raster image</b>. There is no bitmap to pixellate: the work is geometry, so
+it renders as sharply on a wall as on a phone.</p>
+<div class="fig"><dl>
+<dt>Drawing elements in one work</dt><dd><b>~900</b></dd>
+<dt>Of those, vector paths</dt><dd>873</dd>
+<dt>Embedded raster images</dt><dd><b>0</b></dd>
+<dt>The SVG itself</dt><dd>92 KB</dd>
+</dl></div>
+<p>That is the tension. Ethereum caps a single contract's code at <b>24,576 bytes</b>
+&mdash; EIP-170, a hard consensus rule. One <em>Reflection</em> is nearly four times that.
+The work physically cannot live in a contract.</p>
+</div>
+
+<div class="sec">
+<h2>What it costs to do both</h2>
+<p>So it does not live in one. Tracing what a real <code>tokenURI</code> call reads &mdash;
+twelve works spread across the collection &mdash; gives the same answer every time.</p>
 <div class="fig"><dl>
 <dt>Contracts read to render one work</dt><dd><b>31</b></dd>
 <dt>Common to every work</dt><dd>13</dd>
 <dt>Specific to that work</dt><dd>18</dd>
-<dt>Distinct contracts seen across 12 works</dt><dd>112</dd>
-<dt>Estimated collection total</dt><dd><b>~136</b></dd>
+<dt>Largest single data contract</dt><dd>22,499 B <span style="color:var(--mute)">&middot; 91.5% of the cap</span></dd>
+<dt>Contracts in the collection</dt><dd><b>~136</b></dd>
 </dl></div>
-<p class="note">The estimate is a <b>lower bound</b>, and deliberately so. Thirty-nine of
-the pooled contracts appeared only once in twelve samples, which is the signature of a
-population still being discovered: sample more and the number rises. A wider run of twenty
-works put it near 144. Either way the useful fact is the order of magnitude &mdash; a bank
-of contracts, not a contract.</p>
+<p>Thirteen contracts are the engine, shared by all 999. The other eighteen hold that
+particular painting, drawn from a shared bank. The whole apparatus exists for one reason:
+it is what keeping the detail costs when no single contract may exceed 24 KB.</p>
+<p class="note">The collection figure is a <b>floor</b>. Thirty-nine of the pooled contracts
+appeared exactly once in twelve samples, which is the signature of a population still being
+discovered &mdash; sample more and it rises. A wider run of twenty works put it near 144.
+The order of magnitude is the point: a bank of contracts, not a contract.</p>
 </div>
 
 <div class="sec">
-<h2>Stored, not recomputed</h2>
-<p>The bytecode read during a call totals 152&ndash;181 KB. The SVG that comes back is
-about 92 KB, inside a 165 KB response. Those figures being the same size is the tell: the
-work is not being generated when you ask for it. It was generated once, at mint, and
-written across a bank of data contracts that are read back and assembled on demand.</p>
-<p>This is why the works are immutable in the strong sense. There is no seed to re-run and
-no version to drift &mdash; the bytes are the bytes. The
+<h2>Composed once, then kept</h2>
+<p>The bytecode read during a call totals 152&ndash;181 KB; the SVG that comes back is about
+92 KB. Those numbers being so close is the tell: nothing is being generated when you ask for
+it. The process ran once, at mint, and what it produced was written across the bank and is
+read back and reassembled on every call.</p>
+<p>Which is why these works are immutable in the strong sense. There is no seed to re-run,
+no model to reload, no version to drift. The
 <a class="fc" href="https://github.com/shibboleth88/sovrn-onchain" target="_blank" rel="noopener">mirrored copies</a>
-this site serves are byte-identical to what the chain returns, which is checkable rather
-than asserted.</p>
+this site serves are byte-identical to what the chain returns &mdash; checkable, and checked.</p>
 </div>
 
 <div class="sec">
 <h2>Trace it, do not read it</h2>
-<p>The obvious way to find the other contracts is to read the entry contract's bytecode and
-look for addresses in it. That does not work, and it fails in a way that looks like success.</p>
-<p>Its bytecode is 7.3 KB and contains sixteen 20-byte values that could be addresses.
-<b>None of them is a contract the call actually reads.</b> The real addresses live in
-storage arrays, written after deployment, so they were never in the code to find. The only
-method that answers the question is tracing a real call.</p>
+<p>If you go looking for the other contracts, the obvious method fails in a way that looks
+like success. The entry contract's bytecode is 7.3 KB and holds sixteen 20-byte values that
+could be addresses. <b>None of them is a contract the call actually reads.</b> The real
+addresses live in storage arrays written after deployment, so they were never in the code.
+Only tracing a live call answers the question.</p>
 <pre><span class="c"># what one call really touches — needs an RPC that allows debug_traceCall</span>
 curl -s -X POST https://eth.merkle.io \
   -H 'Content-Type: application/json' \
@@ -129,25 +152,15 @@ curl -s -X POST https://eth.merkle.io \
        "to":"0x5137cfB461d24040F5ce6B85D860c47A24f85412",
        "data":"0xc87b56dd0000000000000000000000000000000000000000000000000000000000000000"
       },"latest",{"tracer":"prestateTracer"}]}'</pre>
-<p class="note">Count the returned accounts that carry a <code>code</code> field. Accounts
+<p class="note">Count the returned accounts carrying a <code>code</code> field. Accounts
 without one are touched but hold no contract.</p>
 </div>
 
 <div class="sec">
-<h2>What the file does when it arrives</h2>
-<p>The SVG animates itself. Every minted work carries exactly <b>seven</b> SMIL fades over
-an eight-second loop, and the painting passes are numbered in the file's own comments
-&mdash; <code>0:0 Header Start</code>, <code>1:6 colors</code>, <code>11:8 ganStrokes</code>,
-<code>12:0 skull</code> &mdash; so the order in which the robot worked is legible in the
-artwork itself.</p>
-<p class="note">Seven fades is not a stripped file. The artist's exhibition renders for the
-Francisco Carolinum carry twenty to twenty-six, added on the content layers with the minted
-seven untouched; only six of those exist. <b>A minted work with seven is the work.</b></p>
-</div>
-
-<div class="sec">
 <h2>Check any of this</h2>
-<p>Every figure here came from calls anyone can repeat. The artwork itself:</p>
+<p><code>tokenURI(id)</code> returns a <code>data:application/json;base64</code> URI whose
+<code>image</code> is a <code>data:image/svg+xml;base64</code> URI. That is the artwork, and
+no gateway is involved.</p>
 <pre><span class="c"># tokenURI(uint256) is 0xc87b56dd; the rest is the token id in 32 bytes</span>
 curl -s -X POST https://ethereum-rpc.publicnode.com \
   -H 'Content-Type: application/json' -H 'User-Agent: Mozilla/5.0' \
@@ -155,7 +168,7 @@ curl -s -X POST https://ethereum-rpc.publicnode.com \
        "to":"0x5137cfB461d24040F5ce6B85D860c47A24f85412",
        "data":"0xc87b56dd0000000000000000000000000000000000000000000000000000000000000000"
       },"latest"]}'</pre>
-<p class="note">Two things that will otherwise waste an afternoon. <b>Send a User-Agent</b>
+<p class="note">Two things that would otherwise cost an afternoon. <b>Send a User-Agent</b>
 &mdash; some endpoints refuse the default one. And <b>skip cloudflare-eth</b>, which returns
 an internal error on responses this size; a small call like <code>eth_blockNumber</code>
 succeeds there and tells you nothing.</p>
