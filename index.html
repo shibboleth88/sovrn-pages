@@ -170,6 +170,25 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transfo
   }
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+/* ---------- the kingGAN ----------
+   There is exactly one kingGAN in the 1,111 of Pindar Van Arman's byteGANs, and
+   it is loose on this page. It wanders the window rather than the document: with
+   two hundred of them, as on the collection page, they have to stay put or the
+   landscape you scroll through would follow you; with one, the opposite is true,
+   and a single creature living somewhere down a page four screens long would
+   almost never be seen.
+
+   Inert, and hidden from assistive tech. It takes no pointer events, so it never
+   eats a click on whatever it happens to be crossing, and it is 828 bytes of
+   base64 written straight into the page, so it costs no request at all.
+
+   The drop shadow is doing real work: the first screen is a mosaic of the same
+   artwork, and without it a byteGAN over a byteGAN tile is camouflage. The
+   shadow is what says this one is in front, and loose. */
+#king{position:fixed;top:0;left:0;z-index:20;pointer-events:none;
+ image-rendering:pixelated;will-change:transform;
+ filter:drop-shadow(0 3px 7px rgba(0,0,0,.6))}
+@media(prefers-reduced-motion:reduce){#king{display:none}}
 </style><link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -595,4 +614,64 @@ document.getElementById("mk").innerHTML=MK.map(m=>
 '<a href="'+m[2]+'"'+tgt(m[2])+'>'+ICON(encodeURI(H+m[1]))+'<span>'+m[0]+'</span></a>').join("");
 document.getElementById("so").innerHTML=SO.map(m=>
 '<a href="'+m[2]+'"'+tgt(m[2])+'>'+ICON(encodeURI((m[3]?P:H)+m[1]))+'<span>'+m[0]+'</span></a>').join("");
+
+/* The one kingGAN, ambling about the window. Same steering as the byteGANs
+   page — pick a spot, turn towards it at your own rate, go, stand about a
+   while when you arrive — but slower and with longer pauses, because one
+   creature crossing the front page should read as company rather than as
+   something demanding attention. */
+(function () {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var PX = 36, el = document.createElement("img");
+  el.id = "king"; el.alt = ""; el.width = PX; el.height = PX;
+  el.setAttribute("aria-hidden", "true");
+  el.src = "data:image/gif;base64,R0lGODlhCwALAJEAAODNstiaqs9nor4BkSH/C05FVFNDQVBFMi4wAwEAAAAh+QQECgAAACwAAAAACwALAAACIISPqTgw0gQb9EkTmgYX5GodQUZ22IgmnzVObOAKwlgAACH5BAQKAAAALAAAAAALAAsAAAIihC6gexYfGBIxKjRoSFzvnRhTFooZtDjfk1JT6iAWA1JwAQAh+QQECgAAACwAAAAACwALAAACIISPqTgw0gQb9EkTmgYX5GodQUZ22IgmnzVObOAKwlgAACH5BAQKAAAALAEAAQAKAAoAAAIhhC15N9JzQhiUxgkgNLLSwHUOGEoCCVKnBIrrCaTNmQQFACH5BAQKAAAALAEAAQAKAAoAAAIehI82MLJyhpQCgrAysHg2joWWEZQm0n1lRAmr0pYFACH5BAQKAAAALAIAAQAJAAoAAAIfhBFxN9KNwphTxAEwFI7CJDmcoXAmGFhgBJiCAp5AAQAh+QQECgAAACwCAAEACQAKAAACHYSPAiOzJtqYDiiHoaTnhooAQShOIxI0wmkwJlAAACH5BAQKAAAALAMAAgAIAAkAAAIaBCZyduMDQoA0tmfCmUwDZSQJJIVIZgpaUAAAIfkEBAoAAAAsAwAAAAgACwAAAh6EEXEhkgqaZGAMYVvFW9R8KUnzIIxDIZMXTZCDAgUAIfkEBAoAAAAsAwAAAAgACwAAAh6EjxAbNvLWGW80OcBzWcgWecYiCIpCmo1SXkfQNgUAIfkEBAoAAAAsAAAAAAoACwAAAiUEhKaBHSpGnOyMe5MFw4R/RBgjAIwkVYvwgcvHuubJPAbbDF8BADs=";
+  document.body.appendChild(el);
+
+  var x = 0, y = 0, tx = 0, ty = 0, dir = Math.random() * 6.283,
+      sp = 20 + Math.random() * 20,      /* px a second: an amble */
+      turn = 0.8 + Math.random() * 1.2,
+      rest = 1 + Math.random() * 2, last = 0, run = false;
+
+  function w() { return Math.max(1, innerWidth - PX); }
+  function h() { return Math.max(1, innerHeight - PX); }
+  function target() { tx = Math.random() * w(); ty = Math.random() * h(); }
+  function draw() { el.style.transform = "translate3d(" + x + "px," + y + "px,0)"; }
+
+  function step(t) {
+    if (!run) return;
+    /* clamped, so coming back to a backgrounded tab does not find it
+       teleported across the window */
+    var dt = Math.min(0.05, (t - last) / 1000); last = t;
+    if (rest > 0) { rest -= dt; }
+    else {
+      var dx = tx - x, dy = ty - y;
+      if (dx * dx + dy * dy < 64) { target(); rest = 1.5 + Math.random() * 5; }
+      else {
+        var want = Math.atan2(dy, dx);
+        var off = ((want - dir + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+        var max = turn * dt;
+        dir += off > max ? max : off < -max ? -max : off;
+        x += Math.cos(dir) * sp * dt; y += Math.sin(dir) * sp * dt;
+        if (x < 0) x = 0; else if (x > w()) x = w();
+        if (y < 0) y = 0; else if (y > h()) y = h();
+        draw();
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  x = Math.random() * w(); y = Math.random() * h(); target(); draw();
+  run = true; last = performance.now(); requestAnimationFrame(step);
+
+  addEventListener("resize", function () {
+    if (x > w()) x = w();
+    if (y > h()) y = h();
+    target(); draw();
+  });
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { run = false; }
+    else if (!run) { run = true; last = performance.now(); requestAnimationFrame(step); }
+  });
+})();
 </script></body></html>
