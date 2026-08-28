@@ -201,6 +201,24 @@ What is wanted is the *background*, meaning the pixels of that colour reachable
 from the edge, which is a flood fill and not a filter. The difference does not
 show up in a thumbnail and is glaring at 34px.
 
+Two more things, found only by measuring the result rather than looking at it:
+
+**A property of a work may not be a property of its frames.** The ground colour
+was taken once, as the commonest across the whole animation, and filled in every
+frame. Some of these grounds animate — one cycles its cyan through five shades,
+another alternates bone with near-black — so those frames matched nothing and
+came out entirely uncut. One frame in the cast was 0% transparent: a full opaque
+square in the middle of an otherwise clean cutout, flickering once a cycle.
+Each frame's own border says what its background is.
+
+**And check the result, not the code.** None of this was visible in a montage of
+first frames, because first frames were fine. It surfaced from a measurement —
+transparency per frame, per work, sorted worst-first — which is the sort of thing
+worth computing whenever a batch operation runs over hundreds of items. The
+sorted list also cleared the survivors: the remaining low scorer is a *decohering*
+skullGAN whose figure genuinely fills the tile, which the number alone would have
+condemned.
+
 ### Text is about half transparent
 
 A disc made only of characters let the homepage mosaic straight through and

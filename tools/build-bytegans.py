@@ -111,6 +111,28 @@ def frames_of(token):
         pass
     return fs, dur
 
+def dither_pair(frame):
+    """The two colours of a checkered ground, or None.
+
+    Two colours qualify only if each sits almost entirely on one parity of
+    (x + y) along the border and on the opposite parity from the other — which
+    is what a dither is, and what merely having two colours at the edge is not."""
+    w, h = frame.size
+    px = frame.load()
+    E = ([(x, 0) for x in range(w)] + [(x, h - 1) for x in range(w)] +
+         [(0, y) for y in range(1, h - 1)] + [(w - 1, y) for y in range(1, h - 1)])
+    top = collections.Counter(px[p] for p in E).most_common()
+    if len(top) < 2 or top[1][1] < 6:
+        return None
+    def parity(c):
+        seen = collections.Counter((x + y) % 2 for (x, y) in E if px[x, y] == c)
+        which, n = seen.most_common(1)[0]
+        return which, n / float(sum(seen.values()))
+    (c1, _), (c2, _) = top[0], top[1]
+    p1, s1 = parity(c1)
+    p2, s2 = parity(c2)
+    return (c1, c2) if p1 != p2 and s1 >= 0.9 and s2 >= 0.9 else None
+
 def cut_gif(token):
     """The work with its background taken out, so only the creature is left.
 
@@ -118,43 +140,101 @@ def cut_gif(token):
     coloured square is a tile sliding about rather than a thing walking. Cut the
     ground away and it is a character.
 
-    **It is a flood fill from the edge, not a colour key**, and that distinction
-    is the whole job. The ground colour also appears *inside* the figure — the
-    eyes, the mouth, the gaps between limbs are the background showing through —
-    so keying out every pixel of that colour punches holes in every face in the
-    collection. Measured: 3 to 7 pixels of trapped ground in each of the works
-    checked, in every one of them. Only ground-coloured pixels reachable from
-    the border are the background.
+    Two things this is not, both learned by doing them wrong:
+
+    **It is not a colour key, it is a flood fill from the edge.** The ground
+    colour also appears *inside* the figure — the eyes, the mouth and the gaps
+    between limbs are background showing through — so making every pixel of that
+    colour transparent punches holes in every face in the collection. Measured: 3
+    to 7 pixels of trapped ground in every work checked, without exception. Only
+    ground-coloured pixels reachable from the border are background.
+
+    **And the background is decided per frame, not once per work.** These
+    animate, and in some of them the ground animates too: quantum xenoGAN #611
+    cycles its cyan through five shades, ethereal skullGAN #1048 alternates bone
+    with near-black, primordial octoGAN #122 flips to indigo for a single frame.
+    Taking the commonest colour across the whole work and filling that in every
+    frame leaves those frames completely uncut — one of them came out with 0% of
+    its pixels transparent, a full opaque square in the middle of an animation
+    that was otherwise a clean cutout, and it flickered once a cycle.
+
+    Each frame's own border says what its background is. Backgrounds fill 23 to
+    40 of the 40 edge pixels, so the commonest colour on the edge is it.
 
     This is a derived asset and the only altered artwork on the site: the mirror
     at /onchain/bytegans/ still holds the exact bytes the contract returns, the
     plate and the three portraits on the page are untouched, and --check
     re-derives these from the mirror rather than trusting the file."""
     fs, dur = frames_of(token)
-    tally = collections.Counter()
-    for f in fs:
-        tally.update(f.getdata())
-    g = tally.most_common(1)[0][0]
 
-    out, cols = [], sorted({p for f in fs for p in f.getdata()} - {g})
+    # Does this work's ground alternate between two colours? One in the whole
+    # collection does — ethereal skullGAN #545, in 5 of its 11 frames — and a
+    # single-colour fill leaves the other half of the checker behind as a pale
+    # speckled halo, which is plainly visible against anything.
+    #
+    # A dither is not just "two colours on the edge", it is two colours
+    # alternating, so that is what is tested: each must sit almost entirely on
+    # one parity of x+y, and on the other parity from its partner. Requiring 90%
+    # rather than all of them allows for the figure touching the border. The
+    # result is the same anywhere between 70% and 90%, which is the reason to
+    # trust the number: it sits on a plateau rather than on a cliff picked to
+    # make one work behave.
+    #
+    # Detected per frame, then applied to every frame of the work, because a
+    # dithered ground is a property of the work and the frames where the figure
+    # covers the pattern cannot show it.
+    duo = None
+    for f in fs:
+        duo = duo or dither_pair(f)
+
+    cleared, thin = [], []
     for f in fs:
         w, h = f.size
         px = f.load()
+        edge = collections.Counter()
+        for x in range(w):
+            edge[px[x, 0]] += 1; edge[px[x, h - 1]] += 1
+        for y in range(1, h - 1):
+            edge[px[0, y]] += 1; edge[px[w - 1, y]] += 1
+        g, held = edge.most_common(1)[0]
+        if held < 0.4 * sum(edge.values()):
+            # the figure, not the ground, dominates this frame's edge — worth
+            # knowing about rather than silently cutting the wrong thing
+            thin.append((round(100.0 * held / sum(edge.values())), g))
+
+        ground = {g}
+        if duo and g in duo:
+            ground |= set(duo)
+
         seen, stack = set(), []
         for x in range(w):
             for y in (0, h - 1):
-                if px[x, y] == g: stack.append((x, y))
+                if px[x, y] in ground: stack.append((x, y))
         for y in range(h):
             for x in (0, w - 1):
-                if px[x, y] == g: stack.append((x, y))
+                if px[x, y] in ground: stack.append((x, y))
         while stack:
             x, y = stack.pop()
-            if (x, y) in seen or not (0 <= x < w and 0 <= y < h) or px[x, y] != g:
+            if (x, y) in seen or not (0 <= x < w and 0 <= y < h) or px[x, y] not in ground:
                 continue
             seen.add((x, y))
             stack += [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
-        # index 0 is the transparent one; the rest is the work's own palette,
-        # kept exactly, so no colour is resampled on the way through
+        cleared.append(seen)
+
+    if thin:
+        print("    note: token %d has %d frame(s) whose edge is mostly figure (%s)"
+              % (token, len(thin), ", ".join("%d%%" % t[0] for t in thin)))
+
+    # the palette is whatever survives the cut, in every frame, kept exactly —
+    # nothing is resampled on the way through
+    cols = sorted({px for f, seen in zip(fs, cleared)
+                   for (x, y), px in ((( x, y), f.load()[x, y])
+                                      for y in range(f.size[1]) for x in range(f.size[0]))
+                   if (x, y) not in seen})
+    out = []
+    for f, seen in zip(fs, cleared):
+        w, h = f.size
+        px = f.load()
         im = Image.new("P", (w, h))
         pal = [0, 0, 0]
         for c in cols: pal += list(c)
@@ -162,7 +242,7 @@ def cut_gif(token):
         ip = im.load()
         for y in range(h):
             for x in range(w):
-                ip[x, y] = 0 if (x, y) in seen else (cols.index(px[x, y]) + 1 if px[x, y] != g else 0)
+                ip[x, y] = 0 if (x, y) in seen else cols.index(px[x, y]) + 1
         out.append(im)
 
     buf = io.BytesIO()
