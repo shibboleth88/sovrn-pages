@@ -188,6 +188,26 @@ fainter word, it is no word.
 A parameter that looks independent often is not. Change one and re-check the
 other.
 
+### When the input is a sample you choose, quality is a selection criterion
+
+A third of the byteGANs cannot have their backgrounds removed, and no amount of
+cleverness will change that: a midnight skullGAN is a field of four blues with no
+figure in it to separate. Effort went into handling animating grounds and
+dithered grounds, both of which were real and worth fixing — but the works with
+no figure at all were never a processing problem.
+
+The page shows a few hundred of the 1,111 and the sample was already being
+chosen. Making "separates cleanly" one of the criteria cost nothing in size and
+removed the whole class of bad results. Measured on the result rather than the
+source: does the cut keep every frame, leave the creature in one piece, remove
+something from every frame, and strand no more background inside the figure than
+a pair of eyes.
+
+The threshold came from a sweep, and the sweep is what stopped it going too far:
+one notch tighter dropped the eligible works from 754 to 556 and took the only
+kingGAN with it, which the page promises. Tune a filter until it starts removing
+something you need, then step back one.
+
 ### Removing a background is not keying out a colour
 
 Cutting the backgrounds off the byteGANs so the creature wanders instead of the

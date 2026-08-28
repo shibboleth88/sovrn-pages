@@ -269,6 +269,80 @@ def ground_of(token):
             return i
     return len(GROUNDS) - 1          # odd
 
+# What counts as cutting cleanly.
+#
+# Two thirds of the collection separates into figure and ground perfectly. The
+# rest does not, and cannot: a midnight skullGAN is a field of four blues with no
+# figure in it to speak of, and cutting the edge-connected part off leaves a
+# ragged scrap. The page only ever shows a few hundred of the 1,111, so it can
+# simply show ones that work — the sample is chosen anyway, and this is a better
+# criterion than chance.
+#
+# Four measures, all of the *result* rather than of the source:
+#
+#   frames   the cut must keep all eleven. Where two frames differ only in their
+#            background, cutting makes them identical and the encoder drops one,
+#            which shortens the animation.
+#   strand   background-coloured pixels left inside the figure, averaged over the
+#            frames. Eyes and mouths are two or three of these and are meant to
+#            stay; a dozen means there was no figure and ground to separate.
+#   blob     the largest connected run of what remains, as a fraction of it, in
+#            the worst frame. A creature holds together; noise comes apart.
+#   clear    the least transparent frame. Under a quarter means the cut barely
+#            removed anything.
+#
+# The thresholds come from a sweep rather than from taste. Loosening them adds
+# works that visibly fail; tightening them to strand 3 / blob 0.85 drops the
+# collection from 754 works to 556 **and loses the only kingGAN**, which the page
+# promises. This is the tightest setting that keeps all twelve kinds.
+CLEAN = {"strand": 4.0, "blob": 0.80, "clear": 0.25}
+
+def cut_quality(token):
+    """How well this work separates into figure and ground. See CLEAN."""
+    cut = Image.open(io.BytesIO(base64.b64decode(cut_gif(token))))
+    orig, _ = frames_of(token)
+    n = 1
+    try:
+        while True:
+            cut.seek(cut.tell() + 1); n += 1
+    except EOFError:
+        pass
+    clear, strand, blob = [], [], []
+    for k, f in enumerate(orig[:n]):
+        cut.seek(k)
+        a = cut.convert("RGBA"); ap = a.load()
+        px = f.load(); w, h = f.size
+        edge = collections.Counter()
+        for x in range(w):
+            edge[px[x, 0]] += 1; edge[px[x, h - 1]] += 1
+        for y in range(1, h - 1):
+            edge[px[0, y]] += 1; edge[px[w - 1, y]] += 1
+        g = edge.most_common(1)[0][0]
+        clear.append(sum(1 for p in a.getdata() if p[3] == 0) / 121.0)
+        strand.append(sum(1 for yy in range(h) for xx in range(w)
+                          if px[xx, yy] == g and ap[xx, yy][3] != 0))
+        # largest 8-connected run of what is left
+        seen, best, tot = set(), 0, 0
+        for y in range(h):
+            for x in range(w):
+                if ap[x, y][3] == 0 or (x, y) in seen: continue
+                st, c = [(x, y)], 0
+                while st:
+                    cx, cy = st.pop()
+                    if (cx, cy) in seen or not (0 <= cx < w and 0 <= cy < h) or ap[cx, cy][3] == 0:
+                        continue
+                    seen.add((cx, cy)); c += 1; tot += 1
+                    st += [(cx + dx, cy + dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1) if dx or dy]
+                best = max(best, c)
+        blob.append(best / tot if tot else 0)
+    return {"frames": n, "strand": sum(strand) / len(strand),
+            "blob": min(blob), "clear": min(clear)}
+
+def cuts_cleanly(token):
+    q = cut_quality(token)
+    return (q["frames"] == 11 and q["strand"] <= CLEAN["strand"]
+            and q["blob"] >= CLEAN["blob"] and q["clear"] >= CLEAN["clear"])
+
 def spread(ws, n):
     """n of them, taken evenly through the list rather than at random.
 
@@ -288,8 +362,16 @@ def build():
 
     # Order every kind by modifier — most common family first. Whatever is then
     # taken from it is taken across the colours rather than out of one corner.
+    # Only works that separate into figure and ground are eligible. This is the
+    # page's own requirement rather than a fact about the collection: what
+    # wanders there has had its background removed, and a work with no background
+    # to remove arrives as a torn scrap.
+    clean = {w["id"] for w in works if cuts_cleanly(w["id"])}
+    print("  %d of %d works cut cleanly and are eligible" % (len(clean), len(works)))
+
     ordered = {}
     for kind, ws in kinds:
+        ws = [w for w in ws if w["id"] in clean]
         freq = collections.Counter(w["mod"] for w in ws)
         ordered[kind] = sorted(ws, key=lambda w: (-freq[w["mod"]], w["mod"], w["n"]))
 
@@ -312,9 +394,9 @@ def build():
     # One file. The three kinds the artist describes no longer need their own,
     # because the page no longer shows a crowd of each — it shows one roaming
     # population, mixed, over the whole window.
-    small = [k for k, ws in kinds if len(ws) <= WHOLE]
+    small = [k for k, ws in kinds if len(ordered[k]) <= WHOLE]
     cast = [w for k in small for w in ordered[k]]
-    big = [(k, ws) for k, ws in kinds if k not in small]
+    big = [(k, ordered[k]) for k, _ in kinds if k not in small]
     pool = float(sum(len(ws) for _, ws in big))
     room = CAST - len(cast)
     for k, ws in big:
@@ -376,12 +458,24 @@ def verify(works):
         if e["kind"] not in cast_kinds and not e["intelligence"]:
             bad.append("no %s made the cast" % e["kind"])
     cast = json.load(io.open(os.path.join(OUT, "cast.json"), encoding="utf-8"))
+    # Every work on the page must cut cleanly — that is the point of the cast.
+    dirty = [t for t in cast["ids"] if not cuts_cleanly(t)]
+    if dirty:
+        bad.append("%d works in the cast no longer cut cleanly, e.g. %s"
+                   % (len(dirty), dirty[:4]))
+    # And the small kinds appear in full — in full *of the ones that cut*, which
+    # is not the same as in full of the kind. Six of the nine apeGANs have no
+    # figure to separate and are not on the page; both royals and all three
+    # primeGANs do cut, and are.
     for e in meta["kinds"]:
-        if e["count"] <= WHOLE:
+        eligible = [w["id"] for w in works if w["kind"] == e["kind"] and w["id"] in
+                    {t for t in cast["ids"]} or (w["kind"] == e["kind"] and cuts_cleanly(w["id"]))]
+        eligible = sorted(set(eligible))
+        if len(eligible) <= WHOLE:
             have = sum(1 for t in cast["ids"] if by_id[t]["kind"] == e["kind"])
-            if have != e["count"]:
-                bad.append("%s: %d of %d in the cast, but small kinds appear whole"
-                           % (e["kind"], have, e["count"]))
+            if have != len(eligible):
+                bad.append("%s: %d of the %d that cut cleanly are in the cast, "
+                           "but small kinds appear whole" % (e["kind"], have, len(eligible)))
     return bad
 
 def check_mirror_ids():

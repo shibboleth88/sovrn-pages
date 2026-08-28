@@ -1,6 +1,6 @@
 {
  "total": 1111,
- "cast": 241,
+ "cast": 240,
  "kinds": [
   {
    "kind": "skullGAN",
@@ -91,7 +91,7 @@
   {
    "file": "cast.json",
    "kind": null,
-   "shown": 241
+   "shown": 240
   }
  ]
 }
