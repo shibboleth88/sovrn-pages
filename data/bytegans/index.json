@@ -5,8 +5,6 @@
    "kind": "skullGAN",
    "count": 289,
    "share": 26.0,
-   "tile": 34,
-   "file": "skullgan.json",
    "modifiers": 24,
    "intelligence": "Evolutionary Intelligence"
   },
@@ -14,8 +12,6 @@
    "kind": "octoGAN",
    "count": 287,
    "share": 25.8,
-   "tile": 34,
-   "file": "octogan.json",
    "modifiers": 18,
    "intelligence": "Decentralized Intelligence"
   },
@@ -23,8 +19,6 @@
    "kind": "cyberGAN",
    "count": 218,
    "share": 19.6,
-   "tile": 34,
-   "file": "cybergan.json",
    "modifiers": 16,
    "intelligence": "Artificial Intelligence"
   },
@@ -32,8 +26,6 @@
    "kind": "bioGAN",
    "count": 72,
    "share": 6.5,
-   "tile": 42,
-   "file": "biogan.json",
    "modifiers": 11,
    "intelligence": null
   },
@@ -41,8 +33,6 @@
    "kind": "cycloGAN",
    "count": 71,
    "share": 6.4,
-   "tile": 42,
-   "file": "cyclogan.json",
    "modifiers": 9,
    "intelligence": null
   },
@@ -50,8 +40,6 @@
    "kind": "xenoGAN",
    "count": 71,
    "share": 6.4,
-   "tile": 42,
-   "file": "xenogan.json",
    "modifiers": 12,
    "intelligence": null
   },
@@ -59,8 +47,6 @@
    "kind": "ghostGAN",
    "count": 69,
    "share": 6.2,
-   "tile": 42,
-   "file": "ghostgan.json",
    "modifiers": 5,
    "intelligence": null
   },
@@ -68,8 +54,6 @@
    "kind": "g1itchGAN",
    "count": 20,
    "share": 1.8,
-   "tile": 58,
-   "file": "g1itchgan.json",
    "modifiers": 10,
    "intelligence": null
   },
@@ -77,8 +61,6 @@
    "kind": "apeGAN",
    "count": 9,
    "share": 0.8,
-   "tile": 92,
-   "file": "apegan.json",
    "modifiers": 8,
    "intelligence": null
   },
@@ -86,8 +68,6 @@
    "kind": "primeGAN",
    "count": 3,
    "share": 0.3,
-   "tile": 150,
-   "file": "primegan.json",
    "modifiers": 3,
    "intelligence": null
   },
@@ -95,8 +75,6 @@
    "kind": "kingGAN",
    "count": 1,
    "share": 0.1,
-   "tile": 150,
-   "file": "kinggan.json",
    "modifiers": 1,
    "intelligence": null
   },
@@ -104,10 +82,30 @@
    "kind": "queenGAN",
    "count": 1,
    "share": 0.1,
-   "tile": 150,
-   "file": "queengan.json",
    "modifiers": 1,
    "intelligence": null
+  }
+ ],
+ "files": [
+  {
+   "file": "skullgan.json",
+   "kind": "skullGAN",
+   "count": 289
+  },
+  {
+   "file": "octogan.json",
+   "kind": "octoGAN",
+   "count": 287
+  },
+  {
+   "file": "cybergan.json",
+   "kind": "cyberGAN",
+   "count": 218
+  },
+  {
+   "file": "rest.json",
+   "kind": null,
+   "count": 317
   }
  ]
 }

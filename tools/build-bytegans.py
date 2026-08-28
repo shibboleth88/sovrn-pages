@@ -44,16 +44,6 @@ NAMED = {
     "octoGAN":  "Decentralized Intelligence",
 }
 
-def tile_px(count):
-    """How large to draw one work of a kind, given how many there are.
-
-    The rule is that rarity buys size. Nine hundred skulls at 128px would be a
-    scroll with no shape to it, and a single kingGAN at 34px would be a speck
-    you would never notice was alone. Sized this way each kind occupies a
-    comparable, readable block, and the fact that a kind is rare arrives as a
-    change in scale rather than as a number you have to read."""
-    return 34 if count >= 200 else 42 if count >= 50 else 58 if count >= 15 else 92 if count >= 5 else 150
-
 def load():
     t = json.load(io.open(TITLES, encoding="utf-8"))["collections"]["bytegans"]
     assert t["first_token"] == 1 and t["count"] == len(t["titles"])
@@ -81,53 +71,76 @@ def build():
         by.setdefault(w["kind"], []).append(w)
     kinds = sorted(by.items(), key=lambda kv: (-len(kv[1]), kv[0]))
 
+    if os.path.isdir(OUT):
+        for f in os.listdir(OUT):
+            os.remove(os.path.join(OUT, f))
     os.makedirs(OUT, exist_ok=True)
-    index, total_bytes = [], 0
-    for kind, ws in kinds:
-        # Within a kind, group by modifier — most common first, then by the
-        # artist's own number. The modifiers are largely colour words, so this
-        # bands each block into families instead of scattering them, and the
-        # variety inside one kind becomes visible rather than looking like noise.
+
+    def chunk(name, ws):
+        # Within a group, order by modifier — most common first. The modifiers
+        # are largely colour words, so anywhere these are laid out together they
+        # fall into colour families rather than looking like static.
         freq = collections.Counter(w["mod"] for w in ws)
         ws = sorted(ws, key=lambda w: (-freq[w["mod"]], w["mod"], w["n"]))
-        chunk = {"kind": kind, "count": len(ws),
-                 "ids":    [w["id"] for w in ws],
-                 "titles": [w["title"] for w in ws],
-                 "gifs":   [gif_of(w["id"]) for w in ws]}
-        name = kind.lower() + ".json"
+        d = {"count": len(ws),
+             "ids":    [w["id"] for w in ws],
+             "titles": [w["title"] for w in ws],
+             "gifs":   [gif_of(w["id"]) for w in ws]}
         p = os.path.join(OUT, name)
-        io.open(p, "w", encoding="utf-8").write(json.dumps(chunk, separators=(",", ":")))
-        total_bytes += os.path.getsize(p)
-        index.append({"kind": kind, "count": len(ws),
-                      "share": round(100.0 * len(ws) / len(works), 1),
-                      "tile": tile_px(len(ws)), "file": name,
-                      "modifiers": len(freq),
-                      "intelligence": NAMED.get(kind)})
-    io.open(os.path.join(OUT, "index.json"), "w", encoding="utf-8").write(
-        json.dumps({"total": len(works), "kinds": index}, indent=1))
-    return works, index, total_bytes
+        io.open(p, "w", encoding="utf-8").write(json.dumps(d, separators=(",", ":")))
+        return os.path.getsize(p)
 
-def verify(works, index):
+    # Four files, not twelve, and the split is by what the page asks for rather
+    # than by taxonomy. The three kinds the artist describes get their own,
+    # because each one is fetched exactly when its section arrives. Everything
+    # else is one file: those nine kinds are never addressed individually — they
+    # drift through the ribbons and fill out the closing swarm — and asking for
+    # nine files to show a handful of works each is nine round trips for 123KB.
+    files, total = [], 0
+    for kind, _ in kinds:
+        if kind in NAMED:
+            n = kind.lower() + ".json"
+            total += chunk(n, by[kind])
+            files.append({"file": n, "kind": kind, "count": len(by[kind])})
+    rest = [w for kind, ws in kinds if kind not in NAMED for w in ws]
+    total += chunk("rest.json", rest)
+    files.append({"file": "rest.json", "kind": None, "count": len(rest)})
+
+    index = [{"kind": k, "count": len(ws),
+              "share": round(100.0 * len(ws) / len(works), 1),
+              "modifiers": len(set(w["mod"] for w in ws)),
+              "intelligence": NAMED.get(k)} for k, ws in kinds]
+    io.open(os.path.join(OUT, "index.json"), "w", encoding="utf-8").write(
+        json.dumps({"total": len(works), "kinds": index, "files": files}, indent=1))
+    return works, index, files, total
+
+def verify(works):
     """Re-read the chunks and prove each work still carries its own picture.
 
-    Regrouping 1,111 things by kind and sorting them inside each group is
-    exactly the operation that silently pairs the wrong image with the wrong
-    name, and nothing about the result would look wrong: every tile would still
-    be a real byteGAN and every title a real title. So the mapping is checked
-    rather than assumed — for every one of the 1,111, not a sample."""
+    Regrouping 1,111 things and sorting them inside each group is exactly the
+    operation that silently pairs the wrong image with the wrong name, and
+    nothing about the result would look wrong: every tile would still be a real
+    byteGAN and every title a real title. So the mapping is checked rather than
+    assumed — for every one of the 1,111, not a sample."""
     by_id = {w["id"]: w for w in works}
+    files = json.load(io.open(os.path.join(OUT, "index.json"), encoding="utf-8"))["files"]
     seen, bad = set(), []
-    for e in index:
+    for e in files:
         d = json.load(io.open(os.path.join(OUT, e["file"]), encoding="utf-8"))
         if len(d["ids"]) != e["count"] or len(d["gifs"]) != e["count"]:
-            bad.append("%s: chunk holds %d entries, expected %d" % (e["kind"], len(d["ids"]), e["count"]))
+            bad.append("%s: holds %d entries, expected %d" % (e["file"], len(d["ids"]), e["count"]))
             continue
         for i, tok in enumerate(d["ids"]):
             w = by_id.get(tok)
-            if w is None:            bad.append("token %s is not in the collection" % tok)
-            elif w["kind"] != e["kind"]: bad.append("token %d is a %s, filed under %s" % (tok, w["kind"], e["kind"]))
-            elif d["titles"][i] != w["title"]: bad.append("token %d: chunk says %r, chain says %r" % (tok, d["titles"][i], w["title"]))
-            elif d["gifs"][i] != gif_of(tok): bad.append("token %d carries another work's image" % tok)
+            if w is None:                      bad.append("token %s is not in the collection" % tok)
+            elif e["kind"] and w["kind"] != e["kind"]:
+                bad.append("token %d is a %s, filed in %s" % (tok, w["kind"], e["file"]))
+            elif not e["kind"] and w["kind"] in NAMED:
+                bad.append("token %d is a %s and belongs in its own file" % (tok, w["kind"]))
+            elif d["titles"][i] != w["title"]:
+                bad.append("token %d: chunk says %r, chain says %r" % (tok, d["titles"][i], w["title"]))
+            elif d["gifs"][i] != gif_of(tok):
+                bad.append("token %d carries another work's image" % tok)
             seen.add(tok)
     missing = set(by_id) - seen
     if missing:
@@ -135,20 +148,23 @@ def verify(works, index):
     return bad
 
 def check(works, index):
-    """The page states each kind's count in its own markup, so that the sections
-    exist before any script runs. That is a second copy of a fact, so it is
-    checked rather than trusted."""
+    """The page states the three named kinds' counts and the total in its own
+    markup, so that those sections exist before any script runs. That is a second
+    copy of a fact, so it is checked rather than trusted."""
     html = io.open(PAGE, encoding="utf-8").read()
     bad = []
     for e in index:
         m = re.search(r'data-kind="%s"\s+data-count="(\d+)"' % e["kind"], html)
-        if not m:
-            bad.append("%s: no section in the page" % e["kind"])
-        elif int(m.group(1)) != e["count"]:
-            bad.append("%s: page says %s, chain says %d" % (e["kind"], m.group(1), e["count"]))
+        if e["intelligence"]:
+            if not m:
+                bad.append("%s: the artist describes it and the page has no section for it" % e["kind"])
+            elif int(m.group(1)) != e["count"]:
+                bad.append("%s: page says %s, chain says %d" % (e["kind"], m.group(1), e["count"]))
+        elif m:
+            bad.append("%s: the page gives it a section, but nothing describes it" % e["kind"])
     for k in re.findall(r'data-kind="(\w+)"', html):
         if k not in {e["kind"] for e in index}:
-            bad.append("%s: section in the page for a kind that does not exist" % k)
+            bad.append("%s: a section for a kind that does not exist" % k)
     n = re.search(r'data-total="(\d+)"', html)
     if not n or int(n.group(1)) != len(works):
         bad.append("total: page says %s, chain says %d" % (n and n.group(1), len(works)))
@@ -167,18 +183,19 @@ def main():
     if checking:
         works = load()
         index = json.load(io.open(os.path.join(OUT, "index.json"), encoding="utf-8"))["kinds"]
-        print("  checking the %d chunks already in %s" % (len(index), os.path.relpath(OUT, ROOT)))
+        print("  checking what is already in %s" % os.path.relpath(OUT, ROOT))
     else:
-        works, index, nbytes = build()
+        works, index, files, nbytes = build()
         print("  %d works, %d kinds -> %s" % (len(works), len(index), os.path.relpath(OUT, ROOT)))
         for e in index:
-            print("    %-10s %4d  %4.1f%%  %3dpx  %2d modifiers%s"
-                  % (e["kind"], e["count"], e["share"], e["tile"], e["modifiers"],
+            print("    %-10s %4d  %4.1f%%  %2d modifiers%s"
+                  % (e["kind"], e["count"], e["share"], e["modifiers"],
                      "  " + e["intelligence"] if e["intelligence"] else ""))
-        print("  %.2f MB across %d chunks" % (nbytes / 1048576.0, len(index)))
+        print("  %.2f MB in %d files: %s" % (nbytes / 1048576.0, len(files),
+                                             ", ".join(f["file"] for f in files)))
 
     if checking:
-        bad = verify(works, index)
+        bad = verify(works)
         if bad:
             print("\n  the chunks do not match the chain:")
             for b in bad[:12]: print("    " + b)
