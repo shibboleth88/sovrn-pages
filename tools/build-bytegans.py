@@ -63,10 +63,11 @@ def gif_of(token):
         sys.exit("  no image payload in mirror file %d.svg" % token)
     return m.group(1)
 
-# How large the cast is. The page draws a few dozen of these at a time — as many
-# as the window has room for — and the rest are the slack that lets a reload put
-# a different crowd on the screen.
-CAST = 140
+# How large the cast is. They are spread over the whole document now rather than
+# over the window, so the number needed scales with the length of the page and
+# not with the size of the screen — a few hundred rather than a few dozen. The
+# surplus is the slack that lets a reload put a different crowd on the page.
+CAST = 240
 # Kinds small enough that sampling them would be a lie: everyone shows up.
 WHOLE = 12
 
