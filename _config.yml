@@ -23,6 +23,11 @@
 # automation, and none of the reasons they are innocent.
 #
 # The files stay in the repository, where they belong. They stop being pages.
+# Jekyll skips dot-directories by default, so .well-known has to be asked for
+# explicitly or security.txt 404s — which it did on the first deploy of this file.
+include:
+  - .well-known
+
 exclude:
   - CLAUDE.md
   - NOTES.md
