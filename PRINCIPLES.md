@@ -134,6 +134,25 @@ every one of those thousand was matched by MD5 before anything was removed.
 
 ## The browser's own rules
 
+### A transform creates a stacking context, so z-index inside it is local
+
+A translation panel on the CENTS page kept being painted over by the row below
+it, and raising its z-index from 9 to 40 changed nothing — which was the clue,
+and I read it as a fade instead. The link the panel sits in has
+`transform: translateX(6px)` on hover, the row's slide-right. **A transform
+creates a stacking context**, so the panel's z-index only ever ranked it inside
+that link. Nothing it could be set to would lift it above a later sibling.
+
+The fix is never a bigger number. Lift the thing that is a sibling of what is
+covering you — here `li:hover { z-index: 41 }`, which raises the whole row,
+transform and panel and all. `opacity` below 1, `filter`, `will-change`,
+`contain` and `perspective` all do the same thing as `transform`, and none of
+them look like they are about painting order.
+
+**When raising a z-index does nothing, stop raising it.** That is not a weak
+effect, it is the wrong axis, and it means something between you and the root
+has closed a stacking context over your head.
+
 ### The UA sheet is the weakest sheet
 
 `[hidden]` is only `display:none` in the user-agent stylesheet, so any class that

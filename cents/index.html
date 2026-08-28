@@ -118,7 +118,20 @@
    title, so presenting one unattributed would be passing our words off as
    theirs. On a touch screen, where there is no pointing, the translation simply
    sits under the title instead. */
+/* The row is lifted, not the panel, and that distinction is the whole fix.
+   .ln a:hover carries transform:translateX(6px) — the row slides right when you
+   point at it — and **a transform creates a stacking context**. So the panel's
+   own z-index, whatever it is, only ranks it inside that link. It can never
+   rise above the *next* li, which is positioned too and comes later in the
+   document, so the next row painted straight over the panel and the two titles
+   read through each other. Raising the panel's z-index from 9 to 40 changed
+   nothing, and could not have.
+   
+   Giving the hovered li a z-index lifts the whole row, transform and panel and
+   all, above the siblings that follow it. :focus-within so it works for the
+   keyboard as well as the pointer. */
 .ln li{position:relative}
+.ln li:hover,.ln li:focus-within{z-index:41}
 /* No fade. It faded in over 140ms, and for those 140ms the panel was
    semi-transparent with the next row's title reading straight through it —
    two lines of text on top of each other, in two scripts. Crossing the list

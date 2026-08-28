@@ -50,7 +50,11 @@
 /* The two Chinese-language articles carry an English translation on hover or
    focus; see the note on the CENTS page, which lists the same two. Titles are
    quoted exactly as published, and the translations are ours and say so. */
+/* The same lift as the CENTS page. Nothing here transforms on hover, so the
+   panel would rank correctly on its own — but a row that is lifted as a whole
+   cannot be painted over by a later one whatever is added to it later. */
 #pr li{position:relative}
+#pr li:hover,#pr li:focus-within{z-index:41}
 /* Opaque from the first frame, and no fade — see the note on the CENTS page,
    which lists the same two articles. A translucent panel over a title in
    another script is two texts at once and neither readable. */
