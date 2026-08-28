@@ -325,6 +325,17 @@ Two consequences that matter here:
 Full detail, including why static analysis of the bytecode gives a badly wrong
 answer, is in `sovrn-onchain/CLAUDE.md`.
 
+## Principles
+
+`PRINCIPLES.md` collects what has been learned from things that went wrong here,
+stated as rules with the failure attached. It is the first thing to read before
+changing how the site is built, and the place to add to when something surprises
+you — a near miss as much as a shipped bug, since the shipped bug is only the
+near miss nobody noticed.
+
+`NOTES.md` is the neighbouring document and holds the specifics: what a given
+collection contains, how a given tool behaves.
+
 ## Related repositories
 
 | repo | what it holds |

@@ -15,6 +15,10 @@ rediscover them.
 
 ---
 
+The general lessons — the ones that are not about any one collection or tool —
+live in `PRINCIPLES.md`, stated as rules with the failure that produced each one.
+This file is the specifics.
+
 ## Google Sites
 
 These pages are hosted here and embedded into Google Sites. Sites imposes three

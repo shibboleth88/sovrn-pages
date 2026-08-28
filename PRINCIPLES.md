@@ -1,0 +1,340 @@
+# Principles
+
+Everything here was learned by getting it wrong on this site. Each one is stated
+as a rule, with the failure that produced it, because a rule with no incident
+attached is advice and gets ignored — and because the incident is usually the
+part that makes the rule stick.
+
+`NOTES.md` holds the specifics: what a particular collection contains, how a
+particular tool behaves. This file holds the things that generalise.
+
+Add to it when something surprises you. A near miss belongs here as much as a
+shipped bug; the shipped bug is only the near miss you did not notice.
+
+---
+
+## Verifying
+
+### A check that regenerates its input is not a check
+
+`build-bytegans.py --check` rebuilt the data files and then verified what it had
+just written. It could only ever catch a bug in itself, never drift in what was
+actually being served. It passed, cheerfully, with two artworks swapped by hand.
+
+A check reads what is on disk. If it writes anything first, it is a build step
+wearing a check's clothes.
+
+### Prove a check fails before believing that it passes
+
+The fix above was only believable once the corruption was reintroduced and the
+check reported it and exited non-zero. Until then it was a function that printed
+a reassuring sentence.
+
+Every check added here should be run once against known-bad input. If you cannot
+produce known-bad input, you do not yet know what the check is for.
+
+### Absence of an error is not evidence of success
+
+A CSP-blocked iframe still fires `onload`. The framing test looked like it
+passed; only the console said the frame had been refused. The same shape recurs
+everywhere: a 200 that is a bot wall, a request that resolves to a placeholder,
+a screenshot of a page that has not painted.
+
+Find the positive signal — the thing that can only be true if it worked — and
+assert on that.
+
+### When a measurement comes back suspiciously uniform, suspect the measurement
+
+Reading agent positions out of the page returned *every one of them at y=0*. The
+page was fine; the regex did not allow for the spaces a browser inserts when it
+serialises `translate3d`, so every match failed and every value fell through to
+a default of zero.
+
+A result that is too clean is a result about your instrument. Print one raw
+sample before believing an aggregate.
+
+### Measure where the frames actually run
+
+Motion could not be observed through the browser pane: a tab that is not being
+looked at throttles `requestAnimationFrame` to about 2fps, and the frame delta is
+clamped, so a wandering byteGAN advanced in slow motion and screenshots showed it
+frozen. Three separate attempts to "see" it failed before this was understood.
+
+Extract the page's own script and drive it under a controlled clock instead. Doing
+that tests the shipped code — not a reimplementation of it — and gives numbers
+that mean something: distance travelled, how many paused, whether any left the
+box.
+
+### A status code from outside a browser cannot tell a dead link from a bot wall
+
+raster.art answers `429` for every path, valid or not. Medium answers `403`,
+the WSJ `401`. `curl` cannot distinguish any of these from a genuine death, and
+a 429 body looks exactly like a 404 body if you only read the body.
+
+Load the page in a real browser, wait for the checkpoint, and always include a
+deliberately bogus URL as a control so you can prove a 404 is real.
+
+---
+
+## Changing things
+
+### A slice by marker must assert that it found something
+
+A script that rebuilt a page cut the "links and footer" block by searching for a
+marker. The marker had moved above the text being cut, so the slice returned an
+empty string, and the page was rebuilt without its Raster link, its SuperRare
+link, the artist's X, or its credit line. Every check passed. It was live for an
+hour.
+
+Assert the length. `assert block, "links block came back empty"` would have cost
+nothing and stopped it.
+
+### The checks you have are about the things you have already broken
+
+Nothing caught the missing footer because every existing check was about assets
+resolving. The page was well-formed in every checkable way and missing its point.
+
+When something ships broken, the fix is two commits' worth of work: the repair,
+and the check that would have caught it. `check-site.py --files` now asserts every
+collection page keeps a way out and a way home.
+
+### Test for the thing, not for the markup around it
+
+The first version of that check looked for `class="links"`, and reported three
+false problems on pages that carry their links in different markup. A check that
+cries wolf teaches you to ignore it, which is worse than not having it.
+
+It looks for the Raster URL and the credit line themselves now. Where a page
+genuinely lacks one — Reflection has no credit line — that is recorded as a named
+exception, so it stays visible as something to settle rather than becoming a hole.
+
+### Check who reads a file before deleting it
+
+`img/bytegans/` looked like twenty-four duplicates of files already in the
+mirror, and it is. It is also what `share.js` reads for its sample strip.
+
+Grep the whole repo for a filename before removing it, including from `.js`.
+
+### Never retype what you can parse
+
+Five URLs were transcribed by hand out of a display that silently truncated at
+110 characters. All five 404'd. Since then, lists of URLs are generated from a
+parse of the source and never read off a screen.
+
+### Verify before destroying
+
+A shell loop that word-split filenames on spaces reported a thousand photographs
+as missing from the backup drive when they were all present. Had that been
+believed, the originals would have been deleted.
+
+Do file work in a language with real string handling, and confirm by content —
+every one of those thousand was matched by MD5 before anything was removed.
+
+---
+
+## The browser's own rules
+
+### The UA sheet is the weakest sheet
+
+`[hidden]` is only `display:none` in the user-agent stylesheet, so any class that
+sets `display` beats it. A button with `hidden` stayed on screen because `.cta`
+set `display:inline-flex`. It was visible in a screenshot and invisible to every
+test.
+
+### Presentational attributes are CSS, and they win where you are not looking
+
+`width` and `height` on an `<img>` become real CSS declarations. A specified
+height beats `aspect-ratio`, so tiles meant to be square came out 34×11 while the
+rule intended to square them sat there looking correct.
+
+Either set `height:auto` and let the ratio work, or size by the attributes alone
+and add no CSS at all. Both are fine; the mixture is the trap.
+
+### A `<source>` beats a later `src`
+
+Wrapping an `<img>` in `<picture>` breaks any image whose `src` is later assigned
+by JavaScript: the `<source>` continues to win. Every JS-driven image on the site
+is therefore excluded from the responsive-images pass, by rule, in
+`responsive-images.py`.
+
+### An SVG loaded through `<img>` is a different document
+
+It cannot see the host page's fonts. A `<text>` element used as a clip path fell
+back to a system serif, and the wordmark silently became a different wordmark.
+Outline the letters with fontTools instead. The same isolation means no scripts
+run and no external resources load.
+
+---
+
+## Size, motion and layout
+
+### Set what has to be read in the units the reader sees
+
+The disc wordmark had its texture set as a fraction of the drawing, which is
+1200 units wide and displayed at 340. Everything inside it was therefore divided
+by three and a half on the way to the screen, and the addresses it is made of
+arrived at 1.4px: not small text, but noise with no letters in it.
+
+Copying a ratio from another mark looked like consistency and was the bug. If
+something must be legible, compute its size from the size it is actually shown at.
+
+### Ink is coverage times passes, and bigger characters cover less
+
+Making those characters five times larger emptied the letterforms — the same
+address written large leaves more paper between its strokes — so the stencil
+needed three passes of gold instead of two. One pass at that size is not a
+fainter word, it is no word.
+
+A parameter that looks independent often is not. Change one and re-check the
+other.
+
+### Text is about half transparent
+
+A disc made only of characters let the homepage mosaic straight through and
+stopped reading as a disc. It had held on a flat test page only because that
+background was uniform.
+
+Anything built out of type needs an opaque ground under it if it has to work over
+arbitrary content — and it has to be tested over the actual content, not over
+grey.
+
+### A seamless loop is arithmetic
+
+A marquee track written twice and translated `-50%` twitches on every wrap if the
+spacing is a flex `gap`: the track measures `2n·w + (2n−1)·g`, and half of that
+falls half a gap short of where the second copy begins.
+
+Put the spacing in a margin on each tile and the track is exactly `2n·(w+g)`.
+Check the number rather than the animation — 92 tiles at 44+3 gives 4324px, and
+half of it is 46 tiles precisely.
+
+### Lazy loading needs a box to defer
+
+`loading="lazy"` on 1,111 tiles fetched all 1,111 immediately. Unloaded images
+with no reserved height collapse to nothing, the document is then shorter than
+the viewport, and every image is technically on screen.
+
+Reserve the space — `aspect-ratio`, or width and height attributes — or lazy
+loading is decoration.
+
+### `1fr` fills the row, which is rarely what a lone item wants
+
+A grid of `minmax(x, 1fr)` stretched a single kingGAN across a full-width panel
+with an acre of empty ground beside it. Flex with `width: fit-content` sizes the
+container to its contents — the full width for 289 works, one tile for one —
+because `fit-content` is `min(max-content, available)`.
+
+### One tab stop per crowd
+
+1,111 focusable tiles put 1,111 tab stops between the top of the page and its
+links. That is not navigation, it is a trap. Roving tabindex: the first item is
+in the tab order, the arrow keys move within, and focus is restored when a dialog
+closes.
+
+Better still, ask whether the crowd should be focusable at all. The wandering
+byteGANs are scenery: no pointer events, hidden from assistive tech, and nothing
+is lost, because a moving 34px target was never a usable control.
+
+### Motion that cannot be reduced should be removed
+
+There is no gentler version of forty byteGANs wandering across a page. Under
+`prefers-reduced-motion` the layer does not load at all, which is more honest
+than parking them all over the text. The artwork itself keeps animating: eleven
+frames of an eleven-pixel being is the work, not an effect.
+
+### Only animate what can be seen
+
+A `requestAnimationFrame` loop for every section is battery spent on things
+nobody is looking at. Sections start and stop with an `IntersectionObserver`;
+agents outside the viewport are skipped in the loop, which makes the cost
+proportional to the window rather than to the length of the page. Clamp the
+frame delta, or a backgrounded tab returns to find everything teleported.
+
+---
+
+## Delivery
+
+### A same-origin file has exactly the page's own availability
+
+If it cannot be reached, there is no page either. Every other arrangement — a
+public RPC, our own proxy, a custom domain — adds a host that can be blocked or
+fail independently. Once you have said "this must work for everyone", that is the
+only answer; nothing else removes the failure surface, it only shrinks it.
+
+This is why 2,218 artworks are mirrored inside the site's own repository. It is
+also why a custom domain forced the mirror to move: `www.sovrn.art` and
+`shibboleth88.github.io` are different origins, and a cross-origin image taints
+the canvas exactly like IPFS does.
+
+### "Failed to fetch" plus a working same-origin file means a blocked hostname
+
+That combination is the whole diagnosis, and it looks like a contract or chain
+problem and is neither. `Failed to fetch` is a `TypeError` — the request never
+completed at the network layer. Something merely down, erroring or rate-limiting
+*answers*, and you see its message instead. Crypto RPC hostnames sit on filter
+lists that uBlock, AdGuard, Brave and DNS filters enable by default.
+
+### Requests, not bytes
+
+On GitHub Pages the request count is the constraint long before the byte count
+is. Pointing 1,111 `<img>` at 1,111 mirror files works and costs 1,111 requests
+per visitor; the same artwork grouped into four files costs four. The bytes were
+never the problem.
+
+### Test a replacement with the real payload
+
+`cloudflare-eth.com` answers `eth_blockNumber` perfectly and returns "Internal
+error" on a real Reflection `tokenURI`, which is ~338,000 hex characters. A
+smoke test with a small call qualifies providers that cannot serve the actual
+request.
+
+### Access is not a trigger
+
+Granting a deploy service access to a repository does not create the webhook. The
+service went green, served traffic, and ignored every push to `main` — a healthy
+deployment is not evidence that push-to-deploy works. Confirm the trigger exists,
+then confirm a push actually produces a build.
+
+---
+
+## Facts
+
+### A number inside a heading is not the number
+
+"Twelve works, three to a season" on the Seasons of Mobility page is a display
+selection. The contract holds 365, one for each day. An earlier pass took the
+heading as the collection size and published it.
+
+Where a contract can answer, ask the contract.
+
+### An identifier inside a title is a label, not an index
+
+Every byteGAN is titled `<modifier> <kind>GAN #<n>`, and that `n` matches the
+token id for exactly one of the 1,111. Reading `#950` off a title and fetching
+token 950 returns a different work, with nothing to signal it.
+
+Reflection has the same shape in gentler form: the artist's list is 1–999 and the
+token ids are 0–998, so the id is always the list number minus one.
+
+### Never rewrite a URL you are given
+
+`/collections/fransisco-carolinum` is misspelled and is the live URL. Correcting
+the spelling 404s. Fix it in prose only.
+
+### A written record goes stale, including this one
+
+Every checkable claim in this file was verified against the repository before it
+was committed, and one was wrong: the misspelled museum URL was recorded as
+`/museums/fransisco-carolinum` in an older set of notes, and those pages have
+since moved under `/collections/`. Written from memory it would have sent the
+next reader to a 404 while sounding authoritative — the worst combination a note
+can have.
+
+Check a claim before you repeat it, especially one you are confident about. The
+confident ones are the ones nobody checks.
+
+### Absent means unpublished, never zero
+
+Where a source does not state a figure, the field is omitted rather than filled
+with a plausible one, and the page says the source does not give it. A backfilled
+guess is indistinguishable from a fact once it is written down.
