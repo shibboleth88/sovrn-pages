@@ -188,6 +188,19 @@ fainter word, it is no word.
 A parameter that looks independent often is not. Change one and re-check the
 other.
 
+### Removing a background is not keying out a colour
+
+Cutting the backgrounds off the byteGANs so the creature wanders instead of the
+tile looks like a one-liner: find the commonest colour, make it transparent. It
+is wrong on every single work in the collection. The ground colour also appears
+*inside* the figure — the eyes, the mouth, the gaps between limbs are background
+showing through — so keying the colour punches holes in every face. Measured: 3
+to 7 pixels of trapped ground in each work checked, in all of them.
+
+What is wanted is the *background*, meaning the pixels of that colour reachable
+from the edge, which is a flood fill and not a filter. The difference does not
+show up in a thumbnail and is glaring at 34px.
+
 ### Text is about half transparent
 
 A disc made only of characters let the homepage mosaic straight through and

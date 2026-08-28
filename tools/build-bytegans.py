@@ -99,6 +99,79 @@ GROUNDS = [("red", "#c00000", (192, 0, 0)), ("bone", "#e0cdb2", (224, 205, 178))
            ("blue", "#0037a7", (0, 55, 167)), ("cyan", "#00bfbf", (0, 191, 191)),
            ("odd", None, None)]
 
+def frames_of(token):
+    """Every frame of a work, composited to RGB, plus its frame delay."""
+    im = Image.open(io.BytesIO(base64.b64decode(gif_of(token))))
+    fs, dur = [], im.info.get("duration", 200)
+    try:
+        while True:
+            fs.append(im.convert("RGB").copy())
+            im.seek(im.tell() + 1)
+    except EOFError:
+        pass
+    return fs, dur
+
+def cut_gif(token):
+    """The work with its background taken out, so only the creature is left.
+
+    The page shows these wandering, and a byteGAN wandering inside its own
+    coloured square is a tile sliding about rather than a thing walking. Cut the
+    ground away and it is a character.
+
+    **It is a flood fill from the edge, not a colour key**, and that distinction
+    is the whole job. The ground colour also appears *inside* the figure — the
+    eyes, the mouth, the gaps between limbs are the background showing through —
+    so keying out every pixel of that colour punches holes in every face in the
+    collection. Measured: 3 to 7 pixels of trapped ground in each of the works
+    checked, in every one of them. Only ground-coloured pixels reachable from
+    the border are the background.
+
+    This is a derived asset and the only altered artwork on the site: the mirror
+    at /onchain/bytegans/ still holds the exact bytes the contract returns, the
+    plate and the three portraits on the page are untouched, and --check
+    re-derives these from the mirror rather than trusting the file."""
+    fs, dur = frames_of(token)
+    tally = collections.Counter()
+    for f in fs:
+        tally.update(f.getdata())
+    g = tally.most_common(1)[0][0]
+
+    out, cols = [], sorted({p for f in fs for p in f.getdata()} - {g})
+    for f in fs:
+        w, h = f.size
+        px = f.load()
+        seen, stack = set(), []
+        for x in range(w):
+            for y in (0, h - 1):
+                if px[x, y] == g: stack.append((x, y))
+        for y in range(h):
+            for x in (0, w - 1):
+                if px[x, y] == g: stack.append((x, y))
+        while stack:
+            x, y = stack.pop()
+            if (x, y) in seen or not (0 <= x < w and 0 <= y < h) or px[x, y] != g:
+                continue
+            seen.add((x, y))
+            stack += [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+        # index 0 is the transparent one; the rest is the work's own palette,
+        # kept exactly, so no colour is resampled on the way through
+        im = Image.new("P", (w, h))
+        pal = [0, 0, 0]
+        for c in cols: pal += list(c)
+        im.putpalette(pal + [0] * (768 - len(pal)))
+        ip = im.load()
+        for y in range(h):
+            for x in range(w):
+                ip[x, y] = 0 if (x, y) in seen else (cols.index(px[x, y]) + 1 if px[x, y] != g else 0)
+        out.append(im)
+
+    buf = io.BytesIO()
+    # optimize is not optional: without it PIL writes the full 768-byte palette
+    # into every frame and a work goes from 1.1KB to 9.3KB
+    out[0].save(buf, format="GIF", save_all=True, append_images=out[1:],
+                duration=dur, loop=0, disposal=2, transparency=0, optimize=True)
+    return base64.b64encode(buf.getvalue()).decode("ascii")
+
 def ground_of(token):
     """Which ground this work stands on, read from its own pixels."""
     raw = base64.b64decode(gif_of(token))
@@ -151,7 +224,7 @@ def build():
              "ids":     [w["id"] for w in ws],
              "titles":  [w["title"] for w in ws],
              "g":       [ground_of(w["id"]) for w in ws],
-             "gifs":    [gif_of(w["id"]) for w in ws]}
+             "gifs":    [cut_gif(w["id"]) for w in ws]}
         p = os.path.join(OUT, name)
         io.open(p, "w", encoding="utf-8").write(json.dumps(d, separators=(",", ":")))
         return os.path.getsize(p)
@@ -211,7 +284,7 @@ def verify(works):
                 bad.append("token %d is a %s, filed in %s" % (tok, w["kind"], e["file"]))
             elif d["titles"][i] != w["title"]:
                 bad.append("token %d: file says %r, chain says %r" % (tok, d["titles"][i], w["title"]))
-            elif d["gifs"][i] != gif_of(tok):
+            elif d["gifs"][i] != cut_gif(tok):
                 bad.append("token %d carries another work's image" % tok)
             elif d["g"][i] != ground_of(tok):
                 bad.append("token %d: file says the %s ground, its pixels say %s"

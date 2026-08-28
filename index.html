@@ -178,9 +178,10 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transfo
    and a single creature living somewhere down a page four screens long would
    almost never be seen.
 
-   Inert, and hidden from assistive tech. It takes no pointer events, so it never
-   eats a click on whatever it happens to be crossing, and it is 828 bytes of
-   base64 written straight into the page, so it costs no request at all.
+   Its background is cut away, so what walks about is the creature rather than a
+   small coloured tile. Inert, and hidden from assistive tech: it takes no
+   pointer events, so it never eats a click on whatever it is crossing, and it
+   is written straight into the page as base64, so it costs no request at all.
 
    The drop shadow is doing real work: the first screen is a mosaic of the same
    artwork, and without it a byteGAN over a byteGAN tile is camouflage. The
@@ -625,7 +626,7 @@ document.getElementById("so").innerHTML=SO.map(m=>
   var PX = 36, el = document.createElement("img");
   el.id = "king"; el.alt = ""; el.width = PX; el.height = PX;
   el.setAttribute("aria-hidden", "true");
-  el.src = "data:image/gif;base64,R0lGODlhCwALAJEAAODNstiaqs9nor4BkSH/C05FVFNDQVBFMi4wAwEAAAAh+QQECgAAACwAAAAACwALAAACIISPqTgw0gQb9EkTmgYX5GodQUZ22IgmnzVObOAKwlgAACH5BAQKAAAALAAAAAALAAsAAAIihC6gexYfGBIxKjRoSFzvnRhTFooZtDjfk1JT6iAWA1JwAQAh+QQECgAAACwAAAAACwALAAACIISPqTgw0gQb9EkTmgYX5GodQUZ22IgmnzVObOAKwlgAACH5BAQKAAAALAEAAQAKAAoAAAIhhC15N9JzQhiUxgkgNLLSwHUOGEoCCVKnBIrrCaTNmQQFACH5BAQKAAAALAEAAQAKAAoAAAIehI82MLJyhpQCgrAysHg2joWWEZQm0n1lRAmr0pYFACH5BAQKAAAALAIAAQAJAAoAAAIfhBFxN9KNwphTxAEwFI7CJDmcoXAmGFhgBJiCAp5AAQAh+QQECgAAACwCAAEACQAKAAACHYSPAiOzJtqYDiiHoaTnhooAQShOIxI0wmkwJlAAACH5BAQKAAAALAMAAgAIAAkAAAIaBCZyduMDQoA0tmfCmUwDZSQJJIVIZgpaUAAAIfkEBAoAAAAsAwAAAAgACwAAAh6EEXEhkgqaZGAMYVvFW9R8KUnzIIxDIZMXTZCDAgUAIfkEBAoAAAAsAwAAAAgACwAAAh6EjxAbNvLWGW80OcBzWcgWecYiCIpCmo1SXkfQNgUAIfkEBAoAAAAsAAAAAAoACwAAAiUEhKaBHSpGnOyMe5MFw4R/RBgjAIwkVYvwgcvHuubJPAbbDF8BADs=";
+  el.src = "data:image/gif;base64,R0lGODlhCwALAIEAAAAAAL4Bkc9notiaqiH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCgAAACwAAAAACwALAAAIOAABCBxIsKBBggEABBCQUADCABAXOhQ4IKFFABMBVIwoceCAiiAzUvxIsuBGiR8fohygUoCAjwEBACH5BAkKAAAALAAAAAAKAAsAgQAAAL4Bkc9notiaqgg4AAEIGCgAgEGDAwUOWDgAIUEBDRsKHBgA4oCCBBlCTPhQQMWCEysyPGjRokSFDw+iHHhyJUSVAQEAIfkECQoAAAAsAgACAAkACQCBAAAAvgGRz2ei2JqqCDMAAQQQKGCgAAACAygMIODggIEQAThcqLAhgAEPMx5EiLHjAIQXFzbEiFCkAJIJGZ4cEBAAIfkECQoAAAAsAQABAAoACgCBAAAAvgGRz2ei2JqqCDoAAQgUKKDgwIEBBCQMMHDAgAAQITZ8CIAhQ4EOI0IcgDGjQo4dHQoAyRHiSIccPZ4cCaBkwpEFBwQEACH5BAkKAAAALAIAAgAJAAkAgQAAAL4Bkc9notiaqggzAAEEEChgoAAAAgMoDCDg4ICBEAE4XKiwIYABDzMeRIix4wCEFxc2xIhQpACSCRmeHBAQACH5BAkKAAAALAIAAQAJAAoAgQAAAL4Bkc9notiaqgg2AAEIBDBgwMCBAQQkTEhwQICHDwU0DACAIkMBCiEyLOhQIUaBBjGK5DhAIseGAEQKMMhxJICAACH5BAkKAAAALAMAAgAHAAkAgQAAAL4Bkc9notiaqggrAAUACCAgwEABBQMoJDiwIcGECwEIDDDAIICLAAZgzKhQ48UBBQV4JNgxIAAh+QQJCgAAACwDAAIACAAJAIEAAAC+AZHPZ6LYmqoILwABAAggQMBAgQMDKAwAYMAAhhAbJlwocMDAhwgtAjAosGBBhg47EqwoUoDFAQEBACH5BAkKAAAALAQAAAAHAAsAgQAAAL4Bkc9notiaqggxAAEIHDBgoAABBAseXDhAQIAADiE6dAhA4kOIEBMeTEhwY0MADTcKALAQocKGBAEEBAAh+QQJCgAAACwDAAEABwAKAIEAAAC+AZHPZ6LYmqoIMAABCBxAcACAAAIQEhQYAGGAggcPCjgYAIAAiAovAiAoYGLBAR03buxo0ODIiwMCAgAh+QQJCgAAACwAAAAACgALAIEAAAC+AZHPZ6LYmqoIPwABABBAUKDBAQQTDjAoIEDDhwgHBpg4saBEAAEEDtg4sCFFhAIAIHToMOJBARs5HtyIUqXIkQgXCkSZMMDGgAA7";
   document.body.appendChild(el);
 
   var x = 0, y = 0, tx = 0, ty = 0, dir = Math.random() * 6.283,
