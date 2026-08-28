@@ -117,10 +117,10 @@ const P=[
 ["https://ocula.com/artists/rutherford-chang/","Artist page: exhibitions and biography","Ocula"],
 ["https://www.interaliamag.org/articles/rutherford-chang-hundreds-and-thousands/","Rutherford Chang: Hundreds and Thousands","Interalia"],
 ["https://www.e-flux.com/announcements/6785689/rutherford-changhundreds-and-thousands","Rutherford Chang: Hundreds and Thousands","e-flux"],
-["https://news.bjd.com.cn/2026/01/17/11529440.shtml","一展带你看懂观念艺术，张能傑回顾展“成百上千”UCCA开幕","京报网 · 17.1.26","An exhibition to help you make sense of conceptual art: Rutherford Chang’s retrospective “Hundreds and Thousands” opens at UCCA"],
-["https://news.qq.com/rain/a/20260301A02TA900","收藏、重复与文化记忆丨“张能傑：成百上千”正在UCCA展出","腾讯新闻 · 1.3.26","Collecting, repetition and cultural memory — “Rutherford Chang: Hundreds and Thousands” is on view at UCCA"],
+["https://news.bjd.com.cn/2026/01/17/11529440.shtml","一展带你看懂观念艺术，张能傑回顾展“成百上千”UCCA开幕","京报网 · 17.1.26","An exhibition to help you make sense of conceptual art: Rutherford Chang’s retrospective “Hundreds and Thousands” opens at UCCA","Beijing Daily"],
+["https://news.qq.com/rain/a/20260301A02TA900","收藏、重复与文化记忆丨“张能傑：成百上千”正在UCCA展出","腾讯新闻 · 1.3.26","Collecting, repetition and cultural memory — “Rutherford Chang: Hundreds and Thousands” is on view at UCCA","Tencent News"],
 ["https://ucca.org.cn/en/2601172","Exhibition guide","UCCA"]];
-$("hero").src=B+A[0][0];$("pr").innerHTML=P.map(p=>'<li><a href="'+p[0]+'"'+tgt(p[0])+'><span class="t"'+(p[3]?' lang="zh-Hans"':'')+'>'+p[1]+'</span><span class="s">'+p[2]+'</span>'+(p[3]?'<span class="en" lang="en">'+p[3]+'<b>our translation</b></span>':'')+'</a></li>').join("");
+$("hero").src=B+A[0][0];$("pr").innerHTML=P.map(p=>'<li><a href="'+p[0]+'"'+tgt(p[0])+'><span class="t"'+(p[3]?' lang="zh-Hans"':'')+'>'+p[1]+'</span><span class="s">'+p[2]+'</span>'+(p[3]?'<span class="en" lang="en">'+p[3]+'<b>'+(p[4]?p[4]+' \u00b7 ':'')+'our translation</b></span>':'')+'</a></li>').join("");
 function zoom(i){$("lbi").src=B+W[i][0];$("lbi").alt=W[i][1];$("lbc").textContent=W[i][1];lb.classList.add("on");$("lbx").focus();}
 function unzoom(){lb.classList.remove("on");}
 $("lbx").onclick=unzoom;lb.onclick=e=>{if(e.target===lb)unzoom();};

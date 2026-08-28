@@ -191,8 +191,8 @@ const PS=[["The 21st Century's Biggest Art Trend is Not a Style. But Once You Se
 ["Artist page: exhibitions and biography","https://ocula.com/artists/rutherford-chang/","Ocula"],
 ["Rutherford Chang: Hundreds and Thousands","https://www.interaliamag.org/articles/rutherford-chang-hundreds-and-thousands/","Interalia"],
 ["Rutherford Chang: Hundreds and Thousands","https://www.e-flux.com/announcements/6785689/rutherford-changhundreds-and-thousands","e-flux"],
-["一展带你看懂观念艺术，张能傑回顾展“成百上千”UCCA开幕","https://news.bjd.com.cn/2026/01/17/11529440.shtml","京报网","An exhibition to help you make sense of conceptual art: Rutherford Chang’s retrospective “Hundreds and Thousands” opens at UCCA"],
-["收藏、重复与文化记忆丨“张能傑：成百上千”正在UCCA展出","https://news.qq.com/rain/a/20260301A02TA900","腾讯新闻","Collecting, repetition and cultural memory — “Rutherford Chang: Hundreds and Thousands” is on view at UCCA"]];
+["一展带你看懂观念艺术，张能傑回顾展“成百上千”UCCA开幕","https://news.bjd.com.cn/2026/01/17/11529440.shtml","京报网","An exhibition to help you make sense of conceptual art: Rutherford Chang’s retrospective “Hundreds and Thousands” opens at UCCA","Beijing Daily"],
+["收藏、重复与文化记忆丨“张能傑：成百上千”正在UCCA展出","https://news.qq.com/rain/a/20260301A02TA900","腾讯新闻","Collecting, repetition and cultural memory — “Rutherford Chang: Hundreds and Thousands” is on view at UCCA","Tencent News"]];
 const PR=[["Project description",S+"project-description"],["Writing on CENTS",S+"makes-cents"],
 ["Trait Explorer","https://cents.vision/"],["Trait Atlas","https://cents.vision/traits-atlas.html"],
 ["Trait Council",S+"trait-council"],
@@ -210,7 +210,7 @@ const G=[["cents_cube_screens.jpg","The copper block with screens showing the co
 ["cents_installation.jpg","The CENTS room at UCCA"]];
 const $=i=>document.getElementById(i),e=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;"),
 ext=u=>!u.startsWith("http")?'':(u.includes("sovrn.art")?' target="_blank"':' target="_blank"');
-const row=x=>'<li><a href="'+x[1]+'"'+ext(x[1])+'>'+(x[2]&&x[2].includes(".")?'<img src="'+encodeURI(x[2].includes("/")?x[2]:H+x[2])+'" alt="">':'')+(x[3]?'<span lang="zh-Hans">'+e(x[0])+'</span>':e(x[0]))+(x[2]&&!x[2].includes(".")?'<span class="src">'+e(x[2])+'</span>':'')+(x[3]?'<span class="en" lang="en">'+e(x[3])+'<b>our translation</b></span>':'')+'</a></li>';
+const row=x=>'<li><a href="'+x[1]+'"'+ext(x[1])+'>'+(x[2]&&x[2].includes(".")?'<img src="'+encodeURI(x[2].includes("/")?x[2]:H+x[2])+'" alt="">':'')+(x[3]?'<span lang="zh-Hans">'+e(x[0])+'</span>':e(x[0]))+(x[2]&&!x[2].includes(".")?'<span class="src">'+e(x[2])+'</span>':'')+(x[3]?'<span class="en" lang="en">'+e(x[3])+'<b>'+(x[4]?e(x[4])+' \u00b7 ':'')+'our translation</b></span>':'')+'</a></li>';
 $("u").innerHTML=UP.map(row).join("");$("r").innerHTML=PS.map(row).join("");
 $("p").innerHTML=PR.map(row).join("");$("m").innerHTML=MK.map(row).join("");$("s").innerHTML=SO.map(row).join("");
 $("g").innerHTML=G.map(x=>'<a href="/exhibitions/ucca"><img src="'+encodeURI(U+x[0])+'" alt="'+e(x[1])+'" loading="lazy"></a>').join("");
