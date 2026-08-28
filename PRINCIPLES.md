@@ -242,6 +242,19 @@ There is no gentler version of forty byteGANs wandering across a page. Under
 than parking them all over the text. The artwork itself keeps animating: eleven
 frames of an eleven-pixel being is the work, not an effect.
 
+### Something that works and cannot be seen is not working
+
+Colliding byteGANs transformed correctly from the day it was written, and the
+first report was that nothing was happening. It was true and it was invisible: a
+given one changed every 29 seconds, the jolt announcing it lasted 0.28s and took
+a 34px tile to 48px, and there was 0.44 of a jolt on screen at any instant. You
+had to already be looking at the right tile at the right third of a second.
+
+Tuning away from one failure — this must not strobe — walked straight past the
+target into another. For anything meant to be noticed, compute the thing the
+viewer actually experiences: how often does *this one* change, and how much of
+the effect is on screen at any moment. Half of one is not enough.
+
 ### An optimisation that skips work can change behaviour, not just cost
 
 Only the byteGANs inside the window are stepped, which is right and cheap. But

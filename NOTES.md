@@ -755,6 +755,41 @@ assumed:
 
 ---
 
+## Watching an animation actually run
+
+The browser pane cannot be used for this. A tab that is not being looked at
+throttles `requestAnimationFrame` to about 2fps, and any loop that clamps its
+frame delta — as it should, so a backgrounded tab does not come back to find
+everything teleported — then advances in slow motion. Screenshots show a frozen
+page and the numbers you read out of it are about the throttling, not the work.
+
+Two things that do work, and are worth reaching for early rather than after an
+hour of screenshots:
+
+**Headless Chrome with `--virtual-time-budget` does drive rAF.** Give it a budget
+and it runs the page's animation as fast as it can, then dumps or screenshots the
+result. Two budgets and a diff prove motion; one budget and `--screenshot` gives
+a real render of a moment you choose.
+
+```bash
+CH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+"$CH" --headless --disable-gpu --window-size=1400,900 --hide-scrollbars \
+      --virtual-time-budget=9600 --screenshot=shot.png "http://localhost:4173/page/"
+"$CH" --headless --disable-gpu --window-size=1400,900 \
+      --virtual-time-budget=30000 --dump-dom "http://localhost:4173/page/" > late.html
+```
+
+This is how the byteGAN collisions were finally seen: two of them enlarged and
+flashing side by side, in a still.
+
+**Or drive the page's own script under a clock you control.** Pull the script out
+of the HTML, stub the handful of DOM calls it makes, define
+`requestAnimationFrame` as a queue and `performance.now` as a counter, and step
+it. It tests the shipped code rather than a reimplementation, it runs minutes of
+behaviour in seconds, and it answers questions a screenshot never can: how far
+did each one travel, how many paused, did any leave the box, is the distribution
+still even after eight minutes. It is what found the page draining.
+
 ## Verifying animation
 
 **The in-app browser pane does not paint.** Measured: one `requestAnimationFrame`

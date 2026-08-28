@@ -192,13 +192,15 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
      because at this density brushing past is constant — a sweep from 26 down to
      8 only took it from 219 collisions a minute to 48, so the radius alone
      could never make this occasional. */
-  var HIT = 12;
-  /* The cooldown is what actually sets the rate, and it is set so that a given
-     byteGAN keeps its identity for a while: one you noticed is still the same
-     one half a minute later. Without it a crowded patch transforms every few
-     seconds and nothing on the page is anything in particular. */
-  var CALM = 7;
-  var POP = 0.28;                /* how long the little jolt of transforming lasts */
+  var HIT = 20;
+  /* The cooldown sets the rate, and the first setting of it was wrong. Tuned
+     away from strobing, it landed on invisible: a given byteGAN changed once
+     every 29 seconds, the jolt lasted 0.28s, and there was 0.44 of a jolt on
+     screen at any instant — so unless you were already staring at the right
+     34px tile at the right third of a second, nothing appeared to happen at
+     all. Something that works and cannot be seen is not working. */
+  var CALM = 3;
+  var POP = 0.5;                 /* how long the jolt of transforming lasts */
   var ROAM = 320;                /* how far up or down the page one will wander */
   var agents = [], cast = null, running = false, last = 0, W = 0, H = 0;
 
@@ -260,12 +262,20 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
     a.ty = lo + Math.random() * Math.max(1, hi - lo);
   }
   function draw(a) {
-    /* The jolt is scale on the same transform rather than a second property, so
-       it composites with the movement instead of fighting it. Pixelated
-       upscaling stays chunky, which suits an eleven-pixel being. */
-    var s = a.pop > 0 ? 1 + 0.42 * Math.sin(Math.PI * (a.pop / POP)) : 1;
+    /* The jolt has to announce itself across a page of forty other things that
+       are also moving, so it is large and it is bright: nearly double size and
+       a hard flash, both riding one sine over half a second. Scale goes on the
+       same transform as the movement so it composites rather than fights it,
+       and pixelated upscaling stays chunky, which suits an eleven-pixel being.
+       Both of a colliding pair jolt at the same instant — that simultaneity is
+       the cue that says these two, together, and not two coincidences. */
+    var k = a.pop > 0 ? Math.sin(Math.PI * (a.pop / POP)) : 0;
     a.el.style.transform = "translate3d(" + a.x + "px," + a.y + "px,0)"
-                         + (s === 1 ? "" : " scale(" + s.toFixed(3) + ")");
+                         + (k ? " scale(" + (1 + 0.9 * k).toFixed(3) + ")" : "");
+    /* the filter is only ever set on the one or two mid-jolt, and cleared the
+       moment it finishes, so it is never forty composited layers with a filter */
+    if (k) a.el.style.filter = "brightness(" + (1 + 1.7 * k).toFixed(2) + ")";
+    else if (a.el.style.filter) a.el.style.filter = "";
   }
 
   /* Two of them meet, and both become something else.
