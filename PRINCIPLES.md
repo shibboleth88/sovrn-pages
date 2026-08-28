@@ -242,6 +242,35 @@ There is no gentler version of forty byteGANs wandering across a page. Under
 than parking them all over the text. The artwork itself keeps animating: eleven
 frames of an eleven-pixel being is the work, not an effect.
 
+### An optimisation that skips work can change behaviour, not just cost
+
+Only the byteGANs inside the window are stepped, which is right and cheap. But
+they were also choosing destinations anywhere on the page, so a visible one would
+set off towards somewhere two screens down, walk out of the window — and freeze
+there for good, because it was no longer being stepped. Every visible one
+eventually does this. After three minutes the first screen was empty: y ranged
+1130 to 2864 on a 2900px page, with nothing at all in the top third.
+
+The optimisation was correct about cost and wrong about the world. It now works
+because each one wanders only near where it lives, which keeps the density even
+for as long as the page is open — and reads better anyway, since they mill about
+instead of commuting.
+
+Whenever you skip work for things that are out of view, ask what those things
+were going to do, and whether not doing it is really the same as doing it
+invisibly.
+
+### A short run cannot find a slow leak
+
+The first test of that landscape ran for twenty seconds and confirmed exactly
+what it was asked to: the off-screen ones do not move. The drain needed three
+minutes to become visible, and it was only noticed while measuring something
+else entirely.
+
+For anything that runs continuously, run it long enough to be boring, and check
+the distribution rather than the instant — "still evenly spread over five bands
+of the page after eight minutes" is a claim; "it looked fine" is not.
+
 ### Only animate what can be seen
 
 A `requestAnimationFrame` loop for every section is battery spent on things

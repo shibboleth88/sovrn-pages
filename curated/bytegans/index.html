@@ -136,7 +136,7 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 <div class="prose" style="margin-top:26px">
 <p class="lead">In their ever expanding quest for who knows what, the bitGANs have made another interesting move.</p><p>They have inscribed themselves directly on to the blockchain.</p><p>Why? We are not sure, but by recording their dance on the public ledger, they have ensured that it will go on forever, exactly as it was intended.</p><p>While this action is mysterious, three major types of byteGANs have revealed themselves, with a small subset of rarer types.</p></div>
 <p class="facts"><b>1,111</b> works &middot; <b>11 &times; 11</b> pixels &middot; <b>11</b> frames each &middot; <b>100%</b> on chain</p>
-<p class="loose">A couple of hundred of them are loose on this page, wandering about with no particular destination. They stay where they are as you scroll, so the page is a landscape you move through rather than a screen they are stuck to.</p>
+<p class="loose">A couple of hundred of them are loose on this page, wandering about with no particular destination, and they stay where they are as you scroll rather than following the window. When two of them meet, both turn into byteGANs of a different ground. The collection stands on four &mdash; red, bone, blue and cyan &mdash; and all twelve kinds appear on every one of them.</p>
 <noscript><div class="nojs"><img src="/onchain/bytegans/390.svg" alt=""><img src="/onchain/bytegans/497.svg" alt=""><img src="/onchain/bytegans/232.svg" alt=""><img src="/onchain/bytegans/535.svg" alt=""><img src="/onchain/bytegans/408.svg" alt=""><img src="/onchain/bytegans/349.svg" alt=""><img src="/onchain/bytegans/17.svg" alt=""><img src="/onchain/bytegans/675.svg" alt=""><img src="/onchain/bytegans/228.svg" alt=""><img src="/onchain/bytegans/597.svg" alt=""><img src="/onchain/bytegans/1065.svg" alt=""><img src="/onchain/bytegans/1066.svg" alt=""><img src="/onchain/bytegans/956.svg" alt=""><img src="/onchain/bytegans/456.svg" alt=""><img src="/onchain/bytegans/680.svg" alt=""><img src="/onchain/bytegans/991.svg" alt=""><img src="/onchain/bytegans/224.svg" alt=""><img src="/onchain/bytegans/407.svg" alt=""><img src="/onchain/bytegans/583.svg" alt=""><img src="/onchain/bytegans/398.svg" alt=""><img src="/onchain/bytegans/277.svg" alt=""><img src="/onchain/bytegans/341.svg" alt=""><img src="/onchain/bytegans/368.svg" alt=""><img src="/onchain/bytegans/518.svg" alt=""></div></noscript>
 </div>
 
@@ -186,7 +186,21 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
   if (!layer || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   var PX = 34;                   /* one size for all of them */
-  var agents = [], running = false, last = 0, W = 0, H = 0;
+  /* Twelve, not twenty-six: at 34px a side, corners within 12px means they are
+     nearly on top of one another, so you see the collision that caused the
+     change rather than a near miss. It is also much rarer, which matters,
+     because at this density brushing past is constant — a sweep from 26 down to
+     8 only took it from 219 collisions a minute to 48, so the radius alone
+     could never make this occasional. */
+  var HIT = 12;
+  /* The cooldown is what actually sets the rate, and it is set so that a given
+     byteGAN keeps its identity for a while: one you noticed is still the same
+     one half a minute later. Without it a crowded patch transforms every few
+     seconds and nothing on the page is anything in particular. */
+  var CALM = 7;
+  var POP = 0.28;                /* how long the little jolt of transforming lasts */
+  var ROAM = 320;                /* how far up or down the page one will wander */
+  var agents = [], cast = null, running = false, last = 0, W = 0, H = 0;
 
   function pageHeight() {
     var d = document.documentElement, b = document.body;
@@ -212,7 +226,7 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
       im.alt = ""; im.width = PX; im.height = PX;
       layer.appendChild(im);
       agents.push({
-        el: im, x: 0, y: 0, tx: 0, ty: 0,
+        el: im, x: 0, y: 0, hy: 0, tx: 0, ty: 0, g: d.g[i], calm: 0, pop: 0,
         dir: Math.random() * 6.283,
         sp: 26 + Math.random() * 58,       /* everyone their own pace */
         turn: 0.7 + Math.random() * 2.8,   /* some bank round, some pivot on the spot */
@@ -222,15 +236,80 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
         dawdle: 0.1 + Math.random() * 0.8
       });
     }
+    cast = d;
     measure(true);
     running = true; last = performance.now(); requestAnimationFrame(step);
   }).catch(function () { layer.remove(); });
 
+  /* A byteGAN wanders around where it lives rather than across the whole page,
+     and that is not a stylistic choice — it is what stops the page draining.
+     Only the ones you can see are stepped, so one that picks a destination two
+     screens away walks off the bottom of the window and freezes there, for
+     good, because it is no longer being stepped. Every visible one eventually
+     does this. Run for three minutes with page-wide targets and the first
+     screen is empty: measured, y ranged 1130 to 2864 on a 2900px page, with
+     nothing at all in the top third.
+
+     Keeping each one near where it started holds the density even everywhere,
+     for as long as the page is open, and it reads better anyway: they mill
+     about rather than commute. Sideways is unrestricted, because visibility is
+     only ever a question of how far down the page you are. */
   function target(a) {
     a.tx = Math.random() * Math.max(1, W - PX);
-    a.ty = Math.random() * Math.max(1, H - PX);
+    var lo = Math.max(0, a.hy - ROAM), hi = Math.min(H - PX, a.hy + ROAM);
+    a.ty = lo + Math.random() * Math.max(1, hi - lo);
   }
-  function draw(a) { a.el.style.transform = "translate3d(" + a.x + "px," + a.y + "px,0)"; }
+  function draw(a) {
+    /* The jolt is scale on the same transform rather than a second property, so
+       it composites with the movement instead of fighting it. Pixelated
+       upscaling stays chunky, which suits an eleven-pixel being. */
+    var s = a.pop > 0 ? 1 + 0.42 * Math.sin(Math.PI * (a.pop / POP)) : 1;
+    a.el.style.transform = "translate3d(" + a.x + "px," + a.y + "px,0)"
+                         + (s === 1 ? "" : " scale(" + s.toFixed(3) + ")");
+  }
+
+  /* Two of them meet, and both become something else.
+   *
+   * Each takes a ground that is neither of the two that just collided, so the
+   * change is always visible — if a red one and a blue one meet and one turned
+   * blue, you would see a collision produce a matching pair and read it as a
+   * bug. Avoiding both means every bump visibly scatters the palette rather
+   * than converging it, which is also why the page does not slowly turn one
+   * colour: the rule actively pushes away from whatever is in front of it.
+   *
+   * The whole cast is in memory, not just the ones on the page, so a
+   * replacement costs nothing but an assignment. */
+  function become(a, avoid) {
+    var pool = [], i;
+    for (i = 0; i < cast.count; i++) if (avoid.indexOf(cast.g[i]) < 0) pool.push(i);
+    if (!pool.length) return;
+    var pick = pool[(Math.random() * pool.length) | 0];
+    a.el.src = "data:image/gif;base64," + cast.gifs[pick];
+    a.g = cast.g[pick];
+    a.calm = CALM; a.pop = POP;
+  }
+
+  function collide(list) {
+    for (var i = 0; i < list.length; i++) {
+      var a = list[i];
+      if (a.calm > 0) continue;
+      for (var j = i + 1; j < list.length; j++) {
+        var b = list[j];
+        if (b.calm > 0) continue;
+        var dx = b.x - a.x, dy = b.y - a.y, d2 = dx * dx + dy * dy;
+        if (d2 > HIT * HIT) continue;
+        var avoid = [a.g, b.g];
+        become(a, avoid); become(b, avoid);
+        /* send them off in opposite directions, or they sit on top of one
+           another and transform again the moment the calm runs out */
+        var away = Math.atan2(dy, dx) || 0;
+        a.dir = away + Math.PI; b.dir = away;
+        target(a); target(b);
+        a.rest = b.rest = 0;
+        break;                       /* one collision each per frame is plenty */
+      }
+    }
+  }
 
   function measure(first) {
     W = layer.clientWidth; H = pageHeight();
@@ -238,8 +317,16 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
        the page's height — no feedback loop to worry about */
     layer.style.height = H + "px";
     agents.forEach(function (a) {
-      if (first) { a.x = Math.random() * Math.max(1, W - PX); a.y = Math.random() * Math.max(1, H - PX); }
-      else { a.x = Math.min(a.x, Math.max(0, W - PX)); a.y = Math.min(a.y, Math.max(0, H - PX)); }
+      if (first) {
+        a.x = Math.random() * Math.max(1, W - PX);
+        a.y = Math.random() * Math.max(1, H - PX);
+        a.hy = a.y;                       /* where this one lives */
+      } else {
+        a.x = Math.min(a.x, Math.max(0, W - PX));
+        a.y = Math.min(a.y, Math.max(0, H - PX));
+        /* the page grows as its images arrive; move everyone's patch with it */
+        a.hy = Math.min(a.hy, Math.max(0, H - PX));
+      }
       target(a); draw(a);
     });
   }
@@ -254,9 +341,13 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
        proportional to the window rather than to how long the page happens to
        be. The rest simply wait where they are until you scroll to them. */
     var top = scrollY - 250, bot = scrollY + innerHeight + 250;
+    var seen = [];
     for (var i = 0; i < agents.length; i++) {
       var a = agents[i];
       if (a.y < top || a.y > bot) continue;
+      seen.push(a);
+      if (a.calm > 0) a.calm -= dt;
+      if (a.pop > 0) { a.pop -= dt; if (a.pop < 0) a.pop = 0; draw(a); }
       if (a.rest > 0) { a.rest -= dt; continue; }
       var dx = a.tx - a.x, dy = a.ty - a.y;
       if (dx * dx + dy * dy < 64) { target(a); a.rest = Math.random() * a.dawdle; continue; }
@@ -272,6 +363,9 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
       if (a.y < 0) a.y = 0; else if (a.y > H - PX) a.y = H - PX;
       draw(a);
     }
+    /* Only the ones on screen are tested against each other. Two that are both
+       off screen are both standing still, so they cannot be about to meet. */
+    collide(seen);
     requestAnimationFrame(step);
   }
 

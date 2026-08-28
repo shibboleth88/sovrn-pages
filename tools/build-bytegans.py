@@ -28,6 +28,8 @@ without re-encoding, so what moves on the page is what the contract stores.
 """
 import base64, collections, io, json, os, re, sys
 
+from PIL import Image
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MIRROR = os.path.join(ROOT, "onchain", "bytegans")
 TITLES = "/Users/ericandrewgreen/sovrn-onchain/data/onchain-titles.json"
@@ -71,6 +73,49 @@ CAST = 240
 # Kinds small enough that sampling them would be a lie: everyone shows up.
 WHOLE = 12
 
+# The four grounds.
+#
+# The page needs to know each work's palette, so that two byteGANs meeting can
+# turn into byteGANs of a different one. There is no palette in the metadata:
+# the contract records only `type` and `subtype`, and the subtype is not a
+# palette however much it sounds like one. Measured across all 1,111 —
+# `radiating` is 131 red out of 132 and `quantum` 108 cyan out of 114, but
+# `primordial` splits 58 red to 81 blue and `horned` 33 to 35. A name that is
+# right 99% of the time and wrong 40% of the time for two of its members is not
+# a fact, it is a coincidence with exceptions.
+#
+# So it is read off the artwork. The commonest colour in a byteGAN is its
+# ground, and four of them cover 1,063 of the 1,111:
+#
+#     #c00000 red   331      #0037a7 blue  259
+#     #e0cdb2 bone  271      #00bfbf cyan  202
+#
+# The remaining 48 are spread over 31 one-off backgrounds and are grouped as
+# "odd". The four are unmistakable at 34px, which is the whole point: when two
+# of them meet and both change ground, you see it happen.
+#
+# A ground is not a kind, either — every kind appears on every ground.
+GROUNDS = [("red", "#c00000", (192, 0, 0)), ("bone", "#e0cdb2", (224, 205, 178)),
+           ("blue", "#0037a7", (0, 55, 167)), ("cyan", "#00bfbf", (0, 191, 191)),
+           ("odd", None, None)]
+
+def ground_of(token):
+    """Which ground this work stands on, read from its own pixels."""
+    raw = base64.b64decode(gif_of(token))
+    im = Image.open(io.BytesIO(raw))
+    tally = collections.Counter()
+    try:
+        while True:
+            tally.update(im.convert("RGB").getdata())
+            im.seek(im.tell() + 1)
+    except EOFError:
+        pass
+    top = tally.most_common(1)[0][0]
+    for i, (_, _, rgb) in enumerate(GROUNDS):
+        if rgb == top:
+            return i
+    return len(GROUNDS) - 1          # odd
+
 def spread(ws, n):
     """n of them, taken evenly through the list rather than at random.
 
@@ -102,9 +147,11 @@ def build():
 
     def write(name, ws):
         d = {"count": len(ws),
-             "ids":    [w["id"] for w in ws],
-             "titles": [w["title"] for w in ws],
-             "gifs":   [gif_of(w["id"]) for w in ws]}
+             "grounds": [g[0] for g in GROUNDS],
+             "ids":     [w["id"] for w in ws],
+             "titles":  [w["title"] for w in ws],
+             "g":       [ground_of(w["id"]) for w in ws],
+             "gifs":    [gif_of(w["id"]) for w in ws]}
         p = os.path.join(OUT, name)
         io.open(p, "w", encoding="utf-8").write(json.dumps(d, separators=(",", ":")))
         return os.path.getsize(p)
@@ -166,6 +213,9 @@ def verify(works):
                 bad.append("token %d: file says %r, chain says %r" % (tok, d["titles"][i], w["title"]))
             elif d["gifs"][i] != gif_of(tok):
                 bad.append("token %d carries another work's image" % tok)
+            elif d["g"][i] != ground_of(tok):
+                bad.append("token %d: file says the %s ground, its pixels say %s"
+                           % (tok, GROUNDS[d["g"][i]][0], GROUNDS[ground_of(tok)][0]))
             if not e["kind"] and w: cast_kinds.add(w["kind"])
     # the promise the page makes: every kind is represented, and the rare ones
     # in full, so the lone kingGAN really is out there somewhere
