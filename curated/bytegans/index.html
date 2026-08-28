@@ -55,31 +55,34 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 .facts{margin-top:20px;font:500 11px/2 "IBM Plex Mono",monospace;letter-spacing:.12em;
  text-transform:uppercase;color:var(--slate)}
 .facts b{color:var(--ink);font-weight:500}
+.loose{margin-top:12px;font:400 12.5px/1.7 "IBM Plex Mono",monospace;color:var(--slate);max-width:60ch}
 
-/* A world is a box with byteGANs loose in it. Each one picks a spot, turns
-   towards it at its own rate and goes, rests a while when it arrives, then picks
-   another — so they cross, cluster, hesitate and set off again without any of
-   them being told to. Nothing in here is choreographed and nothing loops.
+/* They are not in a box any more. The layer is the window: fixed, so it does not
+   scroll away, and they carry on wherever you are on the page. Each one picks a
+   spot, turns towards it at its own rate and goes, stands about briefly when it
+   arrives, then picks another — so nothing is choreographed, nothing loops, and
+   no two of them are doing the same thing.
 
-   The earlier version of this page paraded them past on a conveyor. That is one
-   motion applied to a crowd; this is a crowd of motions. It is also the thing
-   the artist's own text describes — these are beings recorded mid-dance, not
-   stock on a shelf. */
-.world{position:relative;overflow:hidden;background:#101219}
-.world .ag{position:absolute;top:0;left:0;line-height:0;display:block;
- image-rendering:pixelated;will-change:transform}
-.world button.ag{all:unset;position:absolute;top:0;left:0;display:block;
- line-height:0;cursor:zoom-in;will-change:transform}
-.world button.ag img{display:block;image-rendering:pixelated}
-.world button.ag:hover img,.world button.ag:focus-visible img{outline:2px solid var(--accent)}
-.band{margin:var(--gap) 0;height:clamp(150px,22vw,210px)}
-.kind .band{margin:20px 0 0}
-.yard{height:clamp(380px,64vh,620px)}
-.cap{margin-top:8px;min-height:1.6em;font:400 11px/1.6 "IBM Plex Mono",monospace;color:var(--slate)}
-.cap b{color:var(--ink);font-weight:500}
+   The layer takes no pointer events, only the byteGANs themselves do, so the
+   page underneath reads and selects exactly as if none of this were here. */
+#roam{position:fixed;inset:0;z-index:5;pointer-events:none;overflow:hidden}
+#roam .ag{all:unset;position:absolute;top:0;left:0;display:block;line-height:0;
+ pointer-events:auto;cursor:zoom-in;will-change:transform}
+#roam .ag img{display:block;image-rendering:pixelated}
+#roam .ag:hover img,#roam .ag:focus-visible img{outline:2px solid var(--accent)}
+/* Anything you can click sits above them, so a byteGAN drifting over a link
+   never eats the click — it passes behind. Text is left alone: it is under the
+   layer and they wander over it, which is the point. */
+.homemark,a.fc,.social a,.links a,.btn{position:relative;z-index:6}
+/* who you are pointing at, wherever on the page that happens */
+.who{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:7;
+ padding:8px 15px;background:rgba(10,12,17,.9);color:#e6e8ec;pointer-events:none;
+ font:400 11.5px/1.5 "IBM Plex Mono",monospace;opacity:0;transition:opacity .14s}
+.who.on{opacity:1}
+.who b{font-weight:500;color:#fff}
 
-/* the three the artist describes, each still paired with its own work the way
-   the original page had it */
+/* the three the artist describes, each with its own work beside the prose,
+   the way the original page had it */
 .duo{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:clamp(20px,3.4vw,44px);
  align-items:center}
 @media(max-width:720px){.duo{grid-template-columns:1fr}}
@@ -88,13 +91,6 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 .kind{margin-top:var(--gap)}
 .kind h3{font:500 clamp(17px,2.4vw,22px)/1.2 "IBM Plex Mono",monospace;color:var(--ink)}
 .kind .sub{font:italic 300 clamp(15px,2vw,18px)/1.4 Fraunces,serif;color:var(--accent);margin-bottom:18px}
-
-.yardwrap{background:#101219;padding:26px 0 30px;margin-top:var(--gap)}
-.yardwrap .lede{max-width:1000px;margin:0 auto 18px;padding:0 22px;
- font:400 12.5px/1.7 "IBM Plex Mono",monospace;color:#8f96a3;max-width:min(66ch,1000px)}
-.yardwrap .lede b{color:#e6e8ec;font-weight:500}
-.yardwrap .cap{max-width:1000px;margin:12px auto 0;padding:0 22px;color:#8f96a3}
-.yardwrap .cap b{color:#e6e8ec}
 
 /* Click one and it opens at a size where eleven pixels are legible. */
 .lb{position:fixed;inset:0;z-index:60;display:none;place-items:center;padding:24px;
@@ -125,11 +121,11 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 .btn:hover{background:var(--ink);transform:translateY(-1px)}
 .nojs{background:#101219;padding:6px;display:flex;flex-wrap:wrap;gap:2px;line-height:0;margin-top:16px}
 .nojs img{width:34px;height:auto;aspect-ratio:1;display:block;image-rendering:pixelated}
-/* Nobody walks anywhere for a reader who has asked for stillness — they are
-   scattered where they stand and left there. The works themselves keep
-   animating: eleven frames of an eleven-pixel being is the artwork, not
-   decoration, and that is not what the setting is about. */
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+/* Asked for stillness, the whole layer goes. Everything about it is motion —
+   there is no reduced version of a byteGAN wandering across your screen, and
+   leaving forty of them parked over the text would be worse than not having
+   them. The page reads as it did before they arrived. */
+@media(prefers-reduced-motion:reduce){*{transition:none!important}#roam{display:none}}
 /* Home. Every page that is not the homepage carries this, because a link shared
    into a chat lands on a subpage and there was no way back from twenty-seven of
    them — and where a way existed it was a word in a footer, which is not where
@@ -149,6 +145,8 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 <link rel="stylesheet" href="/transitions.css">
 <script src="/transitions.js"></script>
 </head><body data-total="1111">
+<div id="roam" role="group" aria-label="byteGANs wandering the page"></div>
+<p class="who" id="who" aria-live="polite"></p>
 <a class="homemark" href="/" aria-label="sovrn.art — home" title="sovrn.art"><img src="/img/share/sovrn-mark.webp" alt="" width="30" height="30"></a>
 <header class="hero" style="background-image:url(img/pages/bytegans/hero.gif)">
 <h1>byteGANs</h1><p class="by">by Pindar Van Arman</p>
@@ -160,10 +158,9 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 <div class="prose" style="margin-top:26px">
 <p class="lead">In their ever expanding quest for who knows what, the bitGANs have made another interesting move.</p><p>They have inscribed themselves directly on to the blockchain.</p><p>Why? We are not sure, but by recording their dance on the public ledger, they have ensured that it will go on forever, exactly as it was intended.</p><p>While this action is mysterious, three major types of byteGANs have revealed themselves, with a small subset of rarer types.</p></div>
 <p class="facts"><b>1,111</b> works &middot; <b>11 &times; 11</b> pixels &middot; <b>11</b> frames each &middot; <b>100%</b> on chain</p>
+<p class="loose">Some of them are loose on this page and are not going anywhere in particular. Point at one and everybody stops, so you can see who it is; click it to see it properly.</p>
 <noscript><div class="nojs"><img src="/onchain/bytegans/390.svg" alt=""><img src="/onchain/bytegans/497.svg" alt=""><img src="/onchain/bytegans/232.svg" alt=""><img src="/onchain/bytegans/535.svg" alt=""><img src="/onchain/bytegans/408.svg" alt=""><img src="/onchain/bytegans/349.svg" alt=""><img src="/onchain/bytegans/17.svg" alt=""><img src="/onchain/bytegans/675.svg" alt=""><img src="/onchain/bytegans/228.svg" alt=""><img src="/onchain/bytegans/597.svg" alt=""><img src="/onchain/bytegans/1065.svg" alt=""><img src="/onchain/bytegans/1066.svg" alt=""><img src="/onchain/bytegans/956.svg" alt=""><img src="/onchain/bytegans/456.svg" alt=""><img src="/onchain/bytegans/680.svg" alt=""><img src="/onchain/bytegans/991.svg" alt=""><img src="/onchain/bytegans/224.svg" alt=""><img src="/onchain/bytegans/407.svg" alt=""><img src="/onchain/bytegans/583.svg" alt=""><img src="/onchain/bytegans/398.svg" alt=""><img src="/onchain/bytegans/277.svg" alt=""><img src="/onchain/bytegans/341.svg" alt=""><img src="/onchain/bytegans/368.svg" alt=""><img src="/onchain/bytegans/518.svg" alt=""></div></noscript>
 </div>
-
-<section class="world band" data-file="cast.json" data-n="26" aria-hidden="true"></section>
 
 <div class="wrap">
 <section class="kind" data-kind="skullGAN" data-count="289">
@@ -171,23 +168,16 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 <div class="duo pix"><figure><img src="img/pages/bytegans/skull.gif" alt="a skullGAN" loading="lazy"></figure>
 <div class="prose"><p>The skullGANs represent Evolutionary Intelligence. Their existence is a battle being fought within the human mind, where higher order brain functions are at constant odds with reptilian instincts. Does free will even exist, or is everything just a complex biochemical reaction.</p></div></div>
 </section>
-<section class="world band" data-file="skullgan.json" data-n="30" aria-hidden="true"></section>
-</div>
-<div class="wrap">
 <section class="kind" data-kind="cyberGAN" data-count="218">
 <h3>cyberGAN</h3><p class="sub">Artificial Intelligence</p>
 <div class="duo pix"><figure><img src="img/pages/bytegans/cyber.gif" alt="a cyberGAN" loading="lazy"></figure>
 <div class="prose"><p>The cyberGANs represent Artificial Intelligence. Intelligence created in a relative short period of time, full of promise, but also completely lacking wisdom. While AI may be able to solve all of the worlds problems, it also has the potential to destroy it in the process.</p></div></div>
 </section>
-<section class="world band" data-file="cybergan.json" data-n="30" aria-hidden="true"></section>
-</div>
-<div class="wrap">
 <section class="kind" data-kind="octoGAN" data-count="287">
 <h3>octoGAN</h3><p class="sub">Decentralized Intelligence</p>
 <div class="duo pix"><figure><img src="img/pages/bytegans/octo.gif" alt="a octoGAN" loading="lazy"></figure>
 <div class="prose"><p>The octoGANs are closely related to podGANs and like the podGANs, they represent a new kind of thinking, Decentralized Intelligence. Similar to how an octopus coordinates nine different brains to solve complex tasks, these beings combine inputs from decentralized sources for the common good.</p></div></div>
 </section>
-<section class="world band" data-file="octogan.json" data-n="30" aria-hidden="true"></section>
 <p class="btnrow"><a class="btn" href="/shareable/share-bytegans">Make a shareable GIF</a></p>
 </div>
 
@@ -195,166 +185,142 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 <h2>The artist</h2>
 <div class="duo"><figure><picture><source type="image/avif" srcset="/img/derived/pages/bytegans/artist-352.avif 352w, /img/derived/pages/bytegans/artist-720.avif 720w, /img/derived/pages/bytegans/artist-992.avif 992w" sizes="(max-width: 700px) 331px, 360px"><source type="image/webp" srcset="/img/derived/pages/bytegans/artist-352.webp 352w, /img/derived/pages/bytegans/artist-720.webp 720w, /img/derived/pages/bytegans/artist-992.webp 992w" sizes="(max-width: 700px) 331px, 360px"><img src="img/pages/bytegans/artist.jpg" alt="Pindar Van Arman with a painting robot" loading="lazy"></picture></figure><div class="prose"><p>Pindar Van Arman is an AI generative artist who has been collaborating with artificially intelligent painting robots since 2006.</p><p>His art has been exhibited internationally and is featured in the critically acclaimed documentary Machine, The Art of Intelligence, the NVIDIA AI Art Gallery, and in the the LACMA permanent collection.</p><p class="social"><a href="https://www.vanarman.com" target="_blank">vanarman.com</a><a href="https://bitgans.com/" target="_blank">bitgans.com</a><a href="https://x.com/vanarman" target="_blank">X</a><a href="https://www.instagram.com/pindar.vanarman/" target="_blank">Instagram</a></p></div></div>
 <figure class="feature"><picture><source type="image/avif" srcset="/img/derived/pages/bytegans/panels-656.avif 656w, /img/derived/pages/bytegans/panels-992.avif 992w, /img/derived/pages/bytegans/panels-1280.avif 1280w" sizes="(max-width: 700px) 331px, 956px"><source type="image/webp" srcset="/img/derived/pages/bytegans/panels-656.webp 656w, /img/derived/pages/bytegans/panels-992.webp 992w, /img/derived/pages/bytegans/panels-1280.webp 1280w" sizes="(max-width: 700px) 331px, 956px"><img src="img/pages/bytegans/panels.jpg" alt="Three byteGANs as physical panels" loading="lazy"></picture></figure>
-</div>
-
-<section class="all" data-files="skullgan.json octogan.json cybergan.json rest.json" data-cap>
-<p class="lede">And here are <b>all 1,111 of them</b> &mdash; twelve kinds, including one lone kingGAN and one lone queenGAN. Point at one and it will tell you what it is.</p>
-<div class="swarm" role="group" aria-label="all 1,111 byteGANs"></div>
-<p class="cap" aria-live="polite"></p>
-</section>
-
-<div class="wrap">
-</div>
-
-<section class="yardwrap" data-cap>
-<p class="lede">A hundred and seventy of the <b>1,111</b>, each off somewhere of its own accord &mdash; including the only <b>kingGAN</b> and the only <b>queenGAN</b> there will ever be. Rest the pointer on the yard and everyone stops, so you can look at one; click it to see it properly.</p>
-<div class="world yard" data-file="cast.json" data-from="26" data-n="174" data-live
-     role="group" aria-label="byteGANs, moving about"></div>
-<p class="cap" aria-live="polite"></p>
-</section>
-
-<div class="wrap">
+<p class="links"><a href="https://www.raster.art/artwork/bytegans-by-pindar-van-arman" target="_blank">View on Raster</a><a href="https://superrare.com/vanarman" target="_blank">byteGANs on SuperRare</a><a href="https://twitter.com/vanarmanartist" target="_blank">Pindar Van Arman on X</a></p>
+<p class="foot">byteGANs, Pindar Van Arman, 2023. A kilobyte apiece, fully on-chain. A curated collection on <a class="fc" href="/">sovrn.art</a>.</p>
 </div>
 <div class="lb" id="lb" tabindex="-1" role="dialog" aria-modal="true" aria-label="byteGAN, enlarged">
 <div><img src="" alt=""><p><b></b><a href=""></a></p></div>
 </div>
 <script>
-/* The page shows a cast of 290 byteGANs out of the 1,111, and they move around
-   it under their own steam. Who appears is chosen in tools/build-bytegans.py —
-   every apeGAN, primeGAN and the one kingGAN and one queenGAN are in it, so the
-   rare ones really are out there — and the GIF bytes are lifted from the
-   same-origin mirror at /onchain/bytegans/ without re-encoding, so what walks
-   about here is what the contract stores.
+/* A few dozen byteGANs, loose on the window.
 
-   Four files: one per kind the artist describes, fetched as its section is
-   reached, and one mixed cast for the opening band and the yard. */
+   They are drawn from a cast of 139 out of the 1,111, chosen in
+   tools/build-bytegans.py — every apeGAN and primeGAN and the one kingGAN and
+   one queenGAN are in it, so the rare ones really are among them — and the GIF
+   bytes come out of the same-origin mirror at /onchain/bytegans/ without
+   re-encoding, so what wanders about is what the contract stores.
+
+   How many appear is set by how much window there is, and which of the cast
+   turns up is drawn fresh each visit, so the page is never quite the same
+   twice. */
 (function () {
-  var lb = document.getElementById("lb"), got = {};
-  var STILL = matchMedia("(prefers-reduced-motion: reduce)");
+  var layer = document.getElementById("roam"), lb = document.getElementById("lb"),
+      who = document.getElementById("who");
+  if (!layer || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  function grab(file) {
-    if (!got[file]) got[file] = fetch("/data/bytegans/" + file)
-      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-      .then(function (d) {
-        return d.ids.map(function (id, i) {
-          return { id: id, t: d.titles[i], g: "data:image/gif;base64," + d.gifs[i] };
-        });
-      });
-    return got[file];
+  var SIZES = [26, 34, 30, 44, 28, 38, 32, 48, 30, 36, 42, 28];
+  var agents = [], running = false, held = 0, near = true, last = 0, W = 0, H = 0;
+
+  function count() {
+    /* one per ~24,000 square pixels: about fifty on a laptop, a dozen on a
+       phone. Sparse enough to read the page through, thick enough to feel busy. */
+    return Math.max(10, Math.min(64, Math.round(innerWidth * innerHeight / 24000)));
   }
 
-  /* Sizes and starting points are drawn from a fixed sequence, not Math.random,
-     so a reload puts the same crowd in the same places. Only where they wander
-     to after that is left to the clock. */
-  function seeded(n) {
-    return function () { n = (n * 1103515245 + 12345) & 0x7fffffff; return n / 0x7fffffff; };
-  }
-
-  /* ---- one world of them ------------------------------------------------- */
-  function world(box, cast, opts) {
-    var rnd = seeded(opts.seed), agents = [], running = false, near = false, held = 0, last = 0;
-    var W = 0, H = 0;
-
-    cast.forEach(function (w, i) {
-      var px = opts.sizes[i % opts.sizes.length], el;
-      if (opts.live) {
-        el = document.createElement("button");
-        el.type = "button"; el.className = "ag t"; el.tabIndex = i ? -1 : 0;
-        el.dataset.id = w.id; el.dataset.t = w.t;
-        var im = document.createElement("img");
-        /* width and height as attributes, not CSS: they are already square and
-           already integers, and a CSS aspect-ratio would lose to the height
-           attribute anyway. */
-        im.src = w.g; im.alt = w.t; im.width = px; im.height = px;
-        el.appendChild(im);
-      } else {
-        el = document.createElement("img");
-        el.className = "ag"; el.src = w.g; el.alt = ""; el.width = px; el.height = px;
-      }
-      box.appendChild(el);
+  fetch("/data/bytegans/cast.json").then(function (r) {
+    if (!r.ok) throw 0; return r.json();
+  }).then(function (d) {
+    var n = count(), start = Math.floor(Math.random() * d.count);
+    for (var k = 0; k < n; k++) {
+      var i = (start + k) % d.count, px = SIZES[k % SIZES.length];
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "ag"; b.tabIndex = k ? -1 : 0;
+      b.dataset.id = d.ids[i]; b.dataset.t = d.titles[i];
+      var im = document.createElement("img");
+      /* width and height as attributes: they are already square and already
+         integers, and a CSS aspect-ratio would lose to the height attribute
+         anyway. */
+      im.src = "data:image/gif;base64," + d.gifs[i];
+      im.alt = d.titles[i]; im.width = px; im.height = px;
+      b.appendChild(im); layer.appendChild(b);
       agents.push({
-        el: el, px: px, x: 0, y: 0, tx: 0, ty: 0,
-        dir: rnd() * 6.283,
-        /* the bigger ones read as nearer, so they cover ground faster */
-        sp: (10 + rnd() * 22) * (px / 32),
-        turn: 0.9 + rnd() * 2.0,      /* radians a second — some bank, some pivot */
-        rest: rnd() * 7,              /* staggered, so they do not all set off together */
-        dawdle: 1 + rnd() * 3         /* how long this one tends to stand about */
+        el: b, px: px, x: 0, y: 0, tx: 0, ty: 0,
+        dir: Math.random() * 6.283,
+        /* brisk, and the larger ones read as nearer so they cover more ground */
+        sp: (30 + Math.random() * 62) * (px / 34),
+        turn: 0.7 + Math.random() * 2.8,   /* some bank round, some pivot on the spot */
+        rest: Math.random() * 1.2,         /* barely any wait before they set off */
+        /* Kept short on purpose. They pass over the text — that is the whole
+           idea and a word is covered for a moment as one crosses it — but one
+           that stops on a word sits there, and a byteGAN parked on "reptilian"
+           for two seconds is not chaos, it is a smudge. They pause enough to
+           break up the motion and not enough to settle anywhere. */
+        dawdle: 0.1 + Math.random() * 0.8
       });
+    }
+    measure(true); go();
+  }).catch(function () { layer.remove(); });
+
+  function target(a) {
+    a.tx = Math.random() * Math.max(1, W - a.px);
+    a.ty = Math.random() * Math.max(1, H - a.px);
+  }
+  function draw(a) { a.el.style.transform = "translate3d(" + a.x + "px," + a.y + "px,0)"; }
+  function measure(first) {
+    W = layer.clientWidth; H = layer.clientHeight;
+    agents.forEach(function (a) {
+      if (first) { a.x = Math.random() * Math.max(1, W - a.px); a.y = Math.random() * Math.max(1, H - a.px); }
+      else { a.x = Math.min(a.x, Math.max(0, W - a.px)); a.y = Math.min(a.y, Math.max(0, H - a.px)); }
+      target(a); draw(a);
     });
-
-    function target(a) {
-      a.tx = rnd() * Math.max(1, W - a.px);
-      a.ty = rnd() * Math.max(1, H - a.px);
-    }
-    function draw(a) { a.el.style.transform = "translate3d(" + a.x + "px," + a.y + "px,0)"; }
-
-    function measure(first) {
-      W = box.clientWidth; H = box.clientHeight;
-      agents.forEach(function (a) {
-        if (first) { a.x = rnd() * Math.max(1, W - a.px); a.y = rnd() * Math.max(1, H - a.px); }
-        else { a.x = Math.min(a.x, Math.max(0, W - a.px)); a.y = Math.min(a.y, Math.max(0, H - a.px)); }
-        target(a); draw(a);
-      });
-    }
-
-    function step(t) {
-      if (!running) return;
-      /* clamped, so a tab that was in the background does not come back to find
-         everybody teleported across the box */
-      var dt = Math.min(0.05, (t - last) / 1000); last = t;
-      for (var i = 0; i < agents.length; i++) {
-        var a = agents[i];
-        if (a.rest > 0) { a.rest -= dt; continue; }
-        var dx = a.tx - a.x, dy = a.ty - a.y;
-        if (dx * dx + dy * dy < 49) { target(a); a.rest = rnd() * a.dawdle * 3; continue; }
-        /* steer, do not snap: the heading turns at this one's own rate, which is
-           what makes a path curve and what makes two of them look different */
-        var want = Math.atan2(dy, dx);
-        var off = ((want - a.dir + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
-        var max = a.turn * dt;
-        a.dir += off > max ? max : off < -max ? -max : off;
-        a.x += Math.cos(a.dir) * a.sp * dt;
-        a.y += Math.sin(a.dir) * a.sp * dt;
-        if (a.x < 0) a.x = 0; else if (a.x > W - a.px) a.x = W - a.px;
-        if (a.y < 0) a.y = 0; else if (a.y > H - a.px) a.y = H - a.px;
-        draw(a);
-      }
-      requestAnimationFrame(step);
-    }
-
-    function go() {
-      if (running || held || !near || STILL.matches) return;
-      running = true; last = performance.now(); requestAnimationFrame(step);
-    }
-    function halt() { running = false; }
-
-    /* Everybody stops while you are looking at them, which is the only way to
-       get a proper look at a moving 30px thing — and the only way to click one. */
-    box.addEventListener("pointerenter", function () { held++; halt(); });
-    box.addEventListener("pointerleave", function () { held = Math.max(0, held - 1); go(); });
-    box.addEventListener("focusin", function () { held++; halt(); });
-    box.addEventListener("focusout", function () { held = Math.max(0, held - 1); go(); });
-
-    measure(true);
-    var rt;
-    addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(measure, 200); });
-    /* nothing moves while it is off screen; a page of idle rAF loops is a page
-       that costs battery for something nobody can see */
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver(function (es) {
-        near = es[0].isIntersecting; near ? go() : halt();
-      }, { rootMargin: "150px 0px" }).observe(box);
-    } else { near = true; go(); }
-    if (opts.live) box.addEventListener("keydown", arrows);
   }
 
-  /* Roving tabindex: one stop for the yard, not one per byteGAN. Left and right
-     step through them; focusing one stops the whole yard, so it stays put while
-     it is being read out. */
-  function arrows(ev) {
-    var cur = ev.target.closest && ev.target.closest(".t"); if (!cur) return;
-    var items = [].slice.call(this.children), i = items.indexOf(cur), n, k = ev.key;
+  function step(t) {
+    if (!running) return;
+    /* clamped, so a tab that has been in the background does not come back to
+       find everybody teleported across the window */
+    var dt = Math.min(0.05, (t - last) / 1000); last = t;
+    for (var i = 0; i < agents.length; i++) {
+      var a = agents[i];
+      if (a.rest > 0) { a.rest -= dt; continue; }
+      var dx = a.tx - a.x, dy = a.ty - a.y;
+      if (dx * dx + dy * dy < 64) { target(a); a.rest = Math.random() * a.dawdle; continue; }
+      /* steer, do not snap: the heading turns at this one's own rate, which is
+         what curves a path and what makes two of them look unalike */
+      var want = Math.atan2(dy, dx);
+      var off = ((want - a.dir + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+      var max = a.turn * dt;
+      a.dir += off > max ? max : off < -max ? -max : off;
+      a.x += Math.cos(a.dir) * a.sp * dt;
+      a.y += Math.sin(a.dir) * a.sp * dt;
+      if (a.x < 0) a.x = 0; else if (a.x > W - a.px) a.x = W - a.px;
+      if (a.y < 0) a.y = 0; else if (a.y > H - a.px) a.y = H - a.px;
+      draw(a);
+    }
+    requestAnimationFrame(step);
+  }
+  function go() { if (running || held || !near || !agents.length) return;
+                  running = true; last = performance.now(); requestAnimationFrame(step); }
+  function halt() { running = false; }
+
+  /* Point at one and everybody stops. It is the only way to get a proper look at
+     a moving 30px thing, and the only way to click one. */
+  layer.addEventListener("pointerover", function (ev) {
+    var b = ev.target.closest && ev.target.closest(".ag"); if (!b) return;
+    held = 1; halt();
+    who.innerHTML = "<b>" + b.dataset.t.replace(/&/g, "&amp;").replace(/</g, "&lt;")
+                  + "</b> · token " + b.dataset.id;
+    who.className = "who on";
+  });
+  layer.addEventListener("pointerout", function (ev) {
+    if (ev.relatedTarget && ev.relatedTarget.closest && ev.relatedTarget.closest(".ag")) return;
+    held = 0; who.className = "who"; go();
+  });
+  layer.addEventListener("focusin", function (ev) {
+    var b = ev.target.closest(".ag"); if (!b) return;
+    held = 1; halt();
+    who.innerHTML = "<b>" + b.dataset.t.replace(/&/g, "&amp;").replace(/</g, "&lt;")
+                  + "</b> · token " + b.dataset.id;
+    who.className = "who on";
+  });
+  layer.addEventListener("focusout", function () { held = 0; who.className = "who"; go(); });
+
+  /* Roving tabindex: one stop for the whole crowd, not one per byteGAN, and
+     left/right walk along it. Focus stops everyone, so the one being read out
+     holds still. */
+  layer.addEventListener("keydown", function (ev) {
+    var cur = ev.target.closest && ev.target.closest(".ag"); if (!cur) return;
+    var items = [].slice.call(layer.children), i = items.indexOf(cur), n, k = ev.key;
     if (k === "ArrowRight" || k === "ArrowDown") n = i + 1;
     else if (k === "ArrowLeft" || k === "ArrowUp") n = i - 1;
     else if (k === "Home") n = 0;
@@ -363,22 +329,12 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
     ev.preventDefault();
     if (n < 0 || n >= items.length) return;
     cur.tabIndex = -1; items[n].tabIndex = 0; items[n].focus();
-  }
-
-  function name(ev) {
-    var b = ev.target.closest && ev.target.closest(".t"); if (!b) return;
-    var owner = b.closest("[data-cap]"); if (!owner) return;
-    owner.querySelector(".cap").innerHTML =
-      "<b>" + b.dataset.t.replace(/&/g, "&amp;").replace(/</g, "&lt;")
-      + "</b> · token " + b.dataset.id;
-  }
-  document.addEventListener("pointerover", name);
-  document.addEventListener("focusin", name);
+  });
 
   var opener = null;
   function shut() { lb.className = "lb"; if (opener) { opener.focus(); opener = null; } }
   document.addEventListener("click", function (ev) {
-    var b = ev.target.closest && ev.target.closest(".t");
+    var b = ev.target.closest && ev.target.closest(".ag");
     if (b) {
       opener = b;
       lb.querySelector("img").src = b.querySelector("img").src;
@@ -393,28 +349,11 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
   });
   document.addEventListener("keydown", function (ev) { if (ev.key === "Escape") shut(); });
 
-  /* Nothing is fetched until its part of the page is near. A reader who stops at
-     the opening downloads no artwork at all. */
-  var BAND = [26, 34, 30, 42, 28, 36, 32, 46, 30, 38];
-  var YARD = [28, 38, 32, 48, 30, 42, 34, 54, 30, 36, 44, 32, 26, 40];
-  function when(el, run) {
-    if (!("IntersectionObserver" in window)) return run();
-    var io = new IntersectionObserver(function (es) {
-      if (es[0].isIntersecting) { io.disconnect(); run(); }
-    }, { rootMargin: "700px 0px" });
-    io.observe(el);
-  }
-  [].forEach.call(document.querySelectorAll(".world"), function (box, i) {
-    when(box, function () {
-      grab(box.dataset.file).then(function (all) {
-        var from = +box.dataset.from || 0, n = +box.dataset.n || all.length;
-        world(box, all.slice(from, from + n), {
-          seed: 11 + i * 137,
-          sizes: box.classList.contains("yard") ? YARD : BAND,
-          live: box.hasAttribute("data-live")
-        });
-      }).catch(function () { box.style.display = "none"; });
-    });
+  var rt;
+  addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(measure, 200); });
+  /* nothing runs in a tab nobody is looking at */
+  document.addEventListener("visibilitychange", function () {
+    near = !document.hidden; near ? go() : halt();
   });
 })();
 </script>

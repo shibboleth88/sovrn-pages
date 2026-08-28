@@ -63,10 +63,10 @@ def gif_of(token):
         sys.exit("  no image payload in mirror file %d.svg" % token)
     return m.group(1)
 
-# How many of each named kind appear in its own section, and how large the
-# mixed cast is. The page reads these back out of index.json rather than
-# carrying its own copy, so there is nothing here to drift.
-PER_KIND, CAST = 30, 200
+# How large the cast is. The page draws a few dozen of these at a time — as many
+# as the window has room for — and the rest are the slack that lets a reload put
+# a different crowd on the screen.
+CAST = 140
 # Kinds small enough that sampling them would be a lie: everyone shows up.
 WHOLE = 12
 
@@ -108,15 +108,9 @@ def build():
         io.open(p, "w", encoding="utf-8").write(json.dumps(d, separators=(",", ":")))
         return os.path.getsize(p)
 
-    files, total = [], 0
-    for kind, _ in kinds:
-        if kind in NAMED:
-            n = kind.lower() + ".json"
-            total += write(n, spread(ordered[kind], PER_KIND))
-            files.append({"file": n, "kind": kind, "shown": PER_KIND})
-
-    # The mixed cast: every member of the small kinds, then the rest of the
-    # places shared out in proportion to how common each remaining kind is.
+    # One file. The three kinds the artist describes no longer need their own,
+    # because the page no longer shows a crowd of each — it shows one roaming
+    # population, mixed, over the whole window.
     small = [k for k, ws in kinds if len(ws) <= WHOLE]
     cast = [w for k in small for w in ordered[k]]
     big = [(k, ws) for k, ws in kinds if k not in small]
@@ -124,22 +118,23 @@ def build():
     room = CAST - len(cast)
     for k, ws in big:
         cast += spread(ordered[k], int(round(room * len(ws) / pool)))
-    # deal them out so neighbours in the file are of different kinds — the cast
-    # is read in order in places, and a run of 40 skulls would look like a bug
-    cast = [w for i in range(len(cast)) for w in [cast[(i * 61) % len(cast)]]]
+    # deal them out so neighbours in the file are of different kinds — the page
+    # takes a run of them starting anywhere, and a run of 30 skulls would look
+    # like a bug rather than like a crowd
+    cast = [cast[(i * 61) % len(cast)] for i in range(len(cast))]
     seen, deal = set(), []
     for w in cast:
         if w["id"] not in seen:
             seen.add(w["id"]); deal.append(w)
-    total += write("cast.json", deal)
-    files.append({"file": "cast.json", "kind": None, "shown": len(deal)})
+    total = write("cast.json", deal)
+    files = [{"file": "cast.json", "kind": None, "shown": len(deal)}]
 
     index = [{"kind": k, "count": len(ws),
               "share": round(100.0 * len(ws) / len(works), 1),
               "modifiers": len(set(w["mod"] for w in ws)),
               "intelligence": NAMED.get(k)} for k, ws in kinds]
     io.open(os.path.join(OUT, "index.json"), "w", encoding="utf-8").write(
-        json.dumps({"total": len(works), "cast": len(deal), "perKind": PER_KIND,
+        json.dumps({"total": len(works), "cast": len(deal),
                     "kinds": index, "files": files}, indent=1))
     return works, index, files, total
 

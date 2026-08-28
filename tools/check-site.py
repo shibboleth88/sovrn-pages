@@ -26,7 +26,7 @@ but after any restructure the homepage still wants opening in a browser to watch
 the mosaic and the cards actually arrive. A green run here is necessary and not
 sufficient.
 """
-import argparse, io, os, re, sys, urllib.parse, urllib.request
+import argparse, glob, io, os, re, sys, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -408,6 +408,45 @@ def check_srcsets():
     return bad
 
 
+
+def check_furniture():
+    """Every collection page keeps a way out and a way home.
+
+    This exists because a rewrite of the byteGANs page silently dropped its
+    links row and its footer. Nothing caught it — every asset resolved, the URL
+    contract held, the page rendered and looked finished. What had gone was the
+    only place on the page saying where to see the work and who made it, and it
+    stayed gone through a deploy. A page can be well-formed in every checkable
+    way and still be missing its point.
+
+    It tests for the links themselves rather than for the classes around them,
+    because the pages do not share one implementation: Reflection carries its
+    own markup, and a check that insists on `class="links"` reports three false
+    problems and teaches you to ignore it."""
+    want = [("a link home",        re.compile(r'class="homemark"')),
+            ("a link to the work", re.compile(r'raster\.art/artwork/')),
+            ("a credit line",      re.compile(r'class="foot"'))]
+    # Reflection is the only collection page with no credit line, and it is not
+    # clear that is deliberate — it carries its own darker design and may simply
+    # never have had one. Named here rather than matched around, so that the
+    # test still bites for the other twelve and this stays visible as a thing to
+    # settle rather than becoming a hole in the check.
+    known = {"curated/reflection/index.html": {"a credit line"}}
+    bad, n = [], 0
+    for d in sorted(glob.glob(os.path.join(ROOT, "curated", "*"))):
+        page = os.path.join(d, "index.html")
+        if not os.path.isfile(page):
+            continue
+        html = io.open(page, encoding="utf-8").read()
+        rel, n = os.path.relpath(page, ROOT), n + 1
+        for label, rx in want:
+            if not rx.search(html) and label not in known.get(rel, ()):
+                bad.append("%s: %s is missing" % (rel, label))
+    print("  collection pages checked: %d" % n)
+    print("  all present" if not bad else "\n".join("  " + b for b in bad))
+    return bad
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--urls", nargs="?", const="https://www.sovrn.art",
@@ -430,6 +469,8 @@ def main():
         bad += check_banners()
         print("\nResponsive derivatives")
         bad += check_srcsets()
+        print("\nPage furniture")
+        bad += check_furniture()
     if a.urls:
         print("\nPublic URLs")
         bad += check_urls(a.urls)
