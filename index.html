@@ -27,7 +27,7 @@
 
 *{box-sizing:border-box;margin:0}
 ::selection{background:var(--accent);color:var(--paper)}
-body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif;padding:26px 22px 56px;-webkit-text-size-adjust:100%;position:relative}
+body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif;padding:26px 22px 56px;-webkit-text-size-adjust:100%}
 .wrap{max-width:1060px;margin:0 auto}
 a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 /* ---------- mosaic ---------- */
@@ -170,32 +170,6 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transfo
   }
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
-/* ---------- the king and the queen ----------
-   There is exactly one kingGAN and exactly one queenGAN in the 1,111 of Pindar
-   Van Arman's byteGANs — g1itch kingGAN #196 and g1itch queenGAN #397, tokens
-   237 and 598 — and both are loose on this page. Nothing announces them.
-   Someone who reads the byteGANs page learns there are only two, and may then
-   notice them here.
-
-   The layer is the document, not the window, so they do not travel with the
-   scroll: you move down past them, and they carry on wherever they were. They
-   are placed on the first screen at the start, so that they are seen before
-   they wander off it.
-
-   Their backgrounds are cut away, so what walks about is the creature and not a
-   small coloured tile. Inert, and hidden from assistive tech: the layer takes no
-   pointer events, so neither can ever eat a click on whatever it is crossing,
-   and both are written straight into the page as base64, so they cost no request
-   at all.
-
-   The drop shadow is doing real work: the first screen is a mosaic of the same
-   artwork, byteGAN tiles included, and without it a byteGAN over a byteGAN is
-   camouflage. The shadow is what says these two are in front, and loose. */
-#royals{position:absolute;top:0;left:0;right:0;z-index:20;pointer-events:none;overflow:hidden}
-#royals img{position:absolute;top:0;left:0;display:block;
- image-rendering:pixelated;will-change:transform;
- filter:drop-shadow(0 3px 7px rgba(0,0,0,.6))}
-@media(prefers-reduced-motion:reduce){#royals{display:none}}
 </style><link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -622,104 +596,4 @@ document.getElementById("mk").innerHTML=MK.map(m=>
 document.getElementById("so").innerHTML=SO.map(m=>
 '<a href="'+m[2]+'"'+tgt(m[2])+'>'+ICON(encodeURI((m[3]?P:H)+m[1]))+'<span>'+m[0]+'</span></a>').join("");
 
-/* The one kingGAN and the one queenGAN, ambling about the page.
-
-   Same steering as the byteGANs collection page — pick a spot, turn towards it
-   at your own rate, go, stand about a while when you arrive — but slower and
-   with longer pauses, because two creatures crossing the front page should read
-   as company rather than as something demanding attention.
-
-   Unlike the collection page, both are stepped whether or not they are on
-   screen. There it is a crowd of two hundred and skipping the ones out of view
-   is most of the work; here it is two, the saving would be nothing, and stepping
-   only the visible ones is exactly what made that page slowly drain — anything
-   that walks out of the window while frozen never walks back in. */
-(function () {
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  var PX = 36, W = 0, H = 0, last = 0, run = false;
-  var layer = document.createElement("div");
-  layer.id = "royals"; layer.setAttribute("aria-hidden", "true");
-  document.body.appendChild(layer);
-
-  function pageHeight() {
-    var d = document.documentElement, b = document.body;
-    return Math.max(d.scrollHeight, b.scrollHeight, d.offsetHeight, b.offsetHeight);
-  }
-
-  var royals = [
-    "data:image/gif;base64,R0lGODlhCwALAIIAAAAAAL4Bkc9notiaquDNsgAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCgAAACwAAAAACwALAAAIOQABCBxIsKBBggEABBCQUADCABAXOhQ4IAABixYnAqgYUeLAARVDaqQIsmRBjhJBPkw5YKUAASADAgAh+QQJCgAAACwAAAAACgALAIIAAAC+AZHPZ6LYmqrgzbIAAAAAAAAAAAAIOwABCBgoAIBBgwMJCBjAcABCggsJOBQ4MMDCAQUJNlw4kCJBiwUpWmx48OLFiQIxEjyYUiNLjgNRAggIACH5BAkKAAAALAIAAgAJAAkAggAAAL4Bkc9notiaquDNsgAAAAAAAAAAAAg0AAEEEChgoAAAAgMoDCDg4IAABCBCdLhQYUMAAx5qPIgwo8cBCDEubJgR4UgBJRMyRDkgIAAh+QQJCgAAACwBAAEACgAKAIIAAAC+AZHPZ6LYmqrgzbIAAAAAAAAAAAAIOwABCBQooODAgQEEJAwwcMCAABAhNnxIIEDFiREhDhDo8KHCjRw7CgC5EeLIjgAcJjw5MiUAkyMLDggIACH5BAkKAAAALAIAAgAJAAkAggAAAL4Bkc9notiaquDNsgAAAAAAAAAAAAg0AAEEEChgoAAAAgMoDCDg4IAABCBCdLhQYUMAAx5qPIgwo8cBCDEubJgR4UgBJRMyRDkgIAAh+QQJCgAAACwCAAEACQAKAIIAAAC+AZHPZ6LYmqrgzbIAAAAAAAAAAAAIOAABCAQwYMDAgQEEJExIcECAhw8FNAxAgCJDAQohMizoUCFGgQMIYBzJcYAAAhwbiiTZ0CRGgwEBACH5BAkKAAAALAMAAgAHAAkAggAAAL4Bkc9notiaquDNsgAAAAAAAAAAAAgtAAUACCAgwEABBQMoJEggQMOGCBcqBCAwwACDADICGKBxo0KOGQcUFACS4MeAACH5BAkKAAAALAMAAgAIAAkAggAAAL4Bkc9notiaquDNsgAAAAAAAAAAAAgzAAEACCBAwECBAwMoDABgwIAABCAyHBBxIcOGER8ipEjAoMCCBScO+EhQ4EgAAgiOHBAQACH5BAkKAAAALAQAAAAHAAsAggAAAL4Bkc9notiaquDNsgAAAAAAAAAAAAgxAAEIHDBgoAABBAseXDhAQIAADiE6dEhA4kOIEBMeTEhwY0MADTcKALAQocKGBAEEBAAh+QQJCgAAACwDAAEABwAKAIIAAAC+AZHPZ6LYmqrgzbIAAAAAAAAAAAAIMQABCBxAcACAAAIQEhQYAGGAggQCRBRwUKIAiAovAiAoQACBggM6ftzYccBIkhcHBAQAIfkECQoAAAAsAAAAAAoACwCCAAAAvgGRz2ei2Jqq4M2yAAAAAAAAAAAACEEAAQAQQFCgwQEEEw4wKCBAw4cIBwaYOLGgRAIBCBAYwHFgQ4oIBQBA6NBhxIMCOHY8yDHlypEkES4UmDJhAI4BAQA7",
-    "data:image/gif;base64,R0lGODlhCwALAIIAAAAAAAA3pzApfWAbU8AAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCgAAACwAAAAACwALAAAINgABCBxIsKDBgQIIEEhIgOCAAQojOkwYgEBFhAIYShw4IONCAgMKZsx40KNCAQY1oiRocuHAgAAh+QQJCgAAACwBAAEACgAKAIIAAAAAN6cwKX1gG1PAAAAAAAAAAAAAAAAIOgABABBAUKDBgQQFECAAYKGAARAHLFw4gCBEhQEIZExIcCJFiw8JKBTIUcBBABIJVDyp0CFLhSYPBgQAIfkECQoAAAAsAAACAAgACQCCAAAAADenMCl9YBtTwAAAAAAAAAAAAAAACC0AAQAQQIAAQQIABgwoyDAhwQAEIAqYyLCgQ4IEBwicOFHgxoMGPYIU8JGhgIAAIfkECQoAAAAsAgACAAkACQCCAAAAADenMCl9YBtTwAAAAAAAAAAAAAAACC8AARAgIGAggIMCBxo8WDAAAYcIEyqMWLBiRIYCLgIQMCCjgI8MOwoIAHIjxowBAQAh+QQJCgAAACwBAAEACQAKAIIAAAAAN6cwKX1gG1PAAAAAAAAAAAAAAAAINAABABBAUIDAgwIIBBAwgIDAARAJSHQ4sCFDiwUTJhzAMKNCgwMzEhRIkCNEkCUzkhRpMCAAIfkECQoAAAAsAQACAAkACQCCAAAAADenMCl9YBtTwAAAAAAAAAAAAAAACDIAARAYIACAgIIGBxAQMKBhQYIEAwwMcHChwoMHDS7MCKAjxowIGTrkeJAgxo4GOXYMCAAh+QQJCgAAACwBAAIABwAJAIIAAAAAN6cwKX1gG1PAAAAAAAAAAAAAAAAILQAJEAAgUABBgQIHDCAQgCEBAQsRPoT48OEAAAAgDjCIUYDHjQY9CgwQsiSAgAAh+QQJCgAAACwAAAIACAAJAIEAAAAwKX1gG1PAAAAIJwABCAQQYCBBAQgRBlAYoGFDgQEGOCwIUYDDgRMpEpyIkSPEjQECAgAh+QQJCgAAACwCAAIACAAJAIIAAAAAN6cwKX1gG1PAAAAAAAAAAAAAAAAIMQABABBAgACAggAGDCjIUIBCAgEgGhRAkOFEigQIChRIcSNHhQM3OqQoYOOAhCUBBAQAIfkECQoAAAAsAQACAAoACQCCAAAAADenMCl9YBtTwAAAAAAAAAAAAAAACDUAAQAQIAAAAQIGCQgYwJAhwoMDFkYkEADhQIIYCQw4eDHiRIECMRIEKTAiRpIXT5IUWVBgQAAh+QQJCgAAACwBAAIACQAJAIIAAAAAN6cwKX1gG1PAAAAAAAAAAAAAAAAINgABCBhIgACAggIGKCzIcEDCAQQCRCQwkCBDAgoTCqBoEIDAgQ49emw4wKOAgxAHitTo8CSAgAA7"
-  ].map(function (src) {
-    var el = document.createElement("img");
-    el.alt = ""; el.width = PX; el.height = PX; el.src = src;
-    layer.appendChild(el);
-    return { el: el, x: 0, y: 0, tx: 0, ty: 0,
-             dir: Math.random() * 6.283,
-             sp: 20 + Math.random() * 20,        /* px a second: an amble */
-             turn: 0.8 + Math.random() * 1.2,
-             rest: 1 + Math.random() * 2 };
-  });
-
-  function target(a) {
-    a.tx = Math.random() * Math.max(1, W - PX);
-    a.ty = Math.random() * Math.max(1, H - PX);
-  }
-  function draw(a) { a.el.style.transform = "translate3d(" + a.x + "px," + a.y + "px,0)"; }
-
-  function measure(first) {
-    W = layer.clientWidth; H = pageHeight();
-    /* the layer is out of flow, so giving it the page's height cannot change
-       the page's height — no feedback loop to worry about */
-    layer.style.height = H + "px";
-    royals.forEach(function (a) {
-      if (first) {
-        /* start them both on the first screen, so they are met before they
-           wander off it — after that the whole page is theirs */
-        a.x = Math.random() * Math.max(1, W - PX);
-        a.y = Math.random() * Math.max(1, Math.min(H, innerHeight) - PX);
-      } else {
-        a.x = Math.min(a.x, Math.max(0, W - PX));
-        a.y = Math.min(a.y, Math.max(0, H - PX));
-      }
-      target(a); draw(a);
-    });
-  }
-
-  function step(t) {
-    if (!run) return;
-    /* clamped, so coming back to a backgrounded tab does not find them
-       teleported across the page */
-    var dt = Math.min(0.05, (t - last) / 1000); last = t;
-    for (var i = 0; i < royals.length; i++) {
-      var a = royals[i];
-      if (a.rest > 0) { a.rest -= dt; continue; }
-      var dx = a.tx - a.x, dy = a.ty - a.y;
-      if (dx * dx + dy * dy < 64) { target(a); a.rest = 1.5 + Math.random() * 5; continue; }
-      var want = Math.atan2(dy, dx);
-      var off = ((want - a.dir + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
-      var max = a.turn * dt;
-      a.dir += off > max ? max : off < -max ? -max : off;
-      a.x += Math.cos(a.dir) * a.sp * dt;
-      a.y += Math.sin(a.dir) * a.sp * dt;
-      if (a.x < 0) a.x = 0; else if (a.x > W - PX) a.x = W - PX;
-      if (a.y < 0) a.y = 0; else if (a.y > H - PX) a.y = H - PX;
-      draw(a);
-    }
-    requestAnimationFrame(step);
-  }
-
-  measure(true);
-  run = true; last = performance.now(); requestAnimationFrame(step);
-
-  var rt;
-  function relayout() { clearTimeout(rt); rt = setTimeout(measure, 200); }
-  addEventListener("resize", relayout);
-  /* the page grows as its images arrive, and the ground they walk on has to
-     grow with it */
-  addEventListener("load", relayout);
-  document.addEventListener("visibilitychange", function () {
-    if (document.hidden) { run = false; }
-    else if (!run) { run = true; last = performance.now(); requestAnimationFrame(step); }
-  });
-})();
 </script></body></html>
