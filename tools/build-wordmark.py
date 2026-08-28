@@ -60,6 +60,10 @@ VIOLET, GOLD = "#7230fc", "#fcd284"
 # characters against it: the disc is opaque, and visibly made of writing.
 GROUND = "#4c18b8"
 DISC = 1200                     # the round mark is drawn large — see the note in main()
+# Character size on the disc, as a fraction of the letterform em. Set from how
+# large the disc is actually shown rather than from how it looks in isolation:
+# see the note in build_disc().
+DISC_FIELD, DISC_ROW = 0.0775, 0.0930
 LINE_PX = 460                   # em size for the letterforms
 # The texture has to be dense relative to the stroke it fills. Fraunces Light
 # Italic is a thin face, so at 13px on 16.5px rows a stroke caught only fragments
@@ -147,10 +151,11 @@ def build_disc():
     """The round mark: the existing logo, with its gold lettering made of the
     programme's own contracts.
 
-    It has a property the flat version does not. Shrink it and the texture
-    disappears before the letterforms do, so at masthead size it settles into
-    very nearly the logo the site already uses — violet disc, gold wordmark —
-    and only opens up into its material when it is given room."""
+    Unlike the flat mark this one is tuned for a particular size — the masthead,
+    around 340px — because a wordmark is a thing seen at one size far more often
+    than at all of them. Below about 200px the characters close up and it settles
+    into very nearly the logo the site already used, violet disc and gold
+    wordmark, which is the right thing to degrade into."""
     ids = identifiers()
     # The block spans about 62% of the diameter, which is where the existing
     # logo sets it.
@@ -167,8 +172,15 @@ def build_disc():
         '      <path transform="translate(%.1f %.1f)" d="%s"/>' % (ox + t["dx"], oy + t["dy"], t["d"])
         for t in tops
     )
-    # Density held to the same ratio the flat mark uses, so both read alike.
-    size, row = line_px * 0.0155, line_px * 0.0186
+    # The disc does NOT take the flat mark's density, and the reason is that it is
+    # displayed small. The flat mark runs at something near its natural width, so
+    # 8.5px characters arrive as 8.5px characters. The disc is a 1200-unit drawing
+    # shown at 340, so everything in it is divided by three and a half: at the flat
+    # mark's ratio a character landed on screen at 1.4px, which is not small text,
+    # it is noise with no letters in it. Sized for the screen instead — about 7px
+    # at masthead width — the addresses are addresses again and can be read off
+    # the disc.
+    size, row = line_px * DISC_FIELD, line_px * DISC_ROW
     strip = "   ".join(v for _, v in ids) + "   "
     rows = field_rows(strip, DISC, DISC, size, row, size)
 
@@ -202,16 +214,31 @@ def build_disc():
   <circle cx="{cx:.0f}" cy="{cy:.0f}" r="{r:.0f}" fill="{GROUND}"/>
   <g clip-path="url(#sovrn-disc)">
     <use href="#sovrn-field" fill="{VIOLET}"/>
-    <!-- The letters are the same field worked a second time, offset by half a
-         row and half a character so the two passes interleave rather than
-         overprint. That doubles the ink inside the letterforms and nowhere else,
-         which is what makes the wordmark read: at equal density the gold and the
-         violet differ only in hue and the word disappears. Reflection solves the
-         same problem the same way — it carries lighten, darken and highlight
-         passes over ground it has already laid. -->
+    <!-- The letters are the same field worked twice more, offset by a third and
+         two thirds of a row and of a character, so the three passes interleave
+         rather than overprint. That triples the ink inside the letterforms and
+         nowhere else, which is what makes the wordmark read: at equal density the
+         gold and the violet differ only in hue and the word disappears.
+         Reflection solves the same problem the same way — it carries lighten,
+         darken and highlight passes over ground it has already laid.
+
+         Three passes rather than two because the count is set by the character
+         size, not by taste. Ink inside a letter is roughly coverage times passes,
+         and bigger characters cover less: the same address written large leaves
+         more paper between the strokes. One pass at this size is a scatter with
+         no word in it — the letters vanish completely, which is worth knowing
+         before anyone tries to simplify this back down.
+
+         The obvious alternative, laying the letterforms on a darker violet so a
+         single gold pass reads against it, was built and rejected. It fails on
+         both counts: the backing is not far enough from the field to draw an edge
+         and the sparse gold still will not carry a stroke, so the word is *less*
+         legible than with no backing at all. It would also have been a solid
+         shape in a mark whose whole claim is that nothing here is drawn. -->
     <g clip-path="url(#sovrn-letters)">
       <use href="#sovrn-field" fill="{GOLD}"/>
-      <use href="#sovrn-field" fill="{GOLD}" transform="translate({size * 0.30:.2f} {row * 0.5:.2f})"/>
+      <use href="#sovrn-field" fill="{GOLD}" transform="translate({size * 0.33:.2f} {row * 0.33:.2f})"/>
+      <use href="#sovrn-field" fill="{GOLD}" transform="translate({size * 0.66:.2f} {row * 0.66:.2f})"/>
     </g>
   </g>
 </svg>
