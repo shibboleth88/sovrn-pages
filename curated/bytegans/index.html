@@ -31,7 +31,7 @@
 ::selection{background:var(--accent);color:var(--paper)}
 body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif}
 .wrap{max-width:1000px;margin:0 auto;padding:0 22px 60px}
-a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 /* the original opens on a full-bleed artwork with the title laid over it */
 .hero{position:relative;min-height:min(88vh,760px);display:flex;flex-direction:column;
  justify-content:center;align-items:center;text-align:center;padding:60px 22px;
@@ -51,12 +51,76 @@ a.fc:hover{color:var(--accent)}
 h2{position:relative;font:italic 300 clamp(25px,3.3vw,36px)/1.12 Fraunces,serif;letter-spacing:-.02em;
  margin:var(--gap) 0 26px;padding-bottom:16px;border-bottom:1px solid var(--rule)}
 h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;background:var(--accent)}
+
+/* The specification, as a row of measured facts. Every one of them is checked
+   against the artwork by tools/build-bytegans.py rather than quoted from a
+   page: all 1,111 really are eleven pixels square with eleven frames. */
+/* The rules are drawn by each cell rather than by the container showing through
+   a 1px gap. Five facts do not divide into the two columns a phone gets, and
+   with the container painting the lines that leftover half-row arrived as a
+   grey block sitting where a sixth fact would be. */
+.spec{margin-top:22px;display:grid;gap:1px;
+ grid-template-columns:repeat(auto-fit,minmax(118px,1fr))}
+.spec div{background:var(--paper);padding:13px 14px;box-shadow:0 0 0 1px var(--hair)}
+.spec b{display:block;font:500 19px/1.2 "IBM Plex Mono",monospace;color:var(--ink);letter-spacing:-.01em}
+.spec span{display:block;margin-top:5px;font:400 10.5px/1.4 "IBM Plex Mono",monospace;
+ letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
+
+/* The census. Each kind is a block: its name, how many there are, and then
+   every single one of them. The artwork keeps its own dark ground in both
+   colour schemes — the works are lit pixels, and standing them on a light
+   page washes them out. */
+.kinds{margin-top:var(--gap)}
+.kind{margin-top:44px}
+.kind:first-child{margin-top:0}
+.kind-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 14px;
+ padding-bottom:10px;border-bottom:1px solid var(--hair)}
+.kind-h h3{font:500 clamp(17px,2.4vw,22px)/1.2 "IBM Plex Mono",monospace;letter-spacing:-.01em;color:var(--ink)}
+.kind-h .n{font:500 11px/1.6 "IBM Plex Mono",monospace;letter-spacing:.12em;
+ text-transform:uppercase;color:var(--slate);margin-left:auto}
+.kind-h .sub{flex:0 0 100%;font:italic 300 clamp(15px,2vw,18px)/1.3 Fraunces,serif;color:var(--accent)}
+.bar{height:2px;background:var(--hair);margin-top:0}
+.bar i{display:block;height:100%;background:var(--accent);min-width:2px}
+.kind .prose{margin-top:16px}
+/* Flex rather than grid, and the reason is the two kinds that have one member.
+   A grid with 1fr columns stretches its tracks to fill the row, so a single
+   kingGAN sat at the left of a full-width panel with an acre of empty ground
+   beside it. Flex plus width:fit-content sizes the panel to its contents —
+   which resolves to the full width for the 289 skullGANs and to one tile for
+   the kingGAN, because fit-content is min(max-content, available). The tiles
+   also keep exactly the size the kind was assigned instead of being stretched
+   to whatever divides the row. */
+.field{margin-top:16px;background:#101219;padding:6px;display:flex;flex-wrap:wrap;gap:2px;
+ line-height:0;width:fit-content;max-width:100%;min-height:60px}
+/* height:auto is load-bearing. The width and height content attributes on an
+   <img> become presentational hints — real CSS width and height — and a
+   specified height beats aspect-ratio, so the tiles come out 34x11 instead of
+   square while the rule that was meant to size them sits there looking correct.
+   The attributes stay because they reserve the right box before the image
+   arrives; the height is handed back to the ratio here. */
+.field .t{all:unset;display:block;cursor:zoom-in;width:min(var(--tile),30vw)}
+.field img{width:100%;height:auto;aspect-ratio:1;display:block;image-rendering:pixelated}
+.field .t:hover img,.field .t:focus-visible img{outline:2px solid var(--accent);outline-offset:-2px}
+.cap{margin-top:8px;min-height:1.6em;font:400 11px/1.6 "IBM Plex Mono",monospace;color:var(--slate)}
+.cap b{color:var(--ink);font-weight:500}
+.kind.failed .field::after{content:"this kind could not be loaded";color:#8a8f98;
+ font:400 12px "IBM Plex Mono",monospace;line-height:1.6;padding:8px}
+
+/* Click a work and it opens at a size where eleven pixels are legible. */
+.lb{position:fixed;inset:0;z-index:60;display:none;place-items:center;padding:24px;
+ background:rgba(8,9,13,.9);cursor:zoom-out}
+.lb.on{display:grid}
+.lb img{width:min(74vw,74vh,560px);height:auto;aspect-ratio:1;image-rendering:pixelated;
+ display:block;background:#101219}
+.lb p{margin-top:16px;text-align:center;font:400 12.5px/1.7 "IBM Plex Mono",monospace;color:#c8ccd4}
+.lb p b{display:block;font-weight:500;font-size:15px;color:#fff}
+.lb a{color:#c8ccd4}
+
 /* image beside text, the way the original pairs each intelligence with its work */
 .duo{display:grid;grid-template-columns:minmax(0,360px) 1fr;gap:clamp(20px,3.4vw,44px);
  align-items:center;margin-top:var(--gap)}
 @media(max-width:720px){.duo{grid-template-columns:1fr}}
 .duo img{width:100%;height:auto;display:block;background:var(--ink)}
-.duo.pix img{image-rendering:pixelated}
 .feature{margin-top:var(--gap)}
 .feature img{width:100%;height:auto;display:block;background:var(--ink)}
 .social{margin-top:16px;display:flex;flex-wrap:wrap;gap:16px;
@@ -69,17 +133,14 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 .links a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:4px}
 .links a:hover{color:var(--accent)}
 .foot{margin-top:26px;font:400 11.5px/1.7 "IBM Plex Mono",monospace;color:var(--slate);max-width:76ch}
-/* a closing band: the whole set of them, still dancing, edge to edge */
-.band{margin-top:clamp(10px,2vw,26px);background:var(--ink)}
-.tiles{display:grid;grid-template-columns:repeat(12,1fr);line-height:0}
-.tiles img{width:100%;height:auto;display:block;image-rendering:pixelated}
-@media(max-width:1080px){.tiles{grid-template-columns:repeat(8,1fr)}}
-@media(max-width:640px){.tiles{grid-template-columns:repeat(6,1fr)}}
 .btnrow{margin-top:30px}
 .btn{display:inline-block;padding:15px 28px;background:var(--accent);color:var(--paper);
  text-decoration:none;font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;
  text-transform:uppercase;transition:background .16s,transform .16s}
 .btn:hover{background:var(--ink);transform:translateY(-1px)}
+.nojs{background:#101219;padding:6px;display:grid;gap:2px;line-height:0;margin-top:16px;
+ grid-template-columns:repeat(auto-fill,minmax(34px,1fr))}
+.nojs img{width:100%;height:auto;aspect-ratio:1;display:block;image-rendering:pixelated}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 /* Home. Every page that is not the homepage carries this, because a link shared
    into a chat lands on a subpage and there was no way back from twenty-seven of
@@ -99,7 +160,7 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/transitions.css">
 <script src="/transitions.js"></script>
-</head><body><a class="homemark" href="/" aria-label="sovrn.art — home" title="sovrn.art"><img src="/img/share/sovrn-mark.webp" alt="" width="30" height="30"></a>
+</head><body data-total="1111"><a class="homemark" href="/" aria-label="sovrn.art — home" title="sovrn.art"><img src="/img/share/sovrn-mark.webp" alt="" width="30" height="30"></a>
 <header class="hero" style="background-image:url(img/pages/bytegans/hero.gif)">
 <h1>byteGANs</h1><p class="by">by Pindar Van Arman</p>
 <figure class="vt-plate"><img class="vt-lead" src="/img/homepage/bytegan%20842.svg" alt="byteGAN 842, a work from byteGANs" loading="eager" fetchpriority="high"></figure>
@@ -109,24 +170,232 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 <p class="meta" style="margin-top:14px">a kilobyte on the blockchain<br>100% on-chain AI art by Pindar Van Arman<br>released 20 February 2023</p>
 <div class="prose" style="margin-top:26px">
 <p class="lead">In their ever expanding quest for who knows what, the bitGANs have made another interesting move.</p><p>They have inscribed themselves directly on to the blockchain.</p><p>Why? We are not sure, but by recording their dance on the public ledger, they have ensured that it will go on forever, exactly as it was intended.</p><p>While this action is mysterious, three major types of byteGANs have revealed themselves, with a small subset of rarer types.</p></div>
+<div class="spec">
+<div><b>1,111</b><span>works</span></div>
+<div><b>11 &times; 11</b><span>pixels each</span></div>
+<div><b>11</b><span>frames each</span></div>
+<div><b>12</b><span>kinds</span></div>
+<div><b>100%</b><span>on chain</span></div>
+</div>
 <p class="btnrow"><a class="btn" href="/shareable/share-bytegans">Make a shareable GIF</a></p>
-<h2>The Three Intelligences</h2>
-<div class="duo pix"><figure><img src="img/pages/bytegans/skull.gif" alt="" loading="lazy"></figure><div class="prose"><p>The skullGANs represent Evolutionary Intelligence. Their existence is a battle being fought within the human mind, where higher order brain functions are at constant odds with reptilian instincts. Does free will even exist, or is everything just a complex biochemical reaction.</p></div></div>
-<div class="duo pix"><figure><img src="img/pages/bytegans/cyber.gif" alt="" loading="lazy"></figure><div class="prose"><p>The cyberGANs represent Artificial Intelligence. Intelligence created in a relative short period of time, full of promise, but also completely lacking wisdom. While AI may be able to solve all of the worlds problems, it also has the potential to destroy it in the process.</p></div></div>
-<div class="duo pix"><figure><img src="img/pages/bytegans/octo.gif" alt="" loading="lazy"></figure><div class="prose"><p>The octoGANs are closely related to podGANs and like the podGANs, they represent a new kind of thinking, Decentralized Intelligence. Similar to how an octopus coordinates nine different brains to solve complex tasks, these beings combine inputs from decentralized sources for the common good.</p></div></div>
+
+<h2>The twelve kinds</h2>
+<div class="prose">
+<p class="lead">All 1,111 are below, every one of them, grouped by kind and ordered within each kind by modifier so the colour families stay together.</p>
+<p>The three the artist names account for seven works in ten. The nine he does not are left unexplained here, because the collection says what they look like and nothing says what they mean. Rarer kinds are drawn larger, so that being rare is something you see rather than something you read: the last two have one member each.</p>
+<p>Point at a work, or tab to it, and it names itself. Open one to see it at a size where eleven pixels are legible.</p>
+</div>
+<noscript><div class="nojs"><img src="/onchain/bytegans/390.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/497.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/232.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/535.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/408.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/349.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/17.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/675.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/228.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/597.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/1065.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/1066.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/956.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/456.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/680.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/991.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/224.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/407.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/583.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/398.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/277.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/341.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/368.svg" alt="" width="11" height="11"><img src="/onchain/bytegans/518.svg" alt="" width="11" height="11"></div>
+<p class="cap">Twenty-four of the 1,111. The complete collection needs JavaScript, because it is assembled from twelve files rather than 1,111 separate images.</p></noscript>
+<div class="kinds">
+<section class="kind" data-kind="skullGAN" data-count="289" data-file="skullgan.json" style="--tile:34px">
+<div class="kind-h"><h3>skullGAN</h3><p class="n">289 &middot; 26.0%</p>
+<p class="sub">Evolutionary Intelligence</p>
+</div>
+<div class="bar"><i style="width:26.0%"></i></div>
+<div class="prose"><p>The skullGANs represent Evolutionary Intelligence. Their existence is a battle being fought within the human mind, where higher order brain functions are at constant odds with reptilian instincts. Does free will even exist, or is everything just a complex biochemical reaction.</p></div>
+<div class="field" role="group" aria-label="every skullGAN, 289 works"></div>
+<p class="cap" aria-live="polite"></p>
+</section>
+<section class="kind" data-kind="octoGAN" data-count="287" data-file="octogan.json" style="--tile:34px">
+<div class="kind-h"><h3>octoGAN</h3><p class="n">287 &middot; 25.8%</p>
+<p class="sub">Decentralized Intelligence</p>
+</div>
+<div class="bar"><i style="width:25.8%"></i></div>
+<div class="prose"><p>The octoGANs are closely related to podGANs and like the podGANs, they represent a new kind of thinking, Decentralized Intelligence. Similar to how an octopus coordinates nine different brains to solve complex tasks, these beings combine inputs from decentralized sources for the common good.</p></div>
+<div class="field" role="group" aria-label="every octoGAN, 287 works"></div>
+<p class="cap" aria-live="polite"></p>
+</section>
+<section class="kind" data-kind="cyberGAN" data-count="218" data-file="cybergan.json" style="--tile:34px">
+<div class="kind-h"><h3>cyberGAN</h3><p class="n">218 &middot; 19.6%</p>
+<p class="sub">Artificial Intelligence</p>
+</div>
+<div class="bar"><i style="width:19.6%"></i></div>
+<div class="prose"><p>The cyberGANs represent Artificial Intelligence. Intelligence created in a relative short period of time, full of promise, but also completely lacking wisdom. While AI may be able to solve all of the worlds problems, it also has the potential to destroy it in the process.</p></div>
+<div class="field" role="group" aria-label="every cyberGAN, 218 works"></div>
+<p class="cap" aria-live="polite"></p>
+</section>
+<section class="kind" data-kind="bioGAN" data-count="72" data-file="biogan.json" style="--tile:42px">
+<div class="kind-h"><h3>bioGAN</h3><p class="n">72 &middot; 6.5%</p>
+</div>
+<div class="bar"><i style="width:6.5%"></i></div>
+<div class="field" role="group" aria-label="every bioGAN, 72 works"></div>
+<p class="cap" aria-live="polite"></p>
+</section>
+<section class="kind" data-kind="cycloGAN" data-count="71" data-file="cyclogan.json" style="--tile:42px">
+<div class="kind-h"><h3>cycloGAN</h3><p class="n">71 &middot; 6.4%</p>
+</div>
+<div class="bar"><i style="width:6.4%"></i></div>
+<div class="field" role="group" aria-label="every cycloGAN, 71 works"></div>
+<p class="cap" aria-live="polite"></p>
+</section>
+<section class="kind" data-kind="xenoGAN" data-count="71" data-file="xenogan.json" style="--tile:42px">
+<div class="kind-h"><h3>xenoGAN</h3><p class="n">71 &middot; 6.4%</p>
+</div>
+<div class="bar"><i style="width:6.4%"></i></div>
+<div class="field" role="group" aria-label="every xenoGAN, 71 works"></div>
+<p class="cap" aria-live="polite"></p>
+</section>
+<section class="kind" data-kind="ghostGAN" data-count="69" data-file="ghostgan.json" style="--tile:42px">
+<div class="kind-h"><h3>ghostGAN</h3><p class="n">69 &middot; 6.2%</p>
+</div>
+<div class="bar"><i style="width:6.2%"></i></div>
+<div class="field" role="group" aria-label="every ghostGAN, 69 works"></div>
+<p class="cap" aria-live="polite"></p>
+</section>
+<section class="kind" data-kind="g1itchGAN" data-count="20" data-file="g1itchgan.json" style="--tile:58px">
+<div class="kind-h"><h3>g1itchGAN</h3><p class="n">20 &middot; 1.8%</p>
+</div>
+<div class="bar"><i style="width:1.8%"></i></div>
+<div class="field" role="group" aria-label="every g1itchGAN, 20 works"></div>
+<p class="cap" aria-live="polite"></p>
+</section>
+<section class="kind" data-kind="apeGAN" data-count="9" data-file="apegan.json" style="--tile:92px">
+<div class="kind-h"><h3>apeGAN</h3><p class="n">9 &middot; 0.8%</p>
+</div>
+<div class="bar"><i style="width:0.8%"></i></div>
+<div class="field" role="group" aria-label="every apeGAN, 9 works"></div>
+<p class="cap" aria-live="polite"></p>
+</section>
+<section class="kind" data-kind="primeGAN" data-count="3" data-file="primegan.json" style="--tile:150px">
+<div class="kind-h"><h3>primeGAN</h3><p class="n">3 &middot; 0.3%</p>
+</div>
+<div class="bar"><i style="width:0.3%"></i></div>
+<div class="field" role="group" aria-label="every primeGAN, 3 works"></div>
+<p class="cap" aria-live="polite"></p>
+</section>
+<section class="kind" data-kind="kingGAN" data-count="1" data-file="kinggan.json" style="--tile:150px">
+<div class="kind-h"><h3>kingGAN</h3><p class="n">1 &middot; 0.1%</p>
+</div>
+<div class="bar"><i style="width:0.1%"></i></div>
+<div class="field" role="group" aria-label="every kingGAN, 1 works"></div>
+<p class="cap" aria-live="polite"></p>
+</section>
+<section class="kind" data-kind="queenGAN" data-count="1" data-file="queengan.json" style="--tile:150px">
+<div class="kind-h"><h3>queenGAN</h3><p class="n">1 &middot; 0.1%</p>
+</div>
+<div class="bar"><i style="width:0.1%"></i></div>
+<div class="field" role="group" aria-label="every queenGAN, 1 works"></div>
+<p class="cap" aria-live="polite"></p>
+</section>
+</div>
+
 <h2>The artist</h2>
 <div class="duo"><figure><picture><source type="image/avif" srcset="/img/derived/pages/bytegans/artist-352.avif 352w, /img/derived/pages/bytegans/artist-720.avif 720w, /img/derived/pages/bytegans/artist-992.avif 992w" sizes="(max-width: 700px) 331px, 360px"><source type="image/webp" srcset="/img/derived/pages/bytegans/artist-352.webp 352w, /img/derived/pages/bytegans/artist-720.webp 720w, /img/derived/pages/bytegans/artist-992.webp 992w" sizes="(max-width: 700px) 331px, 360px"><img src="img/pages/bytegans/artist.jpg" alt="Pindar Van Arman with a painting robot" loading="lazy"></picture></figure><div class="prose"><p>Pindar Van Arman is an AI generative artist who has been collaborating with artificially intelligent painting robots since 2006.</p><p>His art has been exhibited internationally and is featured in the critically acclaimed documentary Machine, The Art of Intelligence, the NVIDIA AI Art Gallery, and in the the LACMA permanent collection.</p><p class="social"><a href="https://www.vanarman.com" target="_blank">vanarman.com</a><a href="https://bitgans.com/" target="_blank">bitgans.com</a><a href="https://x.com/vanarman" target="_blank">X</a><a href="https://www.instagram.com/pindar.vanarman/" target="_blank">Instagram</a></p></div></div>
 <figure class="feature"><picture><source type="image/avif" srcset="/img/derived/pages/bytegans/panels-656.avif 656w, /img/derived/pages/bytegans/panels-992.avif 992w, /img/derived/pages/bytegans/panels-1280.avif 1280w" sizes="(max-width: 700px) 331px, 956px"><source type="image/webp" srcset="/img/derived/pages/bytegans/panels-656.webp 656w, /img/derived/pages/bytegans/panels-992.webp 992w, /img/derived/pages/bytegans/panels-1280.webp 1280w" sizes="(max-width: 700px) 331px, 956px"><img src="img/pages/bytegans/panels.jpg" alt="Three byteGANs as physical panels" loading="lazy"></picture></figure>
 <p class="links"><a href="https://www.raster.art/artwork/bytegans-by-pindar-van-arman" target="_blank">View on Raster</a><a href="https://superrare.com/vanarman" target="_blank">byteGANs on SuperRare</a><a href="https://twitter.com/vanarmanartist" target="_blank">Pindar Van Arman on X</a></p>
 <p class="foot">byteGANs, Pindar Van Arman, 2023. A kilobyte apiece, fully on-chain. A curated collection on <a class="fc" href="/">sovrn.art</a>.</p>
 </div>
-<section class="band" role="img" aria-label="Twenty-four byteGANs, each an eleven-pixel-square animation, tiled edge to edge">
-<div class="tiles" id="tiles"><img src="img/bytegans/bytegan-01.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-02.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-03.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-04.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-05.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-06.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-07.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-08.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-09.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-10.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-11.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-12.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-13.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-14.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-15.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-16.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-17.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-18.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-19.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-20.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-21.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-22.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-23.svg" alt="" width="500" height="500" loading="lazy"><img src="img/bytegans/bytegan-24.svg" alt="" width="500" height="500" loading="lazy"></div>
-</section>
+<div class="lb" id="lb" tabindex="-1" role="dialog" aria-modal="true" aria-label="byteGAN, enlarged">
+<div><img src="" alt=""><p><b></b><a href=""></a></p></div>
+</div>
 <script>
-(function(){var t=document.getElementById("tiles");if(!t)return;
-var a=[].slice.call(t.children);
-while(a.length){var j=Math.floor(Math.random()*a.length);t.appendChild(a[j]);a.splice(j,1);}
+/* The field. Every one of the 1,111 works is on this page, which is only
+   affordable because a byteGAN is eleven pixels square: the whole collection is
+   under a megabyte. It arrives as twelve files, one per kind, each fetched when
+   its section comes near the viewport — so a reader who stops at the opening
+   downloads none of it, and nobody ever makes 1,111 requests.
+
+   The GIF bytes in those files are the ones the contract stores, copied out of
+   the same-origin mirror at /onchain/bytegans/ without re-encoding. */
+(function () {
+  var secs = [].slice.call(document.querySelectorAll(".kind")), lb = document.getElementById("lb");
+
+  function fill(sec) {
+    var field = sec.querySelector(".field");
+    fetch("/data/bytegans/" + sec.dataset.file).then(function (r) {
+      if (!r.ok) throw 0; return r.json();
+    }).then(function (d) {
+      var frag = document.createDocumentFragment(), i;
+      for (i = 0; i < d.ids.length; i++) {
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "t";
+        /* Roving tabindex: one stop per kind, not one per work. Left as plain
+           buttons this field would put 1,111 tab stops between the opening and
+           the rest of the page, which is not navigation, it is a trap. The
+           first work of each kind is in the tab order and the arrow keys move
+           within it — the same bargain a grid of anything makes. */
+        b.tabIndex = i ? -1 : 0;
+        b.dataset.id = d.ids[i]; b.dataset.t = d.titles[i];
+        var im = document.createElement("img");
+        /* A data: URI rather than a file: the bytes are already here, and 1,111
+           of them as separate requests is the thing this design avoids. */
+        im.src = "data:image/gif;base64," + d.gifs[i];
+        im.alt = d.titles[i]; im.width = 11; im.height = 11;
+        b.appendChild(im); frag.appendChild(b);
+      }
+      field.appendChild(frag);
+      field.addEventListener("keydown", arrows);
+    }).catch(function () { sec.className += " failed"; });
+  }
+
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) { io.unobserve(e.target); fill(e.target); }
+      });
+    }, { rootMargin: "700px 0px" });
+    secs.forEach(function (s) { io.observe(s); });
+  } else {
+    secs.forEach(fill);
+  }
+
+  /* How many fit on a line is a layout question, so it is asked of the layout
+     rather than recomputed from the tile size and the container width. */
+  function perRow(items) {
+    var top = items[0].offsetTop, i = 1;
+    while (i < items.length && items[i].offsetTop === top) i++;
+    return i;
+  }
+
+  function arrows(ev) {
+    var cur = ev.target.closest && ev.target.closest(".t"); if (!cur) return;
+    var items = [].slice.call(this.children), i = items.indexOf(cur), n;
+    var k = ev.key;
+    if (k === "ArrowRight") n = i + 1;
+    else if (k === "ArrowLeft") n = i - 1;
+    else if (k === "ArrowDown") n = i + perRow(items);
+    else if (k === "ArrowUp") n = i - perRow(items);
+    else if (k === "Home") n = 0;
+    else if (k === "End") n = items.length - 1;
+    else return;
+    ev.preventDefault();
+    if (n < 0 || n >= items.length) return;
+    cur.tabIndex = -1; items[n].tabIndex = 0; items[n].focus();
+  }
+
+  /* One caption per kind, driven by whatever is under the pointer or the focus
+     ring. A title attribute would do the same for a mouse and nothing at all for
+     a keyboard, and it would wait a second before saying anything. */
+  function name(ev) {
+    var b = ev.target.closest && ev.target.closest(".t"); if (!b) return;
+    var cap = b.closest(".kind").querySelector(".cap");
+    cap.innerHTML = "<b>" + b.dataset.t.replace(/&/g, "&amp;").replace(/</g, "&lt;")
+                  + "</b> · token " + b.dataset.id;
+  }
+  document.addEventListener("pointerover", name);
+  document.addEventListener("focusin", name);
+
+  /* Eleven pixels at 34px a side is a swatch, not a picture. */
+  var opener = null;
+  function shut() { lb.className = "lb"; if (opener) { opener.focus(); opener = null; } }
+  function open(b) {
+    opener = b;
+    lb.querySelector("img").src = b.querySelector("img").src;
+    lb.querySelector("b").textContent = b.dataset.t;
+    var a = lb.querySelector("a");
+    a.href = "/onchain/bytegans/" + b.dataset.id + ".svg";
+    a.textContent = "token " + b.dataset.id + " on chain";
+    lb.className = "lb on"; lb.focus();
+  }
+  document.addEventListener("click", function (ev) {
+    var b = ev.target.closest && ev.target.closest(".t");
+    if (b) { open(b); return; }
+    if (ev.target.closest && !ev.target.closest(".lb p")) shut();
+  });
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape") shut();
+  });
 })();
 </script>
 </body></html>

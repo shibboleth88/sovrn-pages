@@ -495,6 +495,61 @@ straight from the contract as SVG.
 
 ---
 
+## byteGANs: titles, kinds, and the number that is not the token id
+
+Every byteGAN is titled `<modifier> <kind>GAN #<n>`, and **that `n` is not the
+token id.** Across the whole collection it matches for exactly **one** of the
+1,111. The ids run 1–1111; the numbers in the titles run **0–1110**, and they are
+not even a clean permutation of that: two numbers appear twice — there are two
+works called `#594` and two called `#899` — and two are never used at all.
+
+So `#950` is not a way to address a work. The **full title is** — all 1,111 are
+distinct — and so is the token id. Anything that resolves a work from a number
+off a title should be treating that number as a label, not an index.
+
+Where the traps are, in order of how much they cost:
+
+- **The number is a label.** See above. Reading `#950` off a title card and
+  fetching token 950 returns a different work, with nothing to signal it.
+- **The kind is in the title and nowhere else.** There is no separate trait to
+  read: `skullGAN`, `octoGAN`, `cyberGAN` and the nine rarer kinds come out of
+  parsing the name. `tools/build-bytegans.py` does this and asserts every one of
+  the 1,111 parses, rather than skipping what does not.
+- **byteGAN #469's metadata is malformed on-chain** — one `attributes` entry has
+  an unquoted key, `{trait_type:"subtype",…}`, so `JSON.parse` cannot read it.
+  The contract is immutable. This is already handled at harvest, so the mirror
+  under `/onchain/bytegans/` is clean and nothing downstream of the mirror needs
+  a special case.
+
+The collection is **twelve kinds**, not the three the collection page describes:
+
+| kind | works | | kind | works |
+|---|---|---|---|---|
+| skullGAN | 289 | | ghostGAN | 69 |
+| octoGAN | 287 | | g1itchGAN | 20 |
+| cyberGAN | 218 | | apeGAN | 9 |
+| bioGAN | 72 | | primeGAN | 3 |
+| cycloGAN | 71 | | kingGAN | 1 |
+| xenoGAN | 71 | | queenGAN | 1 |
+
+The three the artist describes are 71% of the collection. There is **one**
+kingGAN and **one** queenGAN. There are also 27 modifiers, most of them colour
+words, which is why sorting by modifier inside a kind bands the field into
+families instead of scattering it.
+
+Counts and kinds come from the titles in `sovrn-onchain`'s
+`data/onchain-titles.json`, which were read off the contract. The artist's own
+text mentions **podGANs**; there is no podGAN kind in this collection, and the
+sentence is about a relationship to another series, not a claim about what is
+here.
+
+Every one of the 1,111 is **11 × 11 pixels with 11 frames** — checked across all
+of them, not sampled. The GIF payloads run 456–1164 bytes, median 585; the
+"kilobyte apiece" the page speaks of is the SVG the contract returns, about
+1.1 KB, not the GIF inside it.
+
+---
+
 ## Harvesting artwork from raster.art
 
 raster.art lazy-loads its grid behind an `IntersectionObserver`, and **the
