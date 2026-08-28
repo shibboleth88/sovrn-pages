@@ -519,11 +519,24 @@ Where the traps are, in order of how much they cost:
   read: `skullGAN`, `octoGAN`, `cyberGAN` and the nine rarer kinds come out of
   parsing the name. `tools/build-bytegans.py` does this and asserts every one of
   the 1,111 parses, rather than skipping what does not.
-- **byteGAN #469's metadata is malformed on-chain** — one `attributes` entry has
-  an unquoted key, `{trait_type:"subtype",…}`, so `JSON.parse` cannot read it.
-  The contract is immutable. This is already handled at harvest, so the mirror
-  under `/onchain/bytegans/` is clean and nothing downstream of the mirror needs
-  a special case.
+- **Token 469's metadata is malformed on-chain** — one `attributes` entry has an
+  unquoted key, `{trait_type:"subtype",…}`, so `JSON.parse` cannot read it. The
+  contract is immutable. This is handled at harvest, so the mirror under
+  `/onchain/bytegans/` is clean and nothing downstream needs a special case.
+
+  **It is token 469, not the work titled #469.** Earlier notes called it
+  "byteGAN #469", which reads as the title and walks straight into the trap
+  above: the work titled `quantum cyberGAN #469` is token 103 and its metadata
+  is perfectly ordinary. Token 469 is `inverted cycloGAN #108`.
+
+  The same work is odd in a second way, unrecorded until now. Every other SVG in
+  the collection ends `…<animate attributeName="opacity" …/></image><g id="N"/>`;
+  token 469 has neither the `<animate>` nor the `<g>`. The `<animate>` is what
+  makes an embedded GIF play inside an `<img>`, so **that one work is still when
+  shown as an SVG** — its eleven frames are in the file and never advance.
+  Anything that draws the raw GIF instead, as the wandering layer on the
+  collection page does, is unaffected. Confirmed against the chain: the mirror is
+  byte-identical to what `tokenURI` returns.
 
 The collection is **twelve kinds**, not the three the collection page describes:
 
@@ -551,6 +564,50 @@ Every one of the 1,111 is **11 × 11 pixels with 11 frames** — checked across 
 of them, not sampled. The GIF payloads run 456–1164 bytes, median 585; the
 "kilobyte apiece" the page speaks of is the SVG the contract returns, about
 1.1 KB, not the GIF inside it.
+
+---
+
+## How a byteGAN is built, and what that means for cutting the background
+
+Worth knowing before trying to be clever with these. The whole file is:
+
+```svg
+<svg width="500" height="500" …>
+  <image width="500" height="500" image-rendering="pixelated" xlink:href="data:image/gif;base64,…">
+    <animate attributeName="opacity" from="1" to="0.999" dur="2.2s" repeatCount="indefinite"/>
+  </image>
+  <g id="237"/>
+</svg>
+```
+
+**There is no background element.** No rect, no layers — the ground is pixels
+inside the GIF, so nothing can be separated at the SVG level. The `<animate>` is
+the trick that makes the GIF play inside an `<img>`; the empty `<g>` carries the
+token id and is the only self-identification these files have.
+
+Inside the GIF, four things were checked and three of them are dead ends:
+
+- **The declared background colour is not to be trusted.** GIFs carry a
+  background colour index in the logical screen descriptor, and it looks like
+  exactly the answer. It is right for 974 of the 1,111 — the index is not even 0
+  in 79 of them — so using it instead of reading the pixels would have been a
+  12% error rate dressed up as authority.
+- **No frame declares transparency.** There is nothing already keyed out to
+  inherit; every frame is fully opaque as stored.
+- **Palette order says nothing.** quantum xenoGAN #611 animates its ground
+  through five cyans, and they sit at indices 0, 1, 3, 4 and 7, interleaved with
+  figure colours.
+- **Frames are delta sub-rectangles with disposal 1**, so a frame repaints only
+  what changed and inherits the rest. Pillow composites this correctly on
+  `seek()`; it gives no usable signal about which pixels are ground, because a
+  frame that changes the ground simply repaints the whole tile.
+
+So reading the pixels is not a shortcut, it is the only sound method, and
+`tools/build-bytegans.py` does it: per-frame ground from the frame's own border,
+flood fill from the edge rather than a colour key, and a parity test for the one
+work with a checkered ground. Measured over the 241-work cast, the worst frame
+anywhere is 14% transparent and the median work strands 2.5 background pixels
+inside its figure — which is eyes and mouth, and is meant to stay.
 
 ---
 

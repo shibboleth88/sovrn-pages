@@ -384,6 +384,52 @@ def verify(works):
                            % (e["kind"], have, e["count"]))
     return bad
 
+def check_mirror_ids():
+    """Every mirror file says which work it is; make it prove it.
+
+    Each byteGAN's SVG ends with an empty `<g id="…"/>` carrying its token id —
+    put there by the contract, not by us. That is an identity check that owes
+    nothing to any of our own data: if a file were misnamed, mis-copied or
+    fetched for the wrong token, the id inside it would disagree with the
+    filename. Nothing else in this repository can catch that.
+
+    Two exceptions, both confirmed against the chain and both the artist's own,
+    not ours — the mirror is byte-identical to what tokenURI returns in each case:
+
+    - token 712 carries `id="token71"`. A typo in the contract's own output.
+    - token 469 carries no `<g>` at all, and no `<animate>` either. It is the
+      one work whose on-chain metadata is malformed — `{trait_type:"subtype"`,
+      an unquoted key that JSON.parse cannot read — and its SVG is built
+      differently from the other 1,110 as well. Note that this is token 469,
+      *not* the work titled #469: that is token 103 and it is perfectly ordinary.
+      The existing note calling it "byteGAN #469" walked into the trap this
+      repository documents, that a byteGAN's title number is not its token id.
+
+    A third thing follows from the second and is worth knowing: the
+    `<animate attributeName="opacity">` in every other file is what makes an
+    embedded GIF play inside an `<img>`. Token 469 has none, so that work is
+    still when shown as an SVG — its eleven frames are in the file and never
+    advance. Anything drawing the raw GIF, as the wandering layer does, is
+    unaffected."""
+    ODD = {712: "token71", 469: None}
+    bad, n = [], 0
+    for tok in range(1, 1112):
+        f = os.path.join(MIRROR, "%d.svg" % tok)
+        if not os.path.isfile(f):
+            bad.append("token %d is missing from the mirror" % tok); continue
+        svg = io.open(f, encoding="utf-8").read()
+        m = re.search(r'<g id="((?:token)?\d+)"\s*/>', svg)
+        want = ODD.get(tok, str(tok))
+        got = m.group(1) if m else None
+        if tok in ODD:
+            if got != want:
+                bad.append("token %d: expected the known oddity %r, found %r" % (tok, want, got))
+        elif got not in (str(tok), "token%d" % tok):
+            bad.append("token %d: the file says it is %r" % (tok, got))
+        else:
+            n += 1
+    return bad, n
+
 def check(works, index):
     """The page states the three named kinds' counts and the total in its own
     markup, so that those sections exist before any script runs. That is a second
@@ -439,6 +485,12 @@ def main():
             for b in bad[:12]: print("    " + b)
             sys.exit(1)
         print("  every one of the %d works carries its own title and its own image" % len(works))
+        idbad, idn = check_mirror_ids()
+        if idbad:
+            print("\n  the mirror does not identify itself correctly:")
+            for b in idbad[:12]: print("    " + b)
+            sys.exit(1)
+        print("  %d mirror files carry their own token id, and it matches; 2 known oddities" % idn)
         bad = check(works, index)
         if bad:
             print("\n  the page disagrees with the chain:")
