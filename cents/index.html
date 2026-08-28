@@ -119,21 +119,30 @@
    theirs. On a touch screen, where there is no pointing, the translation simply
    sits under the title instead. */
 .ln li{position:relative}
-.ln .en{position:absolute;left:0;right:0;top:calc(100% - 1px);z-index:9;
+/* No fade. It faded in over 140ms, and for those 140ms the panel was
+   semi-transparent with the next row's title reading straight through it —
+   two lines of text on top of each other, in two scripts. Crossing the list
+   with the pointer made that flicker on every row. A panel that overlays
+   something has to be opaque from its first frame, so it appears at once and
+   the only thing that moves is which one is showing.
+
+   opacity:0 rather than display:none or visibility:hidden, so the translation
+   stays in the accessibility tree and is read out with the title rather than
+   only being available to whoever can hover. */
+.ln .en{position:absolute;left:0;right:0;top:calc(100% - 1px);z-index:40;
  padding:11px 13px;background:var(--dim);border:1px solid var(--lift);
+ box-shadow:0 14px 30px rgba(0,0,0,.66);
  font:400 13.5px/1.5 "IBM Plex Sans",sans-serif;color:var(--paper);
  letter-spacing:0;text-transform:none;
- opacity:0;transform:translateY(-4px);transition:opacity .14s,transform .14s;
- pointer-events:none}
+ opacity:0;pointer-events:none}
 .ln .en b{display:block;margin-top:6px;font:500 10px/1.4 "IBM Plex Mono",monospace;
  letter-spacing:.11em;text-transform:uppercase;color:var(--mute)}
-.ln a:hover .en,.ln a:focus-visible .en{opacity:1;transform:none}
+.ln a:hover .en,.ln a:focus-visible .en{opacity:1}
 @media (hover:none){
-  .ln .en{position:static;width:100%;opacity:1;transform:none;background:none;
-   border:0;padding:5px 0 0;color:var(--mute);font-size:12.5px}
+  .ln .en{position:static;width:100%;opacity:1;background:none;border:0;
+   box-shadow:none;padding:5px 0 0;color:var(--mute);font-size:12.5px}
   .ln .en b{display:inline;margin:0 0 0 6px}
 }
-@media (prefers-reduced-motion:reduce){.ln .en{transition:none}}
 </style><link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">

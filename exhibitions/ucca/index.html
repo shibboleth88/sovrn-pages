@@ -51,21 +51,23 @@
    focus; see the note on the CENTS page, which lists the same two. Titles are
    quoted exactly as published, and the translations are ours and say so. */
 #pr li{position:relative}
-#pr .en{position:absolute;left:0;right:0;top:calc(100% - 1px);z-index:9;
+/* Opaque from the first frame, and no fade — see the note on the CENTS page,
+   which lists the same two articles. A translucent panel over a title in
+   another script is two texts at once and neither readable. */
+#pr .en{position:absolute;left:0;right:0;top:calc(100% - 1px);z-index:40;
  padding:11px 13px;background:var(--surface);border:1px solid var(--rule);
+ box-shadow:0 14px 30px rgba(0,0,0,.28);
  font:400 13.5px/1.5 "IBM Plex Sans",sans-serif;color:var(--ink);
  letter-spacing:0;text-transform:none;white-space:normal;
- opacity:0;transform:translateY(-4px);transition:opacity .14s,transform .14s;
- pointer-events:none}
+ opacity:0;pointer-events:none}
 #pr .en b{display:block;margin-top:6px;font:500 10px/1.4 "IBM Plex Mono",monospace;
  letter-spacing:.11em;text-transform:uppercase;color:var(--slate)}
-#pr a:hover .en,#pr a:focus-visible .en{opacity:1;transform:none}
+#pr a:hover .en,#pr a:focus-visible .en{opacity:1}
 @media (hover:none){
-  #pr .en{position:static;opacity:1;transform:none;background:none;border:0;
+  #pr .en{position:static;opacity:1;background:none;border:0;box-shadow:none;
    padding:5px 0 0;color:var(--slate);font-size:12.5px}
   #pr .en b{display:inline;margin:0 0 0 6px}
 }
-@media (prefers-reduced-motion:reduce){#pr .en{transition:none}}
 </style><link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
