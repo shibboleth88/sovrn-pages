@@ -40,6 +40,49 @@
 .homemark:hover,.homemark:focus-visible{opacity:1;transform:scale(1.06)}
 .homemark img{width:30px;height:30px;display:block;border-radius:50%}
 @media(prefers-reduced-motion:reduce){.homemark{transition:none}}
+
+/* ---------- the page stands on a painting ----------
+   'human empathy', token 52, behind the whole page.
+   
+   It moves. A minted Reflection carries seven <animate> elements ramping its
+   layer opacities on an eight-second loop, so the painting perpetually unmakes
+   and remakes itself — the robot's own process, running behind the text that
+   describes it. That survives being used as a CSS background, which not every
+   embedding does: measured, <img> and background-image both animate the SMIL,
+   <object> did not.
+   
+   **The raster is deliberately small, and that is the whole performance story.**
+   The artwork changes on most frames, so whatever size it is rasterised at is
+   re-rasterised roughly fifty times a second. Scaling it with `background-size`
+   would ask the browser to raster 733 vector paths at some multiple of a retina
+   viewport — tens of megapixels. Instead it is drawn into a fixed 480px box and
+   scaled up by the compositor: the raster stays 480 square whatever the screen,
+   and `will-change:transform` is what asks the browser to rasterise once at that
+   size and scale the result rather than re-rastering at the composited scale.
+   At 14% visibility and seven times up, the softness that buys is invisible.
+   
+   Held at 86%: enough that the hex characters and arcs read as material, not
+   enough to compete with the prose. Measured at that scrim the picture still
+   changes by about 5/255 between moments — invisible in a still, and the eye is
+   good enough at motion for it to read as a surface quietly alive.
+   
+   Under prefers-reduced-motion it swaps to a still: a background is an image to
+   the page, so there is no document to pause, and the only way to hold it still
+   is to serve something that does not move. tools/build-reflection-still.py
+   makes that file by deleting the seven fades and nothing else — they all rest
+   at opacity 1, so the still is the painting fully assembled. */
+:root{--refl-scrim:.86;--refl-zoom:7}
+body{position:relative}
+body::before{content:"";position:fixed;top:50%;left:50%;width:480px;height:480px;
+ z-index:0;pointer-events:none;will-change:transform;
+ transform:translate(-50%,-50%) scale(var(--refl-zoom));
+ background:url("/onchain/reflection/52.svg") center/cover no-repeat}
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+ background:rgba(11,13,16,var(--refl-scrim))}
+body>*{position:relative;z-index:1}
+@media (prefers-reduced-motion:reduce){
+  body::before{background-image:url("/img/reflection-page/human-empathy-still.svg")}
+}
 </style><link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
