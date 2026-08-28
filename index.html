@@ -89,7 +89,13 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
 .heroin::before{content:"";position:absolute;inset:0;
   background:radial-gradient(ellipse 58% 46% at center,rgba(10,11,14,.88) 0%,rgba(10,11,14,.72) 38%,rgba(10,11,14,.34) 68%,rgba(10,11,14,0) 100%)}
 .heroin>*{position:relative;pointer-events:auto}
-.logo img{width:clamp(132px,15vw,176px);height:auto;display:inline-block}
+/* Bigger than the old mark, because this one has something to show. The
+   lettering is cut out of every contract the programme has released, and that
+   field only resolves into characters with room — below about 300px it reads as
+   a soft textured wordmark, which is a fair fallback but not the point.
+   12KB gzipped and vector, so the size costs nothing: it is less than half what
+   the AVIF logo weighed and it is sharp at any density. */
+.logo img{width:clamp(190px,27vw,340px);height:auto;display:inline-block}
 .tag{font:italic 300 clamp(24px,3.6vw,40px)/1.12 Fraunces,serif;color:#fff;letter-spacing:-.02em;max-width:22ch;margin:18px auto 0;text-wrap:balance;text-shadow:0 2px 30px rgba(0,0,0,.55)}
 .about{max-width:64ch;font-size:15.5px;line-height:1.72;color:var(--slate);margin:0 auto var(--gap)}
 .about a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px;transition:color .15s}
@@ -174,7 +180,7 @@ h3{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transfo
 <div class="hero">
 <div class="banner" aria-hidden="true"><div class="mg" id="ban"></div></div>
 <div class="heroin">
-<a class="logo" href="/"><picture><source type="image/avif" srcset="/img/derived/homepage/sovrn_logo-removebg-176.avif 176w, /img/derived/homepage/sovrn_logo-removebg-256.avif 256w, /img/derived/homepage/sovrn_logo-removebg-400.avif 400w" sizes="(max-width: 700px) 132px, 176px"><source type="image/webp" srcset="/img/derived/homepage/sovrn_logo-removebg-176.webp 176w, /img/derived/homepage/sovrn_logo-removebg-256.webp 256w, /img/derived/homepage/sovrn_logo-removebg-400.webp 400w" sizes="(max-width: 700px) 132px, 176px"><img src="/img/homepage/sovrn_logo-removebg.png" alt="Sovrn Art" width="256" height="256"></picture></a>
+<a class="logo" href="/"><img src="/img/wordmark-disc.svg" alt="Sovrn Art" width="1200" height="1200"></a>
 <p class="tag">an indie studio for sovereign artists</p>
 </div>
 </div>
