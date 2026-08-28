@@ -1,5 +1,7 @@
 {
  "total": 1111,
+ "cast": 200,
+ "perKind": 30,
  "kinds": [
   {
    "kind": "skullGAN",
@@ -90,22 +92,22 @@
   {
    "file": "skullgan.json",
    "kind": "skullGAN",
-   "count": 289
+   "shown": 30
   },
   {
    "file": "octogan.json",
    "kind": "octoGAN",
-   "count": 287
+   "shown": 30
   },
   {
    "file": "cybergan.json",
    "kind": "cyberGAN",
-   "count": 218
+   "shown": 30
   },
   {
-   "file": "rest.json",
+   "file": "cast.json",
    "kind": null,
-   "count": 317
+   "shown": 200
   }
  ]
 }

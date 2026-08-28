@@ -1,31 +1,30 @@
 #!/usr/bin/env python3
-"""Pack the whole byteGANs collection into per-kind chunks the page can draw.
+"""Cast the byteGANs that wander the collection page.
 
     python3 tools/build-bytegans.py           # writes data/bytegans/*.json
-    python3 tools/build-bytegans.py --check   # verify the page agrees with the chain
+    python3 tools/build-bytegans.py --check   # verify what is on disk against the chain
 
-The collection is 1,111 works of eleven pixels square, and the entire thing —
-every frame of every one — is about 1.2MB. That is the fact the page is built
-on: this is a collection you can show completely rather than sample, and a
-sample would misrepresent it, because what byteGANs *is* is the distribution.
-You cannot see that twelve kinds exist, or that two of them have exactly one
-member, from twenty-four tiles.
+The page does not show the collection. It shows a **cast** — a few hundred of the
+1,111, chosen here, who then move around the page under their own steam. That is
+a deliberate step back from an earlier version that put every single work on the
+page at once: complete was impressive and it was also a wall. A crowd you can
+watch one member of is worth more than a crowd you can only measure.
 
-**Why chunks rather than the mirror files.** /onchain/bytegans/ already holds all
-1,111 as separate SVGs, and pointing 1,111 <img> tags at them works — it is how
-this was first tried. It costs 1,111 requests per visitor, and on GitHub Pages
-requests are the constraint long before bytes are. Grouping the payloads by kind
-brings that to twelve, one per section, each fetched only when its section comes
-into view. A reader who stops after the opening downloads none of them.
+So this picks who appears, and the picking has two rules:
 
-Two smaller reasons fall out of it. The mirror files wrap each GIF in an SVG
-element, about 150 bytes of boilerplate apiece that no longer has to be sent or
-parsed. And the chunk can carry the titles alongside the artwork, so a tile can
-name itself on hover without a second index.
+**The rare kinds are all here.** Every apeGAN, every primeGAN, and the one
+kingGAN and the one queenGAN. There is no sense running a lottery that a reader
+cannot see the results of — if a kind has nine members, showing three of them
+tells the reader nothing except that nine was not the number. Fourteen works
+cost almost nothing and mean the lone king really is somewhere on the page.
 
-The GIF bytes themselves are copied out of the mirror untouched — the mirror
-holds the exact bytes tokenURI returns, and this reads them rather than
-re-encoding, so what the page draws is what the contract stores.
+**Everything else is sampled evenly through the modifier ordering** rather than
+at random. The modifiers are largely colour words, so an even walk through that
+order takes one of each family in turn and the cast comes out spread across the
+palette instead of clumped in whatever the commonest colour happens to be.
+
+The GIF bytes are copied out of the same-origin mirror at /onchain/bytegans/
+without re-encoding, so what moves on the page is what the contract stores.
 """
 import base64, collections, io, json, os, re, sys
 
@@ -64,6 +63,23 @@ def gif_of(token):
         sys.exit("  no image payload in mirror file %d.svg" % token)
     return m.group(1)
 
+# How many of each named kind appear in its own section, and how large the
+# mixed cast is. The page reads these back out of index.json rather than
+# carrying its own copy, so there is nothing here to drift.
+PER_KIND, CAST = 30, 200
+# Kinds small enough that sampling them would be a lie: everyone shows up.
+WHOLE = 12
+
+def spread(ws, n):
+    """n of them, taken evenly through the list rather than at random.
+
+    The list arrives ordered by modifier, so an even walk crosses the colour
+    families in turn. Random sampling of the same list clumps, and clumping is
+    exactly what you notice."""
+    if n >= len(ws):
+        return list(ws)
+    return [ws[(i * len(ws)) // n] for i in range(n)]
+
 def build():
     works = load()
     by = collections.OrderedDict()
@@ -71,17 +87,19 @@ def build():
         by.setdefault(w["kind"], []).append(w)
     kinds = sorted(by.items(), key=lambda kv: (-len(kv[1]), kv[0]))
 
+    # Order every kind by modifier — most common family first. Whatever is then
+    # taken from it is taken across the colours rather than out of one corner.
+    ordered = {}
+    for kind, ws in kinds:
+        freq = collections.Counter(w["mod"] for w in ws)
+        ordered[kind] = sorted(ws, key=lambda w: (-freq[w["mod"]], w["mod"], w["n"]))
+
     if os.path.isdir(OUT):
         for f in os.listdir(OUT):
             os.remove(os.path.join(OUT, f))
     os.makedirs(OUT, exist_ok=True)
 
-    def chunk(name, ws):
-        # Within a group, order by modifier — most common first. The modifiers
-        # are largely colour words, so anywhere these are laid out together they
-        # fall into colour families rather than looking like static.
-        freq = collections.Counter(w["mod"] for w in ws)
-        ws = sorted(ws, key=lambda w: (-freq[w["mod"]], w["mod"], w["n"]))
+    def write(name, ws):
         d = {"count": len(ws),
              "ids":    [w["id"] for w in ws],
              "titles": [w["title"] for w in ws],
@@ -90,61 +108,81 @@ def build():
         io.open(p, "w", encoding="utf-8").write(json.dumps(d, separators=(",", ":")))
         return os.path.getsize(p)
 
-    # Four files, not twelve, and the split is by what the page asks for rather
-    # than by taxonomy. The three kinds the artist describes get their own,
-    # because each one is fetched exactly when its section arrives. Everything
-    # else is one file: those nine kinds are never addressed individually — they
-    # drift through the ribbons and fill out the closing swarm — and asking for
-    # nine files to show a handful of works each is nine round trips for 123KB.
     files, total = [], 0
     for kind, _ in kinds:
         if kind in NAMED:
             n = kind.lower() + ".json"
-            total += chunk(n, by[kind])
-            files.append({"file": n, "kind": kind, "count": len(by[kind])})
-    rest = [w for kind, ws in kinds if kind not in NAMED for w in ws]
-    total += chunk("rest.json", rest)
-    files.append({"file": "rest.json", "kind": None, "count": len(rest)})
+            total += write(n, spread(ordered[kind], PER_KIND))
+            files.append({"file": n, "kind": kind, "shown": PER_KIND})
+
+    # The mixed cast: every member of the small kinds, then the rest of the
+    # places shared out in proportion to how common each remaining kind is.
+    small = [k for k, ws in kinds if len(ws) <= WHOLE]
+    cast = [w for k in small for w in ordered[k]]
+    big = [(k, ws) for k, ws in kinds if k not in small]
+    pool = float(sum(len(ws) for _, ws in big))
+    room = CAST - len(cast)
+    for k, ws in big:
+        cast += spread(ordered[k], int(round(room * len(ws) / pool)))
+    # deal them out so neighbours in the file are of different kinds — the cast
+    # is read in order in places, and a run of 40 skulls would look like a bug
+    cast = [w for i in range(len(cast)) for w in [cast[(i * 61) % len(cast)]]]
+    seen, deal = set(), []
+    for w in cast:
+        if w["id"] not in seen:
+            seen.add(w["id"]); deal.append(w)
+    total += write("cast.json", deal)
+    files.append({"file": "cast.json", "kind": None, "shown": len(deal)})
 
     index = [{"kind": k, "count": len(ws),
               "share": round(100.0 * len(ws) / len(works), 1),
               "modifiers": len(set(w["mod"] for w in ws)),
               "intelligence": NAMED.get(k)} for k, ws in kinds]
     io.open(os.path.join(OUT, "index.json"), "w", encoding="utf-8").write(
-        json.dumps({"total": len(works), "kinds": index, "files": files}, indent=1))
+        json.dumps({"total": len(works), "cast": len(deal), "perKind": PER_KIND,
+                    "kinds": index, "files": files}, indent=1))
     return works, index, files, total
 
 def verify(works):
-    """Re-read the chunks and prove each work still carries its own picture.
+    """Prove every work in every file still carries its own title and picture.
 
-    Regrouping 1,111 things and sorting them inside each group is exactly the
-    operation that silently pairs the wrong image with the wrong name, and
-    nothing about the result would look wrong: every tile would still be a real
-    byteGAN and every title a real title. So the mapping is checked rather than
-    assumed — for every one of the 1,111, not a sample."""
+    These are samples now, so there is nothing to check about coverage — but
+    sampling and re-ordering 1,111 things is precisely the operation that pairs
+    the wrong picture with the wrong name, and nothing about the result would
+    look wrong: every tile would still be a real byteGAN and every title a real
+    title. So each one is checked against the chain, not spot-checked."""
     by_id = {w["id"]: w for w in works}
-    files = json.load(io.open(os.path.join(OUT, "index.json"), encoding="utf-8"))["files"]
-    seen, bad = set(), []
-    for e in files:
+    meta = json.load(io.open(os.path.join(OUT, "index.json"), encoding="utf-8"))
+    bad, cast_kinds = [], set()
+    for e in meta["files"]:
         d = json.load(io.open(os.path.join(OUT, e["file"]), encoding="utf-8"))
-        if len(d["ids"]) != e["count"] or len(d["gifs"]) != e["count"]:
-            bad.append("%s: holds %d entries, expected %d" % (e["file"], len(d["ids"]), e["count"]))
+        if len(d["ids"]) != d["count"] or len(d["gifs"]) != d["count"]:
+            bad.append("%s: entries do not agree with its own count" % e["file"])
             continue
+        if len(set(d["ids"])) != len(d["ids"]):
+            bad.append("%s: the same work appears twice" % e["file"])
         for i, tok in enumerate(d["ids"]):
             w = by_id.get(tok)
-            if w is None:                      bad.append("token %s is not in the collection" % tok)
+            if w is None:            bad.append("token %s is not in the collection" % tok)
             elif e["kind"] and w["kind"] != e["kind"]:
                 bad.append("token %d is a %s, filed in %s" % (tok, w["kind"], e["file"]))
-            elif not e["kind"] and w["kind"] in NAMED:
-                bad.append("token %d is a %s and belongs in its own file" % (tok, w["kind"]))
             elif d["titles"][i] != w["title"]:
-                bad.append("token %d: chunk says %r, chain says %r" % (tok, d["titles"][i], w["title"]))
+                bad.append("token %d: file says %r, chain says %r" % (tok, d["titles"][i], w["title"]))
             elif d["gifs"][i] != gif_of(tok):
                 bad.append("token %d carries another work's image" % tok)
-            seen.add(tok)
-    missing = set(by_id) - seen
-    if missing:
-        bad.append("%d works are in no chunk, e.g. %s" % (len(missing), sorted(missing)[:5]))
+            if not e["kind"] and w: cast_kinds.add(w["kind"])
+    # the promise the page makes: every kind is represented, and the rare ones
+    # in full, so the lone kingGAN really is out there somewhere
+    for e in meta["kinds"]:
+        if e["kind"] not in cast_kinds and not e["intelligence"]:
+            bad.append("no %s made the cast" % e["kind"])
+    cast = json.load(io.open(os.path.join(OUT, "cast.json"), encoding="utf-8"))
+    for e in meta["kinds"]:
+        if e["count"] <= WHOLE:
+            have = sum(1 for t in cast["ids"] if by_id[t]["kind"] == e["kind"])
+            if have != e["count"]:
+                bad.append("%s: %d of %d in the cast, but small kinds appear whole"
+                           % (e["kind"], have, e["count"]))
     return bad
 
 def check(works, index):
@@ -191,8 +229,9 @@ def main():
             print("    %-10s %4d  %4.1f%%  %2d modifiers%s"
                   % (e["kind"], e["count"], e["share"], e["modifiers"],
                      "  " + e["intelligence"] if e["intelligence"] else ""))
-        print("  %.2f MB in %d files: %s" % (nbytes / 1048576.0, len(files),
-                                             ", ".join(f["file"] for f in files)))
+        print("  %d works cast of %d: %s" % (sum(f["shown"] for f in files), len(works),
+                                            ", ".join("%s %d" % (f["file"], f["shown"]) for f in files)))
+        print("  %.0f KB" % (nbytes / 1024.0))
 
     if checking:
         bad = verify(works)

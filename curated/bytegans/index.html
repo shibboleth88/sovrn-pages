@@ -29,11 +29,7 @@
 <style>
 *{box-sizing:border-box;margin:0}
 ::selection{background:var(--accent);color:var(--paper)}
-/* clip, not hidden: hidden would make the body a scroll container and take
-   position:sticky and scroll anchoring down with it. The ribbons run wider than
-   the page on purpose. */
-body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif;
- overflow-x:clip;position:relative}
+body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif}
 .wrap{max-width:1000px;margin:0 auto;padding:0 22px}
 .wrap+.wrap{margin-top:var(--gap)}
 a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
@@ -56,34 +52,34 @@ a.fc:hover{color:var(--accent)}
 h2{position:relative;font:italic 300 clamp(25px,3.3vw,36px)/1.12 Fraunces,serif;letter-spacing:-.02em;
  margin:0 0 26px;padding-bottom:16px;border-bottom:1px solid var(--rule)}
 h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;background:var(--accent)}
-/* the facts, as one line rather than a table of them */
 .facts{margin-top:20px;font:500 11px/2 "IBM Plex Mono",monospace;letter-spacing:.12em;
  text-transform:uppercase;color:var(--slate)}
 .facts b{color:var(--ink);font-weight:500}
 
-/* The ribbons. They drift because the artist's own text says these things are
-   dancing and that recording the dance is the whole point of putting them on
-   chain — so a page that stands them in rows is arguing with its subject.
-   Each one is its tiles written twice and slid by exactly half its width, which
-   is what makes the loop seamless: at -50% the second copy sits precisely where
-   the first began. */
-.ribbon{overflow:hidden;background:#101219;padding:7px 0;margin:var(--gap) 0;line-height:0}
-/* The spacing is a margin on each tile, not a flex gap, and that is the whole
-   trick of a seamless loop. With `gap` the track measures 2n·w + (2n−1)·g, so
-   half of it falls half a gap short of where the second copy actually starts
-   and the ribbon twitches 1.5px every time it wraps. As a margin the track is
-   exactly 2n·(w+g), and -50% lands precisely on the repeat. */
-.track{display:flex;width:max-content;will-change:transform;
- animation:drift linear infinite}
-.track img{margin-right:3px}
-.ribbon.rev .track{animation-direction:reverse}
-@keyframes drift{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
-/* stop it so you can actually look at one */
-.ribbon:hover .track{animation-play-state:paused}
-.track img{display:block;height:auto;image-rendering:pixelated;flex:0 0 auto}
+/* A world is a box with byteGANs loose in it. Each one picks a spot, turns
+   towards it at its own rate and goes, rests a while when it arrives, then picks
+   another — so they cross, cluster, hesitate and set off again without any of
+   them being told to. Nothing in here is choreographed and nothing loops.
 
-/* The three the artist describes, each still paired with its own work the way
-   the original page had it, and now followed by the family it belongs to. */
+   The earlier version of this page paraded them past on a conveyor. That is one
+   motion applied to a crowd; this is a crowd of motions. It is also the thing
+   the artist's own text describes — these are beings recorded mid-dance, not
+   stock on a shelf. */
+.world{position:relative;overflow:hidden;background:#101219}
+.world .ag{position:absolute;top:0;left:0;line-height:0;display:block;
+ image-rendering:pixelated;will-change:transform}
+.world button.ag{all:unset;position:absolute;top:0;left:0;display:block;
+ line-height:0;cursor:zoom-in;will-change:transform}
+.world button.ag img{display:block;image-rendering:pixelated}
+.world button.ag:hover img,.world button.ag:focus-visible img{outline:2px solid var(--accent)}
+.band{margin:var(--gap) 0;height:clamp(150px,22vw,210px)}
+.kind .band{margin:20px 0 0}
+.yard{height:clamp(380px,64vh,620px)}
+.cap{margin-top:8px;min-height:1.6em;font:400 11px/1.6 "IBM Plex Mono",monospace;color:var(--slate)}
+.cap b{color:var(--ink);font-weight:500}
+
+/* the three the artist describes, each still paired with its own work the way
+   the original page had it */
 .duo{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:clamp(20px,3.4vw,44px);
  align-items:center}
 @media(max-width:720px){.duo{grid-template-columns:1fr}}
@@ -93,42 +89,14 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 .kind h3{font:500 clamp(17px,2.4vw,22px)/1.2 "IBM Plex Mono",monospace;color:var(--ink)}
 .kind .sub{font:italic 300 clamp(15px,2vw,18px)/1.4 Fraunces,serif;color:var(--accent);margin-bottom:18px}
 
-/* A cluster is not a grid: the tiles come in several sizes and the rows are
-   allowed to end ragged, so it reads as a crowd of them rather than as a chart
-   of them. */
-.cluster{margin-top:20px;display:flex;flex-wrap:wrap;align-items:center;gap:4px;
- background:#101219;padding:10px}
-.cluster .t,.swarm .t{all:unset;display:block;cursor:zoom-in}
-.cluster img,.swarm img{width:100%;height:auto;aspect-ratio:1;display:block;image-rendering:pixelated}
-.cluster .t:hover img,.cluster .t:focus-visible img,
-.swarm .t:hover img,.swarm .t:focus-visible img{outline:2px solid var(--accent);outline-offset:-2px}
-.cap{margin-top:8px;min-height:1.6em;font:400 11px/1.6 "IBM Plex Mono",monospace;color:var(--slate)}
-.cap b{color:var(--ink);font-weight:500}
+.yardwrap{background:#101219;padding:26px 0 30px;margin-top:var(--gap)}
+.yardwrap .lede{max-width:1000px;margin:0 auto 18px;padding:0 22px;
+ font:400 12.5px/1.7 "IBM Plex Mono",monospace;color:#8f96a3;max-width:min(66ch,1000px)}
+.yardwrap .lede b{color:#e6e8ec;font-weight:500}
+.yardwrap .cap{max-width:1000px;margin:12px auto 0;padding:0 22px;color:#8f96a3}
+.yardwrap .cap b{color:#e6e8ec}
 
-/* All of them, at the end, the whole crowd at once. Sorted by modifier across
-   every kind rather than by kind, so what bands the field is colour and not
-   taxonomy — the families run into each other and nothing is being tabulated. */
-.all{background:#101219;padding:26px 0 30px;margin-top:var(--gap)}
-.all .lede{max-width:1000px;margin:0 auto 18px;padding:0 22px;
- font:400 12px/1.7 "IBM Plex Mono",monospace;color:#8f96a3}
-.all .lede b{color:#e6e8ec;font-weight:500}
-.swarm{display:flex;flex-wrap:wrap;gap:2px;padding:0 14px;justify-content:center}
-.swarm .t{width:30px}
-@media(max-width:700px){.swarm .t{width:24px}}
-.all .cap{max-width:1000px;margin:12px auto 0;padding:0 22px;color:#8f96a3}
-.all .cap b{color:#e6e8ec}
-
-/* A few of them loose in the margins, bobbing. Desktop only, because a phone
-   has no margins to be loose in. Decorative and inert: every one of these is in
-   the swarm below, where it can be reached properly. */
-.strays{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;display:none}
-@media(min-width:1320px){.strays{display:block}}
-.strays img{position:absolute;image-rendering:pixelated;opacity:.72;
- animation:bob ease-in-out infinite alternate}
-@keyframes bob{from{transform:translate3d(0,-9px,0)}to{transform:translate3d(0,9px,0)}}
-.wrap,.ribbon,.all,.hero{position:relative;z-index:1}
-
-/* Click a work and it opens at a size where eleven pixels are legible. */
+/* Click one and it opens at a size where eleven pixels are legible. */
 .lb{position:fixed;inset:0;z-index:60;display:none;place-items:center;padding:24px;
  background:rgba(8,9,13,.9);cursor:zoom-out}
 .lb.on{display:grid}
@@ -157,14 +125,11 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 .btn:hover{background:var(--ink);transform:translateY(-1px)}
 .nojs{background:#101219;padding:6px;display:flex;flex-wrap:wrap;gap:2px;line-height:0;margin-top:16px}
 .nojs img{width:34px;height:auto;aspect-ratio:1;display:block;image-rendering:pixelated}
-/* Nothing here drifts, bobs or slides for a reader who has asked it not to. The
-   works still animate: that is the artwork, not decoration, and eleven frames of
-   an eleven-pixel being is not what the setting is about. */
-@media(prefers-reduced-motion:reduce){
-  *{transition:none!important}
-  .track,.strays img{animation:none!important}
-  .strays{display:none}
-}
+/* Nobody walks anywhere for a reader who has asked for stillness — they are
+   scattered where they stand and left there. The works themselves keep
+   animating: eleven frames of an eleven-pixel being is the artwork, not
+   decoration, and that is not what the setting is about. */
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 /* Home. Every page that is not the homepage carries this, because a link shared
    into a chat lands on a subpage and there was no way back from twenty-seven of
    them — and where a way existed it was a word in a footer, which is not where
@@ -173,7 +138,7 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
    The mark is the logo, top left, at the head of the content rather than floating
    over it: these pages start with a hero image, a banner, an eyebrow or a nav, and
    an overlay that suits one of those covers the others. In flow it never collides. */
-.homemark{display:inline-block;line-height:0;margin:0 0 14px;position:relative;z-index:2;
+.homemark{display:inline-block;line-height:0;margin:0 0 14px;
  border-radius:50%;outline-offset:3px;transition:opacity .15s,transform .15s;opacity:.82}
 .homemark:hover,.homemark:focus-visible{opacity:1;transform:scale(1.06)}
 .homemark img{width:30px;height:30px;display:block;border-radius:50%}
@@ -183,7 +148,7 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/transitions.css">
 <script src="/transitions.js"></script>
-</head><body data-total="1111"><div class="strays" id="strays" aria-hidden="true"></div>
+</head><body data-total="1111">
 <a class="homemark" href="/" aria-label="sovrn.art — home" title="sovrn.art"><img src="/img/share/sovrn-mark.webp" alt="" width="30" height="30"></a>
 <header class="hero" style="background-image:url(img/pages/bytegans/hero.gif)">
 <h1>byteGANs</h1><p class="by">by Pindar Van Arman</p>
@@ -198,37 +163,31 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 <noscript><div class="nojs"><img src="/onchain/bytegans/390.svg" alt=""><img src="/onchain/bytegans/497.svg" alt=""><img src="/onchain/bytegans/232.svg" alt=""><img src="/onchain/bytegans/535.svg" alt=""><img src="/onchain/bytegans/408.svg" alt=""><img src="/onchain/bytegans/349.svg" alt=""><img src="/onchain/bytegans/17.svg" alt=""><img src="/onchain/bytegans/675.svg" alt=""><img src="/onchain/bytegans/228.svg" alt=""><img src="/onchain/bytegans/597.svg" alt=""><img src="/onchain/bytegans/1065.svg" alt=""><img src="/onchain/bytegans/1066.svg" alt=""><img src="/onchain/bytegans/956.svg" alt=""><img src="/onchain/bytegans/456.svg" alt=""><img src="/onchain/bytegans/680.svg" alt=""><img src="/onchain/bytegans/991.svg" alt=""><img src="/onchain/bytegans/224.svg" alt=""><img src="/onchain/bytegans/407.svg" alt=""><img src="/onchain/bytegans/583.svg" alt=""><img src="/onchain/bytegans/398.svg" alt=""><img src="/onchain/bytegans/277.svg" alt=""><img src="/onchain/bytegans/341.svg" alt=""><img src="/onchain/bytegans/368.svg" alt=""><img src="/onchain/bytegans/518.svg" alt=""></div></noscript>
 </div>
 
-<section class="ribbon" data-n="46" data-size="44" data-file="rest.json" aria-hidden="true"><div class="track"></div></section>
+<section class="world band" data-file="cast.json" data-n="26" aria-hidden="true"></section>
+
 <div class="wrap">
-<section class="kind" data-kind="skullGAN" data-count="289" data-file="skullgan.json" data-n="56" data-cap>
+<section class="kind" data-kind="skullGAN" data-count="289">
 <h3>skullGAN</h3><p class="sub">Evolutionary Intelligence</p>
 <div class="duo pix"><figure><img src="img/pages/bytegans/skull.gif" alt="a skullGAN" loading="lazy"></figure>
 <div class="prose"><p>The skullGANs represent Evolutionary Intelligence. Their existence is a battle being fought within the human mind, where higher order brain functions are at constant odds with reptilian instincts. Does free will even exist, or is everything just a complex biochemical reaction.</p></div></div>
-<div class="cluster" role="group" aria-label="56 of the 289 skullGANs"></div>
-<p class="cap" aria-live="polite"></p>
 </section>
+<section class="world band" data-file="skullgan.json" data-n="30" aria-hidden="true"></section>
 </div>
-
-<section class="ribbon rev" data-n="46" data-size="44" data-file="skullgan.json" aria-hidden="true"><div class="track"></div></section>
 <div class="wrap">
-<section class="kind" data-kind="cyberGAN" data-count="218" data-file="cybergan.json" data-n="56" data-cap>
+<section class="kind" data-kind="cyberGAN" data-count="218">
 <h3>cyberGAN</h3><p class="sub">Artificial Intelligence</p>
 <div class="duo pix"><figure><img src="img/pages/bytegans/cyber.gif" alt="a cyberGAN" loading="lazy"></figure>
 <div class="prose"><p>The cyberGANs represent Artificial Intelligence. Intelligence created in a relative short period of time, full of promise, but also completely lacking wisdom. While AI may be able to solve all of the worlds problems, it also has the potential to destroy it in the process.</p></div></div>
-<div class="cluster" role="group" aria-label="56 of the 218 cyberGANs"></div>
-<p class="cap" aria-live="polite"></p>
 </section>
+<section class="world band" data-file="cybergan.json" data-n="30" aria-hidden="true"></section>
 </div>
-
-<section class="ribbon" data-n="46" data-size="44" data-file="cybergan.json" aria-hidden="true"><div class="track"></div></section>
 <div class="wrap">
-<section class="kind" data-kind="octoGAN" data-count="287" data-file="octogan.json" data-n="56" data-cap>
+<section class="kind" data-kind="octoGAN" data-count="287">
 <h3>octoGAN</h3><p class="sub">Decentralized Intelligence</p>
 <div class="duo pix"><figure><img src="img/pages/bytegans/octo.gif" alt="a octoGAN" loading="lazy"></figure>
 <div class="prose"><p>The octoGANs are closely related to podGANs and like the podGANs, they represent a new kind of thinking, Decentralized Intelligence. Similar to how an octopus coordinates nine different brains to solve complex tasks, these beings combine inputs from decentralized sources for the common good.</p></div></div>
-<div class="cluster" role="group" aria-label="56 of the 287 octoGANs"></div>
-<p class="cap" aria-live="polite"></p>
 </section>
+<section class="world band" data-file="octogan.json" data-n="30" aria-hidden="true"></section>
 <p class="btnrow"><a class="btn" href="/shareable/share-bytegans">Make a shareable GIF</a></p>
 </div>
 
@@ -245,156 +204,159 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 </section>
 
 <div class="wrap">
-<p class="links"><a href="https://www.raster.art/artwork/bytegans-by-pindar-van-arman" target="_blank">View on Raster</a><a href="https://superrare.com/vanarman" target="_blank">byteGANs on SuperRare</a><a href="https://twitter.com/vanarmanartist" target="_blank">Pindar Van Arman on X</a></p>
-<p class="foot">byteGANs, Pindar Van Arman, 2023. A kilobyte apiece, fully on-chain. A curated collection on <a class="fc" href="/">sovrn.art</a>.</p>
+</div>
+
+<section class="yardwrap" data-cap>
+<p class="lede">A hundred and seventy of the <b>1,111</b>, each off somewhere of its own accord &mdash; including the only <b>kingGAN</b> and the only <b>queenGAN</b> there will ever be. Rest the pointer on the yard and everyone stops, so you can look at one; click it to see it properly.</p>
+<div class="world yard" data-file="cast.json" data-from="26" data-n="174" data-live
+     role="group" aria-label="byteGANs, moving about"></div>
+<p class="cap" aria-live="polite"></p>
+</section>
+
+<div class="wrap">
 </div>
 <div class="lb" id="lb" tabindex="-1" role="dialog" aria-modal="true" aria-label="byteGAN, enlarged">
 <div><img src="" alt=""><p><b></b><a href=""></a></p></div>
 </div>
 <script>
-/* Every one of the 1,111 is on this page. That is affordable only because a
-   byteGAN is eleven pixels square and eleven frames long: the whole collection
-   is 0.89MB, about 0.4MB once it is gzipped, which is twice the photograph of
-   the artist that was always here.
+/* The page shows a cast of 290 byteGANs out of the 1,111, and they move around
+   it under their own steam. Who appears is chosen in tools/build-bytegans.py —
+   every apeGAN, primeGAN and the one kingGAN and one queenGAN are in it, so the
+   rare ones really are out there — and the GIF bytes are lifted from the
+   same-origin mirror at /onchain/bytegans/ without re-encoding, so what walks
+   about here is what the contract stores.
 
-   It arrives as four files — one for each kind the artist describes, fetched as
-   its section is reached, and one holding the other nine kinds. Not twelve
-   files, because nothing addresses those nine individually; and not 1,111
-   images, which is how this was first built and which costs a request per work
-   on a host where requests are the constraint long before bytes are.
-
-   The GIF bytes are copied out of the same-origin mirror at /onchain/bytegans/
-   without re-encoding, so what dances here is what the contract stores. */
+   Four files: one per kind the artist describes, fetched as its section is
+   reached, and one mixed cast for the opening band and the yard. */
 (function () {
-  var lb = document.getElementById("lb"), pool = [], pending = {};
+  var lb = document.getElementById("lb"), got = {};
+  var STILL = matchMedia("(prefers-reduced-motion: reduce)");
 
   function grab(file) {
-    if (!pending[file]) {
-      pending[file] = fetch("/data/bytegans/" + file).then(function (r) {
-        if (!r.ok) throw 0; return r.json();
-      }).then(function (d) {
-        for (var i = 0; i < d.ids.length; i++)
-          pool.push({ id: d.ids[i], t: d.titles[i],
-                      g: "data:image/gif;base64," + d.gifs[i] });
-        return d;
+    if (!got[file]) got[file] = fetch("/data/bytegans/" + file)
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (d) {
+        return d.ids.map(function (id, i) {
+          return { id: id, t: d.titles[i], g: "data:image/gif;base64," + d.gifs[i] };
+        });
+      });
+    return got[file];
+  }
+
+  /* Sizes and starting points are drawn from a fixed sequence, not Math.random,
+     so a reload puts the same crowd in the same places. Only where they wander
+     to after that is left to the clock. */
+  function seeded(n) {
+    return function () { n = (n * 1103515245 + 12345) & 0x7fffffff; return n / 0x7fffffff; };
+  }
+
+  /* ---- one world of them ------------------------------------------------- */
+  function world(box, cast, opts) {
+    var rnd = seeded(opts.seed), agents = [], running = false, near = false, held = 0, last = 0;
+    var W = 0, H = 0;
+
+    cast.forEach(function (w, i) {
+      var px = opts.sizes[i % opts.sizes.length], el;
+      if (opts.live) {
+        el = document.createElement("button");
+        el.type = "button"; el.className = "ag t"; el.tabIndex = i ? -1 : 0;
+        el.dataset.id = w.id; el.dataset.t = w.t;
+        var im = document.createElement("img");
+        /* width and height as attributes, not CSS: they are already square and
+           already integers, and a CSS aspect-ratio would lose to the height
+           attribute anyway. */
+        im.src = w.g; im.alt = w.t; im.width = px; im.height = px;
+        el.appendChild(im);
+      } else {
+        el = document.createElement("img");
+        el.className = "ag"; el.src = w.g; el.alt = ""; el.width = px; el.height = px;
+      }
+      box.appendChild(el);
+      agents.push({
+        el: el, px: px, x: 0, y: 0, tx: 0, ty: 0,
+        dir: rnd() * 6.283,
+        /* the bigger ones read as nearer, so they cover ground faster */
+        sp: (10 + rnd() * 22) * (px / 32),
+        turn: 0.9 + rnd() * 2.0,      /* radians a second — some bank, some pivot */
+        rest: rnd() * 7,              /* staggered, so they do not all set off together */
+        dawdle: 1 + rnd() * 3         /* how long this one tends to stand about */
+      });
+    });
+
+    function target(a) {
+      a.tx = rnd() * Math.max(1, W - a.px);
+      a.ty = rnd() * Math.max(1, H - a.px);
+    }
+    function draw(a) { a.el.style.transform = "translate3d(" + a.x + "px," + a.y + "px,0)"; }
+
+    function measure(first) {
+      W = box.clientWidth; H = box.clientHeight;
+      agents.forEach(function (a) {
+        if (first) { a.x = rnd() * Math.max(1, W - a.px); a.y = rnd() * Math.max(1, H - a.px); }
+        else { a.x = Math.min(a.x, Math.max(0, W - a.px)); a.y = Math.min(a.y, Math.max(0, H - a.px)); }
+        target(a); draw(a);
       });
     }
-    return pending[file];
-  }
 
-  function img(w, px) {
-    var e = document.createElement("img");
-    e.src = w.g; e.alt = ""; e.width = px; e.height = px;
-    return e;
-  }
-  function tile(w, px) {
-    var b = document.createElement("button");
-    b.type = "button"; b.className = "t"; b.style.width = px + "px";
-    b.dataset.id = w.id; b.dataset.t = w.t;
-    var e = img(w, px); e.alt = w.t; b.appendChild(e);
-    return b;
-  }
-
-  /* A fixed shuffle rather than Math.random, so that a ribbon looks the same on
-     a reload and a screenshot of this page is a screenshot of this page. */
-  function shuffled(list, seed) {
-    var a = list.slice(), s = seed || 1;
-    for (var i = a.length - 1; i > 0; i--) {
-      s = (s * 1103515245 + 12345) & 0x7fffffff;
-      var j = s % (i + 1); var t = a[i]; a[i] = a[j]; a[j] = t;
+    function step(t) {
+      if (!running) return;
+      /* clamped, so a tab that was in the background does not come back to find
+         everybody teleported across the box */
+      var dt = Math.min(0.05, (t - last) / 1000); last = t;
+      for (var i = 0; i < agents.length; i++) {
+        var a = agents[i];
+        if (a.rest > 0) { a.rest -= dt; continue; }
+        var dx = a.tx - a.x, dy = a.ty - a.y;
+        if (dx * dx + dy * dy < 49) { target(a); a.rest = rnd() * a.dawdle * 3; continue; }
+        /* steer, do not snap: the heading turns at this one's own rate, which is
+           what makes a path curve and what makes two of them look different */
+        var want = Math.atan2(dy, dx);
+        var off = ((want - a.dir + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+        var max = a.turn * dt;
+        a.dir += off > max ? max : off < -max ? -max : off;
+        a.x += Math.cos(a.dir) * a.sp * dt;
+        a.y += Math.sin(a.dir) * a.sp * dt;
+        if (a.x < 0) a.x = 0; else if (a.x > W - a.px) a.x = W - a.px;
+        if (a.y < 0) a.y = 0; else if (a.y > H - a.px) a.y = H - a.px;
+        draw(a);
+      }
+      requestAnimationFrame(step);
     }
-    return a;
+
+    function go() {
+      if (running || held || !near || STILL.matches) return;
+      running = true; last = performance.now(); requestAnimationFrame(step);
+    }
+    function halt() { running = false; }
+
+    /* Everybody stops while you are looking at them, which is the only way to
+       get a proper look at a moving 30px thing — and the only way to click one. */
+    box.addEventListener("pointerenter", function () { held++; halt(); });
+    box.addEventListener("pointerleave", function () { held = Math.max(0, held - 1); go(); });
+    box.addEventListener("focusin", function () { held++; halt(); });
+    box.addEventListener("focusout", function () { held = Math.max(0, held - 1); go(); });
+
+    measure(true);
+    var rt;
+    addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(measure, 200); });
+    /* nothing moves while it is off screen; a page of idle rAF loops is a page
+       that costs battery for something nobody can see */
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (es) {
+        near = es[0].isIntersecting; near ? go() : halt();
+      }, { rootMargin: "150px 0px" }).observe(box);
+    } else { near = true; go(); }
+    if (opts.live) box.addEventListener("keydown", arrows);
   }
 
-  /* ---- the drifting ribbons ---------------------------------------------- */
-  function ribbon(sec, i) {
-    var n = +sec.dataset.n, px = +sec.dataset.size;
-    grab(sec.dataset.file).then(function () {
-      var track = sec.querySelector(".track"), pick = shuffled(pool, 7 + i * 31).slice(0, n);
-      /* written twice: the loop slides by half the track, so the second copy
-         arrives exactly where the first started and there is no seam */
-      pick.concat(pick).forEach(function (w) {
-        var e = img(w, px); e.style.width = px + "px"; track.appendChild(e);
-      });
-      /* one speed for all of them, whatever their length, so they read as one
-         crowd moving rather than as four separate effects */
-      track.style.animationDuration = Math.round(n * (px + 3) / 26) + "s";
-    }).catch(function () { sec.style.display = "none"; });
-  }
-
-  /* ---- a cluster of one kind --------------------------------------------- */
-  function cluster(sec) {
-    grab(sec.dataset.file).then(function (d) {
-      var box = sec.querySelector(".cluster"), n = +sec.dataset.n, frag = document.createDocumentFragment();
-      var pick = shuffled(d.ids.map(function (id, i) {
-        return { id: id, t: d.titles[i], g: "data:image/gif;base64," + d.gifs[i] };
-      }), 5).slice(0, n);
-      pick.forEach(function (w, i) {
-        /* four sizes on a cycle that does not divide the row length, so the
-           rows never line up into columns */
-        var px = [38, 38, 54, 38, 70, 44, 38, 54][i % 8];
-        var b = tile(w, px); b.tabIndex = i ? -1 : 0; frag.appendChild(b);
-      });
-      box.appendChild(frag);
-      box.addEventListener("keydown", arrows);
-    }).catch(function () { sec.querySelector(".cluster").style.display = "none"; });
-  }
-
-  /* ---- all of them ------------------------------------------------------- */
-  function swarm(sec) {
-    var files = sec.dataset.files.split(" ");
-    Promise.all(files.map(grab)).then(function () {
-      var box = sec.querySelector(".swarm"), frag = document.createDocumentFragment();
-      /* sorted by modifier, commonest family first — the modifiers are mostly
-         colour words, so the crowd shades from one family into the next
-         regardless of which kind each work belongs to */
-      var freq = {};
-      pool.forEach(function (w) { var m = w.t.split(" ")[0]; freq[m] = (freq[m] || 0) + 1; });
-      pool.slice().sort(function (a, b) {
-        var ma = a.t.split(" ")[0], mb = b.t.split(" ")[0];
-        return (freq[mb] - freq[ma]) || (ma < mb ? -1 : ma > mb ? 1 : 0) || (a.id - b.id);
-      }).forEach(function (w, i) {
-        var b = tile(w, 30); b.style.width = ""; b.tabIndex = i ? -1 : 0; frag.appendChild(b);
-      });
-      box.appendChild(frag);
-      box.addEventListener("keydown", arrows);
-    }).catch(function () { sec.style.display = "none"; });
-  }
-
-  /* ---- a few loose in the margins ---------------------------------------- */
-  function strays(box) {
-    grab("rest.json").then(function () {
-      var pick = shuffled(pool, 91).slice(0, 14);
-      pick.forEach(function (w, i) {
-        var px = [30, 44, 34, 56, 38, 48][i % 6], e = img(w, px);
-        e.style.width = px + "px";
-        /* the margin outside the 1000px column, never over the text */
-        var side = i % 2 ? "right" : "left";
-        e.style[side] = (10 + (i * 37) % 90) + "px";
-        e.style.top = (4 + i * 6.8) + "%";
-        e.style.animationDuration = (7 + (i % 5) * 2.5) + "s";
-        e.style.animationDelay = "-" + (i * 1.3) + "s";
-        box.appendChild(e);
-      });
-    }).catch(function () {});
-  }
-
-  /* ---- shared behaviour --------------------------------------------------- */
-  function perRow(items) {
-    var top = items[0].offsetTop, i = 1;
-    while (i < items.length && items[i].offsetTop === top) i++;
-    return i;
-  }
-  /* Roving tabindex: one stop per crowd, not one per work. 1,111 focusable
-     tiles is 1,111 tab stops between the swarm and the page's own links, which
-     is not navigation, it is a trap. */
+  /* Roving tabindex: one stop for the yard, not one per byteGAN. Left and right
+     step through them; focusing one stops the whole yard, so it stays put while
+     it is being read out. */
   function arrows(ev) {
     var cur = ev.target.closest && ev.target.closest(".t"); if (!cur) return;
     var items = [].slice.call(this.children), i = items.indexOf(cur), n, k = ev.key;
-    if (k === "ArrowRight") n = i + 1;
-    else if (k === "ArrowLeft") n = i - 1;
-    else if (k === "ArrowDown") n = i + perRow(items);
-    else if (k === "ArrowUp") n = i - perRow(items);
+    if (k === "ArrowRight" || k === "ArrowDown") n = i + 1;
+    else if (k === "ArrowLeft" || k === "ArrowUp") n = i - 1;
     else if (k === "Home") n = 0;
     else if (k === "End") n = items.length - 1;
     else return;
@@ -406,55 +368,54 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
   function name(ev) {
     var b = ev.target.closest && ev.target.closest(".t"); if (!b) return;
     var owner = b.closest("[data-cap]"); if (!owner) return;
-    var cap = owner.querySelector(".cap");
-    cap.innerHTML = "<b>" + b.dataset.t.replace(/&/g, "&amp;").replace(/</g, "&lt;")
-                  + "</b> · token " + b.dataset.id;
+    owner.querySelector(".cap").innerHTML =
+      "<b>" + b.dataset.t.replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      + "</b> · token " + b.dataset.id;
   }
   document.addEventListener("pointerover", name);
   document.addEventListener("focusin", name);
 
   var opener = null;
   function shut() { lb.className = "lb"; if (opener) { opener.focus(); opener = null; } }
-  function open(b) {
-    opener = b;
-    lb.querySelector("img").src = b.querySelector("img").src;
-    lb.querySelector("b").textContent = b.dataset.t;
-    var a = lb.querySelector("a");
-    a.href = "/onchain/bytegans/" + b.dataset.id + ".svg";
-    a.textContent = "token " + b.dataset.id + " on chain";
-    lb.className = "lb on"; lb.focus();
-  }
   document.addEventListener("click", function (ev) {
     var b = ev.target.closest && ev.target.closest(".t");
-    if (b) { open(b); return; }
+    if (b) {
+      opener = b;
+      lb.querySelector("img").src = b.querySelector("img").src;
+      lb.querySelector("b").textContent = b.dataset.t;
+      var a = lb.querySelector("a");
+      a.href = "/onchain/bytegans/" + b.dataset.id + ".svg";
+      a.textContent = "token " + b.dataset.id + " on chain";
+      lb.className = "lb on"; lb.focus();
+      return;
+    }
     if (ev.target.closest && !ev.target.closest(".lb p")) shut();
   });
   document.addEventListener("keydown", function (ev) { if (ev.key === "Escape") shut(); });
 
-  /* Nothing above runs until its own part of the page is near. A reader who
-     stops at the opening downloads no artwork at all. */
-  var jobs = [];
-  [].forEach.call(document.querySelectorAll(".ribbon"), function (s, i) {
-    jobs.push([s, function () { ribbon(s, i); }]); });
-  [].forEach.call(document.querySelectorAll(".kind[data-file]"), function (s) {
-    jobs.push([s, function () { cluster(s); }]); });
-  [].forEach.call(document.querySelectorAll(".all"), function (s) {
-    jobs.push([s, function () { swarm(s); }]); });
-  var sb = document.getElementById("strays");
-  if (sb) jobs.push([document.body, function () { strays(sb); }]);
-
-  if ("IntersectionObserver" in window) {
+  /* Nothing is fetched until its part of the page is near. A reader who stops at
+     the opening downloads no artwork at all. */
+  var BAND = [26, 34, 30, 42, 28, 36, 32, 46, 30, 38];
+  var YARD = [28, 38, 32, 48, 30, 42, 34, 54, 30, 36, 44, 32, 26, 40];
+  function when(el, run) {
+    if (!("IntersectionObserver" in window)) return run();
     var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        io.unobserve(e.target);
-        jobs.forEach(function (j) { if (j[0] === e.target) j[1](); });
-      });
-    }, { rootMargin: "800px 0px" });
-    jobs.forEach(function (j) { io.observe(j[0]); });
-  } else {
-    jobs.forEach(function (j) { j[1](); });
+      if (es[0].isIntersecting) { io.disconnect(); run(); }
+    }, { rootMargin: "700px 0px" });
+    io.observe(el);
   }
+  [].forEach.call(document.querySelectorAll(".world"), function (box, i) {
+    when(box, function () {
+      grab(box.dataset.file).then(function (all) {
+        var from = +box.dataset.from || 0, n = +box.dataset.n || all.length;
+        world(box, all.slice(from, from + n), {
+          seed: 11 + i * 137,
+          sizes: box.classList.contains("yard") ? YARD : BAND,
+          live: box.hasAttribute("data-live")
+        });
+      }).catch(function () { box.style.display = "none"; });
+    });
+  });
 })();
 </script>
 </body></html>
