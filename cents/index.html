@@ -104,6 +104,36 @@
 .homemark:hover,.homemark:focus-visible{opacity:1;transform:scale(1.06)}
 .homemark img{width:30px;height:30px;display:block;border-radius:50%}
 @media(prefers-reduced-motion:reduce){.homemark{transition:none}}
+
+/* Two of the press links are Chinese-language articles, and an English reader
+   cannot tell what they are. Point at one, or tab to it, and a translation
+   appears under it.
+   
+   The titles are quoted exactly as the two publications wrote them, taken from
+   the pages themselves rather than retyped — which is how the artist's name came
+   to be corrected here: both write 张能傑, and this site had 张能傲 in all four
+   places it appears.
+   
+   The translations are ours and say so. Neither publication issued an English
+   title, so presenting one unattributed would be passing our words off as
+   theirs. On a touch screen, where there is no pointing, the translation simply
+   sits under the title instead. */
+.ln li{position:relative}
+.ln .en{position:absolute;left:0;right:0;top:calc(100% - 1px);z-index:9;
+ padding:11px 13px;background:var(--dim);border:1px solid var(--lift);
+ font:400 13.5px/1.5 "IBM Plex Sans",sans-serif;color:var(--paper);
+ letter-spacing:0;text-transform:none;
+ opacity:0;transform:translateY(-4px);transition:opacity .14s,transform .14s;
+ pointer-events:none}
+.ln .en b{display:block;margin-top:6px;font:500 10px/1.4 "IBM Plex Mono",monospace;
+ letter-spacing:.11em;text-transform:uppercase;color:var(--mute)}
+.ln a:hover .en,.ln a:focus-visible .en{opacity:1;transform:none}
+@media (hover:none){
+  .ln .en{position:static;width:100%;opacity:1;transform:none;background:none;
+   border:0;padding:5px 0 0;color:var(--mute);font-size:12.5px}
+  .ln .en b{display:inline;margin:0 0 0 6px}
+}
+@media (prefers-reduced-motion:reduce){.ln .en{transition:none}}
 </style><link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -139,8 +169,8 @@ const PS=[["The 21st Century's Biggest Art Trend is Not a Style. But Once You Se
 ["Artist page: exhibitions and biography","https://ocula.com/artists/rutherford-chang/","Ocula"],
 ["Rutherford Chang: Hundreds and Thousands","https://www.interaliamag.org/articles/rutherford-chang-hundreds-and-thousands/","Interalia"],
 ["Rutherford Chang: Hundreds and Thousands","https://www.e-flux.com/announcements/6785689/rutherford-changhundreds-and-thousands","e-flux"],
-["一展带你看懂观念艺术，张能傲回顾展“成百上千”UCCA开幕","https://news.bjd.com.cn/2026/01/17/11529440.shtml","京报网"],
-["收藏、重复与文化记忆｜“张能傲：成百上千”正在UCCA展出","https://news.qq.com/rain/a/20260301A02TA900","腾讯新闻"]];
+["一展带你看懂观念艺术，张能傑回顾展“成百上千”UCCA开幕","https://news.bjd.com.cn/2026/01/17/11529440.shtml","京报网","An exhibition to help you make sense of conceptual art: Rutherford Chang’s retrospective “Hundreds and Thousands” opens at UCCA"],
+["收藏、重复与文化记忆丨“张能傑：成百上千”正在UCCA展出","https://news.qq.com/rain/a/20260301A02TA900","腾讯新闻","Collecting, repetition and cultural memory — “Rutherford Chang: Hundreds and Thousands” is on view at UCCA"]];
 const PR=[["Project description",S+"project-description"],["Writing on CENTS",S+"makes-cents"],
 ["Trait Explorer","https://cents.vision/"],["Trait Atlas","https://cents.vision/traits-atlas.html"],
 ["Trait Council",S+"trait-council"],
@@ -158,7 +188,7 @@ const G=[["cents_cube_screens.jpg","The copper block with screens showing the co
 ["cents_installation.jpg","The CENTS room at UCCA"]];
 const $=i=>document.getElementById(i),e=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;"),
 ext=u=>!u.startsWith("http")?'':(u.includes("sovrn.art")?' target="_blank"':' target="_blank"');
-const row=x=>'<li><a href="'+x[1]+'"'+ext(x[1])+'>'+(x[2]&&x[2].includes(".")?'<img src="'+encodeURI(x[2].includes("/")?x[2]:H+x[2])+'" alt="">':'')+e(x[0])+(x[2]&&!x[2].includes(".")?'<span class="src">'+e(x[2])+'</span>':'')+'</a></li>';
+const row=x=>'<li><a href="'+x[1]+'"'+ext(x[1])+'>'+(x[2]&&x[2].includes(".")?'<img src="'+encodeURI(x[2].includes("/")?x[2]:H+x[2])+'" alt="">':'')+(x[3]?'<span lang="zh-Hans">'+e(x[0])+'</span>':e(x[0]))+(x[2]&&!x[2].includes(".")?'<span class="src">'+e(x[2])+'</span>':'')+(x[3]?'<span class="en" lang="en">'+e(x[3])+'<b>our translation</b></span>':'')+'</a></li>';
 $("u").innerHTML=UP.map(row).join("");$("r").innerHTML=PS.map(row).join("");
 $("p").innerHTML=PR.map(row).join("");$("m").innerHTML=MK.map(row).join("");$("s").innerHTML=SO.map(row).join("");
 $("g").innerHTML=G.map(x=>'<a href="/exhibitions/ucca"><img src="'+encodeURI(U+x[0])+'" alt="'+e(x[1])+'" loading="lazy"></a>').join("");

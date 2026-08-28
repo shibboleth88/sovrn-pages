@@ -46,6 +46,26 @@
 .homemark:hover,.homemark:focus-visible{opacity:1;transform:scale(1.06)}
 .homemark img{width:30px;height:30px;display:block;border-radius:50%}
 @media(prefers-reduced-motion:reduce){.homemark{transition:none}}
+
+/* The two Chinese-language articles carry an English translation on hover or
+   focus; see the note on the CENTS page, which lists the same two. Titles are
+   quoted exactly as published, and the translations are ours and say so. */
+#pr li{position:relative}
+#pr .en{position:absolute;left:0;right:0;top:calc(100% - 1px);z-index:9;
+ padding:11px 13px;background:var(--surface);border:1px solid var(--rule);
+ font:400 13.5px/1.5 "IBM Plex Sans",sans-serif;color:var(--ink);
+ letter-spacing:0;text-transform:none;white-space:normal;
+ opacity:0;transform:translateY(-4px);transition:opacity .14s,transform .14s;
+ pointer-events:none}
+#pr .en b{display:block;margin-top:6px;font:500 10px/1.4 "IBM Plex Mono",monospace;
+ letter-spacing:.11em;text-transform:uppercase;color:var(--slate)}
+#pr a:hover .en,#pr a:focus-visible .en{opacity:1;transform:none}
+@media (hover:none){
+  #pr .en{position:static;opacity:1;transform:none;background:none;border:0;
+   padding:5px 0 0;color:var(--slate);font-size:12.5px}
+  #pr .en b{display:inline;margin:0 0 0 6px}
+}
+@media (prefers-reduced-motion:reduce){#pr .en{transition:none}}
 </style><link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -91,10 +111,10 @@ const P=[
 ["https://ocula.com/artists/rutherford-chang/","Artist page: exhibitions and biography","Ocula"],
 ["https://www.interaliamag.org/articles/rutherford-chang-hundreds-and-thousands/","Rutherford Chang: Hundreds and Thousands","Interalia"],
 ["https://www.e-flux.com/announcements/6785689/rutherford-changhundreds-and-thousands","Rutherford Chang: Hundreds and Thousands","e-flux"],
-["https://news.bjd.com.cn/2026/01/17/11529440.shtml","一展带你看懂观念艺术，张能傲回顾展“成百上千”UCCA开幕","京报网 · 17.1.26"],
-["https://news.qq.com/rain/a/20260301A02TA900","收藏、重复与文化记忆｜“张能傲：成百上千”正在UCCA展出","腾讯新闻 · 1.3.26"],
+["https://news.bjd.com.cn/2026/01/17/11529440.shtml","一展带你看懂观念艺术，张能傑回顾展“成百上千”UCCA开幕","京报网 · 17.1.26","An exhibition to help you make sense of conceptual art: Rutherford Chang’s retrospective “Hundreds and Thousands” opens at UCCA"],
+["https://news.qq.com/rain/a/20260301A02TA900","收藏、重复与文化记忆丨“张能傑：成百上千”正在UCCA展出","腾讯新闻 · 1.3.26","Collecting, repetition and cultural memory — “Rutherford Chang: Hundreds and Thousands” is on view at UCCA"],
 ["https://ucca.org.cn/en/2601172","Exhibition guide","UCCA"]];
-$("hero").src=B+A[0][0];$("pr").innerHTML=P.map(p=>'<li><a href="'+p[0]+'"'+tgt(p[0])+'><span class="t">'+p[1]+'</span><span class="s">'+p[2]+'</span></a></li>').join("");
+$("hero").src=B+A[0][0];$("pr").innerHTML=P.map(p=>'<li><a href="'+p[0]+'"'+tgt(p[0])+'><span class="t"'+(p[3]?' lang="zh-Hans"':'')+'>'+p[1]+'</span><span class="s">'+p[2]+'</span>'+(p[3]?'<span class="en" lang="en">'+p[3]+'<b>our translation</b></span>':'')+'</a></li>').join("");
 function zoom(i){$("lbi").src=B+W[i][0];$("lbi").alt=W[i][1];$("lbc").textContent=W[i][1];lb.classList.add("on");$("lbx").focus();}
 function unzoom(){lb.classList.remove("on");}
 $("lbx").onclick=unzoom;lb.onclick=e=>{if(e.target===lb)unzoom();};
