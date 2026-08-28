@@ -1,0 +1,35 @@
+# What GitHub Pages publishes.
+#
+# Without this file Jekyll runs on its defaults and serves *everything* in the
+# repository, so the working notes and the build tooling were part of the public
+# site: NOTES.md, PRINCIPLES.md and CLAUDE.md all answered 200, as did every
+# script in tools/.
+#
+# None of it contains a credential, and nothing on the site ever linked to it —
+# it is not in the sitemap either. It is excluded for two reasons.
+#
+# The first is that these are candid working notes, not publications. They name
+# other repositories, record what went wrong and when, and were written for
+# whoever maintains this, not for readers of the site.
+#
+# The second matters more. NOTES.md carries a section headed "Harvesting artwork
+# from raster.art", passages about rate limits and getting past a bot checkpoint,
+# and tools/ holds four scripts that drive a real browser — sites-grab.mjs,
+# sites-extract.py, sites-bg.mjs, sites-geom.mjs. Every one of those exists
+# because this site's own contents had to be recovered out of Google Sites and
+# its own artwork verified. That context is obvious from the repository and
+# invisible from a file served at a URL. On a domain that is already flagged, a
+# reviewer skimming for reasons will find "harvesting", "429" and browser
+# automation, and none of the reasons they are innocent.
+#
+# The files stay in the repository, where they belong. They stop being pages.
+exclude:
+  - CLAUDE.md
+  - NOTES.md
+  - PRINCIPLES.md
+  - EDITING.md
+  - MIGRATION.md
+  - README.md
+  - site-intros.md
+  - tools
+  - .gitignore

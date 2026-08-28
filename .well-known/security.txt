@@ -1,0 +1,3 @@
+Contact: https://www.sovrn.art/contact/
+Preferred-Languages: en
+Canonical: https://www.sovrn.art/.well-known/security.txt
