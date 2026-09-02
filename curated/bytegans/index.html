@@ -78,7 +78,12 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
    and it is one property: absolute rather than fixed.
 
    Nothing here can be pointed at or clicked. They are scenery. */
-#roam{position:absolute;top:0;left:0;right:0;z-index:5;pointer-events:none;overflow:hidden}
+/* The cast wanders behind the page rather than over it: the roaming layer at 1,
+   everything else at 2, so a byteGAN passes behind an artwork tile and stays
+   visible through the gaps. #roam is an id, so it outranks the body>* rule
+   and keeps its own layer. */
+#roam{position:absolute;top:0;left:0;right:0;z-index:1;pointer-events:none;overflow:hidden}
+body>*{position:relative;z-index:2}
 /* Their backgrounds are cut away, so what wanders is the creature and not a
    coloured tile sliding about. The shadow is what keeps them on a page that is
    pale for most of its length: the works standing on the bone ground are pale
