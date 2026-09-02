@@ -46,7 +46,7 @@ body{position:relative;overflow-x:clip}
  It is a different collection from the one this page is about, so it is
  credited in the foot rather than passed off as Seasons of Mobility. The scrim
  is heavy: this is the ground the page stands on, not the subject. */
-:root{--gates-scrim:.90;--gates-zoom:2.4}
+:root{--gates-scrim:.82;--gates-zoom:2.4}
 body::before{content:"";position:fixed;top:50%;left:50%;width:100vmax;height:100vmax;
  z-index:0;pointer-events:none;will-change:transform;
  transform:translate(-50%,-50%) scale(var(--gates-zoom));
@@ -61,8 +61,8 @@ body>*{position:relative;z-index:1}
 #mob{position:absolute;top:0;left:0;width:100%;z-index:3;pointer-events:none;
  overflow:hidden}
 #mob svg{position:absolute;top:0;left:0;display:block;will-change:transform;
- opacity:.34}
-@media (prefers-color-scheme: dark){#mob svg{opacity:.46}}
+ opacity:.58}
+@media (prefers-color-scheme: dark){#mob svg{opacity:.72}}
 @media (prefers-reduced-motion: reduce){#mob{display:none}}
 
 /* Home. Every page that is not the homepage carries this, because a link shared
@@ -218,7 +218,7 @@ onkeydown=e=>{if(e.key=="Escape")unzoom();};
    const paths=[0,1,2].map(i=>{
      const q=document.createElementNS(NS,"path");
      q.setAttribute("fill","none"); q.setAttribute("stroke-linejoin","round");
-     q.setAttribute("stroke-width",[3,2.4,2][i]);
+     q.setAttribute("stroke-width",[3.6,2.7,2.1][i]);
      q.setAttribute("opacity",[1,.65,.4][i]);
      g.appendChild(q); return q;});
    art.appendChild(g);
