@@ -176,17 +176,26 @@ onkeydown=e=>{if(e.key=="Escape")unzoom();};
     +'<path d="'+S.d+'" transform="translate(-200,0)" stroke-width="20" opacity=".4"/>'
     +'<path d="'+S.d+'" transform="translate(-100,0)" stroke-width="24" opacity=".65"/>'
     +'<path d="'+S.d+'" stroke-width="32"/></svg>';};
+ /* The page grows after load: the season grid is lazy, so scrollHeight at
+    startup is a fraction of the finished page. Measuring once would strand the
+    whole fleet in the top third and leave the layer too short to hold them, so
+    the height and the fleet are kept in step with the document as it settles. */
  const docH=()=>Math.max(document.documentElement.scrollHeight,innerHeight);
+ const want=h=>Math.min(28,Math.max(8,Math.round(VISIBLE*h/innerHeight)));
  let H=docH();
- const N=Math.min(28,Math.max(8,Math.round(VISIBLE*H/innerHeight)));
- layer.style.height=H+"px";
  const cars=[];
- for(let i=0;i<N;i++){
+ const add=i=>{
    const kind=KINDS[i%KINDS.length];
    const el=document.createElement("div");
    el.innerHTML=svg(kind,COL[i%COL.length]);
    const g=el.firstChild; layer.appendChild(g);
-   cars.push({g:g,ar:SHAPE[kind].ar,seeded:false});
+   const c={g:g,ar:SHAPE[kind].ar}; cars.push(c); return c;
+ };
+ function fit(){
+   H=docH(); layer.style.height=H+"px";
+   const n=want(H);
+   while(cars.length<n) seed(add(cars.length),true);
+   for(const c of cars) if(c.y>H-c.h) c.y=Math.max(0,H-c.h);
  }
  function seed(c,first){
    const w=rnd(120,240);                     // sprite width in px
@@ -199,7 +208,10 @@ onkeydown=e=>{if(e.key=="Escape")unzoom();};
    c.g.setAttribute("height",c.h.toFixed(1));
    c.seeded=true;
  }
- cars.forEach(c=>seed(c,true));
+ fit();
+ // the grid images land late; watch the document instead of guessing a delay
+ if(window.ResizeObserver) new ResizeObserver(fit).observe(document.body);
+ addEventListener("load",fit);
  let last=performance.now();
  function step(now){
    let dt=(now-last)/1000; last=now;
@@ -214,10 +226,7 @@ onkeydown=e=>{if(e.key=="Escape")unzoom();};
    requestAnimationFrame(step);
  }
  requestAnimationFrame(step);
- addEventListener("resize",()=>{
-   H=docH(); layer.style.height=H+"px";
-   for(const c of cars) if(c.y>H-c.h) c.y=Math.max(0,H-c.h);
- });
+ addEventListener("resize",fit);
 })();
 
 </script></body></html>
