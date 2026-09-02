@@ -30,11 +30,15 @@
  three shapes at the same coordinates, the same two Gaussian blurs. In the
  artwork they fade in place; here they drive, which is the one thing the
  collection is about that a page of stills cannot show.
- Fixed, so they cross the screen rather than the document: scrolling moves the
- page through them instead of dragging them along. Soft and low-contrast on
+ Document-bound, not viewport-bound. Fixed positioning would glue them to the
+ screen so they rode down the page with you; absolute leaves them out in the
+ landscape, so scrolling carries you past traffic that was already there and
+ stays where it was. Their count scales with the page height for that reason —
+ seven spread over six thousand pixels would put roughly one in view. Soft and low-contrast on
  purpose, because they pass over running text. */
-#mob{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden;
- contain:strict}
+body{position:relative;overflow-x:clip}
+#mob{position:absolute;top:0;left:0;width:100%;z-index:3;pointer-events:none;
+ overflow:hidden}
 #mob svg{position:absolute;top:0;left:0;display:block;will-change:transform;
  opacity:.34}
 @media (prefers-color-scheme: dark){#mob svg{opacity:.46}}
@@ -147,7 +151,7 @@ onkeydown=e=>{if(e.key=="Escape")unzoom();};
  const layer=document.getElementById("mob");
  if(!layer||matchMedia("(prefers-reduced-motion: reduce)").matches)return;
  const COL=["#f51b05","#a60228","#343deb","#202691","#ea1dc3","#d81159","#fa5050"],
-       N=7;
+       VISIBLE=3;   // roughly how many should be in view at once
  /* bashobits' own vehicles, lifted verbatim: the "-1" trail path for each type.
     The trail in the artwork is the same outline drawn three times, each copy
     100 units further back at a lighter weight, so it is generated here rather
@@ -172,6 +176,10 @@ onkeydown=e=>{if(e.key=="Escape")unzoom();};
     +'<path d="'+S.d+'" transform="translate(-200,0)" stroke-width="20" opacity=".4"/>'
     +'<path d="'+S.d+'" transform="translate(-100,0)" stroke-width="24" opacity=".65"/>'
     +'<path d="'+S.d+'" stroke-width="32"/></svg>';};
+ const docH=()=>Math.max(document.documentElement.scrollHeight,innerHeight);
+ let H=docH();
+ const N=Math.min(28,Math.max(8,Math.round(VISIBLE*H/innerHeight)));
+ layer.style.height=H+"px";
  const cars=[];
  for(let i=0;i<N;i++){
    const kind=KINDS[i%KINDS.length];
@@ -185,7 +193,7 @@ onkeydown=e=>{if(e.key=="Escape")unzoom();};
    c.w=w; c.h=w/c.ar;
    c.dir=Math.random()<.5?1:-1;
    c.v=rnd(34,92)*c.dir;                     // px per second
-   c.y=rnd(0,Math.max(1,innerHeight-c.h));
+   c.y=rnd(0,Math.max(1,H-c.h));   // anywhere down the page, not just on screen
    c.x=first?rnd(-c.w,innerWidth):(c.dir>0?-c.w-rnd(0,320):innerWidth+rnd(0,320));
    c.g.setAttribute("width",w.toFixed(1));
    c.g.setAttribute("height",c.h.toFixed(1));
@@ -206,8 +214,10 @@ onkeydown=e=>{if(e.key=="Escape")unzoom();};
    requestAnimationFrame(step);
  }
  requestAnimationFrame(step);
- addEventListener("resize",()=>{for(const c of cars){
-   if(c.y>innerHeight-c.h)c.y=Math.max(0,innerHeight-c.h);}});
+ addEventListener("resize",()=>{
+   H=docH(); layer.style.height=H+"px";
+   for(const c of cars) if(c.y>H-c.h) c.y=Math.max(0,H-c.h);
+ });
 })();
 
 </script></body></html>
