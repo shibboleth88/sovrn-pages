@@ -41,6 +41,28 @@ body{position:relative;overflow-x:clip}
 .heroshot{margin:clamp(16px,2.6vh,24px) 0 6px;max-width:560px}
 .heroshot img{display:block;width:100%;height:auto;border-radius:2px}
 .heroshot figcaption{margin-top:8px;font:400 11px/1.6 "IBM Plex Mono",monospace;color:var(--slate)}
+
+/* a collection featured: its work on one side, what is particular to it on the other */
+.kick{font:500 10px/1.5 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;
+ color:var(--copper);margin:-6px 0 2px}
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:start;margin-top:18px}
+@media(max-width:820px){.feat{grid-template-columns:1fr;gap:22px}}
+.feat figure{margin:0}
+.feat video,.feat .gi{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;
+ background:var(--plate);border-radius:2px}
+.feat figcaption{margin-top:8px;font:400 10.5px/1.6 "IBM Plex Mono",monospace;color:var(--slate)}
+.tlist{list-style:none;padding:0;margin:14px 0 0;columns:2;column-gap:22px}
+.tlist li{font:400 12.5px/1.75 "IBM Plex Mono",monospace;color:var(--slate);
+ break-inside:avoid;padding-left:11px;text-indent:-11px}
+.tlist li::before{content:"\2022";color:var(--copper);margin-right:6px}
+.wfield{margin:15px 0 6px;line-height:2.1}
+.wfield span{font:500 calc(9px + var(--f) * 0.42px)/1 "IBM Plex Mono",monospace;
+ letter-spacing:.04em;color:var(--ink);opacity:calc(0.45 + var(--f) * 0.024);margin-right:13px;
+ white-space:nowrap}
+.gram{display:grid;grid-template-columns:auto 1fr;gap:5px 15px;margin:15px 0;
+ font:400 12.5px/1.5 "IBM Plex Mono",monospace;align-content:start}
+.gram dt{color:var(--slate);text-transform:uppercase;letter-spacing:.09em;font-size:10px;padding-top:2px}
+.gram dd{margin:0;color:var(--copper)}
 .world{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:22px}
 @media(max-width:1000px){.world{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.world{grid-template-columns:1fr;gap:28px}}
@@ -178,18 +200,92 @@ custodians. It is the collection whose motion the traffic on this page follows.<
 </div>
 <p class="more"><a href="https://www.bashobits.com/context/location/" target="_blank" rel="noopener">Location</a><a href="https://www.bashobits.com/context/bitcoin-bus/" target="_blank" rel="noopener">Bitcoin Bus</a><a href="https://www.bashobits.com/context/gm/" target="_blank" rel="noopener">gm</a></p>
 <div class="sec">
-<h2>Museum collection and exhibitions</h2>
-<ul class="prog">
-<li><span class="v"><a class="fc" href="/collections/fransisco-carolinum/">Francisco Carolinum, Linz</a></span><span class="s">Admiral Rush</span><span class="d">Permanent collection &middot; Token 5</span></li>
-<li><span class="v"><a class="fc" href="/exhibitions/screens-contextualized/">NEORT &middot; Screens Contextualized</a></span><span class="s">Weather Writes</span><span class="d">February 2026 &middot; 58 screens, Shibuya, Tokyo</span></li>
+<h2>What Mobility remembers</h2>
+<p class="kick">Memories of Mobility &middot; 105 works &middot; 2023</p>
+<div class="feat">
+<figure>
+<video src="/vid/mobility/memories.mp4" poster="/img/mobility-page/memories-poster.jpg"
+ width="960" height="534" autoplay muted loop playsinline preload="metadata"
+ aria-label="Hacking Validation, a video loop from Memories of Mobility"></video>
+<figcaption><i>Hacking Validation</i> &middot; one of 105</figcaption>
+</figure>
+<div class="body">
+<p>The memories reach back more than two thousand years before 1010AH, and Mobility does
+not trust them. They carry the faults memory has in us: they may be mistaken, or imagined
+rather than recalled.</p>
+<p>What is striking is what survived. Fifteen of the 105 titles are the vocabulary of our
+digital routine &mdash; not our wars or our cities, but our admin.</p>
+<ul class="tlist">
+<li>Configuring Emails</li><li>Decoding Comments</li>
+<li>Bookmarks of Change</li><li>Scrolling to Acquire Signals</li>
+<li>Disarranging Retweets, Deciding Futures</li><li>Exploiting Unfollowed Posts</li>
+<li>Safeguard Adaptive Hashtags</li><li>Enlightenment in Discovered Annotations</li>
+<li>Repurposing Summaries, Uploading</li><li>Ignoring the Tag</li>
 </ul>
-<p class="more"><a href="https://www.bashobits.com/context/from-turner-to-bashobits-admiral-rush-and-the-art-history-of-mobility/" target="_blank" rel="noopener">From Turner to bashobits: Admiral Rush and the art history of Mobility</a></p>
+</div>
+</div>
+</div>
+<div class="sec">
+<h2>A vocabulary that recombines</h2>
+<p class="kick">Freedom of Mobility &middot; 365 works &middot; 2024</p>
+<div class="feat">
+<figure>
+<video src="/vid/mobility/freedom.mp4" poster="/img/mobility-page/freedom-poster.jpg"
+ width="960" height="540" autoplay muted loop playsinline preload="metadata"
+ aria-label="A video loop from Freedom of Mobility"></video>
+<figcaption>One of 365</figcaption>
+</figure>
+<div class="body">
+<p>Mobility holds that life is motion, and wants the freedom of it. The question is put to
+us as much as to them: whether a digital creation should live where its maker decides, or
+where a company does.</p>
+<p>The 365 titles are built from 183 words, turned over and recombined &mdash; the same
+terms recurring in new company, which is the shape a species with freedom of movement
+would leave behind.</p>
+<p class="wfield"><span style="--f:23">Telescreen</span><span style="--f:22">Freestyle</span><span style="--f:22">Downtown</span><span style="--f:19">Gravity</span><span style="--f:18">Afterglow</span><span style="--f:18">Smooth</span><span style="--f:16">Helium</span><span style="--f:16">Chain</span><span style="--f:15">Forest</span><span style="--f:15">Damaged</span><span style="--f:15">Midtown</span><span style="--f:15">Nitro</span><span style="--f:15">Pulse</span><span style="--f:14">Highway</span><span style="--f:14">Aura</span></p>
+<p class="n2">The fifteen commonest words across the collection, sized by how often they recur.</p>
+</div>
+</div>
 </div>
 <div class="sec">
 <h2>On 58 screens in Shibuya</h2>
 <div class="body">
 <p>NEORT is a digital art platform for artists and collectors. This includes exhibitions in Tokyo to reimagine the digital signage scattered throughout the city not merely as advertising media, but as a new stage for cultural expression, showcasing artworks on these screens. Utilizing large-scale signage networks, NEORT offers artists from around the world an opportunity to challenge new possibilities of expression in urban spaces.</p>
 <p><i>Aura Afterglow</i>, a custom combination of three pieces from <i>Freedom of Mobility</i>, was selected for the February 2026 exhibition <i>Weather Writes</i>, part of <i>Screens Contextualized</i>, and displayed across 58 screens in Shibuya, Tokyo.</p>
+</div>
+<div class="sec">
+<h2>How a Ghost is named</h2>
+<p class="kick">Ghosts of Mobility &middot; 366 works &middot; 2025 &middot; fully on-chain</p>
+<div class="feat">
+<figure>
+<img class="gi" src="/img/mobility-page/ghosts-3.jpg" alt="Vehicles crossing a plum starfield: the Ghosts artwork of Plum Blossom Dust Town with Balance and Stars" width="700" height="394" loading="lazy">
+<figcaption>A still of <i>Plum Blossom Dust Town with Balance and Stars</i> &middot; <a class="fc" href="https://www.bashobits.com/works/mob-gho-0003-plum-blossom-dust-town-with-balance-and-stars/" target="_blank" rel="noopener">see it move</a></figcaption>
+</figure>
+<div class="body">
+<p>Every token carries two artworks: Gates, a threshold that previews it, and Ghosts,
+perpetual motion across spacetime. And every title is a sentence in one grammar. All 366
+parse:</p>
+<dl class="gram">
+<dt>Backdrop</dt><dd>Plum Blossom</dd>
+<dt>Spacetime</dt><dd>Dust</dd>
+<dt>Location</dt><dd>Town</dd>
+<dt>Entropy</dt><dd>Balance</dd>
+<dt>Sky</dt><dd>Stars</dd>
+</dl>
+<p>Nine backdrops, nine spacetimes, five locations, three entropies and five skies &mdash;
+6,075 sentences the grammar can make, of which 366 were made.</p>
+<p>Entropy is not a mood but a path. Balance is a sine wave, and it is the one the traffic
+crossing this page is travelling on.</p>
+</div>
+</div>
+</div>
+<div class="sec">
+<h2>Museum collection and exhibitions</h2>
+<ul class="prog">
+<li><span class="v"><a class="fc" href="/collections/fransisco-carolinum/">Francisco Carolinum, Linz</a></span><span class="s">Admiral Rush</span><span class="d">Permanent collection &middot; Token 5</span></li>
+<li><span class="v"><a class="fc" href="/exhibitions/screens-contextualized/">NEORT &middot; Screens Contextualized</a></span><span class="s">Weather Writes</span><span class="d">February 2026 &middot; 58 screens, Shibuya, Tokyo</span></li>
+</ul>
+<p class="more"><a href="https://www.bashobits.com/context/from-turner-to-bashobits-admiral-rush-and-the-art-history-of-mobility/" target="_blank" rel="noopener">From Turner to bashobits: Admiral Rush and the art history of Mobility</a></p>
 </div>
 <p class="more"><a href="https://screens.neort.io/art/park-in-park" target="_blank" rel="noopener">NEORT Screens</a><a href="https://www.bashobits.com/context/the-city-as-a-digital-public-art-network/" target="_blank" rel="noopener">The city as a digital public art network</a></p>
 </div>
