@@ -489,3 +489,26 @@ A driven real browser works, and a screenshot forces the frame that lets rAF and
 ResizeObserver run. Failing that, say the motion is unverified rather than
 implying otherwise — and when a check returns an empty set, make sure it cannot
 read as a pass. `every()` over no elements is `true`.
+
+### A deploy check must match only the new version
+
+The word field ran off the page. The fix went in, the check said live after 15
+seconds, and the browser still showed the bug — so the next twenty minutes went
+into CSS that was never the problem. The check was `grep '</span>$'`, and that
+pattern was in the old page too. It had confirmed nothing.
+
+Grep for something that exists **only** in the new version — a new class, a new
+string, the changed value itself — and prefer a token that could not appear by
+accident. Every earlier check in this session used one; this one did not, and it
+cost more than the bug.
+
+### Inline elements need whitespace to have somewhere to break
+
+Fifteen `<span>`s written as `</span><span` are one unbreakable run. There is no
+line-break opportunity between inline elements without whitespace between them,
+so the line went 1877px wide inside a 1221px viewport and out of the page. A
+newline between them is the entire fix.
+
+`min-width:0` on the grid children was the first suspect and was wrong — grid
+items genuinely do refuse to shrink below their content, so it is worth having,
+but it cannot make a line wrap that has nowhere to wrap.
