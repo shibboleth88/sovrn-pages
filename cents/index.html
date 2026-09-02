@@ -178,13 +178,16 @@
 <div class="botw-frame" id="botw-frame" hidden></div>
 </div>
 </div>
-<h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2></div><div class="gal" id="g"></div><div class="wrap tail"><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p><h2 id="block">Block 839969</h2>
+<h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2></div><div class="gal" id="g"></div><div class="wrap tail"><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p>
+</div>
+<div class="field" role="img" aria-label="Several hundred more of the ten thousand cents, before they were smelted"><img src="/img/cents-field/field.webp" alt="" loading="lazy" width="2116" height="1252"></div>
+<div class="wrap tail">
+<h2 id="block" data-nav="Block">Block 839969</h2>
 <figure class="cube">
 <iframe src="https://ordinals.com/preview/bd77f96589139cb5f26196d75744a7ce04aaa0f554cd646455b381dfb39930e9i0" title="CENTS Block 839969, the inscribed three-dimensional model, rendered by ordinals.com" loading="lazy" referrerpolicy="no-referrer"></iframe>
-<figcaption>The ten thousand cents, smelted into one 69-pound block and inscribed whole onto Bitcoin. Rendered live from the chain by ordinals.com &mdash; drag to turn it. <a href="/cents/block-839969">More on the block</a></figcaption>
 </figure>
-<p class="inq" id="inq"><a href="/cents/inquiries">Project inquiries</a></p>
-<p class="ends"><a href="https://cents.vision/" target="_blank">cents.vision</a><a href="http://rutherfordchang.com/" target="_blank">rutherfordchang.com</a></p></div>
+<p class="ends" id="inq">
+<a href="/cents/inquiries">Project inquiries</a><a href="https://cents.vision/" target="_blank">cents.vision</a><a href="http://rutherfordchang.com/" target="_blank">rutherfordchang.com</a></p></div>
 <script>
 const H="/img/homepage/",
 U="/img/ucca/",S="/cents/";
@@ -227,7 +230,7 @@ $("u").innerHTML=UP.map(row).join("");$("r").innerHTML=PS.map(row).join("");
 $("p").innerHTML=PR.map(row).join("");$("m").innerHTML=MK.map(row).join("");$("s").innerHTML=SO.map(row).join("");
 $("g").innerHTML=G.map(x=>'<a href="/exhibitions/ucca"><img src="'+encodeURI(U+x[0])+'" alt="'+e(x[1])+'" loading="lazy"></a>').join("");
 const mb=$("mb"),mn=$("mn");
-mn.innerHTML=[...document.querySelectorAll("h2[id]")].map(h=>'<li><a href="'+location.pathname+'#'+h.id+'">'+h.textContent+'</a></li>').join("")+'<li><a href="'+location.pathname+'#inq">Inquiries</a></li>';
+mn.innerHTML=[...document.querySelectorAll("h2[id]")].map(h=>'<li><a href="'+location.pathname+'#'+h.id+'">'+(h.dataset.nav||h.textContent)+'</a></li>').join("")+'<li><a href="'+location.pathname+'#inq">Inquiries</a></li>';
 const setMenu=o=>{mb.setAttribute("aria-expanded",o);mn.hidden=!o;};
 mb.onclick=()=>setMenu(mb.getAttribute("aria-expanded")!=="true");
 mn.onclick=e=>{
