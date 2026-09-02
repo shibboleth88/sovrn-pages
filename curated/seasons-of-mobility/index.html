@@ -125,14 +125,6 @@
 <p class="foot">bashobits, <i>Seasons of Mobility</i>, 2023. &copy; bashobits. <i>Admiral Rush</i> is held in the permanent collection of the Francisco Carolinum, Linz.</p>
 </div>
 <div id="mob" aria-hidden="true"></div>
-<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
-<defs><!-- The artwork uses filterUnits="userSpaceOnUse" with no region, which is fine
- on its own 2048px canvas and collapses to nothing in a 300x120 viewBox: the
- blurred tail and glow simply stop rendering and only the head circle survives.
- An explicit region, generous enough to hold a 15px blur, is what makes the
- comet a comet here. -->
-<filter id="mvTail" x="-60%" y="-150%" width="220%" height="400%"><feGaussianBlur stdDeviation="15"/></filter>
-<filter id="mvGlow" x="-60%" y="-150%" width="220%" height="400%"><feGaussianBlur stdDeviation="5"/></filter></defs></svg>
 <div id="lb" role="dialog" aria-label="Artwork"><button id="lbx" aria-label="Close">&times;</button><img id="lbi" alt=""><p class="cap" id="lbc"></p></div>
 <script>
 const B="img/seasons-of-mobility/";
@@ -155,22 +147,42 @@ onkeydown=e=>{if(e.key=="Escape")unzoom();};
  const layer=document.getElementById("mob");
  if(!layer||matchMedia("(prefers-reduced-motion: reduce)").matches)return;
  const COL=["#f51b05","#a60228","#343deb","#202691","#ea1dc3","#d81159","#fa5050"],
-       N=7, RATIO=120/300;
+       N=7;
+ /* bashobits' own vehicles, lifted verbatim: the "-1" trail path for each type.
+    The trail in the artwork is the same outline drawn three times, each copy
+    100 units further back at a lighter weight, so it is generated here rather
+    than copied. His paths carry filter="url(#motionBlur2)", which the file
+    never defines -- so they render unfiltered, and they render unfiltered here
+    too. Each shape faces right; travelling left flips it. */
+ const SHAPE={
+  car:{vb:"448 928 840 202", ar:840/202,
+   d:"M 714 964 L 964 944 L 1044 994 L 1114 1004 L 1204 1024 L 1272 1054 "
+    +"L 1250 1114 L 894 1114 L 714 1114 L 664 1074 L 714 1024 Z"},
+  bus:{vb:"308 858 1142 332", ar:1142/332,
+   d:"M 524 874 L 844 874 L 934 874 L 1224 874 L 1314 874 L 1359 874 "
+    +"L 1414 934 L 1434 1094 L 1414 1174 L 934 1174 L 844 1174 L 524 1174 Z"},
+  train:{vb:"108 858 1630 332", ar:1630/332,
+   d:"M 324 874 L 844 874 L 934 874 L 1514 874 L 1514 874 L 1564 964 "
+    +"L 1704 1024 L 1722 1084 L 1604 1174 L 934 1174 L 844 1174 L 324 1174 Z"}};
+ const KINDS=["car","bus","train"];
  const rnd=(a,b)=>a+Math.random()*(b-a);
- const svg=c=>'<svg viewBox="140 240 300 120" fill="'+c+'">'
-   +'<ellipse cx="300" cy="300" rx="150" ry="50" filter="url(#mvTail)"/>'
-   +'<circle cx="360" cy="300" r="50" filter="url(#mvGlow)"/>'
-   +'<circle cx="380" cy="300" r="50"/></svg>';
+ const svg=(k,c)=>{const S=SHAPE[k];
+   return '<svg viewBox="'+S.vb+'" fill="none" stroke="'+c
+    +'" stroke-linejoin="round" stroke-linecap="round">'
+    +'<path d="'+S.d+'" transform="translate(-200,0)" stroke-width="20" opacity=".4"/>'
+    +'<path d="'+S.d+'" transform="translate(-100,0)" stroke-width="24" opacity=".65"/>'
+    +'<path d="'+S.d+'" stroke-width="32"/></svg>';};
  const cars=[];
  for(let i=0;i<N;i++){
+   const kind=KINDS[i%KINDS.length];
    const el=document.createElement("div");
-   el.innerHTML=svg(COL[i%COL.length]);
+   el.innerHTML=svg(kind,COL[i%COL.length]);
    const g=el.firstChild; layer.appendChild(g);
-   cars.push({g:g,seeded:false});
+   cars.push({g:g,ar:SHAPE[kind].ar,seeded:false});
  }
  function seed(c,first){
-   const w=rnd(58,124);                      // sprite width in px
-   c.w=w; c.h=w*RATIO;
+   const w=rnd(120,240);                     // sprite width in px
+   c.w=w; c.h=w/c.ar;
    c.dir=Math.random()<.5?1:-1;
    c.v=rnd(34,92)*c.dir;                     // px per second
    c.y=rnd(0,Math.max(1,innerHeight-c.h));
