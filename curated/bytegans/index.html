@@ -83,7 +83,14 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
    visible through the gaps. #roam is an id, so it outranks the body>* rule
    and keeps its own layer. */
 #roam{position:absolute;top:0;left:0;right:0;z-index:1;pointer-events:none;overflow:hidden}
-body>*{position:relative;z-index:2}
+/* The cast passes behind the artwork, not behind the stage. .hero is left
+   unpositioned on purpose: its dark ground stays below the roamers, so they
+   still wander across it the way they did. Every image is lifted above them
+   instead, so a byteGAN goes behind a work and stays visible through the gaps.
+   Giving .hero a z-index would open a stacking context and trap its own image
+   underneath. */
+.wrap{position:relative;z-index:2}
+.hero img,.hero picture{position:relative;z-index:2}
 /* Their backgrounds are cut away, so what wanders is the creature and not a
    coloured tile sliding about. The shadow is what keeps them on a page that is
    pale for most of its length: the works standing on the bone ground are pale
