@@ -221,10 +221,20 @@ function unzoom(){lb.classList.remove("on");}
 $("lbx").onclick=unzoom;lb.onclick=e=>{if(e.target===lb)unzoom();};
 onkeydown=e=>{if(e.key=="Escape")unzoom();};
 /* The loops autoplay, which is right for artwork and wrong for anyone who has
-   asked for less motion. CSS cannot stop a video, so it is done here. */
-if(matchMedia("(prefers-reduced-motion: reduce)").matches)
-  document.querySelectorAll(".world video").forEach(v=>{
-    v.autoplay=false; v.loop=false; v.controls=true; v.pause();});
+   asked for less motion. CSS cannot stop a video, so it is done here.
+   And autoplay is a request, not a guarantee: a blocked play() would otherwise
+   leave a poster with no way to start it, so a refusal turns the controls on. */
+(function(){
+ const vs=[...document.querySelectorAll(".world video")];
+ if(matchMedia("(prefers-reduced-motion: reduce)").matches){
+   vs.forEach(v=>{v.autoplay=false;v.loop=false;v.controls=true;v.pause();});
+   return;
+ }
+ vs.forEach(v=>{
+   const go=()=>{const p=v.play(); if(p&&p.catch) p.catch(()=>{v.controls=true;});};
+   v.readyState?go():v.addEventListener("loadeddata",go,{once:true});
+ });
+})();
 /* The vehicles. Straight lines, constant speed, off one edge and back on the
    other — no steering and no interaction, unlike the byteGANs, because these
    are traffic passing rather than characters with an agenda.
