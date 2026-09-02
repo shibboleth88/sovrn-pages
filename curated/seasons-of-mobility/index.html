@@ -29,7 +29,7 @@
  The site's hamburger, in Mobility's own palette: CENTS uses --ink as its dark
  ground, and here --ink is the text, so the panel takes --surface-2 instead.
  The list is long enough to need its own scroll on a short window. */
-.nav{position:fixed;top:16px;right:16px;z-index:20}
+.nav{position:fixed;top:30px;right:28px;z-index:20}
 #mb{width:42px;height:42px;display:flex;flex-direction:column;justify-content:center;
  align-items:center;gap:5px;background:var(--surface-2);border:1px solid var(--rule);
  cursor:pointer;padding:0;transition:border-color .18s}
@@ -164,8 +164,6 @@ body>*{position:relative;z-index:2}
 <script src="/transitions.js"></script>
 </head><body><nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn" aria-label="Menu"><span></span><span></span><span></span></button>
 <div id="mn" hidden>
-<p class="grp">On this page</p>
-<ul id="mnp"></ul>
 <p class="grp">The collections</p>
 <ul>
 <li><a href="https://www.raster.art/artwork/2155303" target="_blank" rel="noopener">Seasons of Mobility</a></li>
@@ -179,7 +177,7 @@ body>*{position:relative;z-index:2}
 <li><a href="/exhibitions/screens-contextualized">Screens Contextualized</a></li>
 <li><a href="/exhibitions/marfa-popup">The Marfa pop-up</a></li>
 </ul>
-<p class="grp">bashobits writes</p>
+<p class="grp">Writing by bashobits</p>
 <ul>
 <li><a href="https://www.bashobits.com/context/from-turner-to-bashobits-admiral-rush-and-the-art-history-of-mobility/" target="_blank" rel="noopener">From Turner to bashobits</a></li>
 <li><a href="https://www.bashobits.com/context/the-city-as-a-digital-public-art-network/" target="_blank" rel="noopener">The city as a public art network</a></li>
@@ -191,7 +189,6 @@ body>*{position:relative;z-index:2}
 <p class="grp">Elsewhere</p>
 <ul>
 <li><a href="https://bashobits.com/" target="_blank" rel="noopener">bashobits.com</a></li>
-<li><a href="/curated">All curated collections</a></li>
 </ul>
 </div></nav>
 <div class="wrap"><a class="homemark" href="/" aria-label="sovrn.art — home" title="sovrn.art"><img src="/img/share/sovrn-mark.webp" alt="" width="44" height="44"></a>
@@ -215,7 +212,7 @@ the incomplete.</p>
 </div>
 
 <div class="sec">
-<h2 id="collections" data-nav="Collections">The collections</h2>
+<h2 id="collections">The collections</h2>
 <div class="body">
 <p>Four so far, each taking the same premise somewhere else: what Mobility lives through,
 what it remembers, what it wants, and what it leaves behind. For more see
@@ -272,18 +269,18 @@ custodians. It is the collection whose motion the traffic on this page follows.<
 </div>
 </div>
 <div class="sec">
-<h2 id="seasons" data-nav="Seasons">Seasons of Mobility</h2>
+<h2 id="seasons">Seasons of Mobility</h2>
 <div class="body">
 <p>The first collection: 365 works, one for each day of a year in 1010AH, turning through the four seasons. The contract holds all 365 &mdash; the twelve below are a selection, three to a season.</p>
 </div>
 </div>
 <div class="sec">
-<h2 id="the-year" data-nav="The year">A year in four seasons</h2>
+<h2 id="the-year">A year in four seasons</h2>
 <div class="year" id="year"><div class="col"><h3>Spring</h3><button class="cell" type="button" onclick="zoom('spring',1,'Spring')"><span class="im"><img src="img/seasons-of-mobility/spring-1.png" alt="Spring, work 1 of 3" loading="lazy"></span></button><button class="cell" type="button" onclick="zoom('spring',2,'Spring')"><span class="im"><img src="img/seasons-of-mobility/spring-2.png" alt="Spring, work 2 of 3" loading="lazy"></span></button><button class="cell" type="button" onclick="zoom('spring',3,'Spring')"><span class="im"><img src="img/seasons-of-mobility/spring-3.png" alt="Spring, work 3 of 3" loading="lazy"></span></button></div><div class="col"><h3>Summer</h3><button class="cell" type="button" onclick="zoom('summer',1,'Summer')"><span class="im"><img src="img/seasons-of-mobility/summer-1.png" alt="Summer, work 1 of 3" loading="lazy"></span></button><button class="cell" type="button" onclick="zoom('summer',2,'Summer')"><span class="im"><img src="img/seasons-of-mobility/summer-2.png" alt="Summer, work 2 of 3" loading="lazy"></span></button><button class="cell" type="button" onclick="zoom('summer',3,'Summer')"><span class="im"><img src="img/seasons-of-mobility/summer-3.png" alt="Summer, work 3 of 3" loading="lazy"></span></button></div><div class="col"><h3>Autumn</h3><button class="cell" type="button" onclick="zoom('autumn',1,'Autumn')"><span class="im"><img src="img/seasons-of-mobility/autumn-1.png" alt="Autumn, work 1 of 3" loading="lazy"></span></button><button class="cell" type="button" onclick="zoom('autumn',2,'Autumn')"><span class="im"><img src="img/seasons-of-mobility/autumn-2.png" alt="Autumn, work 2 of 3" loading="lazy"></span></button><button class="cell" type="button" onclick="zoom('autumn',3,'Autumn')"><span class="im"><img src="img/seasons-of-mobility/autumn-3.png" alt="Autumn, work 3 of 3" loading="lazy"></span></button></div><div class="col"><h3>Winter</h3><button class="cell" type="button" onclick="zoom('winter',1,'Winter')"><span class="im"><img src="img/seasons-of-mobility/winter-1.png" alt="Winter, work 1 of 3" loading="lazy"></span></button><button class="cell" type="button" onclick="zoom('winter',2,'Winter')"><span class="im"><img src="img/seasons-of-mobility/winter-2.png" alt="Winter, work 2 of 3" loading="lazy"></span></button><button class="cell" type="button" onclick="zoom('winter',3,'Winter')"><span class="im"><img src="img/seasons-of-mobility/winter-3.png" alt="Winter, work 3 of 3" loading="lazy"></span></button></div></div>
 </div>
 <p class="more"><a href="https://www.bashobits.com/context/location/" target="_blank" rel="noopener">Location</a><a href="https://www.bashobits.com/context/bitcoin-bus/" target="_blank" rel="noopener">Bitcoin Bus</a><a href="https://www.bashobits.com/context/gm/" target="_blank" rel="noopener">gm</a></p>
 <div class="sec">
-<h2 id="memories" data-nav="Memories">What Mobility remembers</h2>
+<h2 id="memories">What Mobility remembers</h2>
 <p class="kick">Memories of Mobility &middot; 105 works &middot; 2023</p>
 <div class="feat">
 <figure>
@@ -309,7 +306,7 @@ digital routine &mdash; not our wars or our cities, but our admin.</p>
 </div>
 </div>
 <div class="sec">
-<h2 id="freedom" data-nav="Freedom">A vocabulary that recombines</h2>
+<h2 id="freedom">A vocabulary that recombines</h2>
 <p class="kick">Freedom of Mobility &middot; 365 works &middot; 2024</p>
 <div class="feat">
 <figure>
@@ -345,13 +342,13 @@ would leave behind.</p>
 </div>
 </div>
 <div class="sec">
-<h2 id="shibuya" data-nav="Shibuya">On 58 screens in Shibuya</h2>
+<h2 id="shibuya">On 58 screens in Shibuya</h2>
 <div class="body">
 <p>NEORT is a digital art platform for artists and collectors. This includes exhibitions in Tokyo to reimagine the digital signage scattered throughout the city not merely as advertising media, but as a new stage for cultural expression, showcasing artworks on these screens. Utilizing large-scale signage networks, NEORT offers artists from around the world an opportunity to challenge new possibilities of expression in urban spaces.</p>
 <p><i>Aura Afterglow</i>, a custom combination of three pieces from <i>Freedom of Mobility</i>, was selected for the February 2026 exhibition <i>Weather Writes</i>, part of <i>Screens Contextualized</i>, and displayed across 58 screens in Shibuya, Tokyo.</p>
 </div>
 <div class="sec">
-<h2 id="ghosts" data-nav="Ghosts">How a Ghost is named</h2>
+<h2 id="ghosts">How a Ghost is named</h2>
 <p class="kick">Ghosts of Mobility &middot; 366 works &middot; 2025 &middot; fully on-chain</p>
 <div class="feat">
 <figure>
@@ -379,7 +376,7 @@ crossing this page is travelling on.</p>
 </div>
 </div>
 <div class="sec">
-<h2 id="museums" data-nav="Museums">Museum collection and exhibitions</h2>
+<h2 id="museums">Museum collection and exhibitions</h2>
 <ul class="prog">
 <li><span class="v"><a class="fc" href="/collections/fransisco-carolinum/">Francisco Carolinum, Linz</a></span><span class="s">Admiral Rush</span><span class="d">Permanent collection &middot; Token 5</span></li>
 <li><span class="v"><a class="fc" href="/exhibitions/screens-contextualized/">NEORT &middot; Screens Contextualized</a></span><span class="s">Weather Writes</span><span class="d">February 2026 &middot; 58 screens, Shibuya, Tokyo</span></li>
@@ -389,7 +386,7 @@ crossing this page is travelling on.</p>
 <p class="more"><a href="https://screens.neort.io/art/park-in-park" target="_blank" rel="noopener">NEORT Screens</a><a href="https://www.bashobits.com/context/the-city-as-a-digital-public-art-network/" target="_blank" rel="noopener">The city as a digital public art network</a></p>
 </div>
 <div class="sec">
-<h2 id="lost" data-nav="Lost Mobility">Lost Mobility: Sand Wave Drift</h2>
+<h2 id="lost">Lost Mobility: Sand Wave Drift</h2>
 <div class="body">
 <p>Mobility was drifting through the sand towards Marfa, Texas, for the Sovrn pop-up of
 October 2025 &mdash; and pieces went missing on the way, one lost from each of the first
@@ -398,7 +395,7 @@ collections. bashobits put out a call for help finding them, and the search beca
 <p class="more"><a href="/exhibitions/marfa-popup">The Marfa pop-up</a><a href="https://www.bashobits.com/context/lost-mobility-sand-wave-drift/" target="_blank" rel="noopener">Sand Wave Drift</a></p>
 </div>
 <div class="sec">
-<h2 id="artist" data-nav="The artist">The artist</h2>
+<h2 id="artist">The artist</h2>
 <div class="bio">
 <img class="pf" id="pf" alt="bashobits" width="150" height="148">
 <div class="body">
@@ -428,29 +425,14 @@ function zoom(k,n,label){open_(B+k+"-"+n+".png",label+", work "+n+" of 3",label,
 function unzoom(){lb.classList.remove("on");}
 $("lbx").onclick=unzoom;lb.onclick=e=>{if(e.target===lb)unzoom();};
 onkeydown=e=>{if(e.key=="Escape")unzoom();};
-/* The menu. The "on this page" group is generated from the headings so it can
-   never fall out of step with them; data-nav gives a heading a short label,
-   the same mechanism the CENTS page uses. Everything below it is hand-written,
-   because it leaves the page. */
+/* The menu. Every entry leaves this page, so there is no in-page anchoring
+   here and nothing generated: the list is what it says it is. */
 (function(){
- const mb=document.getElementById("mb"),mn=document.getElementById("mn"),
-       mp=document.getElementById("mnp");
- if(!mb||!mn||!mp)return;
- mp.innerHTML=[...document.querySelectorAll("h2[id]")].map(h=>
-   '<li><a href="'+location.pathname+'#'+h.id+'">'+(h.dataset.nav||h.textContent)+'</a></li>').join("");
+ const mb=document.getElementById("mb"),mn=document.getElementById("mn");
+ if(!mb||!mn)return;
  const sm=o=>{mb.setAttribute("aria-expanded",o);mn.hidden=!o;};
  mb.onclick=()=>sm(mb.getAttribute("aria-expanded")!=="true");
- mn.onclick=e=>{
-   const a=e.target.closest("a"); if(!a)return;
-   sm(false);
-   const id=(a.getAttribute("href")||"").split("#")[1];
-   if(!id)return;                        /* a link off this page: leave it alone */
-   const t=document.getElementById(id); if(!t)return;
-   /* jump without pushing history, or the back button walks up the menu
-      instead of leaving the page */
-   e.preventDefault();
-   t.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
- };
+ mn.onclick=e=>{if(e.target.closest("a"))sm(false);};
  addEventListener("keydown",e=>{if(e.key==="Escape"&&!mn.hidden){sm(false);mb.focus();}});
  addEventListener("click",e=>{if(!mn.hidden&&!e.target.closest(".nav"))sm(false);});
 })();
