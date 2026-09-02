@@ -37,6 +37,22 @@
  seven spread over six thousand pixels would put roughly one in view. Soft and low-contrast on
  purpose, because they pass over running text. */
 body{position:relative;overflow-x:clip}
+/* the hero, and the three collections that followed */
+.heroshot{margin:clamp(16px,2.6vh,24px) 0 6px}
+.heroshot img{display:block;width:100%;height:auto;border-radius:2px}
+.heroshot figcaption{margin-top:8px;font:400 11px/1.6 "IBM Plex Mono",monospace;color:var(--slate)}
+.world{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:22px}
+@media(max-width:860px){.world{grid-template-columns:1fr;gap:30px}}
+.world figure{margin:0}
+.world video,.world .gi{display:block;width:100%;height:auto;aspect-ratio:16/9;
+ object-fit:cover;background:var(--ink);border-radius:2px}
+.world figcaption{margin-top:10px}
+.world figcaption b{display:block;font:500 13px/1.3 "IBM Plex Sans",sans-serif;color:var(--ink)}
+.world .n{display:block;font:500 10px/1.5 "IBM Plex Mono",monospace;letter-spacing:.11em;
+ text-transform:uppercase;color:var(--copper);margin:3px 0 7px}
+.world figcaption p{font-size:13px;line-height:1.55;color:var(--slate);max-width:42ch;margin:0}
+.world .w{display:block;margin-top:7px;font:400 10.5px/1.6 "IBM Plex Mono",monospace;color:var(--slate)}
+
 /* ---------- the Gates behind the page ----------
  bashobits' Ghosts of Mobility token 3, "Plum Blossom Dust Town with Balance
  and Stars" — the Gates artwork, which is the self-contained animated SVG each
@@ -88,7 +104,7 @@ body>*{position:relative;z-index:1}
 <h1>Seasons of Mobility</h1>
 <p class="by">by <a class="fc" href="https://bashobits.com/" target="_blank">bashobits</a></p>
 <p class="run">Released 15 April 2023 &middot; Ethereum</p>
-<figure class="vt-plate"><picture><source type="image/webp" srcset="/img/derived/homepage/seasons-of-mobility-x.webp"><img class="vt-lead" src="/img/homepage/seasons-of-mobility.jpg" alt="A work from Seasons of Mobility" width="375" height="498" loading="eager" fetchpriority="high"></picture></figure>
+<figure class="heroshot"><picture><source type="image/avif" srcset="/img/derived/seasons-of-mobility/hero-mob-som-0233-656.avif 656w, /img/derived/seasons-of-mobility/hero-mob-som-0233-1040.avif 1040w, /img/derived/seasons-of-mobility/hero-mob-som-0233-1920.avif 1920w" sizes="(max-width: 700px) 331px, 1040px"><source type="image/webp" srcset="/img/derived/seasons-of-mobility/hero-mob-som-0233-656.webp 656w, /img/derived/seasons-of-mobility/hero-mob-som-0233-1040.webp 1040w, /img/derived/seasons-of-mobility/hero-mob-som-0233-1920.webp 1920w" sizes="(max-width: 700px) 331px, 1040px"><img class="vt-lead" src="/img/seasons-of-mobility/hero-mob-som-0233.jpg" alt="Captain Curate: a pink train crossing a trestle through a field of stars and nebulae" width="1920" height="1080" loading="eager" fetchpriority="high"></picture><figcaption><i>Captain Curate</i> &middot; a train, the seventh of March, in the spring of 1010AH</figcaption></figure>
 <div class="lede">
 <p>It is the year 1010AH (After Humanity). We are long gone. But life continues. The autonomous trains, buses, and cars created by us have become a new species that calls itself Mobility.</p>
 <p><i>Seasons of Mobility</i> was created in the aesthetic tradition of wabi-sabi, which identifies beauty in the imperfect, the impermanent, and the incomplete.</p>
@@ -128,7 +144,48 @@ body>*{position:relative;z-index:1}
 <div class="sec">
 <h2>The wider Mobility world</h2>
 <div class="body">
-<p>Since the creation of <i>Seasons of Mobility</i>, bashobits has continued to expand the Mobility world, releasing <i>Freedom of Mobility</i>, <i>Memories of Mobility</i> and <i>Ghosts of Mobility</i> to holders of the original collection. He has also created the game <i>Lost Mobility: Sand Wave Drift</i> based on themes from the collection. For more details see <a class="fc" href="https://bashobits.com/" target="_blank">bashobits.com</a>.</p>
+<p>Since <i>Seasons of Mobility</i>, bashobits has carried the world through three
+further collections, released to holders of the original, and a game,
+<i>Lost Mobility: Sand Wave Drift</i>. Each takes the same premise somewhere
+else: what Mobility remembers, what it wants, and what it leaves behind. For
+more see <a class="fc" href="https://bashobits.com/" target="_blank" rel="noopener">bashobits.com</a>.</p>
+</div>
+<div class="world">
+
+<figure>
+<video src="/vid/mobility/memories.mp4" poster="/img/mobility-page/memories-poster.jpg"
+ width="960" height="534" autoplay muted loop playsinline preload="none"
+ aria-label="Hacking Validation, a video loop from Memories of Mobility"></video>
+<figcaption><b>Memories of Mobility</b><span class="n">105 works &middot; 2023 &middot; video</span>
+<p>Mobility remembers a past more than two thousand years before 1010AH, in which
+some figures could be human. The loops carry the faults memory has in us: they may
+be mistaken, or imagined rather than recalled.</p>
+<span class="w"><i>Hacking Validation</i> &middot; <a class="fc" href="https://www.raster.art/artwork/2154784" target="_blank" rel="noopener">Raster</a></span>
+</figcaption>
+</figure>
+
+<figure>
+<video src="/vid/mobility/freedom.mp4" poster="/img/mobility-page/freedom-poster.jpg"
+ width="960" height="540" autoplay muted loop playsinline preload="none"
+ aria-label="A video loop from Freedom of Mobility"></video>
+<figcaption><b>Freedom of Mobility</b><span class="n">365 works &middot; 2024 &middot; video</span>
+<p>Mobility holds that life is motion, and wants the freedom of it. The question is
+put to us as much as to them: whether a digital creation should live where its
+maker decides, or where a company does.</p>
+<span class="w"><a class="fc" href="https://www.raster.art/artwork/2155166" target="_blank" rel="noopener">Raster</a></span>
+</figcaption>
+</figure>
+
+<figure>
+<img class="gi" src="/img/mobility-page/gates-3.svg" alt="Plum Blossom Dust Town with Balance and Stars, the Gates artwork of Ghosts of Mobility token 3" width="2048" height="2048" loading="lazy">
+<figcaption><b>Ghosts of Mobility</b><span class="n">366 works &middot; 2025 &middot; fully on-chain</span>
+<p>Every token carries two artworks: Gates, a threshold that previews it, and Ghosts,
+perpetual motion across spacetime. Thirty-nine made the First Crossing to new
+custodians. It is the collection behind this page, and the one the traffic follows.</p>
+<span class="w"><i>Plum Blossom Dust Town with Balance and Stars</i> &middot; <a class="fc" href="https://www.bashobits.com/works/mob-gho-0003-plum-blossom-dust-town-with-balance-and-stars/" target="_blank" rel="noopener">bashobits</a></span>
+</figcaption>
+</figure>
+
 </div>
 </div>
 <div class="sec">
@@ -163,6 +220,11 @@ function zoom(k,n,label){open_(B+k+"-"+n+".png",label+", work "+n+" of 3",label,
 function unzoom(){lb.classList.remove("on");}
 $("lbx").onclick=unzoom;lb.onclick=e=>{if(e.target===lb)unzoom();};
 onkeydown=e=>{if(e.key=="Escape")unzoom();};
+/* The loops autoplay, which is right for artwork and wrong for anyone who has
+   asked for less motion. CSS cannot stop a video, so it is done here. */
+if(matchMedia("(prefers-reduced-motion: reduce)").matches)
+  document.querySelectorAll(".world video").forEach(v=>{
+    v.autoplay=false; v.loop=false; v.controls=true; v.pause();});
 /* The vehicles. Straight lines, constant speed, off one edge and back on the
    other — no steering and no interaction, unlike the byteGANs, because these
    are traffic passing rather than characters with an agenda.
