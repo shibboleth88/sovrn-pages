@@ -103,9 +103,13 @@ body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 /* the live Ghosts renderer, framed at the collection's own ratio */
 .gframe{display:block;width:100%;aspect-ratio:16/9;border:0;background:var(--plate);
  border-radius:2px}
-body>*{position:relative;z-index:1}
+/* dust and scrim at 0, the traffic at 1, the page at 2 -- so a vehicle passes
+   behind anything with a surface of its own and stays visible through the
+   gaps, which is what traffic seen past a building does. #mob is an id, so it
+   outranks this rule and keeps its own layer. */
+body>*{position:relative;z-index:2}
 
-#mob{position:absolute;top:0;left:0;width:100%;z-index:3;pointer-events:none;
+#mob{position:absolute;top:0;left:0;width:100%;z-index:1;pointer-events:none;
  overflow:hidden}
 #mob svg{position:absolute;top:0;left:0;display:block;will-change:transform;
  opacity:.72}
@@ -193,12 +197,14 @@ maker decides, or where a company does.</p>
 </figure>
 
 <figure>
-<picture><source type="image/avif" srcset="/img/derived/mobility-page/ghosts-3-240.avif 240w, /img/derived/mobility-page/ghosts-3-480.avif 480w, /img/derived/mobility-page/ghosts-3-700.avif 700w" sizes="(max-width: 700px) 331px, 244px"><source type="image/webp" srcset="/img/derived/mobility-page/ghosts-3-240.webp 240w, /img/derived/mobility-page/ghosts-3-480.webp 480w, /img/derived/mobility-page/ghosts-3-700.webp 700w" sizes="(max-width: 700px) 331px, 244px"><img class="gi" src="/img/mobility-page/ghosts-3.jpg" alt="Vehicles crossing a plum starfield: the Ghosts artwork of Plum Blossom Dust Town with Balance and Stars" width="700" height="394" loading="lazy"></picture>
+<iframe class="gframe" src="https://www.bashobits.com/ghosts-of-mobility/1.html"
+ title="Green Tea Rings Metropolis with Wabisabi and Moonbow, rendered live"
+ loading="lazy" referrerpolicy="no-referrer" scrolling="no"></iframe>
 <figcaption><b>Ghosts of Mobility</b><span class="n">366 works &middot; 2025 &middot; fully on-chain</span>
 <p>Every token carries two artworks: Gates, a threshold that previews it, and Ghosts,
 perpetual motion across spacetime. Thirty-nine made the First Crossing to new
 custodians. It is the collection whose motion the traffic on this page follows.</p>
-<span class="w">A still of <i>Plum Blossom Dust Town with Balance and Stars</i> &middot; <a class="fc" href="https://www.bashobits.com/works/mob-gho-0003-plum-blossom-dust-town-with-balance-and-stars/" target="_blank" rel="noopener">see it move</a></span>
+<span class="w"><i>Green Tea Rings Metropolis with Wabisabi and Moonbow</i> &middot; <a class="fc" href="https://www.bashobits.com/works/mob-gho-0001-green-tea-rings-metropolis-with-wabisabi-and-moonbow/" target="_blank" rel="noopener">bashobits</a></span>
 </figcaption>
 </figure>
 
