@@ -255,6 +255,15 @@ When a push is rejected, look before acting: `git log HEAD..origin/main` and
 `git diff --stat HEAD...origin/main` show what the other session did. Rebase on
 top of it, then verify their files survived. Never force.
 
+`.DS_Store` used to be **tracked**, in eight directories, which quietly made the
+`git add -A` above unsafe: macOS rewrites those files whenever a Finder window
+touches a directory, so a sweep in one session would carry another session's
+phantom modifications into the commit. A parallel session spent a whole day
+committing single files by path to avoid exactly that, and said so on handover.
+It is now in `.gitignore` and untracked (`git rm --cached`, which leaves the
+files on disk). If they ever come back, untrack them rather than working around
+them.
+
 ### Backticks in commit messages
 
 `git commit -m "...` inside a double-quoted heredoc runs anything in backticks as
@@ -1079,10 +1088,44 @@ Plates are written normalised to the geometry `cents-striker.html` assumes
 
 ---
 
+## The CENTS page builds its own menu, and an id is load-bearing
+
+`cents/index.html` generates its section menu at runtime from the headings:
+
+```js
+[...document.querySelectorAll("h2[id]")].map(h => h.dataset.nav || h.textContent)
+```
+
+plus one hardcoded entry for `#inq`. Two consequences worth knowing before
+editing that page:
+
+**Do not merge away a heading or an id without checking the menu.** Folding the
+Project inquiries block into the foot line would have silently dropped its menu
+item — the anchor is what the hardcoded entry points at. `id="inq"` therefore
+moved onto the merged `<p class="ends">` rather than disappearing with the
+block. Nothing errors; the item just stops existing.
+
+**`data-nav` gives a heading a short menu label.** `<h2 id="block"
+data-nav="Block">Block 839969</h2>` reads *Block* in the menu and *Block 839969*
+as the heading. Reach for it whenever the honest heading is too long for a menu,
+rather than shortening the heading.
+
+The block itself is a live `ordinals.com` iframe of inscription
+`bd77f965…30e9i0`. `model-viewer` renders on a genuinely transparent ground —
+measured as `rgba(0, 0, 0, 0)` on `html`, `body` and the element — so on the
+dark CENTS page the border comes off and the block floats, while
+`cents-project-description.html` paints it white because that page is white.
+Same embed, deliberately different treatment; don't "unify" them.
+
 ## Odds and ends still open
 
 - `museums-overview.html` says "Twelve works" for the Francisco Carolinum set;
-  the FC page lists eleven.
+  the FC page lists eleven. **A possible resolution, unconfirmed:**
+  `cent_9407_fclinz.jpg` in the `gorgonorgon/sovrn-FC-images` repo is a 1968-D
+  cent named for FC Linz, and is referenced by nothing. If Francisco Carolinum
+  holds that CENTS, it is the twelfth work and the Bitcoin leg of "3
+  Blockchains", and the overview's count is the right one. Nothing on the site
+  claims this, and nothing should until it is confirmed.
 - The KINDL photo credit (Jens Ziehe) is unconfirmed for the image in use.
 - `AtlasVertabra` / `GinkoLeaf` are left spelled as the artist spells them.
 - The Wunderkammer GIF download page needs either a re-save with all 108 loaded
