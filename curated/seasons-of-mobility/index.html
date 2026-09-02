@@ -46,6 +46,9 @@ body{position:relative;overflow-x:clip}
 .kick{font:500 10px/1.5 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase;
  color:var(--copper);margin:-6px 0 2px}
 .feat{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:start;margin-top:18px}
+/* grid children default to min-width:auto and will not shrink below their content,
+   so the word field ran off the page instead of wrapping inside its column */
+.feat>*{min-width:0}
 @media(max-width:820px){.feat{grid-template-columns:1fr;gap:22px}}
 .feat figure{margin:0}
 .feat video,.feat .gi{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;
