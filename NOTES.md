@@ -1139,3 +1139,69 @@ Same embed, deliberately different treatment; don't "unify" them.
   pages — see *raster.art moved to slug URLs* above. Worth fixing in the HTML,
   and worth moving every Raster link to the slug form while you are in there,
   since the numeric ones now survive only by redirect.
+
+## Ghosts of Mobility, and how bashobits' work is actually built
+
+A later collection than *Seasons of Mobility*, fully on-chain, contract
+`0x265acf7F56Cd45b954a1D6bb2A38deDD642F22cD`. **Each token carries two
+artworks** and they are built completely differently:
+
+- **Gates** — a self-contained animated SVG, 2048², ~49KB, 121 `<animate>`
+  elements, no rasters and no external references. Serves same-origin and
+  animates in `<img>` or `background-image`.
+- **Ghosts** — an HTML page with a `<canvas>` and ~33KB of JavaScript, drawing
+  from a seeded xorshift PRNG. `window.GOM_TRAITS` carries the token hash and a
+  `rand_indices` string that selects the options.
+
+**The Gates SVG is one parametric template.** Every token ships all nine
+spacetime modes, all five sky traits and all five settlement tiers, and a
+`<style>` block in `<defs>` turns exactly one of each on with `display:block`
+plus a `--trait-color`. Token 3 sets `spacetime-dust`, `stars-trait`,
+`town-location`, `#f7d7f7` on a `#3C0D44` ground — matching its published trait
+table exactly. So a work's traits can be read straight out of its SVG, and a
+different work can be produced by changing three CSS lines.
+
+**Trait names map to code, and the mapping is worth knowing:**
+
+| Trait | What it drives |
+|---|---|
+| Backdrop | one of nine `bgsOptions`: a `trc` five-colour vehicle palette, an HSL ground, a `trailColor` |
+| Spacetime | which of nine full-canvas pattern layers is shown |
+| Sky | sun, comet, moonbow, nebula or stars |
+| Location | village/town/city/metropolis/megalopolis, which sets how many trails |
+| Entropy | the path the vehicles take |
+
+`rand_indices` is read positionally — index 2 picks the backdrop. Token 3's
+`6,1,6,6,2` gives Plum Blossom: `trc` `#b50719 #d1ba02 #E5D0A8 #607D3B #B18969`,
+`trailColor` `#f7d7f7` — the same value the Gates SVG sets as `--trait-color`.
+The two artworks share trait data.
+
+**Entropy is a formula, not a mood.** From `MorphingVehicle.update()`:
+
+```
+Balance    y = baseY + sin(frame*0.05 + x*0.01) * 20
+Wabisabi   y = baseY + noise(x*0.005, frame*0.003) mapped to ±10;  x wobbles ±2
+Freestyle  y = baseY + noise(x*0.005, frame*0.005) mapped to ±50;  x wobbles ±3
+```
+
+**The vehicles morph, and the vertex tables exist to let them.** train, bus and
+car are each **exactly twelve points** against a base length and height, so a
+vehicle interpolates point-for-point into another type: hold 60–240 frames, morph
+over 120 with an ease-in-out. They also have a life rather than a wrap — fade in
+over 30–90 frames, live 300–900, fade out over 60–120, then reset elsewhere.
+Stroked outline, `lineWidth` 3, no fill.
+
+`/curated/seasons-of-mobility/` reproduces that behaviour in SVG with his
+constants, over the token 3 Gates as a page background. **Note the collections
+differ** — the page is about *Seasons of Mobility* and the background is a
+*Ghosts* work, which is why the foot says so.
+
+### The car outlines in the Gates SVG are vehicles, not routes
+
+`car-trail-town-1` and its siblings look like closed loops of coordinates and
+read as street layouts. They are car, bus and train **silhouettes**. The three
+numbered variants are the motion trail: the same outline at x−100 and x−200,
+stroke-width 32/24/20, opacity 1/0.6/0.4.
+
+They carry `filter="url(#motionBlur2)"`, **which the file never defines**, so
+they render unfiltered. Do not add a blur to "restore" it.
