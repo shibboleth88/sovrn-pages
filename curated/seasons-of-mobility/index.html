@@ -37,6 +37,27 @@
  seven spread over six thousand pixels would put roughly one in view. Soft and low-contrast on
  purpose, because they pass over running text. */
 body{position:relative;overflow-x:clip}
+/* ---------- the Gates behind the page ----------
+ bashobits' Ghosts of Mobility token 3, "Plum Blossom Dust Town with Balance
+ and Stars" — the Gates artwork, which is the self-contained animated SVG each
+ token carries alongside its canvas-rendered Ghosts. Same-origin and 49KB, so
+ it has the page's own availability and animates in a background-image.
+
+ It is a different collection from the one this page is about, so it is
+ credited in the foot rather than passed off as Seasons of Mobility. The scrim
+ is heavy: this is the ground the page stands on, not the subject. */
+:root{--gates-scrim:.90;--gates-zoom:2.4}
+body::before{content:"";position:fixed;top:50%;left:50%;width:100vmax;height:100vmax;
+ z-index:0;pointer-events:none;will-change:transform;
+ transform:translate(-50%,-50%) scale(var(--gates-zoom));
+ background:url("/img/mobility-page/gates-3.svg") center/cover no-repeat}
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+ background:rgba(233,233,229,var(--gates-scrim))}
+@media (prefers-color-scheme: dark){
+ body::after{background:rgba(23,25,30,var(--gates-scrim))}}
+body>*{position:relative;z-index:1}
+@media (prefers-reduced-motion: reduce){body::before{display:none}}
+
 #mob{position:absolute;top:0;left:0;width:100%;z-index:3;pointer-events:none;
  overflow:hidden}
 #mob svg{position:absolute;top:0;left:0;display:block;will-change:transform;
@@ -126,7 +147,8 @@ body{position:relative;overflow-x:clip}
 </div>
 <p class="more"><a href="https://www.raster.art/artwork/2155303" target="_blank">View the collection on Raster</a><a href="https://bashobits.com/" target="_blank">bashobits.com</a></p>
 </div>
-<p class="foot">bashobits, <i>Seasons of Mobility</i>, 2023. &copy; bashobits. <i>Admiral Rush</i> is held in the permanent collection of the Francisco Carolinum, Linz.</p>
+<p class="foot">Behind this page: <i>Plum Blossom Dust Town with Balance and Stars</i>, the Gates artwork of <a class="fc" href="https://www.bashobits.com/works/mob-gho-0003-plum-blossom-dust-town-with-balance-and-stars/" target="_blank" rel="noopener">Ghosts of Mobility</a> token 3 &mdash; a later collection in the same world. The vehicles crossing the page follow the motion of its Ghosts renderer.<br>
+bashobits, <i>Seasons of Mobility</i>, 2023. &copy; bashobits. <i>Admiral Rush</i> is held in the permanent collection of the Francisco Carolinum, Linz.</p>
 </div>
 <div id="mob" aria-hidden="true"></div>
 <div id="lb" role="dialog" aria-label="Artwork"><button id="lbx" aria-label="Close">&times;</button><img id="lbi" alt=""><p class="cap" id="lbc"></p></div>
@@ -147,86 +169,111 @@ onkeydown=e=>{if(e.key=="Escape")unzoom();};
    Colours are bashobits' own: the sequence his #g gradient animates through,
    plus the accent from each of the three colourways. His near-white is left
    out because it disappears on paper. */
+/* The vehicles, on bashobits' own model.
+   Ghosts of Mobility renders to canvas from a seeded PRNG; this is the same
+   behaviour in SVG, with his constants rather than invented ones:
+
+     - three twelve-vertex outlines (train, bus, car) defined against a base
+       length and height. All three carry twelve points precisely so a vehicle
+       can morph into another type vertex by vertex.
+     - hold 60-240 frames, then morph over 120 with an ease-in-out.
+     - Entropy "Balance", which is this token's trait: y = baseY +
+       sin(frame*0.05 + x*0.01) * 20. A gentle rise and fall rather than a
+       straight line.
+     - fade in over 30-90 frames, live 300-900, fade out over 60-120, then
+       reset somewhere new. Vehicles arrive and leave rather than wrapping.
+     - stroked outline, no fill.
+
+   The three-deep trail is from the Gates SVG rather than the canvas renderer,
+   kept because it reads as motion at page scale.
+   Colours are the Plum Blossom backdrop's own: bgs.trc for the vehicles,
+   trailColor #f7d7f7 -- the same value the Gates SVG sets as --trait-color. */
 (function(){
  const layer=document.getElementById("mob");
  if(!layer||matchMedia("(prefers-reduced-motion: reduce)").matches)return;
- const COL=["#f51b05","#a60228","#343deb","#202691","#ea1dc3","#d81159","#fa5050"],
-       VISIBLE=3;   // roughly how many should be in view at once
- /* bashobits' own vehicles, lifted verbatim: the "-1" trail path for each type.
-    The trail in the artwork is the same outline drawn three times, each copy
-    100 units further back at a lighter weight, so it is generated here rather
-    than copied. His paths carry filter="url(#motionBlur2)", which the file
-    never defines -- so they render unfiltered, and they render unfiltered here
-    too. Each shape faces right; travelling left flips it. */
- const SHAPE={
-  car:{vb:"448 928 840 202", ar:840/202,
-   d:"M 714 964 L 964 944 L 1044 994 L 1114 1004 L 1204 1024 L 1272 1054 "
-    +"L 1250 1114 L 894 1114 L 714 1114 L 664 1074 L 714 1024 Z"},
-  bus:{vb:"308 858 1142 332", ar:1142/332,
-   d:"M 524 874 L 844 874 L 934 874 L 1224 874 L 1314 874 L 1359 874 "
-    +"L 1414 934 L 1434 1094 L 1414 1174 L 934 1174 L 844 1174 L 524 1174 Z"},
-  train:{vb:"108 858 1630 332", ar:1630/332,
-   d:"M 324 874 L 844 874 L 934 874 L 1514 874 L 1514 874 L 1564 964 "
-    +"L 1704 1024 L 1722 1084 L 1604 1174 L 934 1174 L 844 1174 L 324 1174 Z"}};
- const KINDS=["car","bus","train"];
+ const TRC=["#b50719","#d1ba02","#E5D0A8","#607D3B","#B18969"],
+       TYPES=["train","bus","car"], MORPH=120, VISIBLE=3;
  const rnd=(a,b)=>a+Math.random()*(b-a);
- const svg=(k,c)=>{const S=SHAPE[k];
-   return '<svg viewBox="'+S.vb+'" fill="none" stroke="'+c
-    +'" stroke-linejoin="round" stroke-linecap="round">'
-    +'<path d="'+S.d+'" transform="translate(-200,0)" stroke-width="20" opacity=".4"/>'
-    +'<path d="'+S.d+'" transform="translate(-100,0)" stroke-width="24" opacity=".65"/>'
-    +'<path d="'+S.d+'" stroke-width="32"/></svg>';};
- /* The page grows after load: the season grid is lazy, so scrollHeight at
-    startup is a fraction of the finished page. Measuring once would strand the
-    whole fleet in the top third and leave the layer too short to hold them, so
-    the height and the fleet are kept in step with the document as it settles. */
+ const pick=a=>a[Math.floor(Math.random()*a.length)];
+ const ease=t=>t<0.5?2*t*t:-1+(4-2*t)*t;
+ const lerp=(a,b,t)=>a+(b-a)*t;
+ // bashobits' vertex tables, verbatim
+ const SHAPE=(type,L,H)=>{
+  if(type==="train")return [[-L,-H*.5],[-L*.3,-H*.5],[-L*.15,-H*.5],[L*.15,-H*.5],[L*.2,-H*.5],[L*.25,-H*.2],[L*.35,0],[L*.38,H*.2],[L*.3,H*.5],[-L*.15,H*.5],[-L*.3,H*.5],[-L,H*.5]];
+  if(type==="bus")  return [[-L*.5,-H*.5],[-L*.3,-H*.5],[-L*.15,-H*.5],[0,-H*.5],[L*.15,-H*.5],[L*.25,-H*.5],[L*.3,-H*.3],[L*.32,H*.3],[L*.3,H*.5],[-L*.15,H*.5],[-L*.3,H*.5],[-L*.5,H*.5]];
+  return [[-L*.3,-H*.35],[-L*.1,-H*.5],[0,-H*.5],[L*.1,-H*.2],[L*.2,-H*.1],[L*.27,H*.1],[L*.25,H*.3],[L*.1,H*.3],[-L*.1,H*.3],[-L*.3,H*.3],[-L*.35,H*.1],[-L*.3,-H*.1]];
+ };
+ const NS="http://www.w3.org/2000/svg";
+ const art=document.createElementNS(NS,"svg");
+ art.setAttribute("width","100%"); art.setAttribute("height","100%");
+ art.setAttribute("preserveAspectRatio","none"); layer.appendChild(art);
+
  const docH=()=>Math.max(document.documentElement.scrollHeight,innerHeight);
  const want=h=>Math.min(28,Math.max(8,Math.round(VISIBLE*h/innerHeight)));
- let H=docH();
+ let H=docH(), W=layer.clientWidth||innerWidth, frame=0;
  const cars=[];
- const add=i=>{
-   const kind=KINDS[i%KINDS.length];
-   const el=document.createElement("div");
-   el.innerHTML=svg(kind,COL[i%COL.length]);
-   const g=el.firstChild; layer.appendChild(g);
-   const c={g:g,ar:SHAPE[kind].ar}; cars.push(c); return c;
- };
- function fit(){
-   H=docH(); layer.style.height=H+"px";
-   const n=want(H);
-   while(cars.length<n) seed(add(cars.length),true);
-   for(const c of cars) if(c.y>H-c.h) c.y=Math.max(0,H-c.h);
+
+ function add(){
+   const g=document.createElementNS(NS,"g");
+   const paths=[0,1,2].map(i=>{
+     const q=document.createElementNS(NS,"path");
+     q.setAttribute("fill","none"); q.setAttribute("stroke-linejoin","round");
+     q.setAttribute("stroke-width",[3,2.4,2][i]);
+     q.setAttribute("opacity",[1,.65,.4][i]);
+     g.appendChild(q); return q;});
+   art.appendChild(g);
+   const c={g:g,paths:paths}; cars.push(c); return c;
  }
- function seed(c,first){
-   const w=rnd(120,240);                     // sprite width in px
-   c.w=w; c.h=w/c.ar;
-   c.dir=Math.random()<.5?1:-1;
-   c.v=rnd(34,92)*c.dir;                     // px per second
-   c.y=rnd(0,Math.max(1,H-c.h));   // anywhere down the page, not just on screen
-   c.x=first?rnd(-c.w,innerWidth):(c.dir>0?-c.w-rnd(0,320):innerWidth+rnd(0,320));
-   c.g.setAttribute("width",w.toFixed(1));
-   c.g.setAttribute("height",c.h.toFixed(1));
-   c.seeded=true;
+ function reset(c){
+   c.L=rnd(120,240); c.Hh=c.L*0.2;
+   c.x=rnd(-c.L,W); c.baseY=rnd(H*0.03,H*0.97); c.y=c.baseY;
+   c.sp=rnd(0.6,1.6);                       // px per frame, ~36-96px/s at 60fps
+   c.col=pick(TRC);
+   c.fadeIn=frame; c.fadeInDur=rnd(30,90);
+   c.fadeOut=frame+rnd(300,900); c.fadeOutDur=rnd(60,120);
+   c.type=pick(TYPES); c.next=pick(TYPES.filter(t=>t!==c.type));
+   c.v=SHAPE(c.type,c.L,c.Hh); c.tv=SHAPE(c.next,c.L,c.Hh);
+   c.prog=0; c.morphing=false; c.hold=0; c.holdDur=Math.floor(rnd(60,240));
+   c.paths.forEach(q=>q.setAttribute("stroke",c.col));
+ }
+ function step(c){
+   c.x+=c.sp;
+   c.y=c.baseY+Math.sin(frame*0.05+c.x*0.01)*20;      // Entropy: Balance
+   if(c.x>W+c.L||frame>=c.fadeOut+c.fadeOutDur){reset(c);return;}
+   if(!c.morphing){ if(++c.hold>=c.holdDur){c.morphing=true;c.hold=0;} }
+   else{
+     c.prog+=1/MORPH;
+     if(c.prog>=1){ c.type=c.next; c.v=c.tv;
+       c.next=pick(TYPES.filter(t=>t!==c.type));
+       c.tv=SHAPE(c.next,c.L,c.Hh); c.prog=0; c.morphing=false;
+       c.holdDur=Math.floor(rnd(60,240)); }
+   }
+   let a;
+   if(frame<c.fadeIn+c.fadeInDur) a=(frame-c.fadeIn)/c.fadeInDur;
+   else if(frame<c.fadeOut) a=1;
+   else a=1-(frame-c.fadeOut)/c.fadeOutDur;
+   if(a<=0){c.g.setAttribute("opacity","0");return;}
+   c.g.setAttribute("opacity",a.toFixed(3));
+   const t=ease(c.prog);
+   const pts=c.v.map((v,i)=>[lerp(v[0],c.tv[i][0],t),lerp(v[1],c.tv[i][1],t)]);
+   for(let k=0;k<3;k++){
+     const off=-k*c.L*0.14;
+     c.paths[k].setAttribute("d","M"+pts.map(q=>(q[0]+off).toFixed(1)+" "+q[1].toFixed(1)).join("L")+"Z");
+   }
+   c.g.setAttribute("transform","translate("+c.x.toFixed(1)+","+c.y.toFixed(1)+")");
+ }
+ function fit(){
+   H=docH(); W=layer.clientWidth||innerWidth;
+   layer.style.height=H+"px";
+   art.setAttribute("viewBox","0 0 "+W+" "+H);
+   const n=want(H);
+   while(cars.length<n) reset(add());
+   for(const c of cars) if(c.baseY>H) c.baseY=rnd(0,H);
  }
  fit();
- // the grid images land late; watch the document instead of guessing a delay
  if(window.ResizeObserver) new ResizeObserver(fit).observe(document.body);
- addEventListener("load",fit);
- let last=performance.now();
- function step(now){
-   let dt=(now-last)/1000; last=now;
-   if(dt>0.05)dt=0.05;                       // a backgrounded tab must not teleport them
-   for(const c of cars){
-     c.x+=c.v*dt;
-     if(c.v>0? c.x>innerWidth : c.x+c.w<0) seed(c,false);
-     // the head points right; travelling left, flip about the sprite's centre
-     c.g.style.transform="translate("+c.x.toFixed(1)+"px,"+c.y.toFixed(1)+"px)"
-       +(c.v<0?" scaleX(-1)":"");
-   }
-   requestAnimationFrame(step);
- }
- requestAnimationFrame(step);
- addEventListener("resize",fit);
+ addEventListener("load",fit); addEventListener("resize",fit);
+ (function loop(){ frame++; for(const c of cars) step(c); requestAnimationFrame(loop); })();
 })();
 
 </script></body></html>
