@@ -90,6 +90,19 @@ body{position:relative;overflow-x:clip}
  --rule:#5e2f68; --hair:#4d2156; --copper:#e8c84a;
  --surface:#4a1a53; --surface-2:#3a1042; --plate:#2a0930;
 }
+
+/* The Ghosts artwork's own spacetime, as the ground the page stands on: a
+   still of the Dust field from token 3, taken from a band of the render with
+   no vehicles in it, since the page has its own traffic crossing it.
+   It is fixed and scrimmed -- texture, not subject. */
+:root{--dust-scrim:.72}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+ background:url("/img/mobility-page/dust-field.jpg") center/cover no-repeat}
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+ background:rgba(60,13,68,var(--dust-scrim))}
+/* the live Ghosts renderer, framed at the collection's own ratio */
+.gframe{display:block;width:100%;aspect-ratio:16/9;border:0;background:var(--plate);
+ border-radius:2px}
 body>*{position:relative;z-index:1}
 
 #mob{position:absolute;top:0;left:0;width:100%;z-index:3;pointer-events:none;
@@ -275,8 +288,10 @@ would leave behind.</p>
 <p class="kick">Ghosts of Mobility &middot; 366 works &middot; 2025 &middot; fully on-chain</p>
 <div class="feat">
 <figure>
-<img class="gi" src="/img/mobility-page/ghosts-3.jpg" alt="Vehicles crossing a plum starfield: the Ghosts artwork of Plum Blossom Dust Town with Balance and Stars" width="700" height="394" loading="lazy">
-<figcaption>A still of <i>Plum Blossom Dust Town with Balance and Stars</i> &middot; <a class="fc" href="https://www.bashobits.com/works/mob-gho-0003-plum-blossom-dust-town-with-balance-and-stars/" target="_blank" rel="noopener">see it move</a></figcaption>
+<iframe class="gframe" src="https://www.bashobits.com/ghosts-of-mobility/3.html"
+ title="Plum Blossom Dust Town with Balance and Stars, the Ghosts artwork, rendered live"
+ loading="lazy" referrerpolicy="no-referrer" scrolling="no"></iframe>
+<figcaption><i>Plum Blossom Dust Town with Balance and Stars</i>, running &middot; <a class="fc" href="https://www.bashobits.com/works/mob-gho-0003-plum-blossom-dust-town-with-balance-and-stars/" target="_blank" rel="noopener">on bashobits.com</a></figcaption>
 </figure>
 <div class="body">
 <p>Every token carries two artworks: Gates, a threshold that previews it, and Ghosts,
