@@ -1205,3 +1205,36 @@ stroke-width 32/24/20, opacity 1/0.6/0.4.
 
 They carry `filter="url(#motionBlur2)"`, **which the file never defines**, so
 they render unfiltered. Do not add a blur to "restore" it.
+
+### The Ghosts panel is a still, and the Gates could not do that job
+
+The Mobility page's Ghosts panel began as the Gates SVG, which had been the
+page background. When the page took the plum as its own ground the artwork
+disappeared: the Gates' base rect is `#3C0D44`, exactly the page colour.
+Measured across its eight-second cycle, at 400px:
+
+```
+t=200ms   0.0%   t=2800ms  3.4%   t=5200ms  1.7%
+t=1500ms  0.6%   t=4000ms  3.0%   t=7600ms  0.0%
+```
+
+Never more than 3.4% of pixels differ from flat plum, and 0% for part of every
+cycle. It read as an empty box. It had only worked when the page was near-black.
+
+The panel now uses a still of the **Ghosts** artwork — the canvas renderer, which
+draws on a darker plum and so has contrast against the page. Regenerate with:
+
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless \
+  --disable-gpu --hide-scrollbars --window-size=1400,788 --virtual-time-budget=4000 \
+  --screenshot=out.png "file://.../ghosts-of-mobility/3.html"
+```
+
+then downscale to 700×394, the site's own panel size. It is the **first frame**:
+headless Chrome does not advance a chained `requestAnimationFrame`, so the
+virtual-time budget changes nothing and every run gives the same image. That is
+fine here — the renderer paints its background and vehicles on frame one — but
+do not read the budget as "four seconds in".
+
+The caption says it is a still and links out to the moving work, because a
+frozen frame of a perpetual-motion piece is not the piece.
