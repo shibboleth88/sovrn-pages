@@ -126,8 +126,13 @@
 </div>
 <div id="mob" aria-hidden="true"></div>
 <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
-<defs><filter id="mvTail" filterUnits="userSpaceOnUse"><feGaussianBlur stdDeviation="15"/></filter>
-<filter id="mvGlow" filterUnits="userSpaceOnUse"><feGaussianBlur stdDeviation="5"/></filter></defs></svg>
+<defs><!-- The artwork uses filterUnits="userSpaceOnUse" with no region, which is fine
+ on its own 2048px canvas and collapses to nothing in a 300x120 viewBox: the
+ blurred tail and glow simply stop rendering and only the head circle survives.
+ An explicit region, generous enough to hold a 15px blur, is what makes the
+ comet a comet here. -->
+<filter id="mvTail" x="-60%" y="-150%" width="220%" height="400%"><feGaussianBlur stdDeviation="15"/></filter>
+<filter id="mvGlow" x="-60%" y="-150%" width="220%" height="400%"><feGaussianBlur stdDeviation="5"/></filter></defs></svg>
 <div id="lb" role="dialog" aria-label="Artwork"><button id="lbx" aria-label="Close">&times;</button><img id="lbi" alt=""><p class="cap" id="lbc"></p></div>
 <script>
 const B="img/seasons-of-mobility/";
