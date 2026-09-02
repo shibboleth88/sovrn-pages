@@ -450,3 +450,42 @@ confident ones are the ones nobody checks.
 Where a source does not state a figure, the field is omitted rather than filled
 with a plausible one, and the page says the source does not give it. A backfilled
 guess is indistinguishable from a fact once it is written down.
+
+### Simulating motion proves the algorithm, never the pixels
+
+The Seasons of Mobility vehicles were verified by running their steering maths
+over twenty simulated minutes: no drift out of lane, no speed out of range, no
+vehicle stranded off-screen. It passed cleanly while the page was rendering
+seven featureless discs. The sprite used `filterUnits="userSpaceOnUse"` with no
+explicit region — correct on bashobits' 2048px canvas, collapsing to nothing in
+a 300×120 viewBox, so the blurred tail and glow simply did not draw and only the
+head circle survived.
+
+A simulation tests the model you wrote, and the model had no opinion about
+filters. Look at the thing in a browser before believing a green result about
+how it looks.
+
+### Measure the document after it settles, not at load
+
+The vehicle layer sized itself from `scrollHeight` at startup and got 2172px
+against a finished page of 2585px, because the season grid is lazy and none of
+it had arrived. The layer was too short to hold the fleet, the fleet was sized
+for a page a third too small, and everything was stranded near the top.
+
+Anything that scales to page height must watch the page: a `ResizeObserver` on
+`body` plus the `load` event, re-fitting as content lands. Do not guess a delay.
+The bug is invisible on a fast connection with a warm cache, which is exactly
+the condition you develop under.
+
+### Verify animation somewhere the tab is actually visible
+
+None of the usual routes could confirm these vehicles were moving. The preview
+pane reports `document.hidden`, so rAF never fires and every position reads
+`0px/s`; screenshots of it go stale. Old and new headless Chrome do not advance
+a chained rAF either, so two `--virtual-time-budget` runs compared frame one of
+two different random seeds and produced a confident, meaningless "all moved".
+
+A driven real browser works, and a screenshot forces the frame that lets rAF and
+ResizeObserver run. Failing that, say the motion is unverified rather than
+implying otherwise — and when a check returns an empty set, make sure it cannot
+read as a pass. `every()` over no elements is `true`.
