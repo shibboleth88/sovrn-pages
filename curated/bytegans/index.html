@@ -148,6 +148,16 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 .homemark:hover,.homemark:focus-visible{opacity:1;transform:scale(1.06)}
 .homemark img{width:44px;height:44px;display:block;border-radius:50%}
 @media(prefers-reduced-motion:reduce){.homemark{transition:none}}
+
+/* the on-chain verification badge; this page keeps the shared palette */
+.occ{display:flex;align-items:center;gap:12px;margin:var(--gap) 0 0;padding:11px 14px;
+ background:var(--surface);border:1px solid var(--rule);text-decoration:none;max-width:62ch;
+ transition:border-color .18s}
+.occ:hover{border-color:var(--accent)}
+.occ img{flex:none;display:block}
+.occ span{font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--slate)}
+.occ b{display:block;color:var(--ink);letter-spacing:.06em;margin-bottom:2px}
+.occ code{color:var(--accent)}
 </style><link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -193,6 +203,7 @@ h2::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:2px;
 <h2>The artist</h2>
 <div class="duo"><figure><picture><source type="image/avif" srcset="/img/derived/pages/bytegans/artist-352.avif 352w, /img/derived/pages/bytegans/artist-720.avif 720w, /img/derived/pages/bytegans/artist-992.avif 992w" sizes="(max-width: 700px) 331px, 360px"><source type="image/webp" srcset="/img/derived/pages/bytegans/artist-352.webp 352w, /img/derived/pages/bytegans/artist-720.webp 720w, /img/derived/pages/bytegans/artist-992.webp 992w" sizes="(max-width: 700px) 331px, 360px"><img src="img/pages/bytegans/artist.jpg" alt="Pindar Van Arman with a painting robot" loading="lazy"></picture></figure><div class="prose"><p>Pindar Van Arman is an AI generative artist who has been collaborating with artificially intelligent painting robots since 2006.</p><p>His art has been exhibited internationally and is featured in the critically acclaimed documentary Machine, The Art of Intelligence, the NVIDIA AI Art Gallery, and in the the LACMA permanent collection.</p><p class="social"><a href="https://www.vanarman.com" target="_blank">vanarman.com</a><a href="https://bitgans.com/" target="_blank">bitgans.com</a><a href="https://x.com/vanarman" target="_blank">X</a><a href="https://www.instagram.com/pindar.vanarman/" target="_blank">Instagram</a></p></div></div>
 <figure class="feature"><picture><source type="image/avif" srcset="/img/derived/pages/bytegans/panels-656.avif 656w, /img/derived/pages/bytegans/panels-992.avif 992w, /img/derived/pages/bytegans/panels-1280.avif 1280w" sizes="(max-width: 700px) 331px, 956px"><source type="image/webp" srcset="/img/derived/pages/bytegans/panels-656.webp 656w, /img/derived/pages/bytegans/panels-992.webp 992w, /img/derived/pages/bytegans/panels-1280.webp 1280w" sizes="(max-width: 700px) 331px, 956px"><img src="img/pages/bytegans/panels.jpg" alt="Three byteGANs as physical panels" loading="lazy"></picture></figure>
+<a class="occ" href="https://onchainchecker.xyz/collection/ethereum/0x45c67b2b81067911de611e11fc5c7a4605ca4162/1" target="_blank" rel="noopener"><img src="/img/badges/onchainchecker.gif" alt="" width="30" height="30"><span><b>5/5 &mdash; fully on-chain</b>metadata and image both read straight from <code>tokenURI</code>, verified by OnChainChecker</span></a>
 <p class="links"><a href="https://www.raster.art/artwork/bytegans-by-pindar-van-arman" target="_blank">View on Raster</a><a href="https://superrare.com/vanarman" target="_blank">byteGANs on SuperRare</a><a href="https://twitter.com/vanarmanartist" target="_blank">Pindar Van Arman on X</a></p>
 <p class="foot">byteGANs, Pindar Van Arman, 2023. A kilobyte apiece, fully on-chain. A curated collection on <a class="fc" href="/">sovrn.art</a>.</p>
 </div>
