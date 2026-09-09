@@ -35,18 +35,18 @@
 .cube figcaption a:hover{color:var(--paper)}
 
 /* One cent, turning, beside the highlights. Cropped to the coin so the 516px
-   is all coin rather than 30% coin and 70% studio backdrop, and circular
-   because that is already how this page renders a penny -- see .coin img. It
-   is a sibling of the hero coin, not a feature panel bolted on. */
+   is all coin rather than 30% coin and 70% studio backdrop, and the studio
+   backdrop is keyed out entirely -- it sat at (25,25,30) against a (14,14,14)
+   page, so no blend mode could hide it and no format without alpha could
+   either. Hence an animated WebP: the backdrop is cool and the copper is warm,
+   which separates cleanly on R-B, and <source media> hands a still to anyone
+   who asked for less motion without needing script. */
 .hi{display:grid;grid-template-columns:1fr minmax(150px,220px);gap:34px;align-items:start}
 .hi>*{min-width:0}
 @media(max-width:760px){.hi{grid-template-columns:1fr;gap:20px}
  .turn{max-width:220px;margin-inline:auto}}
 .turn{margin:0}
-.turn video{display:block;width:100%;height:auto;aspect-ratio:1;border-radius:50%;
- background:var(--dim)}
-.turn figcaption{margin-top:9px;font:400 10px/1.5 "IBM Plex Mono",monospace;
- letter-spacing:.08em;color:var(--mute);text-align:center}
+.turn img{display:block;width:100%;height:auto;aspect-ratio:1}
 .inq{margin:30px 0 10px;text-align:center}.inq a{display:inline-block;padding:19px 40px;font-size:13px;line-height:1;letter-spacing:.16em}
 .ends{margin:20px 0 6px;display:flex;justify-content:center;flex-wrap:wrap;gap:14px 30px;
  font:500 11px/1.6 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase}
@@ -183,19 +183,6 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/transitions.css">
 <script src="/transitions.js">
-/* The turntables autoplay, which is right for artwork and wrong for anyone who
-   asked for less motion; and autoplay is a request a browser may refuse, so a
-   refusal turns the controls on rather than leaving a dead poster. */
-(function(){
- const vs=[...document.querySelectorAll(".turn video")];
- if(!vs.length)return;
- if(matchMedia("(prefers-reduced-motion: reduce)").matches){
-   vs.forEach(v=>{v.autoplay=false;v.loop=false;v.controls=true;v.pause();});
-   return;
- }
- vs.forEach(v=>{const go=()=>{const p=v.play();if(p&&p.catch)p.catch(()=>{v.controls=true;});};
-   v.readyState?go():v.addEventListener("loadeddata",go,{once:true});});
-})();
 </script>
 </head><body><a class="homemark" href="/" aria-label="sovrn.art — home" title="sovrn.art"><img src="/img/share/sovrn-mark.webp" alt="" width="44" height="44"></a><nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></nav><div class="wrap"><div class="hero"><span class="coin"><picture><source type="image/avif" srcset="/img/derived/homepage/cent_homepage-336.avif 336w, /img/derived/homepage/cent_homepage-672.avif 672w, /img/derived/homepage/cent_homepage-860.avif 860w" sizes="336px"><source type="image/webp" srcset="/img/derived/homepage/cent_homepage-336.webp 336w, /img/derived/homepage/cent_homepage-672.webp 672w, /img/derived/homepage/cent_homepage-860.webp 860w" sizes="336px"><img class="vt-lead" src="/img/homepage/cent_homepage.jpg" alt="A 1979 copper penny from CENTS" loading="lazy"></picture></span><div><h1>CENTS</h1><p class="by">Rutherford Chang</p></div></div></div><div class="field" role="img" aria-label="Several hundred of the ten thousand cents, each photographed before it was destroyed"><img src="img/cents-field/band.webp" alt="" loading="lazy" width="2583" height="347"></div><div class="wrap tail2">
 <div class="handoff">
@@ -208,9 +195,7 @@
 </div>
 </div>
 <div class="hi"><div><h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul></div>
-<figure class="turn"><video src="/vid/cents-3d/cent-321-turn.mp4" poster="/img/cents-3d/cent-321-turn.jpg"
- width="516" height="516" autoplay muted loop playsinline preload="metadata"
- aria-label="Cent 321 turning, both faces"></video><figcaption>#321, from the <a class="fc" href="https://3dcents.vercel.app/" target="_blank" rel="noopener">CENTS 3D gallery</a></figcaption></figure></div><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2></div><div class="gal" id="g"></div><div class="wrap tail"><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p>
+<figure class="turn"><picture><source media="(prefers-reduced-motion: reduce)" srcset="/img/cents-3d/cent-321-still.webp"><img src="/img/cents-3d/cent-321-turn.webp" alt="A cent from the collection, turning to show both faces" width="516" height="516" loading="lazy" decoding="async"></picture></figure></div><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2></div><div class="gal" id="g"></div><div class="wrap tail"><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p>
 </div>
 <div class="field" role="img" aria-label="Several hundred more of the ten thousand cents, before they were smelted"><img src="/img/cents-field/field.webp" alt="" loading="lazy" width="2116" height="1252"></div>
 <div class="wrap tail">
