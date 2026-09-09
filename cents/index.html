@@ -32,7 +32,21 @@
 .cube iframe{width:100%;aspect-ratio:1;display:block;border:0;background:transparent}
 .cube figcaption{margin-top:12px;font:400 10.5px/1.7 "IBM Plex Mono",monospace;color:var(--mute);text-align:center}
 .cube figcaption a{color:var(--cut);text-decoration:none;border-bottom:1px solid var(--cu)}
-.cube figcaption a:hover{color:var(--paper)}.inq{margin:30px 0 10px;text-align:center}.inq a{display:inline-block;padding:19px 40px;font-size:13px;line-height:1;letter-spacing:.16em}
+.cube figcaption a:hover{color:var(--paper)}
+/* the 3D turntables. Each clip is a 6s 360 at 480px; the source GIFs were
+   7-29MB apiece, which is why these are video. Aspect ratios differ slightly
+   between coins, so the tiles set their own and the video covers. */
+.body3d{max-width:74ch;margin-bottom:16px}
+.body3d p{font-size:14px;line-height:1.6;color:var(--mute)}
+.d3{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:38px}
+@media(max-width:900px){.d3{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:520px){.d3{grid-template-columns:repeat(2,1fr)}}
+.d3 figure{margin:0}
+.d3 video{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;
+ background:var(--dim);border-radius:2px}
+.d3 figcaption{margin-top:6px;font:500 10px/1.4 "IBM Plex Mono",monospace;
+ letter-spacing:.1em;color:var(--mute)}
+.inq{margin:30px 0 10px;text-align:center}.inq a{display:inline-block;padding:19px 40px;font-size:13px;line-height:1;letter-spacing:.16em}
 .ends{margin:20px 0 6px;display:flex;justify-content:center;flex-wrap:wrap;gap:14px 30px;
  font:500 11px/1.6 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase}
 .ends a{color:var(--mute);text-decoration:none;border-bottom:1px solid var(--cu);
@@ -167,7 +181,21 @@
 <link rel="icon" href="/favicon-32.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/transitions.css">
-<script src="/transitions.js"></script>
+<script src="/transitions.js">
+/* The turntables autoplay, which is right for artwork and wrong for anyone who
+   asked for less motion; and autoplay is a request a browser may refuse, so a
+   refusal turns the controls on rather than leaving a dead poster. */
+(function(){
+ const vs=[...document.querySelectorAll(".d3 video")];
+ if(!vs.length)return;
+ if(matchMedia("(prefers-reduced-motion: reduce)").matches){
+   vs.forEach(v=>{v.autoplay=false;v.loop=false;v.controls=true;v.pause();});
+   return;
+ }
+ vs.forEach(v=>{const go=()=>{const p=v.play();if(p&&p.catch)p.catch(()=>{v.controls=true;});};
+   v.readyState?go():v.addEventListener("loadeddata",go,{once:true});});
+})();
+</script>
 </head><body><a class="homemark" href="/" aria-label="sovrn.art — home" title="sovrn.art"><img src="/img/share/sovrn-mark.webp" alt="" width="44" height="44"></a><nav class="nav"><button id="mb" aria-expanded="false" aria-controls="mn"><span></span><span></span><span></span></button><ul id="mn" hidden></ul></nav><div class="wrap"><div class="hero"><span class="coin"><picture><source type="image/avif" srcset="/img/derived/homepage/cent_homepage-336.avif 336w, /img/derived/homepage/cent_homepage-672.avif 672w, /img/derived/homepage/cent_homepage-860.avif 860w" sizes="336px"><source type="image/webp" srcset="/img/derived/homepage/cent_homepage-336.webp 336w, /img/derived/homepage/cent_homepage-672.webp 672w, /img/derived/homepage/cent_homepage-860.webp 860w" sizes="336px"><img class="vt-lead" src="/img/homepage/cent_homepage.jpg" alt="A 1979 copper penny from CENTS" loading="lazy"></picture></span><div><h1>CENTS</h1><p class="by">Rutherford Chang</p></div></div></div><div class="field" role="img" aria-label="Several hundred of the ten thousand cents, each photographed before it was destroyed"><img src="img/cents-field/band.webp" alt="" loading="lazy" width="2583" height="347"></div><div class="wrap tail2">
 <div class="handoff">
 <a class="cta" href="https://cents.vision/" target="_blank">cents.vision <em>collection explorer</em></a>
@@ -182,6 +210,28 @@
 </div>
 <div class="field" role="img" aria-label="Several hundred more of the ten thousand cents, before they were smelted"><img src="/img/cents-field/field.webp" alt="" loading="lazy" width="2116" height="1252"></div>
 <div class="wrap tail">
+<h2 id="threed" data-nav="3D">Cents in three dimensions</h2>
+<div class="body3d"><p>Sinvali rebuilt the ten thousand as physically based 3D coins, each re-lit from its own photographs, and the gallery turns any of them. Six here; the rest are in <a class="fc" href="https://3dcents.vercel.app/" target="_blank" rel="noopener">the CENTS 3D gallery</a>.</p></div>
+<div class="d3">
+<figure><video src="/vid/cents-3d/cent-321.mp4" poster="/img/cents-3d/cent-321.jpg"
+ width="480" height="268" autoplay muted loop playsinline preload="metadata"
+ aria-label="Cent 321 turning, a worn obverse, the date still legible"></video><figcaption>#321</figcaption></figure>
+<figure><video src="/vid/cents-3d/cent-1264.mp4" poster="/img/cents-3d/cent-1264.jpg"
+ width="480" height="268" autoplay muted loop playsinline preload="metadata"
+ aria-label="Cent 1264 turning, corrosion across the portrait"></video><figcaption>#1264</figcaption></figure>
+<figure><video src="/vid/cents-3d/cent-3981.mp4" poster="/img/cents-3d/cent-3981.jpg"
+ width="480" height="268" autoplay muted loop playsinline preload="metadata"
+ aria-label="Cent 3981 turning, verdigris over the memorial"></video><figcaption>#3981</figcaption></figure>
+<figure><video src="/vid/cents-3d/cent-5346.mp4" poster="/img/cents-3d/cent-5346.jpg"
+ width="480" height="268" autoplay muted loop playsinline preload="metadata"
+ aria-label="Cent 5346 turning, a crust of white oxide"></video><figcaption>#5346</figcaption></figure>
+<figure><video src="/vid/cents-3d/cent-8353.mp4" poster="/img/cents-3d/cent-8353.jpg"
+ width="480" height="268" autoplay muted loop playsinline preload="metadata"
+ aria-label="Cent 8353 turning, pitting on both faces"></video><figcaption>#8353</figcaption></figure>
+<figure><video src="/vid/cents-3d/cent-9992.mp4" poster="/img/cents-3d/cent-9992.jpg"
+ width="480" height="268" autoplay muted loop playsinline preload="metadata"
+ aria-label="Cent 9992 turning, copper gone green at the rim"></video><figcaption>#9992</figcaption></figure>
+</div>
 <h2 id="block" data-nav="Block">Block 839969</h2>
 <figure class="cube">
 <iframe src="https://ordinals.com/preview/bd77f96589139cb5f26196d75744a7ce04aaa0f554cd646455b381dfb39930e9i0" title="CENTS Block 839969, the inscribed three-dimensional model, rendered by ordinals.com" loading="lazy" referrerpolicy="no-referrer"></iframe>
