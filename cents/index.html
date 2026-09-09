@@ -33,23 +33,20 @@
 .cube figcaption{margin-top:12px;font:400 10.5px/1.7 "IBM Plex Mono",monospace;color:var(--mute);text-align:center}
 .cube figcaption a{color:var(--cut);text-decoration:none;border-bottom:1px solid var(--cu)}
 .cube figcaption a:hover{color:var(--paper)}
-/* the 3D turntables. Each clip is a 6s 360 at 480px; the source GIFs were
-   7-29MB apiece, which is why these are video. Aspect ratios differ slightly
-   between coins, so the tiles set their own and the video covers. */
-.body3d{max-width:74ch;margin-bottom:16px}
-.body3d p{font-size:14px;line-height:1.6;color:var(--mute)}
-/* three across, not six. The page already carries two full-bleed fields of
-   hundreds of coins; what this section adds is the opposite, a coin close
-   enough to read the corrosion on. At six across each tile was 151px and the
-   surface -- which is the whole point of the renders -- disappeared. */
-.d3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:38px}
-@media(max-width:760px){.d3{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:430px){.d3{grid-template-columns:1fr}}
-.d3 figure{margin:0}
-.d3 video{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;
- background:var(--dim);border-radius:2px}
-.d3 figcaption{margin-top:6px;font:500 10px/1.4 "IBM Plex Mono",monospace;
- letter-spacing:.1em;color:var(--mute)}
+
+/* One cent, turning, beside the highlights. Cropped to the coin so the 516px
+   is all coin rather than 30% coin and 70% studio backdrop, and circular
+   because that is already how this page renders a penny -- see .coin img. It
+   is a sibling of the hero coin, not a feature panel bolted on. */
+.hi{display:grid;grid-template-columns:1fr minmax(150px,220px);gap:34px;align-items:start}
+.hi>*{min-width:0}
+@media(max-width:760px){.hi{grid-template-columns:1fr;gap:20px}
+ .turn{max-width:220px;margin-inline:auto}}
+.turn{margin:0}
+.turn video{display:block;width:100%;height:auto;aspect-ratio:1;border-radius:50%;
+ background:var(--dim)}
+.turn figcaption{margin-top:9px;font:400 10px/1.5 "IBM Plex Mono",monospace;
+ letter-spacing:.08em;color:var(--mute);text-align:center}
 .inq{margin:30px 0 10px;text-align:center}.inq a{display:inline-block;padding:19px 40px;font-size:13px;line-height:1;letter-spacing:.16em}
 .ends{margin:20px 0 6px;display:flex;justify-content:center;flex-wrap:wrap;gap:14px 30px;
  font:500 11px/1.6 "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase}
@@ -190,7 +187,7 @@
    asked for less motion; and autoplay is a request a browser may refuse, so a
    refusal turns the controls on rather than leaving a dead poster. */
 (function(){
- const vs=[...document.querySelectorAll(".d3 video")];
+ const vs=[...document.querySelectorAll(".turn video")];
  if(!vs.length)return;
  if(matchMedia("(prefers-reduced-motion: reduce)").matches){
    vs.forEach(v=>{v.autoplay=false;v.loop=false;v.controls=true;v.pause();});
@@ -210,32 +207,13 @@
 <div class="botw-frame" id="botw-frame" hidden></div>
 </div>
 </div>
-<h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2></div><div class="gal" id="g"></div><div class="wrap tail"><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p>
+<div class="hi"><div><h2 id="highlights">Highlights</h2><ul class="ln" id="u"></ul></div>
+<figure class="turn"><video src="/vid/cents-3d/cent-321-turn.mp4" poster="/img/cents-3d/cent-321-turn.jpg"
+ width="516" height="516" autoplay muted loop playsinline preload="metadata"
+ aria-label="Cent 321 turning, both faces"></video><figcaption>#321, from the <a class="fc" href="https://3dcents.vercel.app/" target="_blank" rel="noopener">CENTS 3D gallery</a></figcaption></figure></div><h2 id="press">Press</h2><ul class="ln" id="r"></ul><div class="cols"><div><h2 id="project">The project</h2><ul class="ln" id="p"></ul></div><div><h2 id="markets">Marketplaces</h2><ul class="ln" id="m"></ul><h2 id="socials">Socials</h2><ul class="ln" id="s"></ul></div></div><h2 id="ucca">At UCCA Beijing</h2></div><div class="gal" id="g"></div><div class="wrap tail"><p class="cap">Installation views, <i>Rutherford Chang: Hundreds and Thousands</i>, UCCA Center for Contemporary Art, 2026. Photography Sun Shi. Courtesy UCCA and the Estate of Rutherford Chang.</p>
 </div>
 <div class="field" role="img" aria-label="Several hundred more of the ten thousand cents, before they were smelted"><img src="/img/cents-field/field.webp" alt="" loading="lazy" width="2116" height="1252"></div>
 <div class="wrap tail">
-<h2 id="threed" data-nav="3D">Cents in three dimensions</h2>
-<div class="body3d"><p>Sinvali rebuilt the ten thousand as physically based 3D coins, each re-lit from its own photographs, and the gallery turns any of them. Six here; the rest are in <a class="fc" href="https://3dcents.vercel.app/" target="_blank" rel="noopener">the CENTS 3D gallery</a>.</p></div>
-<div class="d3">
-<figure><video src="/vid/cents-3d/cent-321.mp4" poster="/img/cents-3d/cent-321.jpg"
- width="480" height="268" autoplay muted loop playsinline preload="metadata"
- aria-label="Cent 321 turning, a worn obverse, the date still legible"></video><figcaption>#321</figcaption></figure>
-<figure><video src="/vid/cents-3d/cent-1264.mp4" poster="/img/cents-3d/cent-1264.jpg"
- width="480" height="268" autoplay muted loop playsinline preload="metadata"
- aria-label="Cent 1264 turning, corrosion across the portrait"></video><figcaption>#1264</figcaption></figure>
-<figure><video src="/vid/cents-3d/cent-3981.mp4" poster="/img/cents-3d/cent-3981.jpg"
- width="480" height="268" autoplay muted loop playsinline preload="metadata"
- aria-label="Cent 3981 turning, verdigris over the memorial"></video><figcaption>#3981</figcaption></figure>
-<figure><video src="/vid/cents-3d/cent-5346.mp4" poster="/img/cents-3d/cent-5346.jpg"
- width="480" height="268" autoplay muted loop playsinline preload="metadata"
- aria-label="Cent 5346 turning, a crust of white oxide"></video><figcaption>#5346</figcaption></figure>
-<figure><video src="/vid/cents-3d/cent-8353.mp4" poster="/img/cents-3d/cent-8353.jpg"
- width="480" height="268" autoplay muted loop playsinline preload="metadata"
- aria-label="Cent 8353 turning, pitting on both faces"></video><figcaption>#8353</figcaption></figure>
-<figure><video src="/vid/cents-3d/cent-9992.mp4" poster="/img/cents-3d/cent-9992.jpg"
- width="480" height="268" autoplay muted loop playsinline preload="metadata"
- aria-label="Cent 9992 turning, copper gone green at the rim"></video><figcaption>#9992</figcaption></figure>
-</div>
 <h2 id="block" data-nav="Block">Block 839969</h2>
 <figure class="cube">
 <iframe src="https://ordinals.com/preview/bd77f96589139cb5f26196d75744a7ce04aaa0f554cd646455b381dfb39930e9i0" title="CENTS Block 839969, the inscribed three-dimensional model, rendered by ordinals.com" loading="lazy" referrerpolicy="no-referrer"></iframe>
