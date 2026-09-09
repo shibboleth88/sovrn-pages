@@ -38,9 +38,13 @@
    between coins, so the tiles set their own and the video covers. */
 .body3d{max-width:74ch;margin-bottom:16px}
 .body3d p{font-size:14px;line-height:1.6;color:var(--mute)}
-.d3{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:38px}
-@media(max-width:900px){.d3{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:520px){.d3{grid-template-columns:repeat(2,1fr)}}
+/* three across, not six. The page already carries two full-bleed fields of
+   hundreds of coins; what this section adds is the opposite, a coin close
+   enough to read the corrosion on. At six across each tile was 151px and the
+   surface -- which is the whole point of the renders -- disappeared. */
+.d3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:38px}
+@media(max-width:760px){.d3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:430px){.d3{grid-template-columns:1fr}}
 .d3 figure{margin:0}
 .d3 video{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;
  background:var(--dim);border-radius:2px}
