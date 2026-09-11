@@ -1238,3 +1238,37 @@ do not read the budget as "four seconds in".
 
 The caption says it is a still and links out to the moving work, because a
 frozen frame of a perpetual-motion piece is not the piece.
+
+## byteGANs: the census, the Crucible, and the number in a title
+
+`/curated/bytegans/rarities` is generated from `data/onchain-titles.json`, which
+is read off the contract, and it is worth knowing why the numbers there disagree
+with the artist's own published list.
+
+**The Crucible changed the collection after it was released.** Van Arman ran a
+wallet holders could send a byteGAN into; it came back a different type. His
+rarity post of February 2023 counts 333 skullGANs, 304 cyberGANs and 371
+octoGANs. The chain today says 289, 218 and 287, with 71 cycloGANs, 72 bioGANs
+and 71 xenoGANs that did not exist when it was released. Both are right for
+their date, and the arithmetic closes exactly: 1008 − 794 = 214 = 71 + 72 + 71.
+
+It also settles a question the posts leave open — **only the commons ever went
+in.** Every SuperRare count is identical across the two censuses: 69 ghostGANs,
+20 g1itchGANs, 9 apeGANs, 3 primeGANs, one kingGAN, one queenGAN.
+
+**The number in a byteGAN's title is not its token id.** Titles run
+`primordial skullGAN #220`, and that `#220` is the artist's own numbering. Across
+all 1,111 works the two agree exactly once, at token 398 — `mutated xenoGAN
+#398`. The mirror at `/onchain/bytegans/N.svg` is keyed by **token id**, so
+`842.svg` is not the work whose title ends `#842` (that is token 119). Anything
+that captions a work has to pick one numbering and say which.
+
+The counts are reproducible:
+
+```bash
+python3 - <<'PY'
+import json,collections
+t=json.load(open('data/onchain-titles.json'))['collections']['bytegans']['titles']
+c=collections.Counter(v.split()[-2] for v in t); print(sorted(c.items(),key=lambda x:-x[1]))
+PY
+```
