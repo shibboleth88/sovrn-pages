@@ -512,3 +512,36 @@ newline between them is the entire fix.
 `min-width:0` on the grid children was the first suspect and was wrong — grid
 items genuinely do refuse to shrink below their content, so it is worth having,
 but it cannot make a line wrap that has nowhere to wrap.
+
+### An absolutely positioned layer is still inside the scrollable overflow
+
+"It is out of flow, so its height cannot change the page's height" is written in
+the byteGANs source and it is wrong. Out of flow keeps it out of the *layout*;
+`scrollHeight` still counts it. A layer sized to the page therefore holds the
+document open at whatever length it was last given, and the page can never
+measure shorter than it once was — widen the window, the content genuinely
+shortens, and a screenful of nothing stays under the footer.
+
+Flatten the layer to `0px` before reading the page, then size it. What comes
+back is then the content's own height rather than an echo of the last answer.
+
+### A ResizeObserver never fires on a hidden tab
+
+Its callback is delivered in the rendering loop, so a backgrounded or occluded
+tab delivers nothing — not even the initial observation. The page it was added
+to watch grows exactly there: lazy images below the fold arrive whenever they
+arrive, and the tab is often not the one being looked at.
+
+Watching the height from the animation loop instead costs one layout read four
+times a second and runs precisely when the page is visible, which is the only
+time the answer matters. Measured in the in-app pane, which reports
+`document.hidden`: a fresh observer on `<html>` had fired 0 times 600ms after
+being attached.
+
+### Clamping a moved boundary piles everything on the line
+
+When the page got longer, clamping positions to it did nothing at all — nothing
+was out of bounds — so the bottom third of the page had no byteGANs on it and
+never would. When it got shorter, clamping did too much: everyone past the new
+end landed on the same pixel row. A boundary that moves wants a rescale, in both
+directions; the clamp afterwards is then only a guard.
