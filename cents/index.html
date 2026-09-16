@@ -8,12 +8,12 @@
      its own image, and cards will not render SVG, which is why the share pages point
      at a raster rather than at the artwork they are about. -->
 <meta name="description" content="Rutherford Chang’s CENTS — 10,000 pre-1982 copper pennies, each photographed and inscribed on Bitcoin, the coins themselves melted into a single copper block.">
-<link rel="canonical" href="https://www.sovrn.art/cents">
+<link rel="canonical" href="https://www.sovrn.art/cents/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="sovrn.art">
 <meta property="og:title" content="CENTS — Rutherford Chang">
 <meta property="og:description" content="Rutherford Chang’s CENTS — 10,000 pre-1982 copper pennies, each photographed and inscribed on Bitcoin, the coins themselves melted into a single copper block.">
-<meta property="og:url" content="https://www.sovrn.art/cents">
+<meta property="og:url" content="https://www.sovrn.art/cents/">
 <meta property="og:image" content="https://www.sovrn.art/img/homepage/cent_homepage.jpg">
 <meta property="og:image:width" content="860">
 <meta property="og:image:height" content="860">
@@ -215,18 +215,18 @@
 <h2 id="block" data-nav="Block">Block 839969</h2>
 <figure class="cube">
 <iframe src="https://ordinals.com/preview/bd77f96589139cb5f26196d75744a7ce04aaa0f554cd646455b381dfb39930e9i0" title="CENTS Block 839969, the inscribed three-dimensional model, rendered by ordinals.com" loading="lazy" referrerpolicy="no-referrer"></iframe>
-<figcaption>A 4&nbsp;MB glTF model, served and rendered live by ordinals.com. Drag to turn it, or read about <a href="/cents/block-839969">the block and its inscription</a>.</figcaption>
+<figcaption>A 4&nbsp;MB glTF model, served and rendered live by ordinals.com. Drag to turn it, or read about <a href="/cents/block-839969/">the block and its inscription</a>.</figcaption>
 </figure>
 <p class="ends" id="inq">
-<a href="/cents/inquiries">Project inquiries</a><a href="https://cents.vision/" target="_blank">cents.vision</a><a href="http://rutherfordchang.com/" target="_blank">rutherfordchang.com</a></p></div>
+<a href="/cents/inquiries/">Project inquiries</a><a href="https://cents.vision/" target="_blank">cents.vision</a><a href="http://rutherfordchang.com/" target="_blank">rutherfordchang.com</a></p></div>
 <script>
 const H="/img/homepage/",
 U="/img/ucca/",S="/cents/";
 const UP=[["CENTS 3D gallery by Sinvali","https://3dcents.vercel.app/"],
 ["CENTSbot launched","https://centsbot.up.railway.app/","img/cents/centsbot.png"],
 ["Trait Explorer live","https://cents.vision/"],
-["Retrospective at UCCA Beijing","/exhibitions/ucca"],
-["Rutherford Chang in Taschen’s On NFTs",S+"taschen"],
+["Retrospective at UCCA Beijing","/exhibitions/ucca/"],
+["Rutherford Chang in Taschen’s On NFTs",S+"taschen/"],
 ["CENTS Block 839969 at Christie’s","https://onlineonly.christies.com/s/beyond-screen/rutherford-chang-b-1979-10/224213"],
 ["Representation by Schwartzman&","https://www.schwartzmanand.com/"]];
 const PS=[["The 21st Century's Biggest Art Trend is Not a Style. But Once You See It, You'll Notice It Everywhere.","https://www.artnews.com/art-in-america/features/21st-century-biggest-trend-not-style-systems-art-hans-haacke-1234786483/","ArtNews"],
@@ -240,13 +240,13 @@ const PS=[["The 21st Century's Biggest Art Trend is Not a Style. But Once You Se
 ["Rutherford Chang: Hundreds and Thousands","https://www.e-flux.com/announcements/6785689/rutherford-changhundreds-and-thousands","e-flux"],
 ["一展带你看懂观念艺术，张能傑回顾展“成百上千”UCCA开幕","https://news.bjd.com.cn/2026/01/17/11529440.shtml","京报网","An exhibition to help you make sense of conceptual art: Rutherford Chang’s retrospective “Hundreds and Thousands” opens at UCCA","Beijing Daily"],
 ["收藏、重复与文化记忆丨“张能傑：成百上千”正在UCCA展出","https://news.qq.com/rain/a/20260301A02TA900","腾讯新闻","Collecting, repetition and cultural memory — “Rutherford Chang: Hundreds and Thousands” is on view at UCCA","Tencent News"]];
-const PR=[["Project description",S+"project-description"],["Writing on CENTS",S+"makes-cents"],
+const PR=[["Project description",S+"project-description/"],["Writing on CENTS",S+"makes-cents/"],
 ["Trait Explorer","https://cents.vision/"],["Trait Atlas","https://cents.vision/traits-atlas.html"],
 ["CENTS 3D","https://3dcents.vercel.app/"],
-["Trait Council",S+"trait-council"],
-["CENTS Block",S+"block-839969"],
+["Trait Council",S+"trait-council/"],
+["CENTS Block",S+"block-839969/"],
 ["CENTS on Raster","https://www.raster.art/artwork/cents-by-rutherford-chang"],
-["Artist site","http://rutherfordchang.com/"],["Artist obituary",S+"artist-obituary"]];
+["Artist site","http://rutherfordchang.com/"],["Artist obituary",S+"artist-obituary/"]];
 const MK=[["Ord","https://ord.net/collection/cents","ord.png"],
 ["Satflow","https://www.satflow.com/s/543B375","satflow.png"]];
 const SO=[["Discord","https://discord.gg/USQwhGj8HC","cents-discord.png"],
@@ -261,7 +261,7 @@ ext=u=>!u.startsWith("http")?'':(u.includes("sovrn.art")?' target="_blank"':' ta
 const row=x=>'<li><a href="'+x[1]+'"'+ext(x[1])+'>'+(x[2]&&x[2].includes(".")?'<img src="'+encodeURI(x[2].includes("/")?x[2]:H+x[2])+'" alt="">':'')+(x[3]?'<span lang="zh-Hans">'+e(x[0])+'</span>':e(x[0]))+(x[2]&&!x[2].includes(".")?'<span class="src">'+e(x[2])+'</span>':'')+(x[3]?'<span class="en" lang="en">'+e(x[3])+'<b>'+(x[4]?e(x[4])+' \u00b7 ':'')+'our translation</b></span>':'')+'</a></li>';
 $("u").innerHTML=UP.map(row).join("");$("r").innerHTML=PS.map(row).join("");
 $("p").innerHTML=PR.map(row).join("");$("m").innerHTML=MK.map(row).join("");$("s").innerHTML=SO.map(row).join("");
-$("g").innerHTML=G.map(x=>'<a href="/exhibitions/ucca"><img src="'+encodeURI(U+x[0])+'" alt="'+e(x[1])+'" loading="lazy"></a>').join("");
+$("g").innerHTML=G.map(x=>'<a href="/exhibitions/ucca/"><img src="'+encodeURI(U+x[0])+'" alt="'+e(x[1])+'" loading="lazy"></a>').join("");
 const mb=$("mb"),mn=$("mn");
 mn.innerHTML=[...document.querySelectorAll("h2[id]")].map(h=>'<li><a href="'+location.pathname+'#'+h.id+'">'+(h.dataset.nav||h.textContent)+'</a></li>').join("")+'<li><a href="'+location.pathname+'#inq">Inquiries</a></li>';
 const setMenu=o=>{mb.setAttribute("aria-expanded",o);mn.hidden=!o;};

@@ -248,6 +248,65 @@ def check_files():
 
 
 
+def check_no_redirect_links():
+    """No internal link, canonical or sitemap entry may name a URL Pages redirects.
+
+    Pages serves a directory at `/curated/bytegans/` and 301s the bare
+    `/curated/bytegans` to it. The whole site was written without the slash: 46
+    of the 47 sitemap URLs were one hop from the page they name, and the
+    canonical on each page pointed at the redirecting form too. Search Console
+    files that under 'Page with redirect' and the validation stays failed,
+    because nothing about it heals on its own.
+
+    The slash cannot be applied by shape, which is the trap inside the fix. For
+    a bare file Pages serves `/share` from share.html with **no** redirect, and
+    `/share/` is a 404 — so a rewrite that appends a slash everywhere breaks the
+    share tool while fixing the sitemap. Each path is therefore resolved the way
+    Pages resolves it, file before directory, and only the directory-served ones
+    are required to carry the slash.
+    """
+    bad = []
+    seen = 0
+    pat = re.compile(r'(?:href|content)="((?:/|https://www\.sovrn\.art/)[^"]*)"')
+    loc = re.compile(r'<loc>([^<]+)</loc>')
+    for dirpath, dirnames, filenames in os.walk(ROOT):
+        if any(p in dirpath for p in (os.sep + ".git", os.sep + "onchain", os.sep + "img")):
+            continue
+        for f in sorted(filenames):
+            if not f.endswith((".html", ".xml")):
+                continue
+            rel_f = os.path.relpath(os.path.join(dirpath, f), ROOT)
+            text = io.open(os.path.join(dirpath, f), encoding="utf-8", errors="replace").read()
+            for m in list(pat.finditer(text)) + list(loc.finditer(text)):
+                url = m.group(1).replace("https://www.sovrn.art", "")
+                path = url.split("#")[0].split("?")[0]
+                if not path.startswith("/") or path in ("/", ""):
+                    continue
+                if "'" in path or "+" in path:          # built in script, not a literal
+                    continue
+                if "." in path.rsplit("/", 1)[-1]:      # a file, not a page
+                    continue
+                # counted before the verdict, so the floor below measures the scan
+                # and not the site: once this is fixed, the interesting set is empty
+                seen += 1
+                if path.endswith("/"):
+                    continue
+                rel = path.strip("/")
+                if os.path.isfile(os.path.join(ROOT, rel + ".html")):
+                    continue                            # Pages serves the file, no hop
+                if os.path.isfile(os.path.join(ROOT, rel, "index.html")):
+                    bad.append((rel_f, path))
+                    print(f"    redirects  {path}   needs the trailing slash   (in {rel_f})")
+
+    # A scan that finds nothing has two meanings and they look the same, so the
+    # count is asserted rather than trusted: this site always has hundreds.
+    if seen < 100:
+        print(f"    the scan itself looks broken — only {seen} page URLs examined")
+        bad.append(("check_no_redirect_links", "floor"))
+    print(f"  {seen} page URLs examined, {len(bad)} pointing at a redirect")
+    return bad
+
+
 def check_local_assets():
     """Every image a page builds from a base constant must exist on disk.
 
@@ -463,6 +522,8 @@ def main():
     if a.files:
         print("\nURL contract against the tree")
         bad += check_files()
+        print("\nLinks that would redirect")
+        bad += check_no_redirect_links()
         print("\nImages assembled from a base path")
         bad += check_local_assets()
         print("\nBanners and other url() targets")
