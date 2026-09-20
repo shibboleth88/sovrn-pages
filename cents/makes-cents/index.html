@@ -71,7 +71,17 @@ h1{margin-top:14px;font:200 clamp(30px,5vw,50px)/1.05 Fraunces,serif;letter-spac
  color:var(--slate);text-decoration:none;border:1px solid var(--rule);padding:7px 11px;transition:.15s}
 .jump a:hover{color:var(--copper);border-color:var(--copper)}
 .jump b{font-weight:500;color:var(--mute);margin-left:5px}
-.hint{margin-top:9px;font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--mute)}
+.res{margin-top:10px;font:400 12px/1.6 "IBM Plex Mono",monospace;color:var(--slate)}
+.res b{font-weight:500;color:var(--ink)}
+.res em{font-style:normal;color:var(--copper)}
+.res span{color:var(--mute)}
+/* The match is shown, not just counted: a result whose reason is invisible reads
+   as a wrong result. Anything the query hit in the text is marked, and anything
+   it hit only in an entry's topic list is named under it. */
+mark{background:#f6e7db;color:inherit;box-shadow:inset 0 -1px 0 var(--copper);padding:0 1px}
+.why{display:block;margin-top:8px;font:500 10.5px/1.6 "IBM Plex Mono",monospace;
+ letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.why b{color:var(--copper);font-weight:500}
 .count{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.11em;text-transform:uppercase;color:var(--copper)}
 
 .sec{margin-top:52px;scroll-margin-top:124px}
@@ -128,7 +138,7 @@ a.ti:hover{color:var(--copper)}
 <button id="qx" type="button" hidden>Clear</button>
 </div>
 <nav class="jump" id="jump"></nav>
-<p class="hint" id="hint" hidden>Searches what is on this page &mdash; titles, authors, summaries and topics &mdash; not the full text of the pieces themselves.</p>
+<p class="res" id="res" hidden></p>
 </div>
 
 <section class="sec" id="essays" data-count="17"><h2>Essays <span class="ct">17</span></h2><p class="blurb">Ordered as a reading path rather than by date: what the work is, who made it, what it means, then the object itself, then the arguments about its value.</p><ol class="list">
@@ -158,21 +168,21 @@ a.ti:hover{color:var(--copper)}
 <li class="e" data-k="review bitcoin magazine ucca beijing retrospective mass production sameness time touch circulation"><div class="c"><a class="ti" href="https://bitcoinmagazine.com/culture/rutherford-chang-retrospective-hundreds-and-thousands-at-ucca-beijing" target="_blank" rel="noopener">Rutherford Chang Retrospective: Hundreds and Thousands at UCCA Beijing</a><span class="by"><a href="https://x.com/stenreiss" target="_blank" rel="noopener">Steven Reiss</a> &middot; <i>Bitcoin Magazine</i></span><p class="d">On what the usual words &mdash; obsessive, conceptual, minimalist &mdash; leave out: Chang worked at the exact moment when the promise of sameness fails and handling turns identical objects into singular ones.</p></div></li>
 <li class="e" data-k="preview art newspaper ucca beijing exhibition post-conceptualist richard hamilton white album"><div class="c"><a class="ti" href="https://www.theartnewspaper.com/2026/01/14/from-pennies-to-a-beatles-record-haul-the-obsessive-work-of-rutherford-chang-goes-on-show-in-beijing" target="_blank" rel="noopener">From 10,000 pennies to a Beatles record haul, the obsessive work of Rutherford Chang heads to Beijing</a><span class="by">Simon Bainbridge &middot; <i>The Art Newspaper</i></span><p class="d">Preview of the exhibition, on the &lsquo;near frightening rigour&rsquo; of a post-conceptualist: CENTS and <i>We Buy White Albums</i> among six works, a year after the artist&rsquo;s death.</p></div></li>
 <li class="e" data-k="review frieze ucca beijing retrospective tetris game boy nintendo power philip tinari aki sasamoto"><div class="c"><a class="ti" href="https://www.frieze.com/article/rutherford-chang-hundreds-and-thousands-2026-review" target="_blank" rel="noopener">Rutherford Chang&rsquo;s Art of Accumulation</a><span class="by">Michael Barron &middot; <i>Frieze</i></span><p class="d">Review of the first institutional retrospective, which opens not with the pennies but with a letter Chang wrote to <i>Nintendo Power</i> about his Tetris high score, and the 2,139 videos that became a work.</p></div></li>
-<li class="e" data-k="review art in america artnews ucca survey square tetris posthumous"><div class="c"><a class="ti" href="https://www.artnews.com/art-in-america/aia-reviews/rutherford-chang-ucca-beijing-survey-tetris-1234783323/" target="_blank" rel="noopener">After His Untimely Death, Rutherford Chang&rsquo;s Survey Rewrites What a Square Can Do</a><span class="by">Emily Watlington &middot; <i>Art in America</i></span><p class="d">Review of the UCCA survey, reading the work through the square &mdash; the Tetris block, the album sleeve, the coin.</p><span class="nt">behind a paywall; this line is from the title and venue rather than the text</span></div></li>
+<li class="e" data-k="review art in america artnews ucca survey square tetris posthumous"><div class="c"><a class="ti" href="https://www.artnews.com/art-in-america/aia-reviews/rutherford-chang-ucca-beijing-survey-tetris-1234783323/" target="_blank" rel="noopener">After His Untimely Death, Rutherford Chang&rsquo;s Survey Rewrites What a Square Can Do</a><span class="by">Emily Watlington &middot; <i>Art in America</i></span><p class="d">Review of the UCCA survey, reading the work through the square &mdash; the Tetris block, the album sleeve, the coin.</p><span class="nt">paywalled</span></div></li>
 <li class="e" data-k="review german monopol ucca beijing retrospective we buy white albums exhibition deutsch"><div class="c"><a class="ti" href="https://www.monopol-magazin.de/rutherford-chang-hundreds-and-thousands-center-for-contemporary-art-beijing-review" target="_blank" rel="noopener">Geschichten in Kupfer und Vinyl</a><span class="by">Tabatha Arlt &middot; <i>monopol</i></span><p class="d">German-language review of the retrospective, on things one barely looks at &mdash; records, coins, game consoles &mdash; becoming carriers of time, memory and quiet deviation.</p></div></li>
 <li class="e" data-k="chinese tencent ucca exhibition documentary 美分 白色专辑 collecting repetition cultural memory 31kg curators"><div class="c"><a class="ti" href="https://news.qq.com/rain/a/20260301A02TA900" target="_blank" rel="noopener">收藏、重复与文化记忆丨“张能傑：成百上千”正在UCCA展出</a><span class="by">UCCA &middot; <i>Tencent News</i></span><p class="d">UCCA&rsquo;s own long account of the exhibition, with a documentary film: <i>We Buy White Albums</i> and CENTS set out work by work, and the copper cube given as 31&nbsp;kg.</p></div></li>
 <li class="e" data-k="chinese beijing daily 京报网 opening conceptual art 美分 tetris 614904 ucca"><div class="c"><a class="ti" href="https://news.bjd.com.cn/2026/01/17/11529440.shtml" target="_blank" rel="noopener">一展带你看懂观念艺术，张能傑回顾展“成百上千”UCCA开幕</a><span class="by"><i>Beijing Daily</i></span><p class="d">Opening-day report in Chinese, explaining conceptual art to a general readership through three works &mdash; the albums, the cents, and 2,000 recordings of Game Boy Tetris.</p></div></li>
-<li class="e" data-k="systems art hans haacke art in america artnews feature trend process rules context"><div class="c"><a class="ti" href="https://www.artnews.com/art-in-america/features/21st-century-biggest-trend-not-style-systems-art-hans-haacke-1234786483/" target="_blank" rel="noopener">The 21st Century&rsquo;s Biggest Art Trend is Not a Style. But Once You See It, You&rsquo;ll Notice It Everywhere.</a><span class="by"><i>ArtNews</i></span><p class="d">A feature on systems art &mdash; work made of rules and processes rather than of a style &mdash; which is the tradition a set of ten thousand pennies belongs to.</p><span class="nt">behind a paywall; this line is from the title and venue rather than the text</span></div></li>
+<li class="e" data-k="systems art hans haacke art in america artnews feature trend process rules context"><div class="c"><a class="ti" href="https://www.artnews.com/art-in-america/features/21st-century-biggest-trend-not-style-systems-art-hans-haacke-1234786483/" target="_blank" rel="noopener">The 21st Century&rsquo;s Biggest Art Trend is Not a Style. But Once You See It, You&rsquo;ll Notice It Everywhere.</a><span class="by"><i>ArtNews</i></span><p class="d">A feature on systems art &mdash; work made of rules and processes rather than of a style &mdash; which is the tradition a set of ten thousand pennies belongs to.</p><span class="nt">paywalled</span></div></li>
 <li class="e" data-k="announcement e-flux listing ucca beijing dates installation 798 art district"><div class="c"><a class="ti" href="https://www.e-flux.com/announcements/6785689/rutherford-changhundreds-and-thousands" target="_blank" rel="noopener">Rutherford Chang: Hundreds and Thousands</a><span class="by"><i>e-flux</i></span><p class="d">The exhibition announcement: dates, address, and the installation of CENTS #1&ndash;10,000, <i>Block 839969</i> and the CENTS book at UCCA.</p></div></li>
-<li class="e" data-k="interalia magazine exhibition article art science listing"><div class="c"><a class="ti" href="https://www.interaliamag.org/articles/rutherford-chang-hundreds-and-thousands/" target="_blank" rel="noopener">Rutherford Chang: Hundreds and Thousands</a><span class="by"><i>Interalia</i></span><p class="d">The retrospective covered in Interalia Magazine, which writes on art and science.</p><span class="nt">the site refuses automated readers; this line is from the title and venue rather than the text</span></div></li>
-<li class="e" data-k="ocula artist page biography exhibitions cv record directory"><div class="c"><a class="ti" href="https://ocula.com/artists/rutherford-chang/" target="_blank" rel="noopener">Rutherford Chang</a><span class="by"><i>Ocula</i></span><p class="d">The artist&rsquo;s own page on Ocula: biography and the exhibition record, useful for placing CENTS within a twenty-year practice.</p><span class="nt">the site refuses automated readers; this line is from the title and venue rather than the text</span></div></li>
+<li class="e" data-k="interalia magazine exhibition article art science listing"><div class="c"><a class="ti" href="https://www.interaliamag.org/articles/rutherford-chang-hundreds-and-thousands/" target="_blank" rel="noopener">Rutherford Chang: Hundreds and Thousands</a><span class="by"><i>Interalia</i></span><p class="d">The retrospective covered in Interalia Magazine, which writes on art and science.</p></div></li>
+<li class="e" data-k="ocula artist page biography exhibitions cv record directory"><div class="c"><a class="ti" href="https://ocula.com/artists/rutherford-chang/" target="_blank" rel="noopener">Rutherford Chang</a><span class="by"><i>Ocula</i></span><p class="d">The artist&rsquo;s own page on Ocula: biography and the exhibition record, useful for placing CENTS within a twenty-year practice.</p></div></li>
 </ol></section>
 <section class="sec" id="books" data-count="2"><h2>Books <span class="ct">2</span></h2><p class="blurb">In print.</p><ol class="list">
 <li class="e" data-k="taschen on nfts book philip tinari robert alice ucca essay print publication"><div class="c"><a class="ti" href="/cents/taschen/">CENTS in Taschen&rsquo;s <i>On NFTs</i></a><span class="by">Philip Tinari &middot; <i>Taschen</i></span><p class="d">The director of UCCA on CENTS, written for Robert Alice&rsquo;s Taschen volume and reproduced here in full: the analog and the digital, and a lifelong practice of obsessive collecting.</p></div></li>
 <li class="e" data-k="kate vass galerie book collecting art onchain public edition collectors interviews preorder publication"><div class="c"><a class="ti" href="https://www.katevassgalerie.com/books/p/public-ed-preorder" target="_blank" rel="noopener">Collecting Art Onchain &mdash; Public Edition</a><span class="by"><i>Kate Vass Galerie</i></span><p class="d">A book built from interviews with collectors, documenting through them the shift blockchain has made in contemporary art over the last decade. The Public Edition adds interviews to the original Collector&rsquo;s Edition, and is open for pre-order.</p></div></li>
 </ol></section>
 
-<p class="none" id="none">Nothing here matches that. Try a broader word &mdash; <i>value</i>, <i>traits</i>, <i>Bitcoin</i>, <i>collecting</i>.</p>
+<p class="none" id="none">Try a broader word &mdash; <i>value</i>, <i>traits</i>, <i>Bitcoin</i>, <i>collecting</i>.</p>
 
 <p class="more"><a href="/cents/">Back to CENTS</a><a href="/">sovrn.art</a></p>
 </div>
@@ -192,7 +202,7 @@ a.ti:hover{color:var(--copper)}
  * somewhere in the entry, in any order. */
 (function(){
  var q=document.getElementById("q"), x=document.getElementById("qx"),
-     hint=document.getElementById("hint"), none=document.getElementById("none"),
+     res=document.getElementById("res"), none=document.getElementById("none"),
      jump=document.getElementById("jump"),
      secs=[].slice.call(document.querySelectorAll(".sec"));
  if(!q||!secs.length) return;
@@ -200,7 +210,11 @@ a.ti:hover{color:var(--copper)}
  var items=secs.map(function(s){
    return {sec:s, h:s.querySelector("h2"), ct:s.querySelector(".ct"), total:0,
      rows:[].slice.call(s.querySelectorAll(".e")).map(function(el){
-       return {el:el, hay:(el.textContent+" "+(el.getAttribute("data-k")||"")).toLowerCase()};
+       var c=el.querySelector(".c");
+       return {el:el, c:c, html:c.innerHTML,          /* kept so marking can be undone */
+               text:el.textContent.toLowerCase(),
+               keys:(el.getAttribute("data-k")||"").toLowerCase(),
+               hay:(el.textContent+" "+(el.getAttribute("data-k")||"")).toLowerCase()};
      })};
  });
  /* The number beside a heading is not always the number of rows: the collector
@@ -217,6 +231,27 @@ a.ti:hover{color:var(--copper)}
      +(+s.getAttribute("data-count")||s.querySelectorAll(".e").length)+'</b></a>';
  }).join("");
 
+ function esc(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"); }
+
+ /* Marking runs over text nodes rather than over innerHTML, because a regex on
+    markup will happily insert a <mark> in the middle of an href. */
+ function markUp(el,t){
+   if(!t.length) return;
+   var re=new RegExp("("+t.map(esc).join("|")+")","gi"), nodes=[], n,
+       w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,null,false);
+   while((n=w.nextNode())) nodes.push(n);
+   nodes.forEach(function(node){
+     if(!node.nodeValue.trim()) return;
+     re.lastIndex=0; if(!re.test(node.nodeValue)) return;
+     re.lastIndex=0;
+     var s=document.createElement("span");
+     s.innerHTML=node.nodeValue
+       .replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];})
+       .replace(re,"<mark>$1</mark>");
+     node.parentNode.replaceChild(s,node);
+   });
+ }
+
  function terms(v){
    var m=v.match(/^\s*"(.*)"\s*$/);                 /* "a phrase" */
    if(m) return [m[1].toLowerCase()];
@@ -224,12 +259,24 @@ a.ti:hover{color:var(--copper)}
  }
  function run(){
    var v=q.value.trim(), t=terms(v), shown=0;
-   x.hidden=!v; hint.hidden=!v;
+   x.hidden=!v;
    items.forEach(function(g){
      var n=0;
      g.rows.forEach(function(r){
        var hit=!t.length||t.every(function(w){return r.hay.indexOf(w)>-1;});
        r.el.hidden=!hit; if(hit) n++;
+       r.c.innerHTML=r.html;                        /* clear the last marking */
+       if(!hit||!t.length) return;
+       markUp(r.c,t);
+       /* a term the reader cannot see anywhere in the entry gets named, so the
+          entry never looks like it matched for no reason */
+       var unseen=t.filter(function(w){ return r.text.indexOf(w)<0; });
+       if(unseen.length){
+         var why=document.createElement("span");
+         why.className="why";
+         why.innerHTML="topic: <b>"+unseen.join("</b>, <b>")+"</b>";
+         r.c.appendChild(why);
+       }
      });
      shown+=n;
      g.sec.hidden=!n;
@@ -237,6 +284,18 @@ a.ti:hover{color:var(--copper)}
         section's own number, which may be larger than the rows */
      g.ct.textContent=t.length?n:g.total;
    });
+   /* what just happened, in words: the counts alone left it unclear whether a
+      collapsed page meant few matches or a broken search */
+   res.hidden=!v;
+   if(v){
+     var quoted=/^\s*".*"\s*$/.test(v);
+     res.innerHTML=(shown
+       ? "<b>"+shown+"</b> "+(shown===1?"entry matches":"entries match")+" <em>"+
+         v.replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];})+"</em>"
+       : "Nothing matches <em>"+v.replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];})+"</em>")
+       +' <span>&mdash; '+(quoted?"as a phrase, ":"")+
+       "searching the titles, authors, summaries and topics on this page, not the text of the pieces themselves.</span>";
+   }
    none.style.display=shown?"none":"block";
    /* the chip follows the heading: the section's own number when idle, the
       number of matching rows while filtering — it said 1 for the interviews
