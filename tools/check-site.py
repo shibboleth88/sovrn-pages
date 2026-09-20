@@ -39,6 +39,7 @@ PUBLIC = """
 /cents /cents/inquiries /cents/artist-obituary /cents/taschen /cents/block-839969
 /contact /home /curated/cents
 /curated/ai-spaceships /curated/latent-couture /curated/mementi
+/curated/bytegans/rarities
 /curated/painting-with-fire /curated/painting-with-fire/gan-timeline
 /curated/perimeter-town /curated/possibility-spaces /curated/reflection /curated/reflection/on-chain
 /curated/seasons-of-mobility /curated/sightseers /curated/wunderkammer
