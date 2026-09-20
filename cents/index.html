@@ -79,7 +79,24 @@
 .handoff{display:grid;grid-template-columns:minmax(200px,1fr) minmax(0,2fr);gap:clamp(18px,3vw,34px);
   align-items:start;margin:0 0 clamp(34px,4.5vw,52px)}
 @media(max-width:760px){.handoff{grid-template-columns:1fr}}
-.handoff>.cta{justify-self:start}
+/* The explorer button sits level with the bot's own button rather than at the
+   top of the panel beside it, so the two ways in read as one row of choices.
+   It cannot be done by aligning to the panel: the button is not the panel's
+   last pixel, and the panel grows by up to 600px when the chat frame opens,
+   which would drag anything bottom-aligned to it down the page. So the offset
+   is built from what actually stands above that button — the panel's border and
+   top padding, the head, the disclosure, and the two margins between them —
+   1 + 37 + 12 + 15 + 14 = 79.
+
+   Tops, not centres. Centres looked exactly right at 1280 and drifted 6px by
+   1000, because the explorer button wraps to two lines as its column narrows
+   while the bot's button stays on one: anchoring the centre of a box that
+   changes height moves it. Aligned by the top, the first lines stay level at
+   every width, and the 2px the <button> gains from its UA border is invisible.
+   If the bot's description or the disclosure summary ever wraps to another
+   line, this wants re-measuring. */
+.handoff>.cta{justify-self:start;margin-top:calc(clamp(16px,2vw,22px) + 79px)}
+@media(max-width:760px){.handoff>.cta{margin-top:0}}
 .botw{border:1px solid var(--rule);background:var(--dim);padding:clamp(16px,2vw,22px)}
 .botw-head{display:flex;align-items:center;gap:12px;margin:0 0 12px}
 .botw-head img{border-radius:50%;display:block}
