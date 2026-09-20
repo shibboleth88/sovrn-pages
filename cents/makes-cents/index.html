@@ -111,6 +111,17 @@ ol.list{list-style:none;padding:0;margin:14px 0 0}
 /* Not boxes. Each entry is a row with a hairline above it and a copper edge that
    arrives on hover — enough to separate them and to show which one the pointer is
    on, without drawing twenty-seven rectangles down a reading page. */
+/* [hidden] is only display:none in the user-agent sheet, and .e sets
+   display:flex, which beats it — so hiding a non-matching entry set the
+   attribute and changed nothing on screen. Sections went away (they are plain
+   blocks, so the UA rule wins there) and every entry inside a surviving section
+   stayed put: a search for wuxing hid three whole sections and left all
+   seventeen essays showing. It read as broken because it was.
+
+   It survived every test because the tests asked the DOM whether the element
+   was hidden, and it truthfully said yes. The question that catches this is
+   whether the element is rendered. */
+.e[hidden]{display:none}
 .e{display:flex;gap:16px;padding:20px 14px 20px 0;border-top:1px solid var(--hair);
  border-left:2px solid transparent;transition:border-color .15s,background .15s}
 .e:hover{border-left-color:var(--copper);background:var(--wash)}

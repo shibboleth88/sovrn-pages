@@ -545,3 +545,24 @@ was out of bounds — so the bottom third of the page had no byteGANs on it and
 never would. When it got shorter, clamping did too much: everyone past the new
 end landed on the same pixel row. A boundary that moves wants a rescale, in both
 directions; the clamp afterwards is then only a guard.
+
+### `[hidden]` loses to any display rule, and asking the DOM whether it is hidden will not tell you
+
+The search on Writing on CENTS set `hidden` on every non-matching entry and the
+entries stayed on screen, because `.e{display:flex}` beats the user-agent's
+`[hidden]{display:none}`. Sections vanished — they are plain blocks, so the UA
+rule wins there — and every entry inside a surviving section remained. A search
+for *wuxing* removed three whole sections and left all seventeen essays showing.
+
+The bug outlived four rounds of the user saying the results were unclear,
+because every check asked `el.hidden` and the DOM answered yes, truthfully: the
+attribute was set. **The property is not the question. Whether the element is
+rendered is the question** — `getComputedStyle(el).display`, `offsetParent`, or
+simply the height of the page. Measured properly it was unmissable: 31 entries
+carried the attribute and 15 were actually gone, and the page stayed 7,845px
+long when it should have been 811.
+
+This is the second time on this site: the CENTS bot's open button ignored
+`hidden` for the same reason, and the comment there says so. The rule that comes
+out of it: **if you hide something by attribute, add the `display:none` rule for
+that selector in the same edit**, and assert on rendering.
