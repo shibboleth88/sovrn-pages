@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<base href="/"><!-- Relative paths resolve from the site root, so a page can sit at any depth
+     without its assets being rewritten. <base> also rewrites in-page anchors,
+     so an in-page anchor must be built from location.pathname. --><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<title>Writing on CENTS — draft</title>
+<meta name="description" content="Essays, interviews and press on Rutherford Chang’s CENTS, with a reading order and a search.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32.png" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script>document.documentElement.className+=" js";</script>
+<style>
+:root{--paper:#ffffff;--ink:#16181d;--slate:#5c6470;--rule:#dcdcd6;--hair:#ebebe6;
+ --copper:#8a4f2a;--wash:#faf8f5;--mute:#8b8f97}
+*{box-sizing:border-box;margin:0}
+::selection{background:var(--copper);color:var(--paper)}
+body{background:var(--paper);color:var(--ink);font:400 15px/1.6 "IBM Plex Sans",sans-serif;padding:30px 22px 64px}
+.wrap{max-width:880px;margin:0 auto}
+a:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid var(--copper);outline-offset:3px}
+.homemark{display:inline-block;line-height:0;border-radius:50%;outline-offset:3px;
+ transition:opacity .15s,transform .15s;opacity:.82;margin-bottom:20px}
+.homemark:hover,.homemark:focus-visible{opacity:1;transform:scale(1.06)}
+.homemark img{width:44px;height:44px;display:block;border-radius:50%}
+.eyebrow{font:500 11px/1.5 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--slate)}
+.eyebrow a{color:inherit;text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:2px}
+.eyebrow a:hover{color:var(--copper);border-color:var(--copper)}
+a.fc{color:inherit;text-decoration:none;border-bottom:1px solid var(--copper);transition:color .15s}
+a.fc:hover{color:var(--copper)}
+h1{margin-top:14px;font:200 clamp(30px,5vw,50px)/1.05 Fraunces,serif;letter-spacing:-.02em}
+.intro{margin-top:14px;max-width:62ch;color:var(--slate);font-size:15.5px}
+
+/* The search and the section jumps travel together at the top of the page,
+   because both are ways of not reading it in order. */
+/* Search and jump links are script, so they are not shown to a visitor who has
+   none: an inert search field is a promise the page cannot keep. */
+.bar{display:none}
+.js .bar{display:block}
+.bar{position:sticky;top:0;z-index:5;background:var(--paper);padding:18px 0 12px;
+ margin-top:28px;border-bottom:1px solid var(--hair)}
+.find{display:flex;align-items:center;gap:10px;border:1px solid var(--rule);background:var(--wash);
+ padding:11px 14px;transition:border-color .15s}
+.find:focus-within{border-color:var(--copper)}
+.find svg{flex:none;stroke:var(--slate)}
+#q{flex:1;border:0;background:none;font:400 15px/1.3 "IBM Plex Sans",sans-serif;color:var(--ink);padding:0}
+#q::placeholder{color:var(--mute)}
+#q:focus{outline:none}
+#qx{border:0;background:none;cursor:pointer;color:var(--slate);font:500 11px/1 "IBM Plex Mono",monospace;
+ letter-spacing:.1em;text-transform:uppercase;padding:4px}
+#qx:hover{color:var(--copper)}
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px;align-items:center}
+.jump a{font:500 10.5px/1 "IBM Plex Mono",monospace;letter-spacing:.11em;text-transform:uppercase;
+ color:var(--slate);text-decoration:none;border:1px solid var(--rule);padding:7px 11px;transition:.15s}
+.jump a:hover{color:var(--copper);border-color:var(--copper)}
+.jump b{font-weight:500;color:var(--mute);margin-left:5px}
+.hint{margin-top:9px;font:400 11.5px/1.5 "IBM Plex Mono",monospace;color:var(--mute)}
+.count{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.11em;text-transform:uppercase;color:var(--copper)}
+
+.sec{margin-top:52px;scroll-margin-top:124px}
+.sec h2{font:200 clamp(23px,3vw,32px)/1.1 Fraunces,serif;letter-spacing:-.015em;
+ padding-bottom:12px;border-bottom:1px solid var(--rule);display:flex;align-items:baseline;gap:12px}
+.sec h2 .ct{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;color:var(--copper)}
+.blurb{margin-top:12px;color:var(--slate);font-size:14px;max-width:62ch}
+ol.list{list-style:none;padding:0;margin:14px 0 0}
+
+/* Not boxes. Each entry is a row with a hairline above it and a copper edge that
+   arrives on hover — enough to separate them and to show which one the pointer is
+   on, without drawing twenty-seven rectangles down a reading page. */
+.e{display:flex;gap:16px;padding:20px 14px 20px 0;border-top:1px solid var(--hair);
+ border-left:2px solid transparent;transition:border-color .15s,background .15s}
+.e:hover{border-left-color:var(--copper);background:var(--wash)}
+.e .n{flex:none;width:30px;padding-left:12px;font:500 11px/1.9 "IBM Plex Mono",monospace;color:var(--copper)}
+.e .c{min-width:0}
+.e:not(:has(.n)){padding-left:14px}
+a.ti{display:inline-block;font:italic 300 clamp(18px,2vw,22px)/1.3 Fraunces,serif;letter-spacing:-.012em;
+ color:var(--ink);text-decoration:none;text-wrap:pretty;transition:color .15s}
+a.ti:hover{color:var(--copper)}
+.by{display:block;margin-top:7px;font:500 10.5px/1.6 "IBM Plex Mono",monospace;letter-spacing:.09em;
+ text-transform:uppercase;color:var(--slate)}
+.by i{font-style:normal;color:var(--ink)}
+.by a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--copper);padding-bottom:1px}
+.by a:hover{color:var(--copper)}
+.d{margin-top:9px;color:var(--slate);font-size:14.5px;max-width:64ch}
+.d i{color:var(--ink);font-style:italic}
+.nt{display:block;margin-top:7px;font:400 12px/1.5 "IBM Plex Mono",monospace;color:var(--mute)}
+.nt::before{content:"— "}
+.none{display:none;margin-top:26px;color:var(--slate)}
+.more{margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);
+ font:500 11.5px/2 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase}
+.more a{display:inline-block;color:var(--ink);text-decoration:none;
+ border-bottom:1.5px solid var(--copper);padding-bottom:3px;margin-right:20px}
+.more a:hover{color:var(--copper)}
+@media(max-width:620px){
+  .e{gap:10px;padding-right:0}
+  .e .n{width:24px;padding-left:8px}
+  .bar{position:static}
+}
+@media(prefers-reduced-motion:reduce){.homemark,.e,a.ti{transition:none}}
+</style>
+</head><body>
+<div class="wrap">
+<a class="homemark" href="/" aria-label="sovrn.art — home" title="sovrn.art"><img src="/img/share/sovrn-mark.webp" alt="" width="44" height="44"></a>
+<p class="eyebrow"><a href="/cents/">CENTS</a> &middot; writing</p>
+<h1>Writing on CENTS</h1>
+<p class="intro">Essays, interviews and press on Rutherford Chang&rsquo;s CENTS. The essays are ordered as a way in rather than by date &mdash; read from the top and the project assembles itself; search if you are after one thing.</p>
+
+<div class="bar">
+<div class="find">
+<svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke-width="1.8" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M13.5 13.5 18 18"/></svg>
+<input id="q" type="search" placeholder="Search titles, authors and summaries — try patina, Bitcoin, Klein, 1971" aria-label="Search the writing" autocomplete="off" spellcheck="false">
+<button id="qx" type="button" hidden>Clear</button>
+</div>
+<nav class="jump" id="jump"></nav>
+<p class="hint" id="hint" hidden>Searches what is on this page &mdash; titles, authors, summaries and topics &mdash; not the full text of the pieces themselves.</p>
+</div>
+
+<section class="sec" id="essays"><h2>Essays <span class="ct">17</span></h2><p class="blurb">Ordered as a reading path rather than by date: what the work is, who made it, what it means, then the object itself, then the arguments about its value.</p><ol class="list">
+<li class="e" data-k="introduction overview concepts objecthood conceptual art duchamp readymade lincoln penny copper value bitcoin ordinals block 839969 becoming"><span class="n">01</span><div class="c"><a class="ti" href="https://medium.com/@shibboleth88/cents-digital-conceptual-art-258b836a16a1" target="_blank" rel="noopener">CENTS &amp; digital objecthood</a><span class="by"><a href="https://x.com/shibboleth88" target="_blank" rel="noopener">shibboleth</a> &middot; October 2025</span><p class="d">Start here. How a discrepancy between what a penny is worth and what its copper is worth becomes a work about objecthood itself &mdash; from conceptual art&rsquo;s revolt against the object, through digitisation stripping objects of singularity, to the blockchain giving it back. Sets out the five natures each cent holds at once and the five transformations of value it passes through.</p></div></li>
+<li class="e" data-k="practice biography we buy white albums beatles method accumulation entropy archive seriality"><span class="n">02</span><div class="c"><a class="ti" href="https://medium.com/@ml_54234/rutherford-changs-conceptual-collecting-9250dcffdc81" target="_blank" rel="noopener">Rutherford Chang&rsquo;s Conceptual Collecting</a><span class="by"><a href="https://x.com/daidatep" target="_blank" rel="noopener">Martin Lehnen</a> &middot; March 2025</span><p class="d">The artist&rsquo;s method, applied twice. Rule-based collecting without curation, in <i>We Buy White Albums</i> and again in CENTS: mass-produced things kept until time makes them singular, and what changes when the archive moves on-chain.</p></div></li>
+<li class="e" data-k="bitcoin protocol satoshi provenance immutability trust source code decentralisation"><span class="n">03</span><div class="c"><a class="ti" href="https://medium.com/@ml_54234/cents-as-an-artistic-expression-of-bitcoins-core-ideas-a2b9ec152a98" target="_blank" rel="noopener">CENTS as an Artistic Expression of Bitcoin&rsquo;s Core Ideas</a><span class="by"><a href="https://x.com/daidatep" target="_blank" rel="noopener">Martin Lehnen</a> &middot; March 2025</span><p class="d">Why it had to be Bitcoin. Reads the work as a conceptual mirror of the protocol &mdash; value, provenance, immutability, trust &mdash; and turns up a detail from the earliest Bitcoin source code, where the smallest unit was called a cent rather than a satoshi.</p></div></li>
+<li class="e" data-k="semiotics saussure barthes peirce signifier signified studium punctum camera lucida meaning traits patina indexical"><span class="n">04</span><div class="c"><a class="ti" href="https://medium.com/@stenreiss/materiality-and-signification-rutherford-changs-cents-and-semiotics-33d0161a4923" target="_blank" rel="noopener">Materiality and Signification: Rutherford Chang&rsquo;s CENTS and Semiotics</a><span class="by"><a href="https://x.com/stenreiss" target="_blank" rel="noopener">Steven Reiss</a> &middot; August 2025</span><p class="d">A semiotic reading through Saussure, Peirce and Barthes. The penny is a sign whose meaning was fixed by convention and is unfixed by the artist; its traits are indexical traces &mdash; wear, patina, scratches &mdash; rather than attributes assigned in advance, which is precisely what separates CENTS from a generative collection.</p></div></li>
+<li class="e" data-k="thread readymade feldmann boltanski song dong mint conceptual crypto art lineage duchamp"><span class="n">05</span><div class="c"><a class="ti" href="https://x.com/SHL0MS/status/1773397456685793630" target="_blank" rel="noopener">on CENTS, white albums, and collecting as art practice</a><span class="by"><a href="https://x.com/SHL0MS" target="_blank" rel="noopener">SHL0MS</a> &middot; March 2024</span><p class="d">The thread that introduced Chang to the crypto audience, written days after the mint. Places the work in a lineage of collection-as-readymade &mdash; Feldmann, Boltanski, Song Dong &mdash; and tells the story of asking who the artist was and finding out.</p></div></li>
+<li class="e" data-k="iconic spalter digital art collection canon medium era ordinals inscription"><span class="n">06</span><div class="c"><a class="ti" href="https://medium.com/@shibboleth88/cents-m-spalters-view-of-iconic-artwork-b3fc32cfa751" target="_blank" rel="noopener">CENTS &amp; M. Spalter&rsquo;s view of iconic artwork</a><span class="by"><a href="https://x.com/shibboleth88" target="_blank" rel="noopener">shibboleth</a> &middot; April 2025</span><p class="d">Michael Spalter&rsquo;s criteria for what makes an artwork iconic, applied to this one: resonance with an era, universal themes, and earliness in a medium whose defining works are not yet settled.</p></div></li>
+<li class="e" data-k="avant-garde art history recognition van gogh entropy copper block sculpture legacy"><span class="n">07</span><div class="c"><a class="ti" href="https://medium.com/@wqtqgwhpn/the-enduring-echo-rutherford-changs-cents-and-the-slow-burn-legacy-of-the-avant-garde-ab694fe178c4" target="_blank" rel="noopener">The Enduring Echo: Rutherford Chang&rsquo;s CENTS and the Slow-Burn Legacy of the Avant-Garde</a><span class="by"><a href="https://x.com/satoshiruner" target="_blank" rel="noopener">CryptoScalpel</a> &middot; October 2025</span><p class="d">On being understood late. Sets the work beside the avant-garde&rsquo;s habit of arriving before its audience, and reads the copper block as an inverse economy: money that can no longer buy anything and therefore never stops speaking about value.</p></div></li>
+<li class="e" data-k="yves klein IKB immaterial zones chelsea hotel manifesto art history transformation medium"><span class="n">08</span><div class="c"><a class="ti" href="https://medium.com/@ml_54234/from-blue-to-molten-copper-1ab05602f4e0" target="_blank" rel="noopener">From Blue to Molten Copper</a><span class="by"><a href="https://x.com/daidatep" target="_blank" rel="noopener">Martin Lehnen</a> &middot; March 2025</span><p class="d">Yves Klein and Rutherford Chang, sixty years apart, both selling something that cannot be held. Klein&rsquo;s <i>Zones of Immaterial Pictorial Sensibility</i> read against an image inscribed on a satoshi.</p></div></li>
+<li class="e" data-k="traits rarity patina wear surface mint year time-based generative art ghost faceless real-world narratives"><span class="n">09</span><div class="c"><a class="ti" href="https://medium.com/@ml_54234/thoughts-about-the-unique-nature-of-cents-traits-and-their-significance-308dc70ee3d4" target="_blank" rel="noopener">Thoughts about the unique nature of CENTS traits and their significance</a><span class="by"><a href="https://x.com/daidatep" target="_blank" rel="noopener">Martin Lehnen</a> &middot; February 2025</span><p class="d">Where the traits come from. Not an algorithm assigning attributes but wear, patina and handling &mdash; time-based generative art &mdash; and why mint year works as a trait in a way no generative collection can imitate.</p></div></li>
+<li class="e" data-k="numismatics grading sheldon scale lustre mint state condition purity preservation value philosophy"><span class="n">10</span><div class="c"><a class="ti" href="https://medium.com/@ml_54234/lustrous-cents-a-conceptual-contradiction-dba80c0283c7" target="_blank" rel="noopener">Lustrous CENTS &ndash; a Conceptual Contradiction?</a><span class="by"><a href="https://x.com/daidatep" target="_blank" rel="noopener">Martin Lehnen</a> &middot; February 2025</span><p class="d">Numismatics grades a coin by how little has happened to it. CENTS values exactly what happened to it. What the Sheldon scale and this project each mean by a good coin, and what an untouched, lustrous cent is doing inside a work about wear.</p></div></li>
+<li class="e" data-k="mint years dates scarcity distribution 1971 1969 wheat cents 1975 1982 statistics rarity"><span class="n">11</span><div class="c"><a class="ti" href="https://medium.com/@ml_54234/cents-reflections-on-mint-years-and-their-long-term-significance-796df69d837b" target="_blank" rel="noopener">CENTS &ndash; Reflections on Mint Years and their Long-Term Significance</a><span class="by"><a href="https://x.com/daidatep" target="_blank" rel="noopener">Martin Lehnen</a> &middot; March 2025</span><p class="d">The year distribution, counted. Half the collection was struck before 1976 and a quarter between 1980 and 1982; under 3% predates 1960. Sorts the years into the rare, the meme &mdash; 1969 &mdash; and the conceptual, which is where 1971 comes in.</p></div></li>
+<li class="e" data-k="wuxing five elements chinese philosophy patina verdigris obsidian copper chemistry entropy alchemy traits"><span class="n">12</span><div class="c"><a class="ti" href="https://medium.com/@Offchain_Wizard/tracing-back-changs-alchemy-a6aa08553bf0" target="_blank" rel="noopener">Tracing back Chang&rsquo;s alchemy</a><span class="by"><a href="https://x.com/Offchain_Wizard" target="_blank" rel="noopener">Offchain_Wizard</a> &middot; March 2026</span><p class="d">Reads the patina through Wuxing, the five Chinese transformations, matching verdigris, obsidian and the rest to wood, water and the others &mdash; on the argument that these traits were made by chemistry, entropy and time rather than by anyone&rsquo;s decision.</p></div></li>
+<li class="e" data-k="overview summary bitcoin market ordinals copper value introduction german"><span class="n">13</span><div class="c"><a class="ti" href="https://medium.com/@shnrrsx/cents-an-exploration-of-value-on-the-bitcoin-blockchain-66884ad85e43" target="_blank" rel="noopener">CENTS: An Exploration of Value on the Bitcoin Blockchain</a><span class="by"><a href="https://x.com/shnrrs91" target="_blank" rel="noopener">schn&ouml;rres</a> &middot; July 2024</span><p class="d">A short account of the project for a Bitcoin readership &mdash; the gap between one cent and three cents of copper, the 68-pound block, the ten thousand inscriptions &mdash; with a note of where the market stood in the summer after the mint.</p></div></li>
+<li class="e" data-k="investment thesis store of value market price collectors ordinals ethereum comparison speculation"><span class="n">14</span><div class="c"><a class="ti" href="https://medium.com/@become.eth/cents-as-a-store-of-value-a-thesis-b176596c35c2" target="_blank" rel="noopener">CENTS as a Store of Value. A Thesis</a><span class="by"><a href="https://twitter.com/thedaoistpunk" target="_blank" rel="noopener">become.eth</a> &middot; April 2024</span><p class="d">The investment case, written a week after the mint: why ordinal collections were early against their Ethereum counterparts, why a collector base drawn from both chains matters, and why the author expects this particular gesture to hold its meaning.</p></div></li>
+<li class="e" data-k="collecting collectors digital art lippard benjamin mccoy quantum provenance aura symbolism"><span class="n">15</span><div class="c"><a class="ti" href="https://medium.com/@wqtqgwhpn/why-every-collector-of-digital-art-must-have-cents-by-rutherford-chang-bc900f2ad9b1" target="_blank" rel="noopener">Why Every Collector of Digital Art Must Have CENTS by Rutherford Chang</a><span class="by"><a href="https://x.com/satoshiruner" target="_blank" rel="noopener">CryptoScalpel</a> &middot; September 2025</span><p class="d">An argument for the work as a necessary holding rather than a trophy, by way of Lucy Lippard, Walter Benjamin and Kevin McCoy: the smallest unit of currency as the natural bridge between numismatics and the ledger.</p></div></li>
+<li class="e" data-k="fiat inflation monetary policy cantillon effect sound money bitcoin freedom penny abolition doge"><span class="n">16</span><div class="c"><a class="ti" href="https://medium.com/@shnrrsx/some-thoughts-on-life-our-monetary-fiat-system-bitcoin-art-and-a-bet-coupled-with-a-fantastic-b08e41afba0d" target="_blank" rel="noopener">Some thoughts on life, our monetary fiat system, bitcoin, art and a bet</a><span class="by"><a href="https://x.com/shnrrs91" target="_blank" rel="noopener">schn&ouml;rres</a> &middot; February 2025</span><p class="d">The fiat reading, argued personally. Inflation, the Cantillon effect, and a penny that costs more to make than it is worth &mdash; CENTS as a commentary on a currency dissolving while the object it was stamped into survives.</p></div></li>
+<li class="e" data-k="conceptual art on bitcoin ordinals survey collecting curation not generative not ai comparison"><span class="n">17</span><div class="c"><a class="ti" href="https://medium.com/@milestones_nft/art-on-bitcoin-feature-1-from-copper-to-email-to-milestones-7de7834e72b9" target="_blank" rel="noopener">Art on Bitcoin Feature #1: From Copper to Email to Milestones</a><span class="by"><a href="https://x.com/milestones_nft" target="_blank" rel="noopener">MilestonesNFT</a> &middot; July 2024</span><p class="d">CENTS in company: the first of a series on conceptual art made on Bitcoin, and clear on a point that still gets mistaken &mdash; nothing here is generative or AI, the ten thousand were culled by hand from a hundred thousand.</p></div></li>
+</ol></section>
+<section class="sec" id="talks"><h2>Interviews and talks <span class="ct">2</span></h2><p class="blurb">Collectors and hosts, in their own words.</p><ol class="list">
+<li class="e" data-k="interviews collectors community traits explorer archivist favourite cent discord"><div class="c"><a class="ti" href="https://medium.com/@shibboleth88/makes-cents-1ec365008968" target="_blank" rel="noopener">MAKES CENTS</a><span class="by"><a href="https://x.com/shibboleth88" target="_blank" rel="noopener">shibboleth</a> &middot; from October 2024</span><p class="d">An ongoing series of short interviews with collectors: what drew them in, what kept them there, and which cent is theirs. The nearest thing to a record of how the set was read from the inside, while it was being read.</p></div></li>
+<li class="e" data-k="podcast audio interview introduction crypto"><div class="c"><a class="ti" href="https://pods.media/mars/a-crazy-tuesday-in-cryptoland" target="_blank" rel="noopener">The Matthew and Rizzle Show</a><span class="by">Matthew and Rizzle &middot; from 1:56</span><p class="d">A spoken introduction to the project for listeners meeting it for the first time.</p><span class="nt">the host, pods.media, is not currently serving this episode</span></div></li>
+</ol></section>
+<section class="sec" id="press"><h2>Press <span class="ct">7</span></h2><p class="blurb">Independent coverage, most recent first.</p><ol class="list">
+<li class="e" data-k="review german monopol ucca beijing retrospective we buy white albums exhibition"><div class="c"><a class="ti" href="https://www.monopol-magazin.de/rutherford-chang-hundreds-and-thousands-center-for-contemporary-art-beijing-review" target="_blank" rel="noopener">Geschichten in Kupfer und Vinyl</a><span class="by">Tabatha Arlt &middot; <i>monopol</i> &middot; April 2026</span><p class="d">German-language review of the retrospective, on things one barely looks at &mdash; records, coins, game consoles &mdash; becoming carriers of time, memory and quiet deviation.</p></div></li>
+<li class="e" data-k="review frieze ucca beijing retrospective tetris game boy philip tinari aki sasamoto"><div class="c"><a class="ti" href="https://www.frieze.com/article/rutherford-chang-hundreds-and-thousands-2026-review" target="_blank" rel="noopener">Rutherford Chang&rsquo;s Art of Accumulation</a><span class="by">Michael Barron &middot; <i>Frieze</i> &middot; March 2026</span><p class="d">Review of the first institutional retrospective, which opens not with the pennies but with a letter Chang wrote to <i>Nintendo Power</i> about his Tetris high score, and the 2,139 videos that became a work.</p></div></li>
+<li class="e" data-k="review bitcoin magazine ucca beijing retrospective mass production sameness time touch circulation"><div class="c"><a class="ti" href="https://bitcoinmagazine.com/culture/rutherford-chang-retrospective-hundreds-and-thousands-at-ucca-beijing" target="_blank" rel="noopener">Rutherford Chang Retrospective: Hundreds and Thousands at UCCA Beijing</a><span class="by"><a href="https://x.com/stenreiss" target="_blank" rel="noopener">Steven Reiss</a> &middot; <i>Bitcoin Magazine</i> &middot; February 2026</span><p class="d">On what the usual words &mdash; obsessive, conceptual, minimalist &mdash; leave out: Chang worked at the exact moment when the promise of sameness fails and handling turns identical objects into singular ones.</p></div></li>
+<li class="e" data-k="review art in america artnews ucca survey square tetris posthumous"><div class="c"><a class="ti" href="https://www.artnews.com/art-in-america/aia-reviews/rutherford-chang-ucca-beijing-survey-tetris-1234783323/" target="_blank" rel="noopener">After His Untimely Death, Rutherford Chang&rsquo;s Survey Rewrites What a Square Can Do</a><span class="by">Emily Watlington &middot; <i>Art in America</i> &middot; 2026</span><p class="d">Review of the UCCA survey, reading the work through the square &mdash; the Tetris block, the album sleeve, the coin.</p><span class="nt">behind a paywall; this line is from the title and venue rather than the text</span></div></li>
+<li class="e" data-k="preview art newspaper ucca beijing exhibition post-conceptualist richard hamilton white album"><div class="c"><a class="ti" href="https://www.theartnewspaper.com/2026/01/14/from-pennies-to-a-beatles-record-haul-the-obsessive-work-of-rutherford-chang-goes-on-show-in-beijing" target="_blank" rel="noopener">From 10,000 pennies to a Beatles record haul, the obsessive work of Rutherford Chang heads to Beijing</a><span class="by">Simon Bainbridge &middot; <i>The Art Newspaper</i> &middot; 14 January 2026</span><p class="d">Preview of the exhibition, on the &lsquo;near frightening rigour&rsquo; of a post-conceptualist: CENTS and <i>We Buy White Albums</i> among six works, a year after the artist&rsquo;s death.</p></div></li>
+<li class="e" data-k="christies auction beyond the screen block 839969 ingot copper new york tyler hobbs sarah meyohas"><div class="c"><a class="ti" href="https://nftnow.com/art/christies-announces-cents-flagship-ordinal-auction/" target="_blank" rel="noopener">Christie&rsquo;s Announces CENTS Flagship Ordinal Auction</a><span class="by">lorepunk &middot; <i>nft now</i> &middot; 28 May 2024</span><p class="d">The announcement that <i>Block 839969</i> &mdash; the 4&nbsp;MB model of the copper ingot, inscribed across a whole Bitcoin block &mdash; would go to Christie&rsquo;s <i>Beyond the Screen</i>, with the physical block shown in New York alongside it.</p></div></li>
+<li class="e" data-k="taschen on nfts book philip tinari robert alice ucca essay print"><div class="c"><a class="ti" href="/cents/taschen/">CENTS in Taschen&rsquo;s <i>On NFTs</i></a><span class="by">Philip Tinari &middot; <i>Taschen</i> &middot; book</span><p class="d">The director of UCCA on CENTS, written for Robert Alice&rsquo;s Taschen volume and reproduced here in full: the analog and the digital, and a lifelong practice of obsessive collecting.</p></div></li>
+</ol></section>
+<section class="sec" id="background"><h2>Background <span class="ct">1</span></h2><p class="blurb">One thing that is not about CENTS, and explains part of it.</p><ol class="list">
+<li class="e" data-k="1971 gold standard bretton woods inflation charts fiat context background hayek"><div class="c"><a class="ti" href="https://wtfhappenedin1971.com/" target="_blank" rel="noopener">WTF happened in 1971</a><p class="d">Not about CENTS. A wall of charts showing what changed when the dollar left gold, and the reason 1971 is one of the collection&rsquo;s conceptual mint years.</p></div></li>
+</ol></section>
+
+<p class="none" id="none">Nothing here matches that. Try a broader word &mdash; <i>value</i>, <i>traits</i>, <i>Bitcoin</i>, <i>collecting</i>.</p>
+
+<p class="more"><a href="/cents/">Back to CENTS</a><a href="/">sovrn.art</a></p>
+</div>
+<script>
+/* The search is a filter over the page, not an index of the writing.
+ *
+ * It can only search what this page holds — the title, who wrote it, where it
+ * appeared, the summary, and a list of topics on each entry — because the
+ * pieces themselves live on Medium, on X and behind magazine paywalls. Copying
+ * their text here to make it searchable would be republishing somebody else's
+ * essay, so the summaries are written to carry the words a reader would
+ * plausibly search for, and the hint under the field says plainly what is being
+ * searched. A search box that silently covers less than you think is worse than
+ * none.
+ *
+ * Quoted input is matched as a phrase; otherwise every word has to appear
+ * somewhere in the entry, in any order. */
+(function(){
+ var q=document.getElementById("q"), x=document.getElementById("qx"),
+     hint=document.getElementById("hint"), none=document.getElementById("none"),
+     jump=document.getElementById("jump"),
+     secs=[].slice.call(document.querySelectorAll(".sec"));
+ if(!q||!secs.length) return;
+
+ var items=secs.map(function(s){
+   return {sec:s, h:s.querySelector("h2"), ct:s.querySelector(".ct"), total:0,
+     rows:[].slice.call(s.querySelectorAll(".e")).map(function(el){
+       return {el:el, hay:(el.textContent+" "+(el.getAttribute("data-k")||"")).toLowerCase()};
+     })};
+ });
+ items.forEach(function(g){ g.total=g.rows.length; });
+
+ /* the jump links are built here rather than written into the markup, so they
+    cannot name a section that no longer exists */
+ jump.innerHTML=secs.map(function(s){
+   var name=s.querySelector("h2").firstChild.textContent.trim();
+   return '<a href="'+location.pathname+'#'+s.id+'">'+name+'<b>'+s.querySelectorAll(".e").length+'</b></a>';
+ }).join("");
+
+ function terms(v){
+   var m=v.match(/^\s*"(.*)"\s*$/);                 /* "a phrase" */
+   if(m) return [m[1].toLowerCase()];
+   return v.toLowerCase().split(/\s+/).filter(Boolean);
+ }
+ function run(){
+   var v=q.value.trim(), t=terms(v), shown=0;
+   x.hidden=!v; hint.hidden=!v;
+   items.forEach(function(g){
+     var n=0;
+     g.rows.forEach(function(r){
+       var hit=!t.length||t.every(function(w){return r.hay.indexOf(w)>-1;});
+       r.el.hidden=!hit; if(hit) n++;
+     });
+     shown+=n;
+     g.sec.hidden=!n;
+     g.ct.textContent=t.length?n+" of "+g.total:g.total;
+   });
+   none.style.display=shown?"none":"block";
+   [].slice.call(jump.children).forEach(function(a,i){
+     a.querySelector("b").textContent=items[i].sec.hidden?0:items[i].rows.filter(function(r){return !r.el.hidden;}).length;
+   });
+ }
+ q.addEventListener("input",run);
+ q.addEventListener("keydown",function(e){ if(e.key==="Escape"){ q.value=""; run(); } });
+ x.addEventListener("click",function(){ q.value=""; run(); q.focus(); });
+ run();
+})();
+</script>
+</body></html>
