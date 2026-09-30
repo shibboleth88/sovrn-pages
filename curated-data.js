@@ -11,7 +11,6 @@ S="/curated/";
 
 const C=[
 ["CENTS","Rutherford Chang","/cents/",H+"cent_homepage.jpg","The performance of value"],
-["Emerging Faces","Pindar Van Arman","https://www.vanarman.com/emergence",H+"emerging-faces.jpg","The first robotic paintings autonomously created from neural networks (2017)."],
 ["Reflection","Pindar Van Arman",S+"reflection/",F+"reflection_889_layers_smooth.svg","Van Arman’s Reflective AI process, executed fully on-chain"],
 ["Wunderkammer","Isa Kost",S+"wunderkammer/",H+"wunderkammer_homepage.gif","An on-chain Cabinet of Wonders, to give eternal life to the dead presences that Isa Kost has carried through the years — every object a dead memory that has called out to be found."],
 ["Painting with Fire: a history in GANs","Bård Ionson",S+"painting-with-fire/",H+"fire_homepage.jpg","The evolution of GANs from 2014 to 2023, seen through the eyes of fire. Fourteen vintage models and two hundred works, each invoking the same elemental image."],
